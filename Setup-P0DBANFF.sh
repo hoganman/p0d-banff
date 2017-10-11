@@ -1,10 +1,13 @@
 #!/bin/sh
-
-# Project #
 #########################################
 #### Update this for every checkout #####
-export P0DBANFFROOT=/physics/home/mhogan/software/t2k-software-clone
+export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
 #########################################
+
+if [ -z ${ROOTSYS+x} ]; then 
+#   echo "ROOTSYS is unset"; 
+  source SetupBase.sh
+fi
 
 CMTPATH=${P0DBANFFROOT}:${CMTPATH}
 CMTPROJECTPATH=${P0DBANFFROOT}/../:${CMTPROJECTPATH}
