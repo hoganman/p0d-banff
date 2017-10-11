@@ -1,0 +1,2 @@
+magnet /neut/data21/mscott/T2K/BANFF_Inputs/Run5w_NEUTMC_2000DetThrows_Splines.root
+sand /neut/data21/mscott/T2K/BANFF_Inputs/Run5w_Sand_2000DetThrows_Splines.root

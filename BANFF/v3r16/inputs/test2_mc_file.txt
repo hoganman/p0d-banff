@@ -1,0 +1,4 @@
+magnet2 /data2a/myslik/FixedSplines/Run3_NEUT_Prod5F_FlatTree_WaterIn_2_Splines.root
+magnet3 /data2a/myslik/FixedSplines/Run3_NEUT_Prod5F_FlatTree_WaterIn_3_Splines.root
+magnet4 /data2a/myslik/FixedSplines/Run3_NEUT_Prod5F_FlatTree_WaterIn_4_Splines.root
+magnet5 /data2a/myslik/FixedSplines/Run3_NEUT_Prod5F_FlatTree_WaterIn_5_Splines.root

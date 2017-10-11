@@ -1,0 +1,2096 @@
+Clean G4 environment
+Geometries up to date
+Global slow control environment not set.  Using database defaults.
+Calibration database environment variables not set.
+Setting variables for: master database (without temporary table support)
+Trying to load parameters file for parameter: BANFF.Do4PiFHC
+---------------------------------
+Applying FHC CCMultiPI selections
+---------------------------------
+Trying to load parameters file for parameter: psycheSteering.Selections.EnableTrackerNumuCCMultiPi
+--------------------------------
+Applying RHCMultiTrack selection
+--------------------------------
+0 100
+Number of parameters 100
+Response xsec FSI_INEL_LO
+Response xsec FSI_INEL_HI
+Response xsec FSI_PI_PROD
+Response xsec FSI_PI_ABS
+Response xsec FSI_CEX_LO
+Response xsec FSI_CEX_HI
+Response xsec MAQE
+Response xsec pF_C
+Response xsec pF_O
+Adding the parameter 2p2h_norm_nu to the list
+===============================================
+2p2h_norm_nu 0 30
+XSecNormParameter 2p2h_norm_nu applies for the following reaction codes: 
+2
+With neutrino PDG:
+12
+14
+On target materials:
+12
+16
+===============================================
+Adding the parameter 2p2h_norm_nubar to the list
+===============================================
+2p2h_norm_nubar 0 30
+XSecNormParameter 2p2h_norm_nubar applies for the following reaction codes: 
+-2
+With neutrino PDG:
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter 2p2h_normCtoO to the list
+===============================================
+2p2h_normCtoO 0 30
+XSecNormParameter 2p2h_normCtoO applies for the following reaction codes: 
+-2
+2
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+16
+===============================================
+Response xsec 2p2h_shape_C
+Response xsec 2p2h_shape_O
+Functionnal xsec BeRPA_A
+===============================================
+XSecFuncParameter BeRPA_A applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_B
+===============================================
+XSecFuncParameter BeRPA_B applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_D
+===============================================
+XSecFuncParameter BeRPA_D applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_E
+===============================================
+XSecFuncParameter BeRPA_E applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_U
+===============================================
+XSecFuncParameter BeRPA_U applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Response xsec CA5
+Response xsec MARES
+Response xsec ISO_BKG
+Adding the parameter nue_numu to the list
+===============================================
+nue_numu 0 30
+With neutrino PDG:
+12
+On target materials:
+12
+16
+===============================================
+Adding the parameter nuebar_numubar to the list
+===============================================
+nuebar_numubar 0 30
+With neutrino PDG:
+-12
+On target materials:
+12
+16
+===============================================
+Response xsec CC_DIS
+Adding the parameter CC_Coh_C to the list
+===============================================
+CC_Coh_C 0 30
+XSecNormParameter CC_Coh_C applies for the following reaction codes: 
+-16
+16
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+===============================================
+Adding the parameter CC_Coh_O to the list
+===============================================
+CC_Coh_O 0 30
+XSecNormParameter CC_Coh_O applies for the following reaction codes: 
+-16
+16
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+16
+===============================================
+Adding the parameter NC_Coh to the list
+===============================================
+NC_Coh 0 30
+XSecNormParameter NC_Coh applies for the following reaction codes: 
+-36
+36
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_1gamma to the list
+===============================================
+NC_1gamma 0 30
+XSecNormParameter NC_1gamma applies for the following reaction codes: 
+-38
+-39
+38
+39
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_other_near to the list
+===============================================
+NC_other_near 0 30
+XSecNormParameter NC_other_near applies for the following reaction codes: 
+-41
+-42
+-43
+-44
+-45
+-46
+-51
+-52
+41
+42
+43
+44
+45
+46
+51
+52
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_other_far to the list
+===============================================
+NC_other_far 0 30
+XSecNormParameter NC_other_far applies for the following reaction codes: 
+-41
+-42
+-43
+-44
+-45
+-46
+-51
+-52
+41
+42
+43
+44
+45
+46
+51
+52
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+===============================================
+Response xsec SF_RFG
+Response xsec RPA_C
+Response xsec COH_BS
+=================================================
+Total allowed discrete parameter combinations: 1
+=================================================
+--------------------------------------------
+Combination: 0
+--------------------------------------------
+SF_RFG: 0
+RPA_C: -1
+COH_BS: 1
+=================================================
+100 34
+100
+Number of parameters 134
+Decompose FSI_INEL_LO
+Decompose FSI_INEL_HI
+Decompose FSI_PI_PROD
+Decompose FSI_PI_ABS
+Decompose FSI_CEX_LO
+Decompose FSI_CEX_HI
+0x7ffe767d6b60
+Data sub file: run2-air_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-air/Run2_Air_data_splines.root
+1
+MC sub file: run2-air_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-air/Run2_Air_splines.root
+1
+Data sub file: run2-water_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-water/Run2_Water_data_splines.root
+2
+MC sub file: run2-water_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-water/Run2_Water_splines.root
+2
+Data sub file: run3c_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run3-air/Run3_Air_data_splines.root
+3
+MC sub file: run3c_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run3-air/Run3_Air_splines.root
+3
+Data sub file: run4-water_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-water/Run4_Water_data_splines.root
+4
+MC sub file: run4-water_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-water/Run4_Water_splines.root
+4
+Data sub file: run4-air_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-air/Run4_Air_data_splines.root
+5
+MC sub file: run4-air_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-air/Run4_Air_splines.root
+5
+Data sub file: run5c_data.txt
+Using data file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run5-water/Run5_Water_data_splines.root
+6
+MC sub file: run5c_mc.txt
+Using MC file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/anti-neut/run5-water/Run5_Water_splines.root
+6
+Number of data run periods: 6
+Number of MC run periods: 6
+Data file information
+Run period: run2-air
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-air/Run2_Air_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-air/Run2_Air_splines.root
+Run period: run2-water
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-water/Run2_Water_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-water/Run2_Water_splines.root
+Run period: run3c
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run3-air/Run3_Air_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run3-air/Run3_Air_splines.root
+Run period: run4-air
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-air/Run4_Air_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-air/Run4_Air_splines.root
+Run period: run4-water
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-water/Run4_Water_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-water/Run4_Water_splines.root
+Run period: run5c
+Data Files:
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run5-water/Run5_Water_data_splines.root
+===========================================
+MC files:
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/anti-neut/run5-water/Run5_Water_splines.root
+Error in <TChain::SetBranchAddress>: unknown branch -> DetWeight
+Error in <TChain::SetBranchAddress>: unknown branch -> POTWeight
+Error in <TChain::SetBranchAddress>: unknown branch -> PileUpWeight
+Error in <TChain::SetBranchAddress>: unknown branch -> EventType
+Error in <TChain::SetBranchAddress>: unknown branch -> EB_CGraph
+Error in <TChain::SetBranchAddress>: unknown branch -> EB_OGraph
+Error in <TChain::SetBranchAddress>: unknown branch -> SCCVGraph
+Error in <TChain::SetBranchAddress>: unknown branch -> SCCAGraph
+number of systs 24
+WARNING: production has been overwritten by parameter psycheSteering.POT.Production == 6
+WARNING: production has been overwritten by parameter psycheSteering.Bunching.Production == 6
+WARNING: production has been overwritten by parameter psycheSteering.Corrections.Production == 6
+WARNING: production has been overwritten by parameter psycheSteering.Systematics.Production == 6
+Trying to load parameters file for parameter: psycheSelections.Systematics.ApplyFineTuning
+SelectionBase::Validate(). Validating selection 'kTrackerNumuCC' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuCCMultiPi' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCC' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill summary antinu_CCMultiTrack'
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCCMultiTrack' of type 29antiNumuCCMultiTrackSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCCMultiPi' of type 26antiNumuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCC' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill summary numuBkg_CCMultiTrack'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCCMultiTrack' of type 40numuBkgInAntiNuModeCCMultiTrackSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCCMultiPi' of type 37numuBkgInAntiNuModeCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerNumuCCFGD2' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuCCMultiPiFGD2' of type 26numuCCMultiPiFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCCFGD2' of type 23antiNumuCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 23antiNumuCCFGD2Selection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill summary antinu_CCMultiTrack'
+SelectionBase::Validate(). Validating selection '' of type 29antiNumuCCMultiTrackSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill summary AntiNuMuCCMultiTrackFGD2'
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCCMultiTrackFGD2' of type 33antiNumuCCMultiTrackFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19antiNumuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 23antiNumuCCFGD2Selection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 26antiNumuCCMultiPiSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNumuCCMultiPiFGD2' of type 30antiNumuCCMultiPiFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCCFGD2' of type 34numuBkgInAntiNuModeCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 26numuCCMultiPiFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 34numuBkgInAntiNuModeCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill summary numuBkg_CCMultiTrack'
+SelectionBase::Validate(). Validating selection '' of type 40numuBkgInAntiNuModeCCMultiTrackSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 2 branches to branch 'trunk' after step 'fill_summary numuBkgMultiTrackFGD2'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCCMultiTrackFGD2' of type 44numuBkgInAntiNuModeCCMultiTrackFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 15numuCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 22numuCCMultiPiSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 19numuCCFGD2Selection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 26numuCCMultiPiFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 34numuBkgInAntiNuModeCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 30numuBkgInAntiNuModeCCSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection '' of type 37numuBkgInAntiNuModeCCMultiPiSelection ..... OK 
+SelectionBase::AddSplit(). Add split with 3 branches to branch 'trunk' after step 'find_pions'
+SelectionBase::Validate(). Validating selection 'kTrackerNumuInAntiNuModeCCMultiPiFGD2' of type 41numuBkgInAntiNuModeCCMultiPiFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerNuECC' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNuECC' of type 18antiNueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerGamma' of type 14gammaSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerNuECCFGD2' of type 18nueCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 18nueCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerAntiNuECCFGD2' of type 22antiNueCCFGD2Selection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14nueCCSelection ..... OK 
+SelectionBase::Validate(). Validating selection '' of type 14gammaSelection ..... OK 
+SelectionBase::Validate(). Validating selection 'kTrackerGammaFGD2' of type 18gammaFGD2Selection ..... OK 
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4pi' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piMultiPi' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piFGD2' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piMultiPiFGD2' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4pi' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piMultiPi' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piFGD2' does not exist !!!!
+SelectionManager::GetSelection(). Selection 'kTrackerNumuCC4piMultiPiFGD2' does not exist !!!!
+Trying to load parameters file for parameter: psycheSystematics.Tracker.UseP0DFV
+Trying to load parameters file for parameter: psycheND280Utils.ToF.FGD1FGD2
+Create FluxWeight in FluxWeightSystematics: 
+ ------------------------------------------------------ 
+ ------------------------------------------------------ 
+   Flux reweight is enabled 
+   Folder   : $(PSYCHEND280UTILSROOT)/data/tuned13av2
+   File     : $(PSYCHEND280UTILSROOT)/data/tuned13av2/runXXX/ndX_tuned13av2_13anom_runXXX.root
+   Tuning   : tuned13a
+ ------------------------------------------------------ 
+ ------------------------------------------------------ 
+ constructing things! 
+nVarSys = 8
+ Total parameters: 147
+filling links
+Trying to load parameters file for parameter: psycheSystematics.FieldDist.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.omScale.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.omResol.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.pcPid.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.gdPid.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.oFResol.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.CalEMScale.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.CalEMResol.CovFile
+filling links
+Trying to load parameters file for parameter: psycheSystematics.luxWeight.CovFile
+ ------------------------------------------------------ 
+ ------------------------------------------------------ 
+   Flux reweight is enabled 
+   Folder   : $(PSYCHEND280UTILSROOT)/data/tuned13av2
+   File     : $(PSYCHEND280UTILSROOT)/data/tuned13av2/runXXX/ndX_tuned13av2_13anom_runXXX.root
+   Tuning   : tuned13a
+ ------------------------------------------------------ 
+ ------------------------------------------------------ 
+ -------- List of Selections  -----------------------------------------------------------------------------------------------------
+  #: name                      title                                    enabled    #branches  force break   presel accum_level   index in accum_level  
+
+  0: kTrackerNumuCC            inclusive numuCC selection               0          1          1             2                    -                     
+  1: kTrackerNumuCCMultiPi     numuCC MultiPi selection                 1          3          1             2                    0                     
+  2: kTrackerAntiNumuCC        antiNumuCC selection                     0          1          1             2                    -                     
+  3: kTrackerAntiNumuCCMultiTrack antiNumuCC MultiTrack selection          1          2          1             2                    1                     
+  4: kTrackerAntiNumuCCMultiPi antiNumuCC MultiPi selection             0          3          1             2                    -                     
+  5: kTrackerNumuInAntiNuModeCC numuBkg In AntiNuMode CC selection       0          1          1             2                    -                     
+  6: kTrackerNumuInAntiNuModeCCMultiTrack numuBkg In AntiNuMode CCMultiTrack selection 1          2          1             2                    2                     
+  7: kTrackerNumuInAntiNuModeCCMultiPi numuBkg In AntiNuMode CCMultiPi selection 0          3          1             2                    -                     
+  8: kTrackerNumuCCFGD2        inclusive numuCC selection in FGD2       0          1          1             2                    -                     
+  9: kTrackerNumuCCMultiPiFGD2 numuCC MultiPi selection in FGD2         1          3          1             2                    3                     
+ 10: kTrackerAntiNumuCCFGD2    antiNumuCC selection in FGD2             0          1          1             2                    -                     
+ 11: kTrackerAntiNumuCCMultiTrackFGD2 antiNumuCC MultiTrack selection in FGD2  1          2          1             2                    4                     
+ 12: kTrackerAntiNumuCCMultiPiFGD2 antiNumuCC MultiPi selection in FGD2     0          3          1             2                    -                     
+ 13: kTrackerNumuInAntiNuModeCCFGD2 numuBkg In AntiNuMode CC selection in FGD2 0          1          1             2                    -                     
+ 14: kTrackerNumuInAntiNuModeCCMultiTrackFGD2 numuBkg In AntiNuMode CCMultiTrack selection in FGD2 1          2          1             2                    5                     
+ 15: kTrackerNumuInAntiNuModeCCMultiPiFGD2 numuBkg In AntiNuMode CCMultiPi selection in FGD2 0          3          1             2                    -                     
+ 16: kTrackerNuECC             NuECC inclusive selection                0          1          1             3                    -                     
+ 17: kTrackerAntiNuECC         AntiNuECC inclusive selection            0          1          1             3                    -                     
+ 18: kTrackerGamma             GammaBkg selection                       0          1          1             3                    -                     
+ 19: kTrackerNuECCFGD2         NuECC inclusive selection in FGD2        0          1          1             3                    -                     
+ 20: kTrackerAntiNuECCFGD2     AntiNuECC inclusive selection in FGD2    0          1          1             3                    -                     
+ 21: kTrackerGammaFGD2         GammaBkg selection in FGD2               0          1          1             3                    -                     
+ ----------------------------------------------------------------------------------------------------------------------------------
+Filling the experiment
+Data POT: 3.59337e+19
+MC POT: 9.23937e+20
+Filling the experiment
+Data POT: 4.33934e+19
+MC POT: 1.20341e+21
+Filling the experiment
+Data POT: 1.36447e+20
+MC POT: 3.08013e+21
+Filling the experiment
+Data POT: 1.78271e+20
+MC POT: 3.4996e+21
+Filling the experiment
+Data POT: 1.64277e+20
+MC POT: 3.49712e+21
+Filling the experiment
+Data POT: 4.3468e+19
+MC POT: 2.27766e+21
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+Warning in <TClass::TClass>: no dictionary for class iterator<bidirectional_iterator_tag,TObject*,long,const TObject**,const TObject*&> is available
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-air/Run2_Air_data_splines.root
+InputManager::input tree has 3070 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-water/Run2_Water_data_splines.root
+InputManager::input tree has 6822 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run3-air/Run3_Air_data_splines.root
+InputManager::input tree has 18783 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-air/Run4_Air_data_splines.root
+InputManager::input tree has 34155 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-water/Run4_Water_data_splines.root
+InputManager::input tree has 48518 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run5-water/Run5_Water_data_splines.root
+InputManager::input tree has 50242 entries
+AnalysisManager::InitialiseDataTChain(). TChain has all data files added.
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-air/Run2_Air_data_splines.root
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-water/Run2_Water_data_splines.root
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run3-air/Run3_Air_data_splines.root
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-air/Run4_Air_data_splines.root
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run4-water/Run4_Water_data_splines.root
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run5-water/Run5_Water_data_splines.root
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-air/Run2_Air_splines.root
+InputManager::input tree has 77274 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-water/Run2_Water_splines.root
+InputManager::input tree has 177758 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run3-air/Run3_Air_splines.root
+InputManager::input tree has 435984 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-air/Run4_Air_splines.root
+InputManager::input tree has 728942 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-water/Run4_Water_splines.root
+InputManager::input tree has 1022052 entries
+InputManager::IsROOTFile(). If this is not a ROOT file an error will appear in the next two lines. Ignore it !!!! 
+InputManager::IsROOTFile(). This is a ROOT file. 
+InputManager::Initialize(). Input type (oaAnalysisTree, FlatTree, ...) not specified. Find it automatically...
+  - Converter 'kHighlandTree' looking for tree 'flattree' --> Yes
+InputManager::Initialize(). Input type is: kHighlandTree
+RedoTreeConverter::AddFileToTChain(). Adding file: /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/anti-neut/run5-water/Run5_Water_splines.root
+InputManager::input tree has 1106741 entries
+AnalysisManager::InitialiseMCTChain(). TChain has all MC files added.
+creating diagnostic file: diagnostic_MultiTrackRHC_v3r26_AsimovFit2015Reproduction.root
+Considering AnalysisManager event 0k of 1106.74k
+Number of events loaded in BANFF Interface: 0k
+entry = 0k, evt = 0k, nMCEvents = 0k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-air/Run2_Air_splines.root
+Considering AnalysisManager event 10k of 1106.74k
+Number of events loaded in BANFF Interface: 9.549k
+entry = 10k, evt = 10k, nMCEvents = 9.549k
+Considering AnalysisManager event 20k of 1106.74k
+Number of events loaded in BANFF Interface: 19.084k
+entry = 20k, evt = 20k, nMCEvents = 19.084k
+Considering AnalysisManager event 30k of 1106.74k
+Number of events loaded in BANFF Interface: 28.64k
+entry = 30k, evt = 30k, nMCEvents = 28.64k
+Considering AnalysisManager event 40k of 1106.74k
+Number of events loaded in BANFF Interface: 38.211k
+entry = 40k, evt = 40k, nMCEvents = 38.211k
+Considering AnalysisManager event 50k of 1106.74k
+Number of events loaded in BANFF Interface: 47.779k
+entry = 50k, evt = 50k, nMCEvents = 47.779k
+Considering AnalysisManager event 60k of 1106.74k
+Number of events loaded in BANFF Interface: 57.33k
+entry = 60k, evt = 60k, nMCEvents = 57.33k
+Considering AnalysisManager event 70k of 1106.74k
+Number of events loaded in BANFF Interface: 66.864k
+entry = 70k, evt = 70k, nMCEvents = 66.864k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-water/Run2_Water_splines.root
+Error in <TTree::SetBranchStatus>: unknown branch -> DetWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> POTWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> PileUpWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> EventType
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_CGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_OGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCVGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCAGraph
+Considering AnalysisManager event 80k of 1106.74k
+Number of events loaded in BANFF Interface: 76.43k
+entry = 80k, evt = 80k, nMCEvents = 76.43k
+Considering AnalysisManager event 90k of 1106.74k
+Number of events loaded in BANFF Interface: 86.012k
+entry = 90k, evt = 90k, nMCEvents = 86.012k
+Considering AnalysisManager event 100k of 1106.74k
+Number of events loaded in BANFF Interface: 95.545k
+entry = 100k, evt = 100k, nMCEvents = 95.545k
+Considering AnalysisManager event 110k of 1106.74k
+Number of events loaded in BANFF Interface: 105.068k
+entry = 110k, evt = 110k, nMCEvents = 105.068k
+Considering AnalysisManager event 120k of 1106.74k
+Number of events loaded in BANFF Interface: 114.599k
+entry = 120k, evt = 120k, nMCEvents = 114.599k
+Considering AnalysisManager event 130k of 1106.74k
+Number of events loaded in BANFF Interface: 124.128k
+entry = 130k, evt = 130k, nMCEvents = 124.128k
+Considering AnalysisManager event 140k of 1106.74k
+Number of events loaded in BANFF Interface: 133.683k
+entry = 140k, evt = 140k, nMCEvents = 133.683k
+Considering AnalysisManager event 150k of 1106.74k
+Number of events loaded in BANFF Interface: 143.194k
+entry = 150k, evt = 150k, nMCEvents = 143.194k
+Considering AnalysisManager event 160k of 1106.74k
+Number of events loaded in BANFF Interface: 152.746k
+entry = 160k, evt = 160k, nMCEvents = 152.746k
+Considering AnalysisManager event 170k of 1106.74k
+Number of events loaded in BANFF Interface: 162.309k
+entry = 170k, evt = 170k, nMCEvents = 162.309k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run3-air/Run3_Air_splines.root
+Error in <TTree::SetBranchStatus>: unknown branch -> DetWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> POTWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> PileUpWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> EventType
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_CGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_OGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCVGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCAGraph
+Considering AnalysisManager event 180k of 1106.74k
+Number of events loaded in BANFF Interface: 171.855k
+entry = 180k, evt = 180k, nMCEvents = 171.855k
+Considering AnalysisManager event 190k of 1106.74k
+Number of events loaded in BANFF Interface: 181.3k
+entry = 190k, evt = 190k, nMCEvents = 181.3k
+Considering AnalysisManager event 200k of 1106.74k
+Number of events loaded in BANFF Interface: 190.787k
+entry = 200k, evt = 200k, nMCEvents = 190.787k
+Considering AnalysisManager event 210k of 1106.74k
+Number of events loaded in BANFF Interface: 200.256k
+entry = 210k, evt = 210k, nMCEvents = 200.256k
+Considering AnalysisManager event 220k of 1106.74k
+Number of events loaded in BANFF Interface: 209.73k
+entry = 220k, evt = 220k, nMCEvents = 209.73k
+Considering AnalysisManager event 230k of 1106.74k
+Number of events loaded in BANFF Interface: 219.189k
+entry = 230k, evt = 230k, nMCEvents = 219.189k
+Considering AnalysisManager event 240k of 1106.74k
+Number of events loaded in BANFF Interface: 228.672k
+entry = 240k, evt = 240k, nMCEvents = 228.672k
+Considering AnalysisManager event 250k of 1106.74k
+Number of events loaded in BANFF Interface: 238.173k
+entry = 250k, evt = 250k, nMCEvents = 238.173k
+Considering AnalysisManager event 260k of 1106.74k
+Number of events loaded in BANFF Interface: 247.643k
+entry = 260k, evt = 260k, nMCEvents = 247.643k
+Considering AnalysisManager event 270k of 1106.74k
+Number of events loaded in BANFF Interface: 257.096k
+entry = 270k, evt = 270k, nMCEvents = 257.096k
+Considering AnalysisManager event 280k of 1106.74k
+Number of events loaded in BANFF Interface: 266.583k
+entry = 280k, evt = 280k, nMCEvents = 266.583k
+Considering AnalysisManager event 290k of 1106.74k
+Number of events loaded in BANFF Interface: 276.06k
+entry = 290k, evt = 290k, nMCEvents = 276.06k
+Considering AnalysisManager event 300k of 1106.74k
+Number of events loaded in BANFF Interface: 285.555k
+entry = 300k, evt = 300k, nMCEvents = 285.555k
+Considering AnalysisManager event 310k of 1106.74k
+Number of events loaded in BANFF Interface: 295.076k
+entry = 310k, evt = 310k, nMCEvents = 295.076k
+Considering AnalysisManager event 320k of 1106.74k
+Number of events loaded in BANFF Interface: 304.557k
+entry = 320k, evt = 320k, nMCEvents = 304.557k
+Considering AnalysisManager event 330k of 1106.74k
+Number of events loaded in BANFF Interface: 314.046k
+entry = 330k, evt = 330k, nMCEvents = 314.046k
+Considering AnalysisManager event 340k of 1106.74k
+Number of events loaded in BANFF Interface: 323.507k
+entry = 340k, evt = 340k, nMCEvents = 323.507k
+Considering AnalysisManager event 350k of 1106.74k
+Number of events loaded in BANFF Interface: 332.959k
+entry = 350k, evt = 350k, nMCEvents = 332.959k
+Considering AnalysisManager event 360k of 1106.74k
+Number of events loaded in BANFF Interface: 342.413k
+entry = 360k, evt = 360k, nMCEvents = 342.413k
+Considering AnalysisManager event 370k of 1106.74k
+Number of events loaded in BANFF Interface: 351.882k
+entry = 370k, evt = 370k, nMCEvents = 351.882k
+Considering AnalysisManager event 380k of 1106.74k
+Number of events loaded in BANFF Interface: 361.388k
+entry = 380k, evt = 380k, nMCEvents = 361.388k
+Considering AnalysisManager event 390k of 1106.74k
+Number of events loaded in BANFF Interface: 370.874k
+entry = 390k, evt = 390k, nMCEvents = 370.874k
+Considering AnalysisManager event 400k of 1106.74k
+Number of events loaded in BANFF Interface: 380.348k
+entry = 400k, evt = 400k, nMCEvents = 380.348k
+Considering AnalysisManager event 410k of 1106.74k
+Number of events loaded in BANFF Interface: 389.827k
+entry = 410k, evt = 410k, nMCEvents = 389.827k
+Considering AnalysisManager event 420k of 1106.74k
+Number of events loaded in BANFF Interface: 399.315k
+entry = 420k, evt = 420k, nMCEvents = 399.315k
+Considering AnalysisManager event 430k of 1106.74k
+Number of events loaded in BANFF Interface: 408.795k
+entry = 430k, evt = 430k, nMCEvents = 408.795k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-air/Run4_Air_splines.root
+Error in <TTree::SetBranchStatus>: unknown branch -> DetWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> POTWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> PileUpWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> EventType
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_CGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_OGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCVGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCAGraph
+Considering AnalysisManager event 440k of 1106.74k
+Number of events loaded in BANFF Interface: 418.28k
+entry = 440k, evt = 440k, nMCEvents = 418.28k
+Considering AnalysisManager event 450k of 1106.74k
+Number of events loaded in BANFF Interface: 427.754k
+entry = 450k, evt = 450k, nMCEvents = 427.754k
+Considering AnalysisManager event 460k of 1106.74k
+Number of events loaded in BANFF Interface: 437.2k
+entry = 460k, evt = 460k, nMCEvents = 437.2k
+Considering AnalysisManager event 470k of 1106.74k
+Number of events loaded in BANFF Interface: 446.671k
+entry = 470k, evt = 470k, nMCEvents = 446.671k
+Considering AnalysisManager event 480k of 1106.74k
+Number of events loaded in BANFF Interface: 456.151k
+entry = 480k, evt = 480k, nMCEvents = 456.151k
+Considering AnalysisManager event 490k of 1106.74k
+Number of events loaded in BANFF Interface: 465.618k
+entry = 490k, evt = 490k, nMCEvents = 465.618k
+Considering AnalysisManager event 500k of 1106.74k
+Number of events loaded in BANFF Interface: 475.095k
+entry = 500k, evt = 500k, nMCEvents = 475.095k
+Considering AnalysisManager event 510k of 1106.74k
+Number of events loaded in BANFF Interface: 484.534k
+entry = 510k, evt = 510k, nMCEvents = 484.534k
+Considering AnalysisManager event 520k of 1106.74k
+Number of events loaded in BANFF Interface: 494.009k
+entry = 520k, evt = 520k, nMCEvents = 494.009k
+Considering AnalysisManager event 530k of 1106.74k
+Number of events loaded in BANFF Interface: 503.484k
+entry = 530k, evt = 530k, nMCEvents = 503.484k
+Considering AnalysisManager event 540k of 1106.74k
+Number of events loaded in BANFF Interface: 512.951k
+entry = 540k, evt = 540k, nMCEvents = 512.951k
+Considering AnalysisManager event 550k of 1106.74k
+Number of events loaded in BANFF Interface: 522.441k
+entry = 550k, evt = 550k, nMCEvents = 522.441k
+Considering AnalysisManager event 560k of 1106.74k
+Number of events loaded in BANFF Interface: 531.907k
+entry = 560k, evt = 560k, nMCEvents = 531.907k
+Considering AnalysisManager event 570k of 1106.74k
+Number of events loaded in BANFF Interface: 541.346k
+entry = 570k, evt = 570k, nMCEvents = 541.346k
+Considering AnalysisManager event 580k of 1106.74k
+Number of events loaded in BANFF Interface: 550.825k
+entry = 580k, evt = 580k, nMCEvents = 550.825k
+Considering AnalysisManager event 590k of 1106.74k
+Number of events loaded in BANFF Interface: 560.292k
+entry = 590k, evt = 590k, nMCEvents = 560.292k
+Considering AnalysisManager event 600k of 1106.74k
+Number of events loaded in BANFF Interface: 569.737k
+entry = 600k, evt = 600k, nMCEvents = 569.737k
+Considering AnalysisManager event 610k of 1106.74k
+Number of events loaded in BANFF Interface: 579.177k
+entry = 610k, evt = 610k, nMCEvents = 579.177k
+Considering AnalysisManager event 620k of 1106.74k
+Number of events loaded in BANFF Interface: 588.656k
+entry = 620k, evt = 620k, nMCEvents = 588.656k
+Considering AnalysisManager event 630k of 1106.74k
+Number of events loaded in BANFF Interface: 598.118k
+entry = 630k, evt = 630k, nMCEvents = 598.118k
+Considering AnalysisManager event 640k of 1106.74k
+Number of events loaded in BANFF Interface: 607.62k
+entry = 640k, evt = 640k, nMCEvents = 607.62k
+Considering AnalysisManager event 650k of 1106.74k
+Number of events loaded in BANFF Interface: 617.096k
+entry = 650k, evt = 650k, nMCEvents = 617.096k
+Considering AnalysisManager event 660k of 1106.74k
+Number of events loaded in BANFF Interface: 626.55k
+entry = 660k, evt = 660k, nMCEvents = 626.55k
+Considering AnalysisManager event 670k of 1106.74k
+Number of events loaded in BANFF Interface: 636.014k
+entry = 670k, evt = 670k, nMCEvents = 636.014k
+Considering AnalysisManager event 680k of 1106.74k
+Number of events loaded in BANFF Interface: 645.495k
+entry = 680k, evt = 680k, nMCEvents = 645.495k
+Considering AnalysisManager event 690k of 1106.74k
+Number of events loaded in BANFF Interface: 654.974k
+entry = 690k, evt = 690k, nMCEvents = 654.974k
+Considering AnalysisManager event 700k of 1106.74k
+Number of events loaded in BANFF Interface: 664.477k
+entry = 700k, evt = 700k, nMCEvents = 664.477k
+Considering AnalysisManager event 710k of 1106.74k
+Number of events loaded in BANFF Interface: 673.96k
+entry = 710k, evt = 710k, nMCEvents = 673.96k
+Considering AnalysisManager event 720k of 1106.74k
+Number of events loaded in BANFF Interface: 683.414k
+entry = 720k, evt = 720k, nMCEvents = 683.414k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run4-water/Run4_Water_splines.root
+Error in <TTree::SetBranchStatus>: unknown branch -> DetWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> POTWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> PileUpWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> EventType
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_CGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_OGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCVGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCAGraph
+Considering AnalysisManager event 730k of 1106.74k
+Number of events loaded in BANFF Interface: 692.893k
+entry = 730k, evt = 730k, nMCEvents = 692.893k
+Considering AnalysisManager event 740k of 1106.74k
+Number of events loaded in BANFF Interface: 702.373k
+entry = 740k, evt = 740k, nMCEvents = 702.373k
+Considering AnalysisManager event 750k of 1106.74k
+Number of events loaded in BANFF Interface: 711.804k
+entry = 750k, evt = 750k, nMCEvents = 711.804k
+Considering AnalysisManager event 760k of 1106.74k
+Number of events loaded in BANFF Interface: 721.326k
+entry = 760k, evt = 760k, nMCEvents = 721.326k
+Considering AnalysisManager event 770k of 1106.74k
+Number of events loaded in BANFF Interface: 730.761k
+entry = 770k, evt = 770k, nMCEvents = 730.761k
+Considering AnalysisManager event 780k of 1106.74k
+Number of events loaded in BANFF Interface: 740.223k
+entry = 780k, evt = 780k, nMCEvents = 740.223k
+Considering AnalysisManager event 790k of 1106.74k
+Number of events loaded in BANFF Interface: 749.688k
+entry = 790k, evt = 790k, nMCEvents = 749.688k
+Considering AnalysisManager event 800k of 1106.74k
+Number of events loaded in BANFF Interface: 759.164k
+entry = 800k, evt = 800k, nMCEvents = 759.164k
+Considering AnalysisManager event 810k of 1106.74k
+Number of events loaded in BANFF Interface: 768.648k
+entry = 810k, evt = 810k, nMCEvents = 768.648k
+Considering AnalysisManager event 820k of 1106.74k
+Number of events loaded in BANFF Interface: 778.107k
+entry = 820k, evt = 820k, nMCEvents = 778.107k
+Considering AnalysisManager event 830k of 1106.74k
+Number of events loaded in BANFF Interface: 787.563k
+entry = 830k, evt = 830k, nMCEvents = 787.563k
+Considering AnalysisManager event 840k of 1106.74k
+Number of events loaded in BANFF Interface: 797.015k
+entry = 840k, evt = 840k, nMCEvents = 797.015k
+Considering AnalysisManager event 850k of 1106.74k
+Number of events loaded in BANFF Interface: 806.472k
+entry = 850k, evt = 850k, nMCEvents = 806.472k
+Considering AnalysisManager event 860k of 1106.74k
+Number of events loaded in BANFF Interface: 815.937k
+entry = 860k, evt = 860k, nMCEvents = 815.937k
+Considering AnalysisManager event 870k of 1106.74k
+Number of events loaded in BANFF Interface: 825.399k
+entry = 870k, evt = 870k, nMCEvents = 825.399k
+Considering AnalysisManager event 880k of 1106.74k
+Number of events loaded in BANFF Interface: 834.901k
+entry = 880k, evt = 880k, nMCEvents = 834.901k
+Considering AnalysisManager event 890k of 1106.74k
+Number of events loaded in BANFF Interface: 844.346k
+entry = 890k, evt = 890k, nMCEvents = 844.346k
+Considering AnalysisManager event 900k of 1106.74k
+Number of events loaded in BANFF Interface: 853.767k
+entry = 900k, evt = 900k, nMCEvents = 853.767k
+Considering AnalysisManager event 910k of 1106.74k
+Number of events loaded in BANFF Interface: 863.258k
+entry = 910k, evt = 910k, nMCEvents = 863.258k
+Considering AnalysisManager event 920k of 1106.74k
+Number of events loaded in BANFF Interface: 872.732k
+entry = 920k, evt = 920k, nMCEvents = 872.732k
+Considering AnalysisManager event 930k of 1106.74k
+Number of events loaded in BANFF Interface: 882.207k
+entry = 930k, evt = 930k, nMCEvents = 882.207k
+Considering AnalysisManager event 940k of 1106.74k
+Number of events loaded in BANFF Interface: 891.674k
+entry = 940k, evt = 940k, nMCEvents = 891.674k
+Considering AnalysisManager event 950k of 1106.74k
+Number of events loaded in BANFF Interface: 901.136k
+entry = 950k, evt = 950k, nMCEvents = 901.136k
+Considering AnalysisManager event 960k of 1106.74k
+Number of events loaded in BANFF Interface: 910.654k
+entry = 960k, evt = 960k, nMCEvents = 910.654k
+Considering AnalysisManager event 970k of 1106.74k
+Number of events loaded in BANFF Interface: 920.101k
+entry = 970k, evt = 970k, nMCEvents = 920.101k
+Considering AnalysisManager event 980k of 1106.74k
+Number of events loaded in BANFF Interface: 929.579k
+entry = 980k, evt = 980k, nMCEvents = 929.579k
+Considering AnalysisManager event 990k of 1106.74k
+Number of events loaded in BANFF Interface: 939.029k
+entry = 990k, evt = 990k, nMCEvents = 939.029k
+Considering AnalysisManager event 1000k of 1106.74k
+Number of events loaded in BANFF Interface: 948.515k
+entry = 1000k, evt = 1000k, nMCEvents = 948.515k
+Considering AnalysisManager event 1010k of 1106.74k
+Number of events loaded in BANFF Interface: 958k
+entry = 1010k, evt = 1010k, nMCEvents = 958k
+Considering AnalysisManager event 1020k of 1106.74k
+Number of events loaded in BANFF Interface: 967.456k
+entry = 1020k, evt = 1020k, nMCEvents = 967.456k
+ Running on file : /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/anti-neut/run5-water/Run5_Water_splines.root
+Error in <TTree::SetBranchStatus>: unknown branch -> DetWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> POTWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> PileUpWeight
+Error in <TTree::SetBranchStatus>: unknown branch -> EventType
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_CGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> EB_OGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCVGraph
+Error in <TTree::SetBranchStatus>: unknown branch -> SCCAGraph
+Considering AnalysisManager event 1030k of 1106.74k
+Number of events loaded in BANFF Interface: 977.204k
+entry = 1030k, evt = 1030k, nMCEvents = 977.204k
+Considering AnalysisManager event 1040k of 1106.74k
+Number of events loaded in BANFF Interface: 987.03k
+entry = 1040k, evt = 1040k, nMCEvents = 987.03k
+Considering AnalysisManager event 1050k of 1106.74k
+Number of events loaded in BANFF Interface: 996.853k
+entry = 1050k, evt = 1050k, nMCEvents = 996.853k
+Considering AnalysisManager event 1060k of 1106.74k
+Number of events loaded in BANFF Interface: 1006.67k
+entry = 1060k, evt = 1060k, nMCEvents = 1006.67k
+Considering AnalysisManager event 1070k of 1106.74k
+Number of events loaded in BANFF Interface: 1016.48k
+entry = 1070k, evt = 1070k, nMCEvents = 1016.48k
+Considering AnalysisManager event 1080k of 1106.74k
+Number of events loaded in BANFF Interface: 1026.28k
+entry = 1080k, evt = 1080k, nMCEvents = 1026.28k
+Considering AnalysisManager event 1090k of 1106.74k
+Number of events loaded in BANFF Interface: 1036.09k
+entry = 1090k, evt = 1090k, nMCEvents = 1036.09k
+Considering AnalysisManager event 1100k of 1106.74k
+Number of events loaded in BANFF Interface: 1045.92k
+entry = 1100k, evt = 1100k, nMCEvents = 1045.92k
+=======================================================
+Total Data Events loaded: 50242
+Total MC Events loaded: 1052506
+Number of MC Events that are Sand Events: 0
+=======================================================
+Raw event counts in each sample: 
+fhc_fgd1_numucc0pi: 337717
+fhc_fgd1_numucc1pi: 85230
+fhc_fgd1_numuccOth: 65951
+fhc_fgd2_numucc0pi: 345458
+fhc_fgd2_numucc1pi: 70739
+fhc_fgd2_numuccOth: 64305
+rhc_fgd1_anucc1tr: 21871
+rhc_fgd1_anuccntr: 6216
+rhc_fgd1_nucc1tr: 7060
+rhc_fgd1_nuccntr: 6662
+rhc_fgd2_anucc1tr: 21867
+rhc_fgd2_anuccntr: 6124
+rhc_fgd2_nucc1tr: 7025
+rhc_fgd2_nuccntr: 6281
+=======================================================
+0 NDNuModeNumu0
+1 NDNuModeNumu1
+2 NDNuModeNumu2
+3 NDNuModeNumu3
+4 NDNuModeNumu4
+5 NDNuModeNumu5
+6 NDNuModeNumu6
+7 NDNuModeNumu7
+8 NDNuModeNumu8
+9 NDNuModeNumu9
+10 NDNuModeNumu10
+11 NDNuModeNumub0
+12 NDNuModeNumub1
+13 NDNuModeNumub2
+14 NDNuModeNumub3
+15 NDNuModeNumub4
+16 NDNuModeNue0
+17 NDNuModeNue1
+18 NDNuModeNue2
+19 NDNuModeNue3
+20 NDNuModeNue4
+21 NDNuModeNue5
+22 NDNuModeNue6
+23 NDNuModeNueb0
+24 NDNuModeNueb1
+25 NDANuModeNumu0
+26 NDANuModeNumu1
+27 NDANuModeNumu2
+28 NDANuModeNumu3
+29 NDANuModeNumu4
+30 NDANuModeNumub0
+31 NDANuModeNumub1
+32 NDANuModeNumub2
+33 NDANuModeNumub3
+34 NDANuModeNumub4
+35 NDANuModeNumub5
+36 NDANuModeNumub6
+37 NDANuModeNumub7
+38 NDANuModeNumub8
+39 NDANuModeNumub9
+40 NDANuModeNumub10
+41 NDANuModeNue0
+42 NDANuModeNue1
+43 NDANuModeNueb0
+44 NDANuModeNueb1
+45 NDANuModeNueb2
+46 NDANuModeNueb3
+47 NDANuModeNueb4
+48 NDANuModeNueb5
+49 NDANuModeNueb6
+50 SKNuModeNumu0
+51 SKNuModeNumu1
+52 SKNuModeNumu2
+53 SKNuModeNumu3
+54 SKNuModeNumu4
+55 SKNuModeNumu5
+56 SKNuModeNumu6
+57 SKNuModeNumu7
+58 SKNuModeNumu8
+59 SKNuModeNumu9
+60 SKNuModeNumu10
+61 SKNuModeNumub0
+62 SKNuModeNumub1
+63 SKNuModeNumub2
+64 SKNuModeNumub3
+65 SKNuModeNumub4
+66 SKNuModeNue0
+67 SKNuModeNue1
+68 SKNuModeNue2
+69 SKNuModeNue3
+70 SKNuModeNue4
+71 SKNuModeNue5
+72 SKNuModeNue6
+73 SKNuModeNueb0
+74 SKNuModeNueb1
+75 SKANuModeNumu0
+76 SKANuModeNumu1
+77 SKANuModeNumu2
+78 SKANuModeNumu3
+79 SKANuModeNumu4
+80 SKANuModeNumub0
+81 SKANuModeNumub1
+82 SKANuModeNumub2
+83 SKANuModeNumub3
+84 SKANuModeNumub4
+85 SKANuModeNumub5
+86 SKANuModeNumub6
+87 SKANuModeNumub7
+88 SKANuModeNumub8
+89 SKANuModeNumub9
+90 SKANuModeNumub10
+91 SKANuModeNue0
+92 SKANuModeNue1
+93 SKANuModeNueb0
+94 SKANuModeNueb1
+95 SKANuModeNueb2
+96 SKANuModeNueb3
+97 SKANuModeNueb4
+98 SKANuModeNueb5
+99 SKANuModeNueb6
+100 FSI_INEL_LO
+101 FSI_INEL_HI
+102 FSI_PI_PROD
+103 FSI_PI_ABS
+104 FSI_CEX_LO
+105 FSI_CEX_HI
+106 MAQE
+107 pF_C
+108 pF_O
+109 2p2h_norm_nu
+110 2p2h_norm_nubar
+111 2p2h_normCtoO
+112 2p2h_shape_C
+113 2p2h_shape_O
+114 BeRPA_A
+115 BeRPA_B
+116 BeRPA_D
+117 BeRPA_E
+118 BeRPA_U
+119 CA5
+120 MARES
+121 ISO_BKG
+122 nue_numu
+123 nuebar_numubar
+124 CC_DIS
+125 CC_Coh_C
+126 CC_Coh_O
+127 NC_Coh
+128 NC_1gamma
+129 NC_other_near
+130 NC_other_far
+131 SF_RFG
+132 RPA_C
+133 COH_BS
+======================================
+Parameter values before decomposition:
+--------------------------------------
+NDNuModeNumu0: 1 +/- 0.097467
+NDNuModeNumu1: 1 +/- 0.101016
+NDNuModeNumu2: 1 +/- 0.0938305
+NDNuModeNumu3: 1 +/- 0.0875634
+NDNuModeNumu4: 1 +/- 0.107431
+NDNuModeNumu5: 1 +/- 0.105424
+NDNuModeNumu6: 1 +/- 0.0740432
+NDNuModeNumu7: 1 +/- 0.0690706
+NDNuModeNumu8: 1 +/- 0.0829872
+NDNuModeNumu9: 1 +/- 0.0981959
+NDNuModeNumu10: 1 +/- 0.114602
+NDNuModeNumub0: 1 +/- 0.101732
+NDNuModeNumub1: 1 +/- 0.08147
+NDNuModeNumub2: 1 +/- 0.0782748
+NDNuModeNumub3: 1 +/- 0.082962
+NDNuModeNumub4: 1 +/- 0.0867021
+NDNuModeNue0: 1 +/- 0.0904485
+NDNuModeNue1: 1 +/- 0.0922682
+NDNuModeNue2: 1 +/- 0.0902963
+NDNuModeNue3: 1 +/- 0.0879077
+NDNuModeNue4: 1 +/- 0.0880041
+NDNuModeNue5: 1 +/- 0.0829017
+NDNuModeNue6: 1 +/- 0.0962313
+NDNuModeNueb0: 1 +/- 0.0740389
+NDNuModeNueb1: 1 +/- 0.140126
+NDANuModeNumu0: 1 +/- 0.0928021
+NDANuModeNumu1: 1 +/- 0.0803947
+NDANuModeNumu2: 1 +/- 0.0830507
+NDANuModeNumu3: 1 +/- 0.0839924
+NDANuModeNumu4: 1 +/- 0.0824718
+NDANuModeNumub0: 1 +/- 0.103395
+NDANuModeNumub1: 1 +/- 0.0989174
+NDANuModeNumub2: 1 +/- 0.0907149
+NDANuModeNumub3: 1 +/- 0.087484
+NDANuModeNumub4: 1 +/- 0.119882
+NDANuModeNumub5: 1 +/- 0.114525
+NDANuModeNumub6: 1 +/- 0.0852229
+NDANuModeNumub7: 1 +/- 0.075007
+NDANuModeNumub8: 1 +/- 0.0976312
+NDANuModeNumub9: 1 +/- 0.0919526
+NDANuModeNumub10: 1 +/- 0.139497
+NDANuModeNue0: 1 +/- 0.0685906
+NDANuModeNue1: 1 +/- 0.0896729
+NDANuModeNueb0: 1 +/- 0.0954196
+NDANuModeNueb1: 1 +/- 0.0861031
+NDANuModeNueb2: 1 +/- 0.0928345
+NDANuModeNueb3: 1 +/- 0.0902638
+NDANuModeNueb4: 1 +/- 0.0905152
+NDANuModeNueb5: 1 +/- 0.0928195
+NDANuModeNueb6: 1 +/- 0.158402
+SKNuModeNumu0: 1 +/- 0.0987323
+SKNuModeNumu1: 1 +/- 0.103488
+SKNuModeNumu2: 1 +/- 0.096444
+SKNuModeNumu3: 1 +/- 0.0866958
+SKNuModeNumu4: 1 +/- 0.113052
+SKNuModeNumu5: 1 +/- 0.0917476
+SKNuModeNumu6: 1 +/- 0.0701742
+SKNuModeNumu7: 1 +/- 0.0736805
+SKNuModeNumu8: 1 +/- 0.0873733
+SKNuModeNumu9: 1 +/- 0.0979369
+SKNuModeNumu10: 1 +/- 0.11436
+SKNuModeNumub0: 1 +/- 0.102576
+SKNuModeNumub1: 1 +/- 0.0785331
+SKNuModeNumub2: 1 +/- 0.0844536
+SKNuModeNumub3: 1 +/- 0.0855683
+SKNuModeNumub4: 1 +/- 0.0864284
+SKNuModeNue0: 1 +/- 0.0896983
+SKNuModeNue1: 1 +/- 0.089952
+SKNuModeNue2: 1 +/- 0.0859648
+SKNuModeNue3: 1 +/- 0.0809182
+SKNuModeNue4: 1 +/- 0.0789719
+SKNuModeNue5: 1 +/- 0.08385
+SKNuModeNue6: 1 +/- 0.0938943
+SKNuModeNueb0: 1 +/- 0.0740279
+SKNuModeNueb1: 1 +/- 0.128416
+SKANuModeNumu0: 1 +/- 0.0936822
+SKANuModeNumu1: 1 +/- 0.079343
+SKANuModeNumu2: 1 +/- 0.0767271
+SKANuModeNumu3: 1 +/- 0.0805587
+SKANuModeNumu4: 1 +/- 0.0802896
+SKANuModeNumub0: 1 +/- 0.104476
+SKANuModeNumub1: 1 +/- 0.101533
+SKANuModeNumub2: 1 +/- 0.0961673
+SKANuModeNumub3: 1 +/- 0.0846366
+SKANuModeNumub4: 1 +/- 0.125091
+SKANuModeNumub5: 1 +/- 0.105291
+SKANuModeNumub6: 1 +/- 0.079987
+SKANuModeNumub7: 1 +/- 0.0739384
+SKANuModeNumub8: 1 +/- 0.0939923
+SKANuModeNumub9: 1 +/- 0.0925126
+SKANuModeNumub10: 1 +/- 0.130312
+SKANuModeNue0: 1 +/- 0.0688813
+SKANuModeNue1: 1 +/- 0.0849446
+SKANuModeNueb0: 1 +/- 0.0946954
+SKANuModeNueb1: 1 +/- 0.0910393
+SKANuModeNueb2: 1 +/- 0.0910124
+SKANuModeNueb3: 1 +/- 0.0838565
+SKANuModeNueb4: 1 +/- 0.0795776
+SKANuModeNueb5: 1 +/- 0.0890075
+SKANuModeNueb6: 1 +/- 0.155813
+FSI_INEL_LO: 0 +/- 0.41
+FSI_INEL_HI: 0 +/- 0.34
+FSI_PI_PROD: 0 +/- 0.5
+FSI_PI_ABS: 0 +/- 0.41
+FSI_CEX_LO: 0 +/- 0.57
+FSI_CEX_HI: 0 +/- 0.28
+MAQE: 0 +/- 0.025
+pF_C: 0 +/- 0.0599078
+pF_O: 0 +/- 0.0577778
+2p2h_norm_nu: 1 +/- 1
+2p2h_norm_nubar: 1 +/- 1
+2p2h_normCtoO: 1 +/- 0.2
+2p2h_shape_C: 0 +/- 3
+2p2h_shape_O: 0 +/- 3
+BeRPA_A: 0.59 +/- 0.118
+BeRPA_B: 1.05 +/- 0.21
+BeRPA_D: 1.13 +/- 0.1695
+BeRPA_E: 0.88 +/- 0.352
+BeRPA_U: 1.2 +/- 0.1
+CA5: -0.049505 +/- 0.148515
+MARES: 0.12632 +/- 0.157895
+ISO_BKG: -0.261538 +/- 0.307692
+nue_numu: 1 +/- 0.0282843
+nuebar_numubar: 1 +/- 0.0282843
+CC_DIS: 0 +/- 0.4
+CC_Coh_C: 1 +/- 0.3
+CC_Coh_O: 1 +/- 0.3
+NC_Coh: 1 +/- 0.3
+NC_1gamma: 1 +/- 1
+NC_other_near: 1 +/- 0.3
+NC_other_far: 1 +/- 0.3
+SF_RFG: 0 +/- 1
+RPA_C: -1 +/- 1
+COH_BS: 1 +/- 1
+======================================
+======================================
+Parameter values after decomposition:
+--------------------------------------
+NDNuModeNumu0: 9.87132 +/- 0.719587
+NDNuModeNumu1: 0 +/- 0.664603
+NDNuModeNumu2: 0 +/- 0.570154
+NDNuModeNumu3: 0 +/- 0.436586
+NDNuModeNumu4: 0 +/- 0.381373
+NDNuModeNumu5: 0.873199 +/- 0.316606
+NDNuModeNumu6: 0.620116 +/- 0.241743
+NDNuModeNumu7: -0.0786909 +/- 0.206778
+NDNuModeNumu8: 0.742969 +/- 0.187506
+NDNuModeNumu9: -0.278026 +/- 0.16137
+NDNuModeNumu10: 0.328315 +/- 0.138266
+NDNuModeNumub0: -0.329868 +/- 0.119018
+NDNuModeNumub1: -0.344686 +/- 0.103626
+NDNuModeNumub2: -0.0604423 +/- 0.0931793
+NDNuModeNumub3: -0.536511 +/- 0.0875747
+NDNuModeNumub4: 0.15531 +/- 0.0772382
+NDNuModeNue0: 0.11103 +/- 0.0758428
+NDNuModeNue1: 0.175892 +/- 0.06474
+NDNuModeNue2: -0.0304721 +/- 0.0611971
+NDNuModeNue3: 0.0418913 +/- 0.0588486
+NDNuModeNue4: -0.0663548 +/- 0.0570454
+NDNuModeNue5: 0.0247245 +/- 0.0505322
+NDNuModeNue6: -0.053396 +/- 0.0495272
+NDNuModeNueb0: 0 +/- 0.0476998
+NDNuModeNueb1: -0.099397 +/- 0.0466742
+NDANuModeNumu0: -0.0344526 +/- 0.0438844
+NDANuModeNumu1: -0.11755 +/- 0.041449
+NDANuModeNumu2: 0.0847347 +/- 0.040138
+NDANuModeNumu3: -0.0444915 +/- 0.0388919
+NDANuModeNumu4: -0.00171808 +/- 0.0365811
+NDANuModeNumub0: 0.00725341 +/- 0.0339458
+NDANuModeNumub1: 0.00757145 +/- 0.0318278
+NDANuModeNumub2: 0.0344531 +/- 0.0311789
+NDANuModeNumub3: -0.0288944 +/- 0.0291898
+NDANuModeNumub4: -0.0254219 +/- 0.0279658
+NDANuModeNumub5: -0.0345807 +/- 0.0269122
+NDANuModeNumub6: 0.00768218 +/- 0.0240547
+NDANuModeNumub7: -0.0547621 +/- 0.0235911
+NDANuModeNumub8: 0.0919983 +/- 0.0224183
+NDANuModeNumub9: 0.00282853 +/- 0.0218823
+NDANuModeNumub10: 0.00592561 +/- 0.0215019
+NDANuModeNue0: -0.0249102 +/- 0.0204587
+NDANuModeNue1: -0.0228097 +/- 0.0191718
+NDANuModeNueb0: -0.0159968 +/- 0.0176937
+NDANuModeNueb1: -0.0147588 +/- 0.0171487
+NDANuModeNueb2: 0.0271142 +/- 0.0165104
+NDANuModeNueb3: 0.0673071 +/- 0.0154305
+NDANuModeNueb4: 0.0173161 +/- 0.0149479
+NDANuModeNueb5: -0.00804699 +/- 0.0143865
+NDANuModeNueb6: -0.0434932 +/- 0.01371
+SKNuModeNumu0: 0.0132556 +/- 0.0122993
+SKNuModeNumu1: -0.00725781 +/- 0.0118534
+SKNuModeNumu2: 0.0133588 +/- 0.0111577
+SKNuModeNumu3: -0.0102406 +/- 0.0110845
+SKNuModeNumu4: -0.00336136 +/- 0.010997
+SKNuModeNumu5: -0.0404322 +/- 0.0103725
+SKNuModeNumu6: -0.0301927 +/- 0.0100173
+SKNuModeNumu7: 0.0362115 +/- 0.00966008
+SKNuModeNumu8: 0.0368397 +/- 0.00944414
+SKNuModeNumu9: 0.0231329 +/- 0.00910855
+SKNuModeNumu10: -0.00729682 +/- 0.00877674
+SKNuModeNumub0: 0.0194761 +/- 0.0083459
+SKNuModeNumub1: 0.0258879 +/- 0.00791648
+SKNuModeNumub2: 0.026752 +/- 0.00765369
+SKNuModeNumub3: 0.0204939 +/- 0.00745144
+SKNuModeNumub4: -0.00366228 +/- 0.00714297
+SKNuModeNue0: 0.00760283 +/- 0.00687775
+SKNuModeNue1: 0.0086037 +/- 0.00672319
+SKNuModeNue2: 0.0148364 +/- 0.00634919
+SKNuModeNue3: 0.0197636 +/- 0.00604278
+SKNuModeNue4: -0.00180087 +/- 0.00594736
+SKNuModeNue5: 0.0103102 +/- 0.00573051
+SKNuModeNue6: -0.00743154 +/- 0.00560059
+SKNuModeNueb0: 0.0119763 +/- 0.00534021
+SKNuModeNueb1: -0.0144485 +/- 0.00520395
+SKANuModeNumu0: 0.0110175 +/- 0.0050687
+SKANuModeNumu1: -0.00180913 +/- 0.00474185
+SKANuModeNumu2: 0.00997409 +/- 0.004597
+SKANuModeNumu3: 0.00419986 +/- 0.00446533
+SKANuModeNumu4: 0.00520238 +/- 0.00424735
+SKANuModeNumub0: 0.00229156 +/- 0.00416643
+SKANuModeNumub1: -0.00593392 +/- 0.00391954
+SKANuModeNumub2: 0.0155545 +/- 0.00385633
+SKANuModeNumub3: 0.0101179 +/- 0.0037416
+SKANuModeNumub4: 0.00704628 +/- 0.00355478
+SKANuModeNumub5: -0.00295597 +/- 0.00346606
+SKANuModeNumub6: 0.00415886 +/- 0.00337151
+SKANuModeNumub7: -0.00985433 +/- 0.00329773
+SKANuModeNumub8: -0.00234101 +/- 0.00320324
+SKANuModeNumub9: -0.00266262 +/- 0.00299566
+SKANuModeNumub10: 0.00589552 +/- 0.0029096
+SKANuModeNue0: -0.00372649 +/- 0.00272713
+SKANuModeNue1: 0.00620661 +/- 0.00267175
+SKANuModeNueb0: -0.0100112 +/- 0.00265125
+SKANuModeNueb1: -0.00204359 +/- 0.00247233
+SKANuModeNueb2: 0.00179909 +/- 0.00240855
+SKANuModeNueb3: 0.0038211 +/- 0.00224815
+SKANuModeNueb4: 0.00234777 +/- 0.00216851
+SKANuModeNueb5: 0.0055577 +/- 0.00201393
+SKANuModeNueb6: -0.00359515 +/- 0.00190572
+FSI_INEL_LO: 0.00803295 +/- 0.00188194
+FSI_INEL_HI: 0.000873564 +/- 0.00174624
+FSI_PI_PROD: -0.000625297 +/- 0.00164072
+FSI_PI_ABS: 0.00154189 +/- 0.00159037
+FSI_CEX_LO: 0.00100107 +/- 0.00129664
+FSI_CEX_HI: 0 +/- 1.54505e-05
+MAQE: 0 +/- 0.025
+pF_C: 0 +/- 0.0599078
+pF_O: 0 +/- 0.0577778
+2p2h_norm_nu: 1 +/- 1
+2p2h_norm_nubar: 1 +/- 1
+2p2h_normCtoO: 1 +/- 0.2
+2p2h_shape_C: 0 +/- 3
+2p2h_shape_O: 0 +/- 3
+BeRPA_A: 0.59 +/- 0.118
+BeRPA_B: 1.05 +/- 0.21
+BeRPA_D: 1.13 +/- 0.1695
+BeRPA_E: 0.88 +/- 0.352
+BeRPA_U: 1.2 +/- 0.1
+CA5: -0.049505 +/- 0.148515
+MARES: 0.12632 +/- 0.157895
+ISO_BKG: -0.261538 +/- 0.307692
+nue_numu: 1 +/- 0.0282843
+nuebar_numubar: 1 +/- 0.0282843
+CC_DIS: 0 +/- 0.4
+CC_Coh_C: 1 +/- 0.3
+CC_Coh_O: 1 +/- 0.3
+NC_Coh: 1 +/- 0.3
+NC_1gamma: 1 +/- 1
+NC_other_near: 1 +/- 0.3
+NC_other_far: 1 +/- 0.3
+SF_RFG: 0 +/- 1
+RPA_C: -1 +/- 1
+COH_BS: 1 +/- 1
+======================================
+Initialize parameters
+NDNuModeNumu0 (b0) : 1 +/- 0.719587
+Fitting parameter: NDNuModeNumu0
+NDNuModeNumu1 (b1) : 1 +/- 0.664603
+Fitting parameter: NDNuModeNumu1
+NDNuModeNumu2 (b2) : 1 +/- 0.570154
+Fitting parameter: NDNuModeNumu2
+NDNuModeNumu3 (b3) : 1 +/- 0.436586
+Fitting parameter: NDNuModeNumu3
+NDNuModeNumu4 (b4) : 1 +/- 0.381373
+Fitting parameter: NDNuModeNumu4
+NDNuModeNumu5 (b5) : 1 +/- 0.316606
+Fitting parameter: NDNuModeNumu5
+NDNuModeNumu6 (b6) : 1 +/- 0.241743
+Fitting parameter: NDNuModeNumu6
+NDNuModeNumu7 (b7) : 1 +/- 0.206778
+Fitting parameter: NDNuModeNumu7
+NDNuModeNumu8 (b8) : 1 +/- 0.187506
+Fitting parameter: NDNuModeNumu8
+NDNuModeNumu9 (b9) : 1 +/- 0.16137
+Fitting parameter: NDNuModeNumu9
+NDNuModeNumu10 (b10) : 1 +/- 0.138266
+Fitting parameter: NDNuModeNumu10
+NDNuModeNumub0 (b11) : 1 +/- 0.119018
+Fitting parameter: NDNuModeNumub0
+NDNuModeNumub1 (b12) : 1 +/- 0.103626
+Fitting parameter: NDNuModeNumub1
+NDNuModeNumub2 (b13) : 1 +/- 0.0931793
+Fitting parameter: NDNuModeNumub2
+NDNuModeNumub3 (b14) : 1 +/- 0.0875747
+Fitting parameter: NDNuModeNumub3
+NDNuModeNumub4 (b15) : 1 +/- 0.0772382
+Fitting parameter: NDNuModeNumub4
+NDNuModeNue0 (b16) : 1 +/- 0.0758428
+Fitting parameter: NDNuModeNue0
+NDNuModeNue1 (b17) : 1 +/- 0.06474
+Fitting parameter: NDNuModeNue1
+NDNuModeNue2 (b18) : 1 +/- 0.0611971
+Fitting parameter: NDNuModeNue2
+NDNuModeNue3 (b19) : 1 +/- 0.0588486
+Fitting parameter: NDNuModeNue3
+NDNuModeNue4 (b20) : 1 +/- 0.0570454
+Fitting parameter: NDNuModeNue4
+NDNuModeNue5 (b21) : 1 +/- 0.0505322
+Fitting parameter: NDNuModeNue5
+NDNuModeNue6 (b22) : 1 +/- 0.0495272
+Fitting parameter: NDNuModeNue6
+NDNuModeNueb0 (b23) : 1 +/- 0.0476998
+Fitting parameter: NDNuModeNueb0
+NDNuModeNueb1 (b24) : 1 +/- 0.0466742
+Fitting parameter: NDNuModeNueb1
+NDANuModeNumu0 (b25) : 1 +/- 0.0438844
+Fitting parameter: NDANuModeNumu0
+NDANuModeNumu1 (b26) : 1 +/- 0.041449
+Fitting parameter: NDANuModeNumu1
+NDANuModeNumu2 (b27) : 1 +/- 0.040138
+Fitting parameter: NDANuModeNumu2
+NDANuModeNumu3 (b28) : 1 +/- 0.0388919
+Fitting parameter: NDANuModeNumu3
+NDANuModeNumu4 (b29) : 1 +/- 0.0365811
+Fitting parameter: NDANuModeNumu4
+NDANuModeNumub0 (b30) : 1 +/- 0.0339458
+Fitting parameter: NDANuModeNumub0
+NDANuModeNumub1 (b31) : 1 +/- 0.0318278
+Fitting parameter: NDANuModeNumub1
+NDANuModeNumub2 (b32) : 1 +/- 0.0311789
+Fitting parameter: NDANuModeNumub2
+NDANuModeNumub3 (b33) : 1 +/- 0.0291898
+Fitting parameter: NDANuModeNumub3
+NDANuModeNumub4 (b34) : 1 +/- 0.0279658
+Fitting parameter: NDANuModeNumub4
+NDANuModeNumub5 (b35) : 1 +/- 0.0269122
+Fitting parameter: NDANuModeNumub5
+NDANuModeNumub6 (b36) : 1 +/- 0.0240547
+Fitting parameter: NDANuModeNumub6
+NDANuModeNumub7 (b37) : 1 +/- 0.0235911
+Fitting parameter: NDANuModeNumub7
+NDANuModeNumub8 (b38) : 1 +/- 0.0224183
+Fitting parameter: NDANuModeNumub8
+NDANuModeNumub9 (b39) : 1 +/- 0.0218823
+Fitting parameter: NDANuModeNumub9
+NDANuModeNumub10 (b40) : 1 +/- 0.0215019
+Fitting parameter: NDANuModeNumub10
+NDANuModeNue0 (b41) : 1 +/- 0.0204587
+Fitting parameter: NDANuModeNue0
+NDANuModeNue1 (b42) : 1 +/- 0.0191718
+Fitting parameter: NDANuModeNue1
+NDANuModeNueb0 (b43) : 1 +/- 0.0176937
+Fitting parameter: NDANuModeNueb0
+NDANuModeNueb1 (b44) : 1 +/- 0.0171487
+Fitting parameter: NDANuModeNueb1
+NDANuModeNueb2 (b45) : 1 +/- 0.0165104
+Fitting parameter: NDANuModeNueb2
+NDANuModeNueb3 (b46) : 1 +/- 0.0154305
+Fitting parameter: NDANuModeNueb3
+NDANuModeNueb4 (b47) : 1 +/- 0.0149479
+Fitting parameter: NDANuModeNueb4
+NDANuModeNueb5 (b48) : 1 +/- 0.0143865
+Fitting parameter: NDANuModeNueb5
+NDANuModeNueb6 (b49) : 1 +/- 0.01371
+Fitting parameter: NDANuModeNueb6
+SKNuModeNumu0 (b50) : 1 +/- 0.0122993
+Fitting parameter: SKNuModeNumu0
+SKNuModeNumu1 (b51) : 1 +/- 0.0118534
+Fitting parameter: SKNuModeNumu1
+SKNuModeNumu2 (b52) : 1 +/- 0.0111577
+Fitting parameter: SKNuModeNumu2
+SKNuModeNumu3 (b53) : 1 +/- 0.0110845
+Fitting parameter: SKNuModeNumu3
+SKNuModeNumu4 (b54) : 1 +/- 0.010997
+Fitting parameter: SKNuModeNumu4
+SKNuModeNumu5 (b55) : 1 +/- 0.0103725
+Fitting parameter: SKNuModeNumu5
+SKNuModeNumu6 (b56) : 1 +/- 0.0100173
+Fitting parameter: SKNuModeNumu6
+SKNuModeNumu7 (b57) : 1 +/- 0.00966008
+Fitting parameter: SKNuModeNumu7
+SKNuModeNumu8 (b58) : 1 +/- 0.00944414
+Fitting parameter: SKNuModeNumu8
+SKNuModeNumu9 (b59) : 1 +/- 0.00910855
+Fitting parameter: SKNuModeNumu9
+SKNuModeNumu10 (b60) : 1 +/- 0.00877674
+Fitting parameter: SKNuModeNumu10
+SKNuModeNumub0 (b61) : 1 +/- 0.0083459
+Fitting parameter: SKNuModeNumub0
+SKNuModeNumub1 (b62) : 1 +/- 0.00791648
+Fitting parameter: SKNuModeNumub1
+SKNuModeNumub2 (b63) : 1 +/- 0.00765369
+Fitting parameter: SKNuModeNumub2
+SKNuModeNumub3 (b64) : 1 +/- 0.00745144
+Fitting parameter: SKNuModeNumub3
+SKNuModeNumub4 (b65) : 1 +/- 0.00714297
+Fitting parameter: SKNuModeNumub4
+SKNuModeNue0 (b66) : 1 +/- 0.00687775
+Fitting parameter: SKNuModeNue0
+SKNuModeNue1 (b67) : 1 +/- 0.00672319
+Fitting parameter: SKNuModeNue1
+SKNuModeNue2 (b68) : 1 +/- 0.00634919
+Fitting parameter: SKNuModeNue2
+SKNuModeNue3 (b69) : 1 +/- 0.00604278
+Fitting parameter: SKNuModeNue3
+SKNuModeNue4 (b70) : 1 +/- 0.00594736
+Fitting parameter: SKNuModeNue4
+SKNuModeNue5 (b71) : 1 +/- 0.00573051
+Fitting parameter: SKNuModeNue5
+SKNuModeNue6 (b72) : 1 +/- 0.00560059
+Fitting parameter: SKNuModeNue6
+SKNuModeNueb0 (b73) : 1 +/- 0.00534021
+Fitting parameter: SKNuModeNueb0
+SKNuModeNueb1 (b74) : 1 +/- 0.00520395
+Fitting parameter: SKNuModeNueb1
+SKANuModeNumu0 (b75) : 1 +/- 0.0050687
+Fitting parameter: SKANuModeNumu0
+SKANuModeNumu1 (b76) : 1 +/- 0.00474185
+Fitting parameter: SKANuModeNumu1
+SKANuModeNumu2 (b77) : 1 +/- 0.004597
+Fitting parameter: SKANuModeNumu2
+SKANuModeNumu3 (b78) : 1 +/- 0.00446533
+Fitting parameter: SKANuModeNumu3
+SKANuModeNumu4 (b79) : 1 +/- 0.00424735
+Fitting parameter: SKANuModeNumu4
+SKANuModeNumub0 (b80) : 1 +/- 0.00416643
+Fitting parameter: SKANuModeNumub0
+SKANuModeNumub1 (b81) : 1 +/- 0.00391954
+Fitting parameter: SKANuModeNumub1
+SKANuModeNumub2 (b82) : 1 +/- 0.00385633
+Fitting parameter: SKANuModeNumub2
+SKANuModeNumub3 (b83) : 1 +/- 0.0037416
+Fitting parameter: SKANuModeNumub3
+SKANuModeNumub4 (b84) : 1 +/- 0.00355478
+Fitting parameter: SKANuModeNumub4
+SKANuModeNumub5 (b85) : 1 +/- 0.00346606
+Fitting parameter: SKANuModeNumub5
+SKANuModeNumub6 (b86) : 1 +/- 0.00337151
+Fitting parameter: SKANuModeNumub6
+SKANuModeNumub7 (b87) : 1 +/- 0.00329773
+Fitting parameter: SKANuModeNumub7
+SKANuModeNumub8 (b88) : 1 +/- 0.00320324
+Fitting parameter: SKANuModeNumub8
+SKANuModeNumub9 (b89) : 1 +/- 0.00299566
+Fitting parameter: SKANuModeNumub9
+SKANuModeNumub10 (b90) : 1 +/- 0.0029096
+Fitting parameter: SKANuModeNumub10
+SKANuModeNue0 (b91) : 1 +/- 0.00272713
+Fitting parameter: SKANuModeNue0
+SKANuModeNue1 (b92) : 1 +/- 0.00267175
+Fitting parameter: SKANuModeNue1
+SKANuModeNueb0 (b93) : 1 +/- 0.00265125
+Fitting parameter: SKANuModeNueb0
+SKANuModeNueb1 (b94) : 1 +/- 0.00247233
+Fitting parameter: SKANuModeNueb1
+SKANuModeNueb2 (b95) : 1 +/- 0.00240855
+Fitting parameter: SKANuModeNueb2
+SKANuModeNueb3 (b96) : 1 +/- 0.00224815
+Fitting parameter: SKANuModeNueb3
+SKANuModeNueb4 (b97) : 1 +/- 0.00216851
+Fitting parameter: SKANuModeNueb4
+SKANuModeNueb5 (b98) : 1 +/- 0.00201393
+Fitting parameter: SKANuModeNueb5
+SKANuModeNueb6 (b99) : 1 +/- 0.00190572
+Fitting parameter: SKANuModeNueb6
+FSI_INEL_LO (x0) : 0 +/- 0.00188194
+Fitting parameter: FSI_INEL_LO
+FSI_INEL_HI (x1) : 0 +/- 0.00174624
+Fitting parameter: FSI_INEL_HI
+FSI_PI_PROD (x2) : 0 +/- 0.00164072
+Fitting parameter: FSI_PI_PROD
+FSI_PI_ABS (x3) : 0 +/- 0.00159037
+Fitting parameter: FSI_PI_ABS
+FSI_CEX_LO (x4) : 0 +/- 0.00129664
+Fitting parameter: FSI_CEX_LO
+FSI_CEX_HI (x5) : 0 +/- 1.54505e-05
+Fitting parameter: FSI_CEX_HI
+MAQE (x6) : 0 +/- 0.025
+Fitting parameter: MAQE
+pF_C (x7) : 0 +/- 0.0599078
+Fitting parameter: pF_C
+pF_O (x8) : 0 +/- 0.0577778
+Fitting parameter: pF_O
+2p2h_norm_nu (xn0) : 1 +/- 1
+Fitting parameter: 2p2h_norm_nu
+2p2h_norm_nubar (xn1) : 1 +/- 1
+Fitting parameter: 2p2h_norm_nubar
+2p2h_normCtoO (xn2) : 1 +/- 0.2
+Fitting parameter: 2p2h_normCtoO
+2p2h_shape_C (x9) : 0 +/- 3
+Fitting parameter: 2p2h_shape_C
+2p2h_shape_O (x10) : 0 +/- 3
+Fitting parameter: 2p2h_shape_O
+BeRPA_A (xf0) : 0.59 +/- 0.118
+Fitting parameter: BeRPA_A
+BeRPA_B (xf1) : 1.05 +/- 0.21
+Fitting parameter: BeRPA_B
+BeRPA_D (xf2) : 1.13 +/- 0.1695
+Fitting parameter: BeRPA_D
+BeRPA_E (xf3) : 0.88 +/- 0.352
+Fitting parameter: BeRPA_E
+BeRPA_U (xf4) : 1.2 +/- 0.1
+Fixing parameter: BeRPA_U... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (118): 0-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(118): 0)
+CA5 (x11) : -0.049505 +/- 0.148515
+Fitting parameter: CA5
+MARES (x12) : 0.12632 +/- 0.157895
+Fitting parameter: MARES
+ISO_BKG (x13) : -0.261538 +/- 0.307692
+Fitting parameter: ISO_BKG
+nue_numu (xn3) : 1 +/- 0.0282843
+Fixing parameter: nue_numu... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (122): 0-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(122): 0)
+nuebar_numubar (xn4) : 1 +/- 0.0282843
+Fixing parameter: nuebar_numubar... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (123): 0-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(123): 0)
+CC_DIS (x14) : 0 +/- 0.4
+Fitting parameter: CC_DIS
+CC_Coh_C (xn5) : 1 +/- 0.3
+Fitting parameter: CC_Coh_C
+CC_Coh_O (xn6) : 1 +/- 0.3
+Fitting parameter: CC_Coh_O
+NC_Coh (xn7) : 1 +/- 0.3
+Fitting parameter: NC_Coh
+NC_1gamma (xn8) : 1 +/- 1
+Fixing parameter: NC_1gamma... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (128): 0-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(128): 0)
+NC_other_near (xn9) : 1 +/- 0.3
+Fitting parameter: NC_other_near
+NC_other_far (xn10) : 1 +/- 0.3
+Fixing parameter: NC_other_far... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (130): 0-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(130): 0)
+SF_RFG (x15) : 0 +/- 1
+Fixing parameter: SF_RFG... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (131): 1-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(131): 1)
+RPA_C (x16) : -1 +/- 1
+Fixing parameter: RPA_C... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (132): 1-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(132): 1)
+COH_BS (x17) : 1 +/- 1
+Fixing parameter: COH_BS... Change the following to fit them:
+     - interface->fitParameters->GetDoVary    (133): 1-> 1
+     - Otherwise it's not a fittable parameter (interface->fitParameters->GetIsDiscrete(133): 1)
+Set the FCN
+Create the minimizer
+Set the print level
+Start the minimization!!
+TFitterMinuit - Minimize with max iterations = 0 edmval = 0.01 errorDef = 1
+Iteration 1000 complete.
+Iteration 2000 complete.
+Iteration 3000 complete.
+Iteration 4000 complete.
+Iteration 5000 complete.
+Iteration 6000 complete.
+Iteration 7000 complete.
+Iteration 8000 complete.
+Iteration 9000 complete.
+Minimum Found
+FVAL  = 4.65540768367747028e-13
+Edm   = 3.85936918051858915e-13
+Nfcn  = 9266
+b0	  = 9.87132	  +/-  0.466505
+b1	  = 1.16498e-09	  +/-  0.407757
+b2	  = -4.08589e-09	  +/-  0.382656
+b3	  = -5.98916e-10	  +/-  0.204791
+b4	  = 1.04226e-09	  +/-  0.212469
+b5	  = 0.873199	  +/-  0.26188
+b6	  = 0.620116	  +/-  0.168303
+b7	  = -0.0786909	  +/-  0.154397
+b8	  = 0.742969	  +/-  0.146776
+b9	  = -0.278026	  +/-  0.142335
+b10	  = 0.328315	  +/-  0.115093
+b11	  = -0.329868	  +/-  0.113011
+b12	  = -0.344686	  +/-  0.097534
+b13	  = -0.0604423	  +/-  0.0898555
+b14	  = -0.536511	  +/-  0.0823106
+b15	  = 0.15531	  +/-  0.0737733
+b16	  = 0.11103	  +/-  0.0702608
+b17	  = 0.175892	  +/-  0.0625639
+b18	  = -0.0304721	  +/-  0.0604373
+b19	  = 0.0418913	  +/-  0.0573923
+b20	  = -0.0663548	  +/-  0.0523212
+b21	  = 0.0247245	  +/-  0.0489816
+b22	  = -0.053396	  +/-  0.0484482
+b23	  = -7.4909e-12	  +/-  0.0473822
+b24	  = -0.099397	  +/-  0.0449789
+b25	  = -0.0344526	  +/-  0.0430067
+b26	  = -0.11755	  +/-  0.0410133
+b27	  = 0.0847347	  +/-  0.039666
+b28	  = -0.0444915	  +/-  0.0381115
+b29	  = -0.00171808	  +/-  0.0363395
+b30	  = 0.00725341	  +/-  0.0319171
+b31	  = 0.00757145	  +/-  0.0311288
+b32	  = 0.0344531	  +/-  0.0305251
+b33	  = -0.0288944	  +/-  0.0289057
+b34	  = -0.0254219	  +/-  0.0277
+b35	  = -0.0345807	  +/-  0.0265587
+b36	  = 0.00768218	  +/-  0.0239804
+b37	  = -0.0547621	  +/-  0.0232604
+b38	  = 0.0919983	  +/-  0.0222981
+b39	  = 0.00282853	  +/-  0.0217868
+b40	  = 0.00592561	  +/-  0.0213847
+b41	  = -0.0249102	  +/-  0.0202762
+b42	  = -0.0228097	  +/-  0.0190779
+b43	  = -0.0159968	  +/-  0.0176517
+b44	  = -0.0147588	  +/-  0.0169579
+b45	  = 0.0271142	  +/-  0.0163462
+b46	  = 0.0673071	  +/-  0.015316
+b47	  = 0.0173161	  +/-  0.0149241
+b48	  = -0.00804699	  +/-  0.0143668
+b49	  = -0.0434932	  +/-  0.0136636
+b50	  = 0.0132556	  +/-  0.012265
+b51	  = -0.00725781	  +/-  0.0118259
+b52	  = 0.0133588	  +/-  0.0111065
+b53	  = -0.0102406	  +/-  0.0110391
+b54	  = -0.00336136	  +/-  0.0109734
+b55	  = -0.0404322	  +/-  0.010368
+b56	  = -0.0301927	  +/-  0.0100081
+b57	  = 0.0362115	  +/-  0.00964481
+b58	  = 0.0368397	  +/-  0.00943091
+b59	  = 0.0231329	  +/-  0.00908658
+b60	  = -0.00729682	  +/-  0.00877499
+b61	  = 0.0194761	  +/-  0.00833205
+b62	  = 0.0258879	  +/-  0.00791441
+b63	  = 0.026752	  +/-  0.0076493
+b64	  = 0.0204939	  +/-  0.00744674
+b65	  = -0.00366228	  +/-  0.00714227
+b66	  = 0.00760283	  +/-  0.00687621
+b67	  = 0.0086037	  +/-  0.006719
+b68	  = 0.0148364	  +/-  0.00634787
+b69	  = 0.0197636	  +/-  0.00603851
+b70	  = -0.00180087	  +/-  0.00594689
+b71	  = 0.0103102	  +/-  0.00572896
+b72	  = -0.00743154	  +/-  0.00560004
+b73	  = 0.0119763	  +/-  0.00533983
+b74	  = -0.0144485	  +/-  0.00520332
+b75	  = 0.0110175	  +/-  0.00506831
+b76	  = -0.00180913	  +/-  0.0047411
+b77	  = 0.00997409	  +/-  0.00459572
+b78	  = 0.00419986	  +/-  0.00446517
+b79	  = 0.00520238	  +/-  0.00424727
+b80	  = 0.00229156	  +/-  0.00416603
+b81	  = -0.00593392	  +/-  0.00391943
+b82	  = 0.0155545	  +/-  0.00385612
+b83	  = 0.0101179	  +/-  0.00374143
+b84	  = 0.00704628	  +/-  0.00355471
+b85	  = -0.00295597	  +/-  0.00346566
+b86	  = 0.00415886	  +/-  0.00337149
+b87	  = -0.00985433	  +/-  0.00329767
+b88	  = -0.00234101	  +/-  0.00320321
+b89	  = -0.00266262	  +/-  0.00299564
+b90	  = 0.00589552	  +/-  0.00290958
+b91	  = -0.00372649	  +/-  0.00272708
+b92	  = 0.00620661	  +/-  0.00267175
+b93	  = -0.0100112	  +/-  0.00265119
+b94	  = -0.00204359	  +/-  0.00247233
+b95	  = 0.00179909	  +/-  0.00240852
+b96	  = 0.0038211	  +/-  0.00224813
+b97	  = 0.00234777	  +/-  0.00216851
+b98	  = 0.0055577	  +/-  0.00201393
+b99	  = -0.00359515	  +/-  0.00190572
+x0	  = 0.00803295	  +/-  0.00188194
+x1	  = 0.000873564	  +/-  0.00174623
+x2	  = -0.000625297	  +/-  0.00164072
+x3	  = 0.00154189	  +/-  0.00159036
+x4	  = 0.00100107	  +/-  0.00129664
+x5	  = 0	  +/-  1.54486e-05
+x6	  = 1.3141e-09	  +/-  0.0693242
+x7	  = -5.9558e-10	  +/-  0.11678
+x8	  = -7.35951e-10	  +/-  0.220882
+xn0	  = 1	  +/-  0.232241
+xn1	  = 1	  +/-  0.426085
+xn2	  = 1	  +/-  0.183703
+x9	  = 4.13857e-08	  +/-  0.432817
+x10	  = 1.74761e-07	  +/-  0.728911
+xf0	  = 0.59	  +/-  0.085995
+xf1	  = 1.05	  +/-  0.109635
+xf2	  = 1.13	  +/-  0.135002
+xf3	  = 0.88	  +/-  0.350318
+xf4	  = 1.2	  +/-  0.01
+x11	  = -0.049505	  +/-  0.069175
+x12	  = 0.12632	  +/-  0.0515042
+x13	  = -0.261538	  +/-  0.242455
+xn3	  = 1	  +/-  0.00282843
+xn4	  = 1	  +/-  0.00282843
+x14	  = 8.36735e-11	  +/-  0.186428
+xn5	  = 1	  +/-  0.285588
+xn6	  = 1	  +/-  0.285594
+xn7	  = 1	  +/-  0.298118
+xn8	  = 1	  +/-  0.1
+xn9	  = 1	  +/-  0.2493
+xn10	  = 1	  +/-  0.03
+x15	  = 0	  +/-  0.1
+x16	  = -1	  +/-  0.1
+x17	  = 1	  +/-  0.1
+Finished with the minimization!!
+Total time to minimize (s): 1862.24
+Number of iterations to minimize: 9266
+Time per fit function call (s): 0.200975
+4.65541e-13 3.85937e-13 1 126 134
+Iteration 10000 complete.
+Iteration 11000 complete.
+Iteration 12000 complete.
+Iteration 13000 complete.
+Iteration 14000 complete.
+Iteration 15000 complete.
+Iteration 16000 complete.
+Iteration 17000 complete.
+Iteration 18000 complete.
+Finished HESS
+Total time to finish HESS (s): 1795.11
+Number of iterations for HESS: 9035
+Time per fit function call (s): 0.198684
+NDNuModeNumu0 (b0) : 1 +/- 0.0665947
+NDNuModeNumu1 (b1) : 1 +/- 0.0785128
+NDNuModeNumu2 (b2) : 1 +/- 0.0690696
+NDNuModeNumu3 (b3) : 1 +/- 0.0589903
+NDNuModeNumu4 (b4) : 1 +/- 0.0752372
+NDNuModeNumu5 (b5) : 1 +/- 0.0734145
+NDNuModeNumu6 (b6) : 1 +/- 0.0518648
+NDNuModeNumu7 (b7) : 1 +/- 0.0480161
+NDNuModeNumu8 (b8) : 1 +/- 0.0554508
+NDNuModeNumu9 (b9) : 1 +/- 0.0637267
+NDNuModeNumu10 (b10) : 1 +/- 0.0782116
+NDNuModeNumub0 (b11) : 1 +/- 0.0550711
+NDNuModeNumub1 (b12) : 1 +/- 0.0572141
+NDNuModeNumub2 (b13) : 1 +/- 0.0559466
+NDNuModeNumub3 (b14) : 1 +/- 0.0579069
+NDNuModeNumub4 (b15) : 1 +/- 0.0605511
+NDNuModeNue0 (b16) : 1 +/- 0.0638311
+NDNuModeNue1 (b17) : 1 +/- 0.0678104
+NDNuModeNue2 (b18) : 1 +/- 0.066616
+NDNuModeNue3 (b19) : 1 +/- 0.0640878
+NDNuModeNue4 (b20) : 1 +/- 0.0658425
+NDNuModeNue5 (b21) : 1 +/- 0.0550115
+NDNuModeNue6 (b22) : 1 +/- 0.0715289
+NDNuModeNueb0 (b23) : 1 +/- 0.0590191
+NDNuModeNueb1 (b24) : 1 +/- 0.121937
+NDANuModeNumu0 (b25) : 1 +/- 0.0480425
+NDANuModeNumu1 (b26) : 1 +/- 0.046425
+NDANuModeNumu2 (b27) : 1 +/- 0.0463362
+NDANuModeNumu3 (b28) : 1 +/- 0.0467872
+NDANuModeNumu4 (b29) : 1 +/- 0.0350114
+NDANuModeNumub0 (b30) : 1 +/- 0.0654438
+NDANuModeNumub1 (b31) : 1 +/- 0.0736981
+NDANuModeNumub2 (b32) : 1 +/- 0.0667315
+NDANuModeNumub3 (b33) : 1 +/- 0.0602797
+NDANuModeNumub4 (b34) : 1 +/- 0.0904424
+NDANuModeNumub5 (b35) : 1 +/- 0.0890816
+NDANuModeNumub6 (b36) : 1 +/- 0.0646829
+NDANuModeNumub7 (b37) : 1 +/- 0.0587741
+NDANuModeNumub8 (b38) : 1 +/- 0.0794597
+NDANuModeNumub9 (b39) : 1 +/- 0.0695336
+NDANuModeNumub10 (b40) : 1 +/- 0.109409
+NDANuModeNue0 (b41) : 1 +/- 0.0520269
+NDANuModeNue1 (b42) : 1 +/- 0.0717213
+NDANuModeNueb0 (b43) : 1 +/- 0.0639356
+NDANuModeNueb1 (b44) : 1 +/- 0.0612013
+NDANuModeNueb2 (b45) : 1 +/- 0.07236
+NDANuModeNueb3 (b46) : 1 +/- 0.0686647
+NDANuModeNueb4 (b47) : 1 +/- 0.0745172
+NDANuModeNueb5 (b48) : 1 +/- 0.0762091
+NDANuModeNueb6 (b49) : 1 +/- 0.137645
+SKNuModeNumu0 (b50) : 1 +/- 0.0679904
+SKNuModeNumu1 (b51) : 1 +/- 0.0815971
+SKNuModeNumu2 (b52) : 1 +/- 0.0730671
+SKNuModeNumu3 (b53) : 1 +/- 0.058576
+SKNuModeNumu4 (b54) : 1 +/- 0.0802576
+SKNuModeNumu5 (b55) : 1 +/- 0.0639213
+SKNuModeNumu6 (b56) : 1 +/- 0.0488281
+SKNuModeNumu7 (b57) : 1 +/- 0.0519577
+SKNuModeNumu8 (b58) : 1 +/- 0.0588372
+SKNuModeNumu9 (b59) : 1 +/- 0.063395
+SKNuModeNumu10 (b60) : 1 +/- 0.0791656
+SKNuModeNumub0 (b61) : 1 +/- 0.0578056
+SKNuModeNumub1 (b62) : 1 +/- 0.0526958
+SKNuModeNumub2 (b63) : 1 +/- 0.0628858
+SKNuModeNumub3 (b64) : 1 +/- 0.06573
+SKNuModeNumub4 (b65) : 1 +/- 0.0673667
+SKNuModeNue0 (b66) : 1 +/- 0.0624849
+SKNuModeNue1 (b67) : 1 +/- 0.0660054
+SKNuModeNue2 (b68) : 1 +/- 0.0622152
+SKNuModeNue3 (b69) : 1 +/- 0.0558744
+SKNuModeNue4 (b70) : 1 +/- 0.0543967
+SKNuModeNue5 (b71) : 1 +/- 0.0562988
+SKNuModeNue6 (b72) : 1 +/- 0.0691738
+SKNuModeNueb0 (b73) : 1 +/- 0.0590395
+SKNuModeNueb1 (b74) : 1 +/- 0.111117
+SKANuModeNumu0 (b75) : 1 +/- 0.0498473
+SKANuModeNumu1 (b76) : 1 +/- 0.0504945
+SKANuModeNumu2 (b77) : 1 +/- 0.0462454
+SKANuModeNumu3 (b78) : 1 +/- 0.0496474
+SKANuModeNumu4 (b79) : 1 +/- 0.0484426
+SKANuModeNumub0 (b80) : 1 +/- 0.0666829
+SKANuModeNumub1 (b81) : 1 +/- 0.0750044
+SKANuModeNumub2 (b82) : 1 +/- 0.0692437
+SKANuModeNumub3 (b83) : 1 +/- 0.0571565
+SKANuModeNumub4 (b84) : 1 +/- 0.0953617
+SKANuModeNumub5 (b85) : 1 +/- 0.0812108
+SKANuModeNumub6 (b86) : 1 +/- 0.0614951
+SKANuModeNumub7 (b87) : 1 +/- 0.0564016
+SKANuModeNumub8 (b88) : 1 +/- 0.0756944
+SKANuModeNumub9 (b89) : 1 +/- 0.0712286
+SKANuModeNumub10 (b90) : 1 +/- 0.115078
+SKANuModeNue0 (b91) : 1 +/- 0.0520264
+SKANuModeNue1 (b92) : 1 +/- 0.0689423
+SKANuModeNueb0 (b93) : 1 +/- 0.0630148
+SKANuModeNueb1 (b94) : 1 +/- 0.0646496
+SKANuModeNueb2 (b95) : 1 +/- 0.0668888
+SKANuModeNueb3 (b96) : 1 +/- 0.0604839
+SKANuModeNueb4 (b97) : 1 +/- 0.0618938
+SKANuModeNueb5 (b98) : 1 +/- 0.0726801
+SKANuModeNueb6 (b99) : 1 +/- 0.135682
+FSI_INEL_LO (x0) : -1.83855e-10 +/- 0.180259
+FSI_INEL_HI (x1) : -5.86296e-10 +/- 0.209657
+FSI_PI_PROD (x2) : 8.37402e-10 +/- 0.308077
+FSI_PI_ABS (x3) : 1.1218e-09 +/- 0.234137
+FSI_CEX_LO (x4) : 4.11578e-09 +/- 0.382298
+FSI_CEX_HI (x5) : 4.68945e-10 +/- 0.172523
+MAQE (x6) : 1.3141e-09 +/- 0.0693243
+pF_C (x7) : -5.9558e-10 +/- 0.135891
+pF_O (x8) : -7.35951e-10 +/- 0.165201
+2p2h_norm_nu (xn0) : 1 +/- 0.232252
+2p2h_norm_nubar (xn1) : 1 +/- 0.426089
+2p2h_normCtoO (xn2) : 1 +/- 0.183714
+2p2h_shape_C (x9) : 4.13857e-08 +/- 0.447613
+2p2h_shape_O (x10) : 1.74761e-07 +/- 0.816731
+BeRPA_A (xf0) : 0.59 +/- 0.0859945
+BeRPA_B (xf1) : 1.05 +/- 0.109635
+BeRPA_D (xf2) : 1.13 +/- 0.135002
+BeRPA_E (xf3) : 0.88 +/- 0.350321
+BeRPA_U (xf4) : 1.2 +/- 0.1
+CA5 (x11) : -0.049505 +/- 0.069175
+MARES (x12) : 0.12632 +/- 0.0515037
+ISO_BKG (x13) : -0.261538 +/- 0.242456
+nue_numu (xn3) : 1 +/- 0.0282843
+nuebar_numubar (xn4) : 1 +/- 0.0282843
+CC_DIS (x14) : 8.36735e-11 +/- 0.186446
+CC_Coh_C (xn5) : 1 +/- 0.285589
+CC_Coh_O (xn6) : 1 +/- 0.285596
+NC_Coh (xn7) : 1 +/- 0.298118
+NC_1gamma (xn8) : 1 +/- 1
+NC_other_near (xn9) : 1 +/- 0.249301
+NC_other_far (xn10) : 1 +/- 0.3
+SF_RFG (x15) : 0 +/- 1
+RPA_C (x16) : -1 +/- 1
+COH_BS (x17) : 1 +/- 1

@@ -1,0 +1,252 @@
+#-- start of make_header -----------------
+
+#====================================
+#  Document version
+#
+#   Generated Wed Oct  4 12:22:02 2017  by mhogan
+#
+#====================================
+
+include ${CMTROOT}/src/Makefile.core
+
+ifdef tag
+CMTEXTRATAGS = $(tag)
+else
+tag       = $(CMTCONFIG)
+endif
+
+cmt_version_has_no_target_tag = 1
+
+#--------------------------------------------------------
+
+ifdef cmt_version_has_target_tag
+
+tags      = $(tag),$(CMTEXTRATAGS),target_version
+
+BANFF_tag = $(tag)
+
+ifdef READONLY
+cmt_local_tagfile_version = /tmp/CMT_$(BANFF_tag)_version.make$(cmt_lock_pid)
+else
+#cmt_local_tagfile_version = $(BANFF_tag)_version.make
+cmt_local_tagfile_version = $(bin)$(BANFF_tag)_version.make
+endif
+
+else
+
+tags      = $(tag),$(CMTEXTRATAGS)
+
+BANFF_tag = $(tag)
+
+ifdef READONLY
+cmt_local_tagfile_version = /tmp/CMT_$(BANFF_tag).make$(cmt_lock_pid)
+else
+#cmt_local_tagfile_version = $(BANFF_tag).make
+cmt_local_tagfile_version = $(bin)$(BANFF_tag).make
+endif
+
+endif
+
+-include $(cmt_local_tagfile_version)
+
+ifdef cmt_version_has_target_tag
+
+ifdef READONLY
+cmt_final_setup_version = /tmp/CMT_BANFF_versionsetup.make
+cmt_local_version_makefile = /tmp/CMT_version$(cmt_lock_pid).make
+else
+cmt_final_setup_version = $(bin)BANFF_versionsetup.make
+cmt_local_version_makefile = $(bin)version.make
+endif
+
+else
+
+ifdef READONLY
+cmt_final_setup_version = /tmp/CMT_BANFFsetup.make
+cmt_local_version_makefile = /tmp/CMT_version$(cmt_lock_pid).make
+else
+cmt_final_setup_version = $(bin)BANFFsetup.make
+cmt_local_version_makefile = $(bin)version.make
+endif
+
+endif
+
+ifdef READONLY
+cmt_final_setup = /tmp/CMT_BANFFsetup.make
+else
+cmt_final_setup = $(bin)BANFFsetup.make
+endif
+
+version ::
+
+
+ifdef READONLY
+version ::
+	@echo tags=$(tags)
+	@echo cmt_local_tagfile=$(cmt_local_tagfile)
+endif
+
+
+dirs ::
+	@if test ! -r requirements ; then echo "No requirements file" ; fi; \
+	  if test ! -d $(bin) ; then $(mkdir) -p $(bin) ; fi
+
+javadirs ::
+	@if test ! -d $(javabin) ; then $(mkdir) -p $(javabin) ; fi
+
+srcdirs ::
+	@if test ! -d $(src) ; then $(mkdir) -p $(src) ; fi
+
+help ::
+	$(echo) 'version'
+
+binobj = 
+ifdef STRUCTURED_OUTPUT
+binobj = version/
+version::
+	@if test ! -d $(bin)$(binobj) ; then $(mkdir) -p $(bin)$(binobj) ; fi
+	$(echo) "STRUCTURED_OUTPUT="$(bin)$(binobj)
+endif
+
+#-- end of make_header ------------------
+
+# -*- makefile -*-
+# 
+# A fragment used by CMT to build the library version file
+#
+
+version_output = $(src)
+versionstamp = $(bin)version.stamp
+
+version :: $(src)$(package)_version.h
+	@echo "------> Update $(src)$(package)_version.h"
+
+EigenDecomp_cxx_dependencies = ../src/EigenDecomp.cxx
+ThrowParms_cxx_dependencies = ../src/ThrowParms.cxx
+BANFFEventBase_cxx_dependencies = ../src/BANFFEventBase.cxx
+BANFFInterfaceBase_cxx_dependencies = ../src/BANFFInterfaceBase.cxx
+FitParameters_cxx_dependencies = ../src/FitParameters.cxx
+WeightFile_cxx_dependencies = ../src/WeightFile.cxx
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)EigenDecomp.cxx)
+$(versionstamp) :: $(src)EigenDecomp.cxx
+	@echo $(src)$(package)_version.h depends on $(src)EigenDecomp.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)ThrowParms.cxx)
+$(versionstamp) :: $(src)ThrowParms.cxx
+	@echo $(src)$(package)_version.h depends on $(src)ThrowParms.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)BANFFEventBase.cxx)
+$(versionstamp) :: $(src)BANFFEventBase.cxx
+	@echo $(src)$(package)_version.h depends on $(src)BANFFEventBase.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)BANFFInterfaceBase.cxx)
+$(versionstamp) :: $(src)BANFFInterfaceBase.cxx
+	@echo $(src)$(package)_version.h depends on $(src)BANFFInterfaceBase.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)FitParameters.cxx)
+$(versionstamp) :: $(src)FitParameters.cxx
+	@echo $(src)$(package)_version.h depends on $(src)FitParameters.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+#
+# A fragment used by CMT to build the version include file.
+#
+
+ifneq ($(src)$(package)_version.h,$(src)WeightFile.cxx)
+$(versionstamp) :: $(src)WeightFile.cxx
+	@echo $(src)$(package)_version.h depends on $(src)WeightFile.cxx
+	@touch $(versionstamp)
+endif
+
+# -*- makefile -*-
+# 
+# A trailer fragment used by CMT to build the version include file.
+#
+
+$(src)$(package)_version.h :: $(versionstamp)
+	@touch $(src)$(package)_version.h
+	@echo Build $(src)$(package)_version.h
+	@echo '/* Version information autogenerated by version fragment */' > $(src)$(package)_version.h
+	@echo \#ifndef $(package)_NAME >> $(src)$(package)_version.h
+	@echo \#define $(package)_NAME \"$(package)\" >> $(src)$(package)_version.h
+	@echo \#define $(package)_VERSION \"$(version)\" >> $(src)$(package)_version.h
+	@if [ x != x`echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\1/` ]; then echo \#define $(package)_MAJOR_VERSION `echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\1/` >> $(src)$(package)_version.h; else echo "#define $(package)_MAJOR_VERSION 0" >> $(src)$(package)_version.h; fi
+	@if [ x != x`echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\2/` ]; then echo \#define $(package)_MINOR_VERSION `echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\2/` >> $(src)$(package)_version.h; else echo "#define $(package)_MINOR_VERSION 0" >> $(src)$(package)_version.h; fi
+	@if [ x != x`echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\3/` ]; then echo \#define $(package)_PATCH_VERSION `echo $(version)| sed s/[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\)[a-z]*\\\\\([0-9]*\\\\\).*/\\\\\3/` >> $(src)$(package)_version.h; else echo "#define $(package)_PATCH_VERSION 0" >> $(src)$(package)_version.h; fi
+	@echo "#define BEFORE_$(package)(v,r,p) (($(package)_MAJOR_VERSION==(v)&&$(package)_MINOR_VERSION==(r)&&$(package)_PATCH_VERSION<(p))||($(package)_MAJOR_VERSION==(v)&&$(package)_MINOR_VERSION<(r))||($(package)_MAJOR_VERSION<(v)))" >> $(src)$(package)_version.h
+	@echo "#define EQUALS_$(package)(v,r,p) ($(package)_MAJOR_VERSION==(v)&&$(package)_MINOR_VERSION==(r)&&$(package)_PATCH_VERSION==(p))" >> $(src)$(package)_version.h
+	@echo \#define $(package)_COMPILE_DATE \"`date -u`\" >> $(src)$(package)_version.h
+	@echo \#define $(package)_COMPILE_HOST \"`uname -n`\" >> $(src)$(package)_version.h
+	@echo \#define $(package)_COMPILE_UNAME \"`uname -a`\" >> $(src)$(package)_version.h
+	@echo \#define $(package)_COMPILE_DIR \"`pwd`\" >> $(src)$(package)_version.h
+	@echo \#endif >> $(src)$(package)_version.h
+
+clean :: versionclean
+
+versionclean :: 
+	/bin/rm $(src)$(package)_version.h || true
+	/bin/rm $(versionstamp) || true
+#-- start of cleanup_header --------------
+
+clean :: versionclean
+	@cd .
+
+ifndef PEDANTIC
+.DEFAULT::
+	$(echo) "(version.make) $@: No rule for such target" >&2
+#	@echo "#CMT> Warning: $@: No rule for such target" >&2; exit
+else
+.DEFAULT::
+	$(echo) "(version.make) PEDANTIC: $@: No rule for such target" >&2
+	if test $@ = "$(cmt_final_setup)" -o\
+	 $@ = "$(cmt_final_setup_version)" ; then\
+	 found=n; for s in 1 2 3 4 5; do\
+	 sleep $$s; test ! -f $@ || { found=y; break; }\
+	 done; if test $$found = n; then\
+	 test -z "$(cmtmsg)" ||\
+	 echo "$(CMTMSGPREFIX)" "(version.make) PEDANTIC: $@: Seems to be missing. Ignore it for now" >&2; exit 0 ; fi;\
+	 elif test `expr index $@ '/'` -ne 0 ; then\
+	 test -z "$(cmtmsg)" ||\
+	 echo "$(CMTMSGPREFIX)" "(version.make) PEDANTIC: $@: Seems to be a missing file. Please check" >&2; exit 2 ; \
+	 else\
+	 test -z "$(cmtmsg)" ||\
+	 echo "$(CMTMSGPREFIX)" "(version.make) PEDANTIC: $@: Seems to be a fake target due to some pattern. Just ignore it" >&2 ; exit 0; fi
+endif
+
+versionclean ::
+#-- end of cleanup_header ---------------

@@ -1,0 +1,1 @@
+/physics/data/BANFF/asg2018oa/Splines_testing_psyche_v3r26/FlatTree_Run2a_data_Splines.root

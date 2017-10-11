@@ -1,0 +1,6 @@
+run2-water_data.txt run2-water_mc.txt run2-water
+run2-air_data.txt run2-air_mc.txt run2-air
+run3c_data.txt run3c_mc.txt run3c
+run4-water_data.txt run4-water_mc.txt run4-water
+run4-air_data.txt run4-air_mc.txt run4-air
+run5c_data.txt run5c_mc.txt run5c

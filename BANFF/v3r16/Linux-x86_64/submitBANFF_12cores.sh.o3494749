@@ -1,0 +1,289 @@
+Clean G4 environment
+Geometries up to date
+Global slow control environment not set.  Using database defaults.
+Calibration database environment variables not set.
+Setting variables for: master database (without temporary table support)
+Trying to load parameters file for parameter: BANFF.Do4PiFHC
+---------------------------------
+Applying FHC CCMultiPI selections
+---------------------------------
+Trying to load parameters file for parameter: psycheSteering.Selections.EnableTrackerNumuCCMultiPi
+--------------------------------
+Applying RHCMultiTrack selection
+--------------------------------
+0 100
+Number of parameters 100
+Response xsec FSI_INEL_LO
+Response xsec FSI_INEL_HI
+Response xsec FSI_PI_PROD
+Response xsec FSI_PI_ABS
+Response xsec FSI_CEX_LO
+Response xsec FSI_CEX_HI
+Response xsec MAQE
+Response xsec pF_C
+Response xsec pF_O
+Adding the parameter 2p2h_norm_nu to the list
+===============================================
+2p2h_norm_nu 0 30
+XSecNormParameter 2p2h_norm_nu applies for the following reaction codes: 
+2
+With neutrino PDG:
+12
+14
+On target materials:
+12
+16
+===============================================
+Adding the parameter 2p2h_norm_nubar to the list
+===============================================
+2p2h_norm_nubar 0 30
+XSecNormParameter 2p2h_norm_nubar applies for the following reaction codes: 
+-2
+With neutrino PDG:
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter 2p2h_normCtoO to the list
+===============================================
+2p2h_normCtoO 0 30
+XSecNormParameter 2p2h_normCtoO applies for the following reaction codes: 
+-2
+2
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+16
+===============================================
+Response xsec 2p2h_shape_C
+Response xsec 2p2h_shape_O
+Functionnal xsec BeRPA_A
+===============================================
+XSecFuncParameter BeRPA_A applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_B
+===============================================
+XSecFuncParameter BeRPA_B applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_D
+===============================================
+XSecFuncParameter BeRPA_D applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_E
+===============================================
+XSecFuncParameter BeRPA_E applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Functionnal xsec BeRPA_U
+===============================================
+XSecFuncParameter BeRPA_U applies for the following reaction codes: 
+-1
+1
+With neutrino PDG:
+-14
+-12
+12
+14
+On target materials:
+12
+16
+===============================================
+Response xsec CA5
+Response xsec MARES
+Response xsec ISO_BKG
+Adding the parameter nue_numu to the list
+===============================================
+nue_numu 0 30
+With neutrino PDG:
+12
+On target materials:
+12
+16
+===============================================
+Adding the parameter nuebar_numubar to the list
+===============================================
+nuebar_numubar 0 30
+With neutrino PDG:
+-12
+On target materials:
+12
+16
+===============================================
+Response xsec CC_DIS
+Adding the parameter CC_Coh_C to the list
+===============================================
+CC_Coh_C 0 30
+XSecNormParameter CC_Coh_C applies for the following reaction codes: 
+-16
+16
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+===============================================
+Adding the parameter CC_Coh_O to the list
+===============================================
+CC_Coh_O 0 30
+XSecNormParameter CC_Coh_O applies for the following reaction codes: 
+-16
+16
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+16
+===============================================
+Adding the parameter NC_Coh to the list
+===============================================
+NC_Coh 0 30
+XSecNormParameter NC_Coh applies for the following reaction codes: 
+-36
+36
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_1gamma to the list
+===============================================
+NC_1gamma 0 30
+XSecNormParameter NC_1gamma applies for the following reaction codes: 
+-38
+-39
+38
+39
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_other_near to the list
+===============================================
+NC_other_near 0 30
+XSecNormParameter NC_other_near applies for the following reaction codes: 
+-41
+-42
+-43
+-44
+-45
+-46
+-51
+-52
+41
+42
+43
+44
+45
+46
+51
+52
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+16
+===============================================
+Adding the parameter NC_other_far to the list
+===============================================
+NC_other_far 0 30
+XSecNormParameter NC_other_far applies for the following reaction codes: 
+-41
+-42
+-43
+-44
+-45
+-46
+-51
+-52
+41
+42
+43
+44
+45
+46
+51
+52
+With neutrino PDG:
+12
+14
+-12
+-14
+On target materials:
+12
+===============================================
+Response xsec SF_RFG
+Response xsec RPA_C
+Response xsec COH_BS
+=================================================
+Total allowed discrete parameter combinations: 1
+=================================================
+--------------------------------------------
+Combination: 0
+--------------------------------------------
+SF_RFG: 0
+RPA_C: -1
+COH_BS: 1
+=================================================
+100 34
+100
+Number of parameters 134

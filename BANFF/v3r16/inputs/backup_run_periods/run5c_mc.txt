@@ -1,0 +1,1 @@
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/anti-neut/run5-water/Run5_Water_splines.root

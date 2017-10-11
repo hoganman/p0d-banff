@@ -1,0 +1,1 @@
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run2-air/Run2_Air_splines.root

@@ -1,0 +1,2 @@
+magnet /neut/data21/mscott/T2K/BANFF_Inputs/Run3b_WaterOut_BeamC_NEUT_FixedRPA_2000Throws.root
+sand /neut/data21/mscott/T2K/BANFF_Inputs/Run3b_WaterOut_BeamC_Sand_FixedRPA_2000Throws.root

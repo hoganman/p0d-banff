@@ -1,0 +1,1 @@
+vim -p run2-air_data.txt run2-air_mc.txt run2-water_data.txt run2-water_mc.txt run3c_data.txt run3c_mc.txt run4-air_data.txt run4-air_mc.txt run4-water_data.txt run4-water_mc.txt run5c_data.txt run5c_mc.txt run6b_data.txt run6b_mc.txt run6c_data.txt run6c_mc.txt run6d_data.txt run6d_mc.txt run_periods.txt

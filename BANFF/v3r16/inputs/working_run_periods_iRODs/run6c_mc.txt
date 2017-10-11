@@ -1,0 +1,2 @@
+magnet /physics/data/BANFF/asg2016oa/MC/Run6c_WaterOut_BeamE_NEUT_nd280Psyche_v1r23p21_CCCohWeight.root
+sand   /physics/data/BANFF/asg2016oa/MC/Run6c_WaterOut_BeamE_Sand_nd280Psyche_v1r23p21_CCCohWeight.root

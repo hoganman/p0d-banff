@@ -1,0 +1,1 @@
+/neut/data21/mscott/T2K/Software/v11r31/highland/highlandIO/v0r25/app/Prod5G_Data_8xxx_FlatTree.root

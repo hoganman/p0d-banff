@@ -1,0 +1,86 @@
+package BANFF
+version v3r16
+
+
+manager Christine Nielsen <cnielsen@phas.ubc.ca>
+
+author nd280-software@mailman.t2k.org
+
+branches cmt doc src app parameters inputs
+
+use ROOT *
+use nd280Psyche *
+
+#Copy make fragments from nd280Policy
+make_fragment version -header=version_header -trailer=version_trailer
+
+#Build methods to include
+document version version *.cxx ../dict/*.cxx
+document register register
+document doxygen doxygen -group=documentation *.cxx *.hxx ../doc/*.dox *py
+
+#The library to build
+library BANFF *.cxx \
+    BANFFSample/*.cxx \
+    psycheInterface/*.cxx \
+    Minuit2LikelihoodFit/*.cxx
+
+#Build information used by packages that use this one.
+#Uncomment "-D MULTITHREADPSYCHE" in order to enable multithreaded
+#re-processing of psyche events. Be sure that you have also properly 
+#altered the psyche requirements files if you do so, otherwise it will crash.
+#macro BANFF_cppflags " -DBANFF_USED -fPIC -fopenmp -O3 -march=native -Wall "# -D MULTITHREADPSYCHE"
+macro BANFF_cppflags " -DBANFF_USED -fPIC -fopenmp -O0 -march=native -Wall -ltcmalloc"# -D MULTITHREADPSYCHE"
+macro BANFF_linkopts " -L$(BANFFROOT)/$(BANFF_tag) -lBANFF -lMinuit2 -lgomp "# -lprofiler
+macro BANFF_stamps " $(BANFFROOT)/$(BANFF_tag)/BANFF.stamp"
+macro cpplinkflag \
+    Linux "-Wl, --no-as-needed"
+
+
+#The paths to find this library
+path_remove PATH "$(BANFFROOT)"
+path_prepend PATH "$(BANFFROOT)/$(BANFF_tag)"
+path_remove LD_LIBRARY_PATH "$(BANFFROOT)"
+path_prepend LD_LIBRARY_PATH "$(BANFFROOT)/$(BANFF_tag)"
+path_remove DYLD_LIBRARY_PATH "" \
+            Darwin            "$(BANFFROOT)"
+path_prepend DYLD_LIBRARY_PATH "" \
+            Darwin            "$(BANFFROOT)/$(BANFF_tag)"
+
+application RunJointFit2017 ../app/RunJointFit2017.cxx
+application RunJointFit2016 ../app/RunJointFit2016.cxx	
+application Make2016PostFitFileAllParams ../app/Make2016PostFitFileAllParams.cxx
+
+application MakeND280DetectorCov ../app/MakeND280Cov.cxx
+# #application ThrowToys2013 ../app/ThrowToys2013.cxx
+# #application ThrowToys2013FitBinning ../app/ThrowToys2013FitBinning.cxx
+# application BinnedToysToObsNormFile ../app/BinnedToysToObsNormFile.cxx
+# application BinnedToysToObsNormFileFast ../app/BinnedToysToObsNormFileFast.cxx
+# application BinnedToysToObsNormFileFastest ../app/BinnedToysToObsNormFileFastest.cxx
+# #application RunFit2013 ../app/RunFit2013.cxx
+# application ChangeFluxTuning ../app/ChangeFluxTuning.cxx
+# application PerformPullValidation ../app/PerformPullValidation.cxx
+# application ConvertObsNormv2tov3 ../app/ConvertObsNormv2tov3.cxx
+# application Make2015JointFitXSecParameterFile ../app/Make2015JointFitXSecParameterFile.cxx
+# #application Make2014XSecParameterFileCombinedMEC ../app/Make2014XSecParameterFileCombinedMEC.cxx
+# #application ThrowToys2014 ../app/ThrowToys2014.cxx
+# #application RunFit2014 ../app/RunFit2014.cxx
+# #application VaryParametersByNSigma2014 ../app/VaryParametersByNSigma2014.cxx
+# application MakeBinnedParameterVariationPlots ../app/MakeBinnedParameterVariationPlots.cxx
+# application PriorToFitErrorComparison ../app/PriorToFitErrorComparison.cxx
+# application Make2015PostFitFile ../app/Make2015PostFitFile.cxx
+# application MakeCorrelationMatrix ../app/MakeCorrelationMatrix.cxx
+# application ThrowToys2014FitBinning ../app/ThrowToys2014FitBinning.cxx
+# application ConvertCovFileToObsNorm ../app/ConvertCovFileToObsNorm.cxx
+# application ChangeXSecCovarianceFile ../app/ChangeXSecCovarianceFile.cxx
+# #application ConvertFakeDataToPredMC ../app/ConvertFakeDataToPredMC.cxx
+# application ConvertFakeDataToPredMCJoint ../app/ConvertFakeDataToPredMCJoint.cxx
+# #application ThrowToys2014FitBinningFixedCCQE ../app/ThrowToys2014FitBinningFixedCCQE.cxx
+# #application RunFit2014NuMode ../app/RunFit2014NuMode.cxx
+# #application RunFit2014ANuMode ../app/RunFit2014ANuMode.cxx
+# application Make2015PostFitFileAllParams ../app/Make2015PostFitFileAllParams.cxx
+# application Check2015XSecWeightsIndividually ../app/Check2015XSecWeightsIndividually.cxx
+# application ProcessToysForErrorBandPlots ../app/ProcessToysForErrorBandPlots.cxx
+# #application ThrowToys2014OfficialPlotBinning ../app/ThrowToys2014OfficialPlotBinning.cxx
+# application RunJointFit2015 ../app/RunJointFit2015.cxx
+

@@ -1,0 +1,72 @@
+Trying to load parameters file for parameter: BANFF.RunFit.ThrowMCStat
+Warning: multithreading disabled in FitParameters.
+0 100
+Number of parameters 100
+===============================================
+CCCOH_O_0 0 30
+XSecNormParameter CCCOH_O_0 applies for the following reaction codes: 
+16
+-16
+On target materials:
+12
+16
+===============================================
+===============================================
+NCCOH_0 0 30
+XSecNormParameter NCCOH_0 applies for the following reaction codes: 
+36
+-36
+On target materials:
+-1
+===============================================
+===============================================
+NC1GAMMA_0 0 30
+XSecNormParameter NC1GAMMA_0 applies for the following reaction codes: 
+-38
+-39
+39
+38
+On target materials:
+999
+===============================================
+===============================================
+NCOTHER_NEAR_0 0 30
+XSecNormParameter NCOTHER_NEAR_0 applies for the following reaction codes: 
+38
+39
+41
+42
+43
+44
+45
+46
+51
+52
+-38
+-39
+-41
+-42
+-43
+-44
+-45
+-46
+-51
+-52
+On target materials:
+-1
+===============================================
+===============================================
+NCOTHER_FAR_0 0 30
+XSecNormParameter NCOTHER_FAR_0 applies for the following reaction codes: 
+38
+39
+On target materials:
+999
+===============================================
+===============================================
+MEC_NUBAR 0 30
+XSecNormParameter MEC_NUBAR applies for the following reaction codes: 
+-2
+On target materials:
+-1
+===============================================

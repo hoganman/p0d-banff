@@ -1,0 +1,1 @@
+magnet /physics/data/BANFF/asg2018oa/Splines_testing_psyche_v3r26/MCRun2a_Splines.root

@@ -1,0 +1,1 @@
+/neut/data21/mscott/T2K/BANFF_Inputs/Run1_WaterIn_Data_RDP_FlatTree_Selected.root
