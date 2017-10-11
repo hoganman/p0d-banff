@@ -1,0 +1,99 @@
+==============================================================================
+T2KReWeight Release Notes
+==============================================================================
+This document describes the release versions of T2KReWeight from October 2016
+forward. Maybe in the future if someone has infinite time, this will be filled
+for previous freezes as well.
+
+.. _Matt Dunkman: mdunkman@msu.edu
+
+------------------------------------------------------------------------------
+v1r27
+------------------------------------------------------------------------------
+Released by `Matt Dunkman`_ on 2016-10-13.
+
+This version is designed for the Winter OA.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+New treatment of CCQE binding energy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A new dial ``neut::rew::NReWeightBindingEnergy`` was added to
+neut_v5.3.3_Autumn2016, and the head version of NEUT to be included in 
+future releases (>5.3.6). This dial computes the differential cross section
+for the given event with the nominal binding energy value and again after
+the tweak and returns the ratio. It currently assumes that all events are
+generated using MDLQE=2, which means RFG + BBBA05 form factors.
+
+In the future there is hope that this dial will be able to do on-the-fly
+conversions from SF-RFG using the differential cross section calculations,
+but that is currently not possible due to differences in the differential
+elements for each calculation.
+
+There is also a method to create lookup tables for the SF differential cross
+section that integrates out many of the extraneous varaibles, but work was
+paused before a method to read these tables was implemented. The previous dial
+used similar table lookups, but those tables were binned in :math:`E_{\nu}` and
+:math:`Q^{2}`, which introduced large errors in :math:`p\theta` space.
+
+The dials provided are
+``t2krew::kNNucl_CCQEBindingEnergy_C12``,
+``t2krew::kNNucl_CCQEBindingEnergy_O16``,
+``t2krew::kNNucl_CCQEBindingEnergy_Al27``,
+``t2krew::kNNucl_CCQEBindingEnergy_Fe56``,
+``t2krew::kNNucl_CCQEBindingEnergy_Cu63``,
+``t2krew::kNNucl_CCQEBindingEnergy_Zn64``, and
+``t2krew::kNNucl_CCQEBindingEnergy_Pb208``,
+which reweight the target nuclei specified in their dial name as described above.
+
+.. note: The default binding energy for each dial is configurable in the
+    constructor in ``T2KNeutReWeight.cxx``. Also configurable in the constructor
+    are the default error (9 MeV) and the cap on event weights (100).
+
+.. note: These dials only reweight interactions on bound nucleons, so
+    interactions on Hydrogen will have a reweighting value of 1.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Additional shape dials for MEC events
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A set of dials were added to ``niwg::rew::NIWGReWeightMEC`` in version v1r27.
+These dials are
+``kNIWGMEC_PDDInterp``
+    Binary switch with ``(false == 0)``, and ``(true != 0)``.
+    If ``true`` (default value), use tri-linear interpolation to determine
+    the reweighting value from the underlying ``TH3D``.
+    If ``false``, all events in the same bin of the underlying ``TH3D``
+    will be assigned the same weight.
+
+``t2krew::kNIWGMEC_PDDWeight_C12``
+    .. note: This dial only impacts events on Carbon.
+
+    Value in the inclusive range :math:`[-1,+1]`.
+
+    When set to -1, the shape follows the PDD (Pionless Delta Decay) distribution.
+    When set to +1, the shape follows the non-PDD distribution.
+
+``t2krew::kNIWGMEC_PDDWeight_O16``
+    .. note: This dial only impacts events on Oxygen.
+
+    Value in the inclusive range :math:`[-1,+1]`.
+
+    When set to -1, the shape follows the PDD (Pionless Delta Decay) distribution.
+    When set to +1, the shape follows the non-PDD distribution.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+eRPA -> BeRPA
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. attention: This dial is not currently recommended for use in the OA.
+
+The effective RPA dials were reimplemented using `Bernstein Polynomials`_,
+which have much simpler continuity conditions. This dramatically simplifies
+the code and improves convergence of external data fits.
+
+.. _Bernstein Polynomials: http://mathworld.wolfram.com/BernsteinPolynomial.html
+
+
+
+..
+    vim: filetype=rst :
+    -*- mode: rst -*-
+
