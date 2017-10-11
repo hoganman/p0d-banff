@@ -1,8 +1,12 @@
 #define CheckFileROOT_C_seen
+/*
+ * check the status of a input ROOT file and return status
+ * status 1 is good
+ * status 0 is bad
+ */
 #include"TFile.h"
 #include"TString.h"
 #include"TSystem.h"
-#include<cstring>
 
 int CheckFileROOT(TString fileName = ""){
 

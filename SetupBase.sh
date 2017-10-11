@@ -3,7 +3,7 @@
 # Prelim / P0D-BANFF Project independent #
 #######################
 SOFTWARE=/physics/software
-export PYTHONPATH=./:/physics/INSTALLATION/bin:/physics/home/mhogan/software/macros
+export PYTHONPATH=./:/physics/INSTALLATION/bin
 export SCRIPTS=/physics/scripts
 source ${SCRIPTS}/setup_cluster.sh
 

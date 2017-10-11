@@ -3,11 +3,12 @@
 #### Update this for every checkout #####
 export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
 #########################################
-
 if [ -z ${ROOTSYS+x} ]; then 
 #   echo "ROOTSYS is unset"; 
   source SetupBase.sh
 fi
+
+PYTHONPATH=${P0DBANFFROOT}/macros:${PYTHONPATH}
 
 CMTPATH=${P0DBANFFROOT}:${CMTPATH}
 CMTPROJECTPATH=${P0DBANFFROOT}/../:${CMTPROJECTPATH}
