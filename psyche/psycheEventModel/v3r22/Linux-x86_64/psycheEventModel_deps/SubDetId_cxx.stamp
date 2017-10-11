@@ -1,0 +1,1 @@
+SubDetId_cxx_dependencies =  ../src/SubDetId.cxx   /physics/home/mhogan/software/t2k-software-clone/psyche/psycheCore/v3r22/src/BasicTypes.hxx   ../src/SubDetId.hxx  $(bin)psycheEventModel_deps/SubDetId_cxx.stamp

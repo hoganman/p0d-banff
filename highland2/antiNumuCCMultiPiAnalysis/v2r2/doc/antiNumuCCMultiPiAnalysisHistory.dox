@@ -1,0 +1,19 @@
+/*! \page highland2/antiNumuCCMultiPiAnalysisHistory History for the highland2/antiNumuCCMultiPiAnalysis Package 
+
+\section antiNumuCCMultiPiAnalysis_v2r1_history Version v2r1
+
+Freeze information:
+   - Freeze Date: Wed Oct  4 19:02:31 2017
+   - Freeze User: alexander
+   - Freeze Host: lapizmaylov.ific.uv.es
+
+
+First freeze of an utility package to run antinumu analyses:
+can switch between multi-track and multi-pi selecitons
+as well as between FGD1/2 
+
+At the moment uses antiNumuCCAnalysis to fill the vars 
+
+Works with v2 era of highland2 so this is what has started with v2r1
+
+*/
