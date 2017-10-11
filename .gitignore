@@ -20,5 +20,9 @@ app/batch_files
 make/Make.config
 config.sh
 cmt/*sh
-cmt/Makefile
-cmt/makefile
+./*/v*/cmt/Make*
+./*/v*/cmt/*sh
+./*/v*/Linux-x86_64
+./*/*/v*/cmt/Make*
+./*/*/v*/cmt/*sh
+./*/*/v*/Linux-x86_64
