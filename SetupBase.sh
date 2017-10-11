@@ -26,11 +26,11 @@ unset CVS_SERVER
 
 
 #source cmt packages
-export ND280ROOT=/physics/software/t2k/ND280/v11r31
-export CMTPATH=$ND280ROOT
-export CMTPROJECTPATH=${ND280ROOT}/../
-source ${ND280ROOT}/nd280/*/cmt/setup.sh
-source ${ND280ROOT}/nd280AnalysisTools/*/cmt/setup.sh
+export ND280=/physics/software/t2k/ND280/v11r31
+export CMTPATH=$ND280
+export CMTPROJECTPATH=${ND280}/../
+source ${ND280}/nd280/*/cmt/setup.sh
+source ${ND280}/nd280AnalysisTools/*/cmt/setup.sh
 #for SUBSTRINGCMTPATH in $(echo $CMTPATH | tr ":" "\n"); do
 #    if [ -f ${SUBSTRINGCMTPATH}/nd280/*/cmt/setup.sh ]; then
 #	source ${SUBSTRINGCMTPATH}/nd280/*/cmt/setup.sh
@@ -38,5 +38,5 @@ source ${ND280ROOT}/nd280AnalysisTools/*/cmt/setup.sh
 #	break
 #    fi
 #done
-source ${ND280ROOT}/ROOT/v5r34p09n04/Linux-x86_64/root/bin/thisroot.sh
+source ${ND280}/ROOT/v5r34p09n04/Linux-x86_64/root/bin/thisroot.sh
 
