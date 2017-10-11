@@ -1,1 +1,0 @@
-VersioningUtils_cxx_dependencies =  ../src/VersioningUtils.cxx   ../src/VersioningUtils.hxx  $(bin)psycheND280Utils_deps/VersioningUtils_cxx.stamp
