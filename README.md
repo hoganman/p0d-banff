@@ -11,8 +11,8 @@ Current list of working software
 
     SOFTWARE                      BRANCH       REPO
     _____________________________ ____________ __________________________________________________________
-    BANFF                         psyche-HEAD? hoganman@github.com/t2k-software/BANFF
-    T2KReWeight                   psyche-HEAD  hoganman@github.com/t2k-software/T2KReWeight
+    BANFF                         psyche-HEAD  hoganman@github.com/t2k-software/BANFF
+    T2KReWeight                   develop      hoganman@github.com/t2k-software/T2KReWeight
     nd280Psyche                   v3r26        :ext:anoncvs@repo.nd280.org:/home/trt2kmgr/ND280Repository
     psyche/psychePolicy           v3r2 
     psyche/psycheCore             v3r22
