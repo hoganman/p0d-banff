@@ -6,6 +6,8 @@
 #include"TROOT.h"
 #include"TSystem.h"
 
+ClassImp(BenchmarkProcess)
+
 BenchmarkProcess::BenchmarkProcess(TBenchmark *const bench, const TString& name)
 {
     SetDefaults();

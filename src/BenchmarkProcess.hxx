@@ -1,13 +1,14 @@
 #ifndef BenchmarkProcess_hxx
 #define BenchmarkProcess_hxx
 
+#include"TObject.h"
 #include"TBenchmark.h"
 #include"TString.h"
 
 #include"P0DBANFFTypes.hxx"
 
 ///Credit to this class goes to S. Assylbelkov and T. Wachala
-class BenchmarkProcess{
+class BenchmarkProcess: public TObject{
 public:
     BenchmarkProcess(TBenchmark *const bench, const TString& name);
     virtual ~BenchmarkProcess();
@@ -32,6 +33,8 @@ protected:
     TBenchmark *fBenchmark;
     TString fProcessName;
     bool fprintAll;
+
+    ClassDef(BenchmarkProcess,1);
 };
 
 #endif

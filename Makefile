@@ -17,6 +17,7 @@ LIB	:= ${P0DBANFFROOT}/lib
 SRC	:= ${P0DBANFFROOT}/src
 MACROS  := ${P0DBANFFROOT}/macros
 BIN	:= ${P0DBANFFROOT}/bin
+DIC     := ${P0DBANFFROOT}/dict
 VPATH    = ${PWD}:$(SRC)
 
 EMPTYSTRING := 
@@ -51,11 +52,14 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 #               Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
 
-ROOTLIBRARIES := -L$(ROOTLIBSDIR) -lGui -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic -lMinuit -lGeom -lEG -lGenVector -lTMVA
+#ROOTLIBRARIES := -L$(ROOTLIBSDIR) -lGui -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic -lMinuit -lGeom -lEG -lGenVector -lTMVA
+
+# HDRS = ROOTUtils.hxx BenchmarkProcess.hxx BenchmarkProcessdict.h P0DBANFFTypes.hxx
+# SRCS = ROOTUtils.cxx BenchmarkProcess.cxx BenchmarkProcessdict.C P0DBANFFTypes.cxx
 
 ##### All our targets#####
-# .o Objects
-ALLOBJS         := 
+# .o Objects 
+ALLOBJS         := ROOTUtils.o BenchmarkProcess.o BenchmarkProcessdict.o P0DBANFFTypes.o
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
@@ -69,18 +73,19 @@ TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
 all: $(TGT) 
 
 ##### compile all the objects "ALLOBJS"
-%.o: src/%.cxx
-	$(CXX) -c $< $(CXXFLAGS)
+%dict.o: %dict.C
+	$(CXX) $(CXXFLAGS) -c dict/$<
 
+%.o: %.cxx
+	$(CXX) $(CXXFLAGS) -c $<
 
-##### create a shared library from the above compiled objects
-# lib%.so: %.o
-# 	$(CXX) $(LDFLAGS) $(SOFLAGS) -o $(LIB)/$@ $^
-################################
+%dict.C: %.hxx
+	rootcint dict/$@ -c $<
+#######################
 
-libP0DBANFF.so: ROOTUtils.o BenchmarkProcess.o P0DBANFFTypes.o
+libP0DBANFF.so: $(ALLOBJS)
 	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
 
 #add a rule to clean all generated files from your directory
 clean: 
-	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d
+	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.*
