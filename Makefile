@@ -47,19 +47,14 @@ INCLUDES := $(ROOT_INCLUDES)
 
 
 # compiler and preprocessor flags
-#              Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
+# Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
 CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES) 
-#               Optimize, create a shared library
+# Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
-
-#ROOTLIBRARIES := -L$(ROOTLIBSDIR) -lGui -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -pthread -lm -ldl -rdynamic -lMinuit -lGeom -lEG -lGenVector -lTMVA
-
-# HDRS = ROOTUtils.hxx BenchmarkProcess.hxx BenchmarkProcessdict.h P0DBANFFTypes.hxx
-# SRCS = ROOTUtils.cxx BenchmarkProcess.cxx BenchmarkProcessdict.C P0DBANFFTypes.cxx
 
 ##### All our targets#####
 # .o Objects 
-ALLOBJS         := ROOTUtils.o BenchmarkProcess.o BenchmarkProcessdict.o P0DBANFFTypes.o
+ALLOBJS         := ROOTUtils.o MakeClFlatTree.o MakeClFlatTreedict.o MakeClSampleSummary.o MakeClSampleSummarydict.o BenchmarkProcess.o BenchmarkProcessdict.o P0DBANFFTypes.o
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
