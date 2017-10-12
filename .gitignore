@@ -6,6 +6,9 @@ CVS/
 *.so
 *.exe
 _ROOT_DICT_*
+*.swp
+*.d
+src/*.swp
 app/Spline.o*
 app/Spline.e*
 app/ND280Cov.o*

@@ -57,7 +57,7 @@ ROOTLIBRARIES := -L$(ROOTLIBSDIR) -lGui -lCore -lCint -lRIO -lNet -lHist -lGraf 
 # .o Objects
 ALLOBJS         := 
 # lib%.so Shared library Objects
-ALLLIBS		:= libROOTUtils.so
+ALLLIBS		:= libP0DBANFF.so
 # Executables
 ALLEXES         := 
 ##### Rules #####
@@ -78,8 +78,8 @@ all: $(TGT)
 # 	$(CXX) $(LDFLAGS) $(SOFLAGS) -o $(LIB)/$@ $^
 ################################
 
-libROOTUtils.so: ROOTUtils.o
-	$(LD) $(LDFLAGS) ROOTUtils.o -o $(LIB)/$@
+libP0DBANFF.so: ROOTUtils.o BenchmarkProcess.o P0DBANFFTypes.o
+	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
 
 #add a rule to clean all generated files from your directory
 clean: 
