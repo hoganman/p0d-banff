@@ -53,8 +53,10 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
 
 ##### All our targets#####
+# dic.o Object
+ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o BenchmarkProcessdict.o
 # .o Objects 
-ALLOBJS         := ROOTUtils.o MakeClFlatTree.o MakeClFlatTreedict.o MakeClSampleSummary.o MakeClSampleSummarydict.o BenchmarkProcess.o BenchmarkProcessdict.o P0DBANFFTypes.o
+ALLOBJS         := $(ALLDICS) ROOTUtils.o MakeClFlatTree.o MakeClSampleSummary.o BenchmarkProcess.o P0DBANFFTypes.o ColorBlindFriendly.o P0DBANFFInterface.o
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
