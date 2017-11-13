@@ -11,7 +11,7 @@ inOptions = {
         'h:':['help=','this help message'],
         'H:':['hours=','max time limit in hours'],
         'j:':['other=','other options separated by the # (pound) character'],
-        'L:':['list=','input file list'],
+        'L:':['list=','input file directory'],
         'm:':['memory=','per-job maximum memory limit in MEGAbytes'],
         'M:':['minutes=','max time in minutes'],
         'N:':['hostname=','sets the node/hostname (no defaults set)'],
@@ -32,7 +32,7 @@ isMC = True
 queueTag = '$' 
 T2KREWEIGHT = os.getenv('T2KREWEIGHT')
 BIN = '/physics/INSTALLATION/bin'
-BASE = '/physics/home/mhogan/software/t2k-software-clone'
+BASE = os.getenv('P0DBANFFROOT')
 GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2017.exe' %(BASE)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
@@ -266,7 +266,7 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('#$ '+otherOption+' \n')
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
-    submission.write('source %s/SetupBANFF-Head.sh\n'%(BASE))
+    submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     # submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
@@ -285,8 +285,10 @@ def CreateGenWeightsJobScript(jobNum,subFileList,runNumber,generator,outputPath,
     if(len(subFileList)) != 1:
         print 'ERROR: Wrong size of file list for job '+str(jobNum+1)
     INPUT = subFileList[0]
-    runType = 'MC'
-    if not isMC:
+    runType = ''
+    if isMC:
+        runType = 'MC'
+    else:
         runType = 'data'
     #create job
     jobFileName = 'ajob_'+str(jobNum)+'.sh'
@@ -397,7 +399,7 @@ def MakeHaddScript(outputPath,outputName,ExportedPathsName,lastJobNumber,jobSubm
     haddJob.write('#!/bin/sh\n')
     haddJob.write('\n')
     haddJob.write('source %s/%s\n'%(CWD,ExportedPathsName))
-    haddJob.write('source %s/SetupPrivateBANFF.sh\n'%(BASE))
+    haddJob.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     for prefixes in filePrefixes:
         outputNameWithPrefix = prefixes+outputName
 	haddJob.write('#%s\n'%(prefixes))
@@ -532,7 +534,8 @@ def main(argv):
         fileList[aFile] = 0
     otherRequirementsList = []
     numJobs = len(localFileList)
-    print localFileList
+    print 'There are '+str(len(localFileList))+' files to process\n'
+    #print localFileList
 
     if len(inputDirectory) == 0 or len(fileList) == 0:
         print 'ERROR: Invalid file list! Check the file name or contents.'
@@ -551,8 +554,9 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(outputPath) == 0:
-        print 'WARNING: Output path is the CWD.'
-        outputPath = '.'
+        print 'ERROR: No output path set!'
+        print helpstatement
+        sys.exit()
     if len(clusterName) == 0:
         print 'WARNING: No cluster name specified! Using csuhpc as default'
         clusterName = 'csuhpc'
@@ -603,6 +607,7 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
+    global isMC
     if generator not in ('DATA','data','Data') and generator not in ('MC', 'mc'):
         print 'ERROR: Must specify if MC or data'
         print helpstatement
