@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import sys, getopt,os,datetime,math,glob,time,subprocess 
-import CheckFilePython as CheckFile
 
 #######################
 inOptions = {
@@ -342,20 +341,11 @@ def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,pr
                 useHostName = useHostName+nodeName+'|'
         while useHostName[len(useHostName)-1] == '|':
             useHostName = useHostName[0:len(useHostName)-1]
-    enableCheckFile = False
-    #if int(os.popen('ls %s/*root | wc -l'%(outputPath)).read()) != 0:
-    #if len(glob.glob1(outputPath,"*.root")) != 0:
-    #    enableCheckFile = True
     globalFileListIndex = 0
     global fileList
     oaAnalysisFiles = fileList.keys()
     for jobNum in range(0,numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
-        if enableCheckFile:
-            print 'Checking if %s exist...'%(outputFile)
-            if CheckFile.CheckFile(outputFile) == 1:
-                 print '   Found, skipping'
-                 continue
         fileCounter = 0
         while fileCounter < numFilesPerJob:
             if globalFileListIndex == len(fileList):
