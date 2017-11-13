@@ -29,6 +29,8 @@ int CheckFileROOT(TString fileName = ""){
       status =  0;
     else if(f->IsZombie())
       status =  0;
+    else if(f->TestBit(TFile::kRecovered))
+      status =  0;
     else 
       status = 1;
     f->Close();

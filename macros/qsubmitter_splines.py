@@ -32,6 +32,7 @@ isMC = True
 queueTag = '$' 
 T2KREWEIGHT = os.getenv('T2KREWEIGHT')
 BIN = '/physics/INSTALLATION/bin'
+MACROS = '%s/macros' % (BASE)
 BASE = os.getenv('P0DBANFFROOT')
 GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2017.exe' %(BASE)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
@@ -297,13 +298,13 @@ def CreateGenWeightsJobScript(jobNum,subFileList,runNumber,generator,outputPath,
     outputFile = '%s_%d.root'%(outputName,jobNum)
     outputFileAndPath = '%s/%s'%(outputPath,outputFile)
     OUTPUT = '%s/%s'%(outputPath,outputFile)
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,BIN,OUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
     command = '%s -p %s -o %s -r %s\n' %(GENWEIGHTS, INPUT, OUTPUT, runType)
     job.write(command)
     job.write('fi\n')
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,BIN,OUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
     job.write('  echo "The GenWeights failed! There was some kind of crash!"\n')

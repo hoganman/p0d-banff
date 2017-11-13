@@ -18,7 +18,7 @@ def CheckFile(inFileName = ''):
     if not isfile(inFileName):
         return 0
     inFile = TFile.Open(inFileName)
-    if not inFile.IsOpen():
+    if not inFile or not inFile.IsOpen():
         return 0
     elif inFile.IsRaw():
         inFile.Close()
@@ -30,6 +30,9 @@ def CheckFile(inFileName = ''):
         inFile.Close()
         return 0
     elif inFile.IsZombie():
+        inFile.Close()
+        return 0
+    elif inFile.TestBit(TFile.kRecovered):
         inFile.Close()
         return 0
     else:

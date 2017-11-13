@@ -39,6 +39,7 @@ queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
+MACROS = '%s/macros' % (BASE)
 RUNCREATEFLATTREE = subprocess.Popen(['which','RunCreateFlatTree.exe'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
@@ -296,13 +297,13 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,generator,outputPath,ou
     outputFile = '%s_%d.root'%(outputName,jobNum)
     outputFileAndPath = '%s/%s'%(outputPath,outputFile)
     FTOUTPUT = '%s/%s'%(outputPath,outputFile)
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,BIN,FTOUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
     command = '  %s -v -o %s %s \n'%(RUNCREATEFLATTREE,outputFileAndPath,subFileListName)
     job.write(command)
     job.write('fi\n')
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,BIN,FTOUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
     job.write('  echo "The FlatTree failed! There was some kind of crash!"\n')
