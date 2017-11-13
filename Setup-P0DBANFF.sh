@@ -1,12 +1,19 @@
 #!/bin/sh
-#########################################
-#### Update this for every checkout #####
-export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
-#########################################
+#################################################
+#### Update P0DBANFFROOT for every checkout #####
+#export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
+#################################################
+
+if [ -z ${P0DBANFFROOT+x} ]; then
+    echo "P0DBANFFROOT was not declared. Setting it to the CWD="$PWD
+    export P0DBANFFROOT=$PWD
+fi
+
 if [ -z ${ROOTSYS+x} ]; then 
 #   echo "ROOTSYS is unset"; 
-  source SetupBase.sh
+    source $P0DBANFFROOT/SetupBase.sh
 fi
+
 
 PYTHONPATH=${P0DBANFFROOT}/macros:${PYTHONPATH}
 

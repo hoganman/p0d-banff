@@ -1,1 +1,1 @@
-/physics/data/BANFF/asg2016oa/Data/Run3b_WaterOut_Data_nd280Psyche_v1r23p19.root
+/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run3b-air/Run3b_Air_data_splines.root

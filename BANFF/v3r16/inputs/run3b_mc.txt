@@ -1,1 +1,1 @@
-magnet /physics/data/BANFF/asg2016oa/MC/Run3b_WaterOut_BeamC_NEUT_nd280Psyche_v1r23p21_CCCohWeight.root
+magnet /physics/home/mhogan/splines/highlandIOv2r21/mcp6_Spin_B/neut/run3b-air/Run3b_Air_splines.root

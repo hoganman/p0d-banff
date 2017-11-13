@@ -2,6 +2,8 @@
 
 # Prelim / P0D-BANFF Project independent #
 #######################
+OLD_PATH=$PATH
+#######################
 SOFTWARE=/physics/software
 export PYTHONPATH=./:/physics/INSTALLATION/bin
 export SCRIPTS=/physics/scripts
@@ -39,3 +41,7 @@ source ${ND280}/nd280AnalysisTools/*/cmt/setup.sh
 #    fi
 #done
 source ${ND280}/ROOT/v5r34p09n04/Linux-x86_64/root/bin/thisroot.sh
+
+#######################
+PATH=$OLD_PATH:$PATH
+#######################
