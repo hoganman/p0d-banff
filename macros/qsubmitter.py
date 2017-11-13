@@ -38,7 +38,7 @@ isMC = False
 queueTag = '$' 
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
-BASE = '/physics/home/mhogan/software/t2k-software-clone'
+BASE = os.getenv('P0DBANFFROOT')
 RUNCREATEFLATTREE = subprocess.Popen(['which','RunCreateFlatTree.exe'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
@@ -272,7 +272,7 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
             submission.write('#$ '+otherOption+' \n')
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
-    submission.write('source %s/SetupBANFF-Head.sh\n'%(BASE))
+    submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     submission.write('source %s/nd280Highland2/v2r22/cmt/setup.sh\n'%(BASE))
     submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
     submission.write('\n')
@@ -381,8 +381,9 @@ def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,pr
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        print "sleeping for 30 seconds till next job sub"
-        time.sleep(30) #seconds
+        if jobNum+1 != numJobs:
+            print "sleeping for 30 seconds till next job sub"
+            time.sleep(30) #seconds
 
         #restart list
         del subFileList[0:]
@@ -398,7 +399,7 @@ def MakeHaddScript(outputPath,outputName,ExportedPathsName,lastJobNumber,jobSubm
     haddJob.write('#!/bin/sh\n')
     haddJob.write('\n')
     haddJob.write('source %s/%s\n'%(CWD,ExportedPathsName))
-    haddJob.write('source %s/SetupPrivateBANFF.sh\n'%(BASE))
+    haddJob.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     for prefixes in filePrefixes:
         outputNameWithPrefix = prefixes+outputName
 	haddJob.write('#%s\n'%(prefixes))
