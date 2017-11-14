@@ -9,17 +9,23 @@
 """
 
 from sys import exit
-from os.path import isfile
 from ROOT import TFile
+from FileTools import File
 
 
 def checkfile(infilename=''):
     """Checks if the file is bad (0) or good (1)"""
+    test_file = File(infilename)
     status = 0
-    if not isfile(infilename):
+    if not test_file.exists():
         status = 0
     else:
-        infile = TFile.Open(infilename)
+        infile = None
+        try:
+            infile = TFile.Open(infilename)
+        except IOError:
+            status = 0
+            infile = None
         if not infile or not infile.IsOpen():
             status = 0
         elif infile.IsRaw():

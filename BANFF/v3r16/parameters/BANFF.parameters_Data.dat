@@ -114,11 +114,11 @@ Parameters that affect the fit code
 =======================================================
 
 Whether to perform the fit to data.
-< BANFF.RunFit.FitData = 0 >
+< BANFF.RunFit.FitData = 1 >
 
 Whether to fit to nominal MC instead of to the data (useful for validation
 purposes).  NB: This only does anything if FitData above is false.
-< BANFF.RunFit.FitNominalMC = 1 >
+< BANFF.RunFit.FitNominalMC = 0 >
 
 If fitting to toy MC instead of data, the name of the file to load the MC file
 from.
