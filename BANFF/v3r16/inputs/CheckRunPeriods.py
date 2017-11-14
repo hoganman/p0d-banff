@@ -21,25 +21,30 @@ def readrunperiods(filename='run_periods.txt'):
     inputfile.close()
 
     run_periods = {}
-    run_filelist_template = ['', '', '']
     for line in inputfilelist:
         if len(line) <= 1:
             continue
         options = line.split(' ')
         noptions = len(options)
         runkey = options[noptions - 1]
-        run_periods[runkey] = run_filelist_template
+
+        run_periods[runkey] = ['', '', '']
         if noptions == 3:
             del options[noptions - 1]
             noptions = noptions - 1
+        else:
+            print "ERROR: input for run period does not match search criteria"
         if noptions != 2:
             print "ERROR: wrong number of files"
+        # print runkey
+        # print options
         while noptions > 0:
             testfile = options[0]
             if len(testfile) == 0:
                 del options[0]
                 noptions = noptions - 1
                 continue
+            # print testfile
             if testfile.find('data') == -1 and testfile.find('mc') == -1:
                 print "ERROR: no data or mc descriptor" + testfile
             elif testfile.find('data') != -1:
@@ -65,7 +70,6 @@ def parsemcfile(filename):
     mcfiles = inputfile.read().split('\n')
     inputfile.close()
     for line in mcfiles:
-        # print "line = " + line
         lineoptions = line.split(' ')
         if len(line) == 0:
             continue
@@ -84,23 +88,36 @@ def main(argv):
     """Runs the main program"""
     run_periods = readrunperiods()
     for run_period, file_list in run_periods.iteritems():
+        print "Run period: " + str(run_period)
+        spaces = '            '
+        header = spaces + '--------'
         if len(file_list[DATAINDEX]) == 0:
-            print "ERROR: %s's data file is NOT listed" % (run_period)
+            print header
+            print spaces+"ERROR: %s's data file is NOT listed" % (run_period)
+            print header
         filestatus = checkfile(file_list[DATAINDEX])
         if filestatus == 0:
-            print "ERROR: %s's data file is BAD!" % (run_period)
+            print header
+            print spaces+"ERROR: %s's data file is BAD!" % (run_period)
+            print header
         if len(file_list[MCMAGNETINDEX]) == 0:
-            print "ERROR: %s's MC magnet file is NOT listed" % (run_period)
+            print header
+            print spaces+"ERROR: %s's magnet file is NOT listed" % (run_period)
+            print header
         filestatus = checkfile(file_list[MCMAGNETINDEX])
         if filestatus == 0:
-            print "ERROR: %s's MC magnet file is BAD!" % (run_period)
+            print header
+            print spaces+"ERROR: %s's MC magnet file is BAD!" % (run_period)
+            print header
 
         if len(file_list[MCSANDINDEX]) == 0:
-            print "warning: %s's MC sand file does NOT exist" % (run_period)
+            print spaces+"warning: %s's sand file is NOT listed" % (run_period)
         else:
             filestatus = checkfile(file_list[MCSANDINDEX])
             if filestatus == 0:
-                print "ERROR: %s's MC sand file is BAD!" % (run_period)
+                print header
+                print spaces+"ERROR: %s's MC sand file is BAD!" % (run_period)
+                print header
 
 
 if __name__ == "__main__":

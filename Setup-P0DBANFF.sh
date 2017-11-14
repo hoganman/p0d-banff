@@ -5,8 +5,8 @@
 #################################################
 
 if [ -z ${P0DBANFFROOT+x} ]; then
-    echo "P0DBANFFROOT was not declared. Setting it to the CWD="$PWD
-    export P0DBANFFROOT=$PWD
+    echo "P0DBANFFROOT was not declared. Setting it to "/physics/home/mhogan/software/p0d-banff/p0d-banff
+    export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
 fi
 
 if [ -z ${ROOTSYS+x} ]; then 

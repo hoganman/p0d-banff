@@ -18,22 +18,24 @@ def checkfile(infilename=''):
     status = 0
     if not isfile(infilename):
         status = 0
-    infile = TFile.Open(infilename)
-    if not infile or not infile.IsOpen():
-        status = 0
-    elif infile.IsRaw():
-        status = 0
-    elif not infile.IsBinary():
-        status = 0
-    elif not infile.GetListOfKeys().GetSize():
-        status = 0
-    elif infile.IsZombie():
-        status = 0
-    elif infile.TestBit(TFile.kRecovered):
-        status = 0
     else:
-        status = 1
-    infile.Close()
+        infile = TFile.Open(infilename)
+        if not infile or not infile.IsOpen():
+            status = 0
+        elif infile.IsRaw():
+            status = 0
+        elif not infile.IsBinary():
+            status = 0
+        elif not infile.GetListOfKeys().GetSize():
+            status = 0
+        elif infile.IsZombie():
+            status = 0
+        elif infile.TestBit(TFile.kRecovered):
+            status = 0
+        else:
+            status = 1
+        if infile:
+            infile.Close()
     return status
 
 
