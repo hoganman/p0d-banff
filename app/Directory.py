@@ -14,10 +14,10 @@ class Directory(object):
 
     def get(self):
         """returns the directory path"""
-        return self.directory_name()
+        return self.directory_name
 
     def exists(self, directory_name=''):
-        """checks if the directory exists"""
+        """checks if the directory in question exists"""
         if len(directory_name) == 0:
             return int(os.path.isdir(self.get()))
         else:
@@ -33,6 +33,6 @@ class Directory(object):
     def mkdir(self, directory_name=''):
         """make directory"""
         if len(directory_name) == 0:
-            return int(os.mkdir(self.get()))
+            return int(os.makedirs(self.get()))
         else:
-            return int(os.mkdir(directory_name))
+            return int(os.makedirs(directory_name))

@@ -1,6 +1,7 @@
 """A template abstract different machine files"""
 
 from os.path import isfile
+from os.path import isdir
 
 
 class File(object):
@@ -26,6 +27,20 @@ class File(object):
             return int(isfile(self.get_file_name()))
         else:
             return int(isfile(file_name))
+
+    def is_file(self, file_name=''):
+        """test if a file"""
+        if len(file_name) == 0:
+            return int(isfile(self.get_file_name()))
+        else:
+            return int(isfile(file_name))
+
+    def is_dir(self, directory_name):
+        """checks if is in fact a directory"""
+        if len(directory_name) == 0:
+            return int(isdir(self.get_file_name()))
+        else:
+            return int(isdir(directory_name))
 
     def contains(self, search_text):
         """searches for a string in the file name"""

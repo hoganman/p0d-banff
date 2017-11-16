@@ -88,6 +88,9 @@ class ReadTextFile(TextFile):
         status = self.open()
         if status is self.IS_OPEN:
             retlist = self.file.read().split('\n')
+            while '' in retlist:
+                del retlist[retlist.index('')]
         else:
             print 'ERROR: Could not get list'
+        self.close()
         return retlist
