@@ -20,6 +20,8 @@ app/batchSplinesData.sh
 app/batchSplinesMagnet.sh
 app/batchSplinesSand.sh
 app/batch_files
+app/*pyc
+run_lists/*pyc
 make/Make.config
 config.sh
 cmt/*sh

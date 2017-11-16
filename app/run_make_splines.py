@@ -165,7 +165,7 @@ def make_qsub_flattree_data(run_name):
         return None
     flatttree_dir_list = '-L %s' % (flattree_dir.get())
     queue = '-m %s' % (QUEUE)
-    minutes = '-M %s' % (MCMIN)
+    minutes = '-M %s' % (DATAMIN)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
                                                DATA, run_name.low()))
     if not output_path_name.exists():
@@ -193,7 +193,7 @@ def submit(command):
         print 'ERROR: There is no command to be run'
         return
     print command
-    # os.system(command)
+    os.system(command)
 
 
 RUN2W = RunName('run2-water', 'Run2_Water')
