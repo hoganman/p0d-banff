@@ -1,52 +1,10 @@
-"""A general purpose tool to extract text file info"""
+"""A class to check the read or write text files"""
 
-from os.path import isfile
-from ROOT import TFile
-
-
-class File(object):
-    """a general class for a file"""
-
-    INDETERMINATE = -1
-    IS_BAD = 0
-    IS_GOOD = 1
-
-    def __init__(self, input_file_name=''):
-        self.file_name = input_file_name
-
-    def __str__(self):
-        return 'Text file %r' % (self.file_name)
-
-    def get_file_name(self):
-        """returns the file name"""
-        return self.file_name
-
-    def exists(self, file_name=''):
-        """checks if the file in question exists"""
-        if len(file_name) == 0:
-            return int(isfile(self.get_file_name()))
-        else:
-            return int(isfile(file_name))
-
-    def contains(self, search_text):
-        """searches for a string in the file name"""
-        return self.get_file_name().find(search_text) != -1
-
-    def is_extension(self, ext):
-        """searches if the extension is ext"""
-        return self.contains(ext)
-
-    def is_root_file(self):
-        """checks if is ROOT .root file"""
-        return self.is_extension('.root')
-
-    def is_text_file(self):
-        """checks if is txt file"""
-        return self.is_extension('.txt')
+import File
 
 
-class TextFile(File):
-    """The object that holds basic file info """
+class TextFile(File.File):
+    """The object that holds basic text file info """
 
     IS_OPEN = 2
     IS_CLOSED = 3
@@ -89,43 +47,6 @@ class TextFile(File):
                 status = self.IS_CLOSED
             except IOError:
                 print 'The file is not open, there is nothing to close'
-        return status
-
-
-class ROOTFile(File):
-    """Basically to check if a file exists"""
-
-    def __init__(self, input_file_name=''):
-        super(ROOTFile, self).__init__(input_file_name)
-        self.status = self.checkfile()
-
-    def checkfile(self):
-        """Checks if the file is bad (0) or good (1)"""
-        if not self.exists():
-            return self.IS_BAD
-        infile = None
-        status = self.INDETERMINATE
-        try:
-            infile = TFile.Open(self.get_file_name())
-        except IOError:
-            status = self.IS_BAD
-            infile = None
-        if not infile or not infile.IsOpen():
-            status = self.IS_BAD
-        elif infile.IsRaw():
-            status = self.IS_BAD
-        elif not infile.IsBinary():
-            status = self.IS_BAD
-        elif not infile.GetListOfKeys().GetSize():
-            status = self.IS_BAD
-        elif infile.IsZombie():
-            status = self.IS_BAD
-        elif infile.TestBit(TFile.kRecovered):
-            status = self.IS_BAD
-        else:
-            status = self.IS_GOOD
-        if infile:
-            infile.Close()
         return status
 
 

@@ -6,7 +6,6 @@ import sys, getopt,os,datetime,math,glob,time,subprocess
 inOptions = {
         'c:':['cluster=','which computing cluster currently supported are either "csuhpc" OR "csuhep"'],
         'e:':['email=','email address to notify'],
-        'g:':['generator=','which monte carlo generator (NEUT,GENIE,PARTICLEGUN,GUN) or using data (DATA)'],
         'h:':['help=','this help message'],
         'H:':['hours=','max time limit in hours'],
         'j:':['other=','other options separated by the # (pound) character'],
@@ -281,7 +280,7 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
     submission.close()
     os.system('chmod +x %s'%(submissionFileName))
 
-def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,generator,outputPath,outputName):
+def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
     #create filelist
     CWD = os.getcwd()
     subFileListName = '%s/filelists/filelist_%d.txt'%(CWD,jobNum)
@@ -313,7 +312,7 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,generator,outputPath,ou
     os.system('chmod +x %s'%(jobFileName))
 
 
-def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
+def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
 
     subFileList = []
     os.mkdir('filelists')
@@ -367,7 +366,7 @@ def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,pr
 
         #create job script
         FlatTrees.append(outputFile)
-        CreateFlatTreeJobScript(jobNum+1,subFileList,runNumber,generator,outputPath,outputName)
+        CreateFlatTreeJobScript(jobNum+1,subFileList,runNumber,outputPath,outputName)
 
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
@@ -446,7 +445,6 @@ def main(argv):
     hardRequirements = ''
     otherRequirements = ''
     emailAddress = ''
-    generator = ''
     clusterName = ''
     global csuhpc
     global queueTag
@@ -500,8 +498,6 @@ def main(argv):
             otherRequirements = arg
         elif opt in ('-e',GetLongOption('-e')):
             emailAddress = arg
-        elif opt in ('-g',GetLongOption('-g')):
-            generator = arg
         elif opt in ('-m',GetLongOption('-m')):
             maxMemory = arg
         elif opt in ('-c',GetLongOption('-c')):
@@ -543,13 +539,6 @@ def main(argv):
     if len(outputPath) == 0:
         print 'WARNING: Output path is the CWD.'
         outputPath = '.'
-    #if len(generator) == 0:
-    #    print 'ERROR: No generator for MC or using data is specified.'
-    #    print helpstatement
-    #    sys.exit()
-    #if runNumber == -1:
-    #    print 'WARNING: No run number specified! Will be using 4.'
-    #    runNumber = 4
     if len(clusterName) == 0:
         print 'WARNING: No cluster name specified! Using csuhpc as default'
         clusterName = 'csuhpc'
@@ -600,19 +589,6 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
-    #if generator not in ('DATA','data','Data') and generator not in ('NEUT','GENIE','PARTICLEGUN','GUN'):
-    #    print 'ERROR: Must specify if MC or data'
-    #    print helpstatement
-    #    sys.exit()
-    #elif generator in ('DATA','data','Data'):
-    #    isMC = False
-    #elif generator in ('NEUT','GENIE','PARTICLEGUN','GUN'):
-    #    isMC = True
-    #else:
-    #    print 'ERROR: Must specify if MC or data'
-    #    print helpstatement
-    #    sys.exit()
-
     InitNodes()
     #make directory for new jobs
     currentTime = datetime.datetime.now()
@@ -628,7 +604,7 @@ def main(argv):
     walltimeMinutes = walltimeMinutes if walltimeMinutes >= 0 else 0
     walltimeHours = walltimeHours if walltimeHours >= 0 else 0
     totalTimeInHours = float(walltimeHours + 1./60. * walltimeMinutes)
-    MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
+    MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
     MakeHaddScript(outputPath,outputName,ExportedPathsName,numJobs,"submit_ajob")
     os.chdir('../')
 
