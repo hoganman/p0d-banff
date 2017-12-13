@@ -6,14 +6,13 @@
 import sys
 import os
 import ROOT
-from ROOT import gSystem
 
 
 def main(argv):
     """main function"""
     p0dbanff = os.getenv('P0DBANFFROOT')
-    gSystem.Load(os.path.join(p0dbanff, 'lib/libP0DBANFF.so'))
-    print 'hello world!'
+    ROOT.gSystem.Load(os.path.join(p0dbanff, 'lib/libP0DBANFF.so'))
+    print argv[0]
 
 
 if __name__ == '__main__':

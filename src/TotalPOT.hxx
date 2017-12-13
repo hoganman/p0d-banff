@@ -7,9 +7,9 @@
 #ifndef TotalPOT_hxx
 #define TotalPOT_hxx
 
-#include "TObject.h"
+#include"Rtypes.h"
 
-class TotalPOT : public TObject {
+class TotalPOT {
 
 public:
     ///c-tor

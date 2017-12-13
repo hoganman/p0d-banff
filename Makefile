@@ -53,11 +53,17 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
 
+ALLCLASSES := MakeClSampleSummary MakeClFlatTree P0DBANFFInterface P0DBANFFTypes ROOTUtils BenchmarkProcess ColorBlindFriendly PsycheHeader_Minimal TotalPOT
+
 ##### All our targets#####
-# dic.o Object
-ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o BenchmarkProcessdict.o 
+# dict.o Object
+ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
+OBJS     := $(foreach obj, $(ALLCLASSES), $(obj).o)
+ALLOBJS := $(ROOTDICTS) $(OBJS)
+
+#ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o P0DBANFFTypesdict.o ROOTUtilsdict.o BenchmarkProcessdict.o ColorBlindFriendlydict.o PsycheHeader_Minimaldict.o TotalPOTdict.o 
 # .o Objects 
-ALLOBJS         := ROOTUtils.o MakeClFlatTree.o MakeClSampleSummary.o BenchmarkProcess.o P0DBANFFTypes.o ColorBlindFriendly.o P0DBANFFInterface.o PsycheHeader_Minimal.o TotalPOT.o $(ALLDICS) 
+#ALLOBJS         := $(ALLDICS) MakeClSampleSummary.o MakeClFlatTree.o P0DBANFFInterface.o P0DBANFFTypes.o ROOTUtils.o BenchmarkProcess.o ColorBlindFriendly.o PsycheHeader_Minimal.o TotalPOT.o
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
