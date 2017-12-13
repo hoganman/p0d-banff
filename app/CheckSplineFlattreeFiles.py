@@ -6,9 +6,8 @@
 import sys
 import os
 from os.path import join
-import ROOT
-
 from Directory import Directory
+import ROOT
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 MCP6B = 'mcp6_Spin_B/neut'
@@ -37,20 +36,29 @@ def check_directory_for_ROOT_files(directory, file_name):
     return chain
 
 
+def check_pot(chain, run_name='Run4WaterMC'):
+    """for a given run (MC or data), check if pot matches"""
+    from ROOT import TotalPOT, Header
+    pot = TotalPOT().GetPOT(run_name)
+    header = Header(chain)
+    print pot
+    print header.GetPOTGoodBeamGoodND280()
+
+
 def main(argv):
     """main function"""
     print 'Running %s' % (argv[0])
-    if len(argv) != 2:
+    if len(argv) < 2:
         print 'ERROR: The second argument must be the directory'
-    if len(argv) != 3:
+    if len(argv) < 3:
         print 'ERROR: The third argument must be the file name'
         return
     ROOT.gSystem.Load(os.path.join(P0DBANFF, 'lib/libP0DBANFF.so'))
-    from ROOT import TotalPOT, Header
+    chain = check_directory_for_ROOT_files(argv[1], argv[2])
+    check_pot(chain)
     # base_directory = '/physics/home/mhogan'
     # splines = 'splines'
     # flattrees = 'flattree'
-    pot = TotalPOT
 
 
 if __name__ == '__main__':

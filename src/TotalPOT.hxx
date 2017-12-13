@@ -8,6 +8,8 @@
 #define TotalPOT_hxx
 
 #include"Rtypes.h"
+#include"TString.h"
+#include<iostream>
 
 class TotalPOT {
 

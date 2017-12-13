@@ -40,3 +40,32 @@ void TotalPOT::SetPOT(){
     _Run3bAnd3cMCRatio = 0.13542;
 
 }
+
+//**************************************************
+Double_t TotalPOT::GetPOT(const TString& runName) const {
+//**************************************************
+
+    if(runName.Contains("MC")){
+        if(runName.Contains("Run2Air"))   return _POTRun2AirMC;
+        if(runName.Contains("Run2Water")) return _POTRun2WaterMC;
+        if(runName.Contains("Run3bAir"))  return _POTRun3bAirMC;
+        if(runName.Contains("Run3cAir"))  return _POTRun3cAirMC;
+        if(runName.Contains("Run4Air"))   return _POTRun4AirMC;
+        if(runName.Contains("Run4Water")) return _POTRun4WaterMC;
+        if(runName.Contains("Run5Water")) return _POTRun5WaterMC;
+    }
+    else if(runName.Contains("Data") || runName.Contains("data")){
+        if(runName.Contains("Run2Air"))   return _POTRun2AirData;
+        if(runName.Contains("Run2Water")) return _POTRun2WaterData;
+        if(runName.Contains("Run3bAir"))  return _POTRun3bAirData;
+        if(runName.Contains("Run3cAir"))  return _POTRun3cAirData;
+        if(runName.Contains("Run4Air"))   return _POTRun4AirData;
+        if(runName.Contains("Run4Water")) return _POTRun4WaterData;
+        if(runName.Contains("Run5Water")) return _POTRun5WaterData;
+    }
+    else{
+        std::cout  << "Could not determine if data or MC" << std::endl; 
+    }
+    return 0;
+
+}
