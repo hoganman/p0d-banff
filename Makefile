@@ -10,8 +10,6 @@
 #
 # using this makefile from scratch
 # executing "make" will generate all libraries and executiables
-#
-# If there are changes to FlatTree gneration only, then "make CC1pi_v2.exe" is all you need to do
 
 LIB	:= ${P0DBANFFROOT}/lib
 SRC	:= ${P0DBANFFROOT}/src
@@ -23,10 +21,12 @@ VPATH    = ${PWD}:$(SRC)
 EMPTYSTRING := 
 
 # Include machine specific flags and locations (inc. files & libs)
-#include $(P0DBANFFROOT)/src/make/Make.include
+ifneq ("$(wildcard ${SRC}/make/Make.include)", "")
+include ${SRC}/make/Make.include
+endif
 
 #Your compiler
-CXX	= $(shell which g++)
+CXX	= $(shell which g++) $(CXX_MACHINE_FLAGS)
 LD	= $(shell which g++)
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f

@@ -8,7 +8,9 @@ CVS/
 _ROOT_DICT_*
 *.swp
 *.d
+.syntastic*
 src/*.swp
+src/make
 app/Spline.o*
 app/Spline.e*
 app/ND280Cov.o*
