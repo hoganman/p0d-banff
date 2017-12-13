@@ -5,9 +5,9 @@ title: p0d-banff
 P0D-BANFF
 =========
 
-Below is a list of the working pckages. All these packages are managed by CMT but not all from the same repo
+This repo is designed to contain all the necessary ingredients to run P0D samples in BANFF.
 
-Current list of working software 
+Below is a list of the working pckages. All these packages are managed by CMT but not all from the same repo
 
     SOFTWARE                      BRANCH       REPO
     _____________________________ ____________ __________________________________________________________

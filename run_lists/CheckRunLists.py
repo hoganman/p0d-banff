@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""test if the file lists have existant files"""
+"""Check both P6 MCP and RDP run list contents"""
 
 import os
+import sys
 from ROOT import gSystem
 
 from TextFile import ReadTextFile
 from Directory import Directory
 from ROOTFile import ROOTFile
-
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF + '/run_lists'
@@ -15,12 +15,9 @@ RDP6M = 'rdp6_Spin_M'
 MCP6B = 'mcp6_Spin_B/neut'
 MCP6BANTI = 'mcp6_Spin_B/anti-neut'
 
+# this library helps ROOT not complain about missing dictionaries
 gSystem.Load('%s/liboaAnalysisReader.so' % (
     os.path.join(P0DBANFF, 'T2KReWeight/libReadoaAnalysis')))
-
-DIRECTORIES = ['%s/%s' % (RUNLISTS, RDP6M), '%s/%s' % (RUNLISTS, MCP6B)]
-# DIRECTORIES = ['%s/%s' % (RUNLISTS, RDP6M)]
-# DIRECTORIES = ['%s/%s' % (RUNLISTS, MCP6B)]
 
 
 def check_oaanalysis_files(file_list, file_list_name):
@@ -41,7 +38,7 @@ file path in %s' % (analysis_file, file_list_name)
 
 
 def check_directory_run_lists(directory):
-    """doc string"""
+    """Given the directory with the run lists, check oaanalysis contents"""
     test_dir = Directory(directory)
     if not test_dir.exists():
         print 'The directory \"%s\" does not exist!' % (directory)
@@ -55,3 +52,13 @@ def check_directory_run_lists(directory):
             continue
         file_list = run_list_file.get_file_as_list()
         check_oaanalysis_files(file_list, run_list_name)
+
+
+def main(argv):
+    """Check both P6 MCP and RDP"""
+    check_directory_run_lists(os.path.join(RUNLISTS, MCP6B))
+    check_directory_run_lists(os.path.join(RUNLISTS, RDP6M))
+
+
+if __name__ == '__main__':
+    main(sys.argv)

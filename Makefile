@@ -30,6 +30,7 @@ CXX	= $(shell which g++)
 LD	= $(shell which g++)
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f
+ROOTCINT = $(shell which rootcint) -f
 
 #ROOT provides root-config to automate building of your include path and libs path
 ROOT            := $(shell which root) -l -b -q
@@ -54,9 +55,9 @@ LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
 
 ##### All our targets#####
 # dic.o Object
-ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o BenchmarkProcessdict.o
+ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o BenchmarkProcessdict.o 
 # .o Objects 
-ALLOBJS         := $(ALLDICS) ROOTUtils.o MakeClFlatTree.o MakeClSampleSummary.o BenchmarkProcess.o P0DBANFFTypes.o ColorBlindFriendly.o P0DBANFFInterface.o
+ALLOBJS         := ROOTUtils.o MakeClFlatTree.o MakeClSampleSummary.o BenchmarkProcess.o P0DBANFFTypes.o ColorBlindFriendly.o P0DBANFFInterface.o PsycheHeader_Minimal.o TotalPOT.o $(ALLDICS) 
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
@@ -77,7 +78,7 @@ all: $(TGT)
 	$(CXX) $(CXXFLAGS) -c $<
 
 %dict.C: %.hxx
-	rootcint dict/$@ -c $<
+	$(ROOTCINT) dict/$@ -c $<
 #######################
 
 libP0DBANFF.so: $(ALLOBJS)
