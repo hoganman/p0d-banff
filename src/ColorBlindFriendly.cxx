@@ -4,7 +4,6 @@
 
 namespace ColorBlindColors
 {
-
     const TColor cbBlack  = TColor(kcbBlack ,0,0,0,"cbBlack");
     const TColor cbOrange = TColor(kcbOrange,.9,.6,0,"cbOrange");
     const TColor cbSky    = TColor(kcbSky   ,.35,.7,.9,"cbSky");
@@ -22,7 +21,6 @@ namespace ColorBlindColors
     const TColor* const pcbRed    = const_cast<TColor*>(&cbRed);
     const TColor* const pcbPurple = const_cast<TColor*>(&cbPurple);
     const TColor* const pcbYellow = const_cast<TColor*>(&cbYellow);
-
 }
 
 void ColorBlindColors::SetCBFColorBar(int nColors)

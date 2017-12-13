@@ -39,7 +39,6 @@ namespace ColorBlindColors {
     extern const TColor* const pcbPurple;// = nullptr;//const_cast<TColor*>(&cbPurple);
     extern const TColor* const pcbYellow;// = nullptr;//const_cast<TColor*>(&cbYellow);
 
-
     const Int_t nColorBins = 999;
     const Double_t length4[]    = {0.00,0.3333,0.6667,1.00} ;
     const Double_t fourColorR[] = {0.00,0.80,0.80,0.95};
