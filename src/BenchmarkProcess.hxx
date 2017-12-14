@@ -5,7 +5,7 @@
 #include"TBenchmark.h"
 #include"TString.h"
 
-#include"P0DBANFFTypes.hxx"
+#include"P0DBANFFInterface.hxx"
 
 ///Credit to this class goes to S. Assylbelkov and T. Wachala
 class BenchmarkProcess: public TObject{

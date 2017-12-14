@@ -38,26 +38,47 @@ file path in %s' % (analysis_file, file_list_name)
 
 
 def check_directory_run_lists(directory):
-    """Given the directory with the run lists, check oaanalysis contents"""
+    """Given the directory with the run lists, loop over run lists"""
     test_dir = Directory(directory)
     if not test_dir.exists():
         print 'The directory \"%s\" does not exist!' % (directory)
         return
     for run_list_name in sorted(os.listdir(directory)):
-        run_list_file = ReadTextFile(os.path.join(directory, run_list_name))
-        print 'On file %s' % (run_list_file.get_file_name())
-        if not run_list_file.exists():
-            print 'Cannot open \"%s\", it does not exist' % (
-                run_list_file.get_file_name())
-            continue
-        file_list = run_list_file.get_file_as_list()
-        check_oaanalysis_files(file_list, run_list_name)
+        check_run_list_file(os.path.join(directory, run_list_name))
+        # run_list_file = ReadTextFile(os.path.join(directory, run_list_name))
+        # print 'On file %s' % (run_list_file.get_file_name())
+        # if not run_list_file.exists():
+        #     print 'Cannot open \"%s\", it does not exist' % (
+        #         run_list_file.get_file_name())
+        #     continue
+        # file_list = run_list_file.get_file_as_list()
+        # check_oaanalysis_files(file_list, run_list_name)
+
+
+def check_run_list_file(run_list_filename):
+    """given a run list file, check oaanalysis contents"""
+    run_list_file = ReadTextFile(run_list_filename)
+    print 'On file %s' % (run_list_file.get_file_name())
+    if not run_list_file.exists():
+        print 'Cannot open \"%s\", it does not exist' % (
+            run_list_file.get_file_name())
+        return
+    file_list = run_list_file.get_file_as_list()
+    check_oaanalysis_files(file_list, run_list_filename)
 
 
 def main(argv):
-    """Check both P6 MCP and RDP"""
-    check_directory_run_lists(os.path.join(RUNLISTS, MCP6B))
-    check_directory_run_lists(os.path.join(RUNLISTS, RDP6M))
+    """Check both P6 MCP and RDP unless a file/directory is given"""
+    if len(argv) == 1:
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6B))
+        check_directory_run_lists(os.path.join(RUNLISTS, RDP6M))
+    if len(argv) == 2:
+        if ReadTextFile(argv[1]).exists():
+            check_run_list_file(argv[1])
+        elif Directory(argv[1]).exists():
+            check_directory_run_lists(argv[1])
+        else:
+            print 'ERROR: file or directory %s does NOT exist' % (argv[1])
 
 
 if __name__ == '__main__':

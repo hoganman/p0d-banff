@@ -53,17 +53,15 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
 
-ALLCLASSES := MakeClSampleSummary MakeClFlatTree P0DBANFFInterface P0DBANFFTypes ROOTUtils BenchmarkProcess ColorBlindFriendly PsycheHeader_Minimal TotalPOT
+ALLCLASSES := MakeClSampleSummary MakeClFlatTree P0DBANFFInterface BenchmarkProcess Header TotalPOT
 
-##### All our targets#####
 # dict.o Object
 ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
+# regular C++ .o objects
 OBJS     := $(foreach obj, $(ALLCLASSES), $(obj).o)
-ALLOBJS := $(ROOTDICTS) $(OBJS)
 
-#ALLDICS         := MakeClSampleSummarydict.o MakeClFlatTreedict.o P0DBANFFInterfacedict.o P0DBANFFTypesdict.o ROOTUtilsdict.o BenchmarkProcessdict.o ColorBlindFriendlydict.o PsycheHeader_Minimaldict.o TotalPOTdict.o 
-# .o Objects 
-#ALLOBJS         := $(ALLDICS) MakeClSampleSummary.o MakeClFlatTree.o P0DBANFFInterface.o P0DBANFFTypes.o ROOTUtils.o BenchmarkProcess.o ColorBlindFriendly.o PsycheHeader_Minimal.o TotalPOT.o
+##### All our targets#####
+ALLOBJS := $(ROOTDICTS) $(OBJS)
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables

@@ -4,7 +4,7 @@ import os
 
 
 class Directory(object):
-    """a general class for a file"""
+    """a general class for a directory"""
 
     def __init__(self, directory_name=''):
         self.directory_name = directory_name

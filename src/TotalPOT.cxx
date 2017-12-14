@@ -9,21 +9,19 @@ TotalPOT::TotalPOT(){
 }
 
 //**************************************************
-TotalPOT::~TotalPOT(){
-//**************************************************
-}
-
-//**************************************************
 void TotalPOT::SetPOT(){
 //**************************************************
     //taken from https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
     _POTperFile = 5E17;
+    _POTperFile_Run6 = 1E17;
     _POTRun2AirMC = 1848 * _POTperFile;
     _POTRun2WaterMC = 2407 * _POTperFile;
     _POTRun3bAirMC = 896 * _POTperFile;
     _POTRun3cAirMC = 5264 * _POTperFile;
     _POTRun4AirMC = 6999 * _POTperFile;
     _POTRun4WaterMC = 6995 * _POTperFile;
+    //while https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
+    // says that there are 4197N files, only 4164 are non-zero in size
     _POTRun5WaterMC = 4164 * _POTperFile;
     
     const Double_t data_POT = 1E20;
@@ -53,6 +51,15 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run4Air"))   return _POTRun4AirMC;
         if(runName.Contains("Run4Water")) return _POTRun4WaterMC;
         if(runName.Contains("Run5Water")) return _POTRun5WaterMC;
+
+	if(runName.Contains("Run2_Air"))   return _POTRun2AirMC;
+        if(runName.Contains("Run2_Water")) return _POTRun2WaterMC;
+        if(runName.Contains("Run3b_Air"))  return _POTRun3bAirMC;
+        if(runName.Contains("Run3c_Air"))  return _POTRun3cAirMC;
+        if(runName.Contains("Run4_Air"))   return _POTRun4AirMC;
+        if(runName.Contains("Run4_Water")) return _POTRun4WaterMC;
+        if(runName.Contains("Run5_Water")) return _POTRun5WaterMC;
+
     }
     else if(runName.Contains("Data") || runName.Contains("data")){
         if(runName.Contains("Run2Air"))   return _POTRun2AirData;
@@ -62,6 +69,15 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run4Air"))   return _POTRun4AirData;
         if(runName.Contains("Run4Water")) return _POTRun4WaterData;
         if(runName.Contains("Run5Water")) return _POTRun5WaterData;
+
+        if(runName.Contains("Run2_Air"))   return _POTRun2AirData;
+        if(runName.Contains("Run2_Water")) return _POTRun2WaterData;
+        if(runName.Contains("Run3b_Air"))  return _POTRun3bAirData;
+        if(runName.Contains("Run3c_Air"))  return _POTRun3cAirData;
+        if(runName.Contains("Run4_Air"))   return _POTRun4AirData;
+        if(runName.Contains("Run4_Water")) return _POTRun4WaterData;
+        if(runName.Contains("Run5_Water")) return _POTRun5WaterData;
+
     }
     else{
         std::cout  << "Could not determine if data or MC" << std::endl; 

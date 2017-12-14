@@ -14,11 +14,8 @@
 class TotalPOT {
 
 public:
-    ///c-tor
     TotalPOT();
-
-    ///d-tor
-    ~TotalPOT();
+    virtual ~TotalPOT(){}
 
     ///Using input string, get run POT
     Double_t GetPOT(const TString& runName) const;
@@ -42,6 +39,7 @@ public:
     ///run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
     Double_t GetRun3bAnd3cMCRatio() const{ return _Run3bAnd3cMCRatio; }
     Double_t GetPOTperFile() const{ return _POTperFile; }
+    Double_t GetPOTperFile_Run6() const{ return _POTperFile_Run6; }
 
 protected:
     ///set defaults
@@ -68,6 +66,7 @@ private:
 
     ///the POTperFile for MC
     Double_t _POTperFile;
+    Double_t _POTperFile_Run6;
 
 };
 
