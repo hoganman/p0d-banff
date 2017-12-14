@@ -9,7 +9,7 @@
 """
 
 from sys import exit
-from FileTools import ROOTFile
+from ROOTFile import ROOTFile
 
 
 def checkfile(infilename=''):

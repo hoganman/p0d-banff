@@ -1,10 +1,10 @@
 """a class to check the status of a ROOT file before trying to open it"""
 
-import File
+from File import File
 from ROOT import TFile
 
 
-class ROOTFile(File.File):
+class ROOTFile(File):
     """Basically to check if a file exists"""
 
     def __init__(self, input_file_name=''):
