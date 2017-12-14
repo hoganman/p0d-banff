@@ -13,7 +13,6 @@ ROOT.gSystem.Load('libP0DBANFF')
 from ROOT import TotalPOT, Header
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-MCP6B = 'mcp6_Spin_B/neut'
 
 
 def get_file_header(directory, file_name):
@@ -44,8 +43,8 @@ def check_pot(header, run_name='Run4WaterMC'):
     official_pot = TotalPOT().GetPOT(run_name)
     header_pot = header.GetPOTGoodBeamGoodND280()
     print run_name
-    print '   ' + str(official_pot)
-    print '   ' + str(header_pot)
+    print '   %e' % (official_pot)
+    print '   %e' % (header_pot)
     if math.fabs(header_pot - official_pot) / official_pot > 0.01:
         print 'ERROR: %s has a POT mismatch!' % (run_name)
 
@@ -60,7 +59,18 @@ def main(argv):
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3b-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3c-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-water'
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run5-water'
+    ]
+
+    data_directories = [
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3b-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3c-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run5-water'
     ]
 
     flattrees = [
@@ -69,11 +79,28 @@ def main(argv):
             'Run3b_Air',
             'Run3c_Air',
             'Run4_Air',
-            'Run4_Water'
+            'Run4_Water',
+            'Run5_Water'
+
     ]
     for index in range(0, len(flattrees)):
         header = get_file_header(mc_directories[index], flattrees[index])
         check_pot(header, '%sMC' % (flattrees[index]))
+    # for index in range(0, len(flattrees)):
+    #     header = get_file_header(data_directories[index], flattrees[index])
+    #     check_pot(header, '%sData' % (flattrees[index]))
+
+    #compare run3b and run3c MC
+    run3b_header = get_file_header(mc_directories[2], flattrees[2])
+    run3c_header = get_file_header(mc_directories[3], flattrees[3])
+    run3b_pot = run3b_header.GetPOTGoodBeamGoodND280()
+    run3c_pot = run3c_header.GetPOTGoodBeamGoodND280()
+    run3_mc_ratio = run3b_pot / (run3b_pot + run3c_pot)
+    if math.fabs(run3_mc_ratio/TotalPOT().GetRun3bAnd3cMCRatio() - 1) > 0.01:
+        print 'ERROR: run3b and run3c MC ratio does NOT match what is'
+        print '       hard coded in ND280AnalysisUtils.cxx'
+        print '       Expected ratio =  %e' % (TotalPOT().GetRun3bAnd3cMCRatio())
+        print '       In files ratio =  %e' % (run3_mc_ratio)
 
 
 if __name__ == '__main__':
