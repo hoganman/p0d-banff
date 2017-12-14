@@ -59,5 +59,5 @@ int BenchmarkProcess::PrintBenchmarkInfo()
         cout << "Total swap - " << memInfo->fSwapTotal << " MB" << endl;
         cout << "Used swap - " << memInfo->fSwapUsed<< " MB" << endl;
     }
-    return P0DBANFF::GoodStatus;
+    return P0DBANFFInterface::GoodStatus;
 }

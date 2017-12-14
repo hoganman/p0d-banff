@@ -14,11 +14,8 @@
 class TotalPOT {
 
 public:
-    ///c-tor
     TotalPOT();
-
-    ///d-tor
-    ~TotalPOT();
+    virtual ~TotalPOT(){}
 
     ///Using input string, get run POT
     Double_t GetPOT(const TString& runName) const;

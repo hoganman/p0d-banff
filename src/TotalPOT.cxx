@@ -9,11 +9,6 @@ TotalPOT::TotalPOT(){
 }
 
 //**************************************************
-TotalPOT::~TotalPOT(){
-//**************************************************
-}
-
-//**************************************************
 void TotalPOT::SetPOT(){
 //**************************************************
     //taken from https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
@@ -53,6 +48,15 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run4Air"))   return _POTRun4AirMC;
         if(runName.Contains("Run4Water")) return _POTRun4WaterMC;
         if(runName.Contains("Run5Water")) return _POTRun5WaterMC;
+
+	if(runName.Contains("Run2_Air"))   return _POTRun2AirMC;
+        if(runName.Contains("Run2_Water")) return _POTRun2WaterMC;
+        if(runName.Contains("Run3b_Air"))  return _POTRun3bAirMC;
+        if(runName.Contains("Run3c_Air"))  return _POTRun3cAirMC;
+        if(runName.Contains("Run4_Air"))   return _POTRun4AirMC;
+        if(runName.Contains("Run4_Water")) return _POTRun4WaterMC;
+        if(runName.Contains("Run5_Water")) return _POTRun5WaterMC;
+
     }
     else if(runName.Contains("Data") || runName.Contains("data")){
         if(runName.Contains("Run2Air"))   return _POTRun2AirData;
@@ -62,6 +66,15 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run4Air"))   return _POTRun4AirData;
         if(runName.Contains("Run4Water")) return _POTRun4WaterData;
         if(runName.Contains("Run5Water")) return _POTRun5WaterData;
+
+        if(runName.Contains("Run2_Air"))   return _POTRun2AirData;
+        if(runName.Contains("Run2_Water")) return _POTRun2WaterData;
+        if(runName.Contains("Run3b_Air"))  return _POTRun3bAirData;
+        if(runName.Contains("Run3c_Air"))  return _POTRun3cAirData;
+        if(runName.Contains("Run4_Air"))   return _POTRun4AirData;
+        if(runName.Contains("Run4_Water")) return _POTRun4WaterData;
+        if(runName.Contains("Run5_Water")) return _POTRun5WaterData;
+
     }
     else{
         std::cout  << "Could not determine if data or MC" << std::endl; 

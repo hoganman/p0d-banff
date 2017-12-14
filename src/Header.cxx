@@ -1,6 +1,7 @@
-#include "PsycheHeader_Minimal.hxx"
+#include "Header.hxx"
 #include <stdio.h>
 #include <iostream>
+ClassImp(Header)
 
 //********************************************************************
 Header::Header(){

@@ -1,14 +1,14 @@
+//A clone of the Psyche Header class
 #ifndef Header_hxx
 #define Header_hxx
 
-#include <TChain.h> 
+#include "TChain.h"
 
 /// This class handles POT info, SoftwareVersion and IsMC
 
 //-------------------------------------------------------------------
-class Header{
+class Header: public TObject{
 public :
-
 
   /// constructor
   Header();
@@ -113,6 +113,7 @@ public :
   /// iternal variable that tell us whether a file has been added previously
   bool _isFirstFile; //!
 
+  ClassDef(Header,2)
 };
 
 #endif
