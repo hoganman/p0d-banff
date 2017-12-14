@@ -13,12 +13,15 @@ void TotalPOT::SetPOT(){
 //**************************************************
     //taken from https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
     _POTperFile = 5E17;
+    _POTperFile_Run6 = 1E17;
     _POTRun2AirMC = 1848 * _POTperFile;
     _POTRun2WaterMC = 2407 * _POTperFile;
     _POTRun3bAirMC = 896 * _POTperFile;
     _POTRun3cAirMC = 5264 * _POTperFile;
     _POTRun4AirMC = 6999 * _POTperFile;
     _POTRun4WaterMC = 6995 * _POTperFile;
+    //while https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
+    // says that there are 4197N files, only 4164 are non-zero in size
     _POTRun5WaterMC = 4164 * _POTperFile;
     
     const Double_t data_POT = 1E20;
