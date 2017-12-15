@@ -4,8 +4,8 @@ outputs exist"""
 
 from sys import argv
 from CheckFilePython import checkfile as CheckROOTFile
-from FileTools import ReadTextFile
-from FileTools import File
+from TextFile import ReadTextFile
+from File import File
 
 
 def get_input_files(input_file_name):
@@ -14,7 +14,7 @@ def get_input_files(input_file_name):
     banff_parameter_file = ReadTextFile(input_file_name)
     banff_parameter_file.open()
     parameter_contents = banff_parameter_file.get_file_as_list()
-    banff_parameter_file.close()
+    # banff_parameter_file.close()
     for line in parameter_contents:
         if len(line) == 0 or line.find('Input') == -1:
             continue

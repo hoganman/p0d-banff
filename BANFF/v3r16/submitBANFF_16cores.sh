@@ -10,5 +10,4 @@
 #$ -pe OpenMP 16
 source /physics/home/mhogan/software/p0d-banff/p0d-banff/Setup-P0DBANFF.sh
 source $BANFFROOT/cmt/setup.sh
-$BANFFROOT/Linux-x86_64/RunJointFit2017.exe
-
+$BANFFROOT/Linux-x86_64/RunJointFit2017.exe /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/parameters/BANFF.parameters_Data.dat

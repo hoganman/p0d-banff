@@ -5,7 +5,7 @@ missing"""
 
 from sys import argv
 from CheckFilePython import checkfile
-import FileTools
+from TextFile import ReadTextFile
 
 DATAINDEX = 0
 MCMAGNETINDEX = 1
@@ -18,10 +18,10 @@ def readrunperiods(filename='run_periods.txt'):
        of file lists (MC and data)
     """
 
-    inputfile = FileTools.ReadTextFile(filename)
+    inputfile = ReadTextFile(filename)
     inputfile.open()
     inputfilelist = inputfile.get_file_as_list()
-    inputfile.close()
+    # inputfile.close()
 
     run_periods = {}
     for line in inputfilelist:
@@ -70,10 +70,10 @@ def parsemcfile(filename):
     """Reads a mc file and returns a list of the sand and magnet files"""
     run_filelist = ['DUMMY', '', '']
 
-    inputfile = FileTools.ReadTextFile(filename)
+    inputfile = ReadTextFile(filename)
     inputfile.open()
     mcfiles = inputfile.get_file_as_list()
-    inputfile.close()
+    # inputfile.close()
 
     for line in mcfiles:
         lineoptions = line.split(' ')
