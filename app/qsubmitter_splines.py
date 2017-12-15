@@ -6,7 +6,6 @@ import sys, getopt,os,datetime,math,glob,time,subprocess
 inOptions = {
         'c:':['cluster=','which computing cluster currently supported are either "csuhpc" OR "csuhep"'],
         'e:':['email=','email address to notify'],
-        'g:':['generator=','which monte carlo generator (MC) or using data (data)'],
         'h:':['help=','this help message'],
         'H:':['hours=','max time limit in hours'],
         'j:':['other=','other options separated by the # (pound) character'],
@@ -20,7 +19,7 @@ inOptions = {
         'P:':['priority=','job priority'],
         'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run=','run number'],
+        'r:':['run_type=','run number'],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
@@ -31,8 +30,8 @@ isMC = True
 queueTag = '$' 
 T2KREWEIGHT = os.getenv('T2KREWEIGHT')
 BIN = '/physics/INSTALLATION/bin'
-MACROS = '%s/macros' % (BASE)
 BASE = os.getenv('P0DBANFFROOT')
+MACROS = '%s/macros' % (BASE)
 GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2017.exe' %(BASE)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
@@ -274,7 +273,7 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
     submission.close()
     os.system('chmod +x %s'%(submissionFileName))
 
-def CreateGenWeightsJobScript(jobNum,subFileList,runNumber,generator,outputPath,outputName):
+def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     #create filelist
     CWD = os.getcwd()
     subFileListName = '%s/filelists/filelist_%d.txt'%(CWD,jobNum)
@@ -314,7 +313,7 @@ def CreateGenWeightsJobScript(jobNum,subFileList,runNumber,generator,outputPath,
     os.system('chmod +x %s'%(jobFileName))
 
 
-def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
+def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
 
     subFileList = []
     os.mkdir('filelists')
@@ -368,7 +367,7 @@ def MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,pr
 
         #create job script
         GenWeightss.append(outputFile)
-        CreateGenWeightsJobScript(jobNum+1,subFileList,runNumber,generator,outputPath,outputName)
+        CreateGenWeightsJobScript(jobNum+1,subFileList,outputPath,outputName)
 
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
@@ -436,7 +435,7 @@ def main(argv):
         argDescriptionList.insert(0,sublist[1])
     shortArgs = ''.join(shortArgsList)
     inputDirectory = ''
-    runNumber = -1
+    run_type = ''
     outputPath = ''
     outputName = ''
     numJobs = -1
@@ -449,7 +448,6 @@ def main(argv):
     hardRequirements = ''
     otherRequirements = ''
     emailAddress = ''
-    generator = ''
     clusterName = ''
     global csuhpc
     global queueTag
@@ -480,7 +478,7 @@ def main(argv):
         elif opt in ('-L',GetLongOption('-L')):
             inputDirectory = arg
         elif opt in ('-r',GetLongOption('-r')):
-            runNumber = int(arg)
+            run_type = arg
         elif opt in ('-p',GetLongOption('-p')):
             outputPath = arg
         elif opt in ('-P',GetLongOption('-P')):
@@ -501,8 +499,6 @@ def main(argv):
             otherRequirements = arg
         elif opt in ('-e',GetLongOption('-e')):
             emailAddress = arg
-        elif opt in ('-g',GetLongOption('-g')):
-            generator = arg
         elif opt in ('-m',GetLongOption('-m')):
             maxMemory = arg
         elif opt in ('-c',GetLongOption('-c')):
@@ -599,13 +595,13 @@ def main(argv):
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     global isMC
-    if generator not in ('DATA','data','Data') and generator not in ('MC', 'mc'):
+    if run_type not in ('DATA','data','Data') and run_type not in ('MC', 'mc'):
         print 'ERROR: Must specify if MC or data'
         print helpstatement
         sys.exit()
-    elif generator in ('DATA','data','Data'):
+    elif run_type in ('DATA','data','Data'):
         isMC = False
-    elif generator in ('MC', 'mc'):
+    elif run_type in ('MC', 'mc', 'Mc'):
         isMC = True
     else:
         print 'ERROR: Must specify if MC or data'
@@ -627,7 +623,7 @@ def main(argv):
     walltimeMinutes = walltimeMinutes if walltimeMinutes >= 0 else 0
     walltimeHours = walltimeHours if walltimeHours >= 0 else 0
     totalTimeInHours = float(walltimeHours + 1./60. * walltimeMinutes)
-    MakeJobs(runNumber,generator,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
+    MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
     MakeHaddScript(outputPath,outputName,ExportedPathsName,numJobs,"submit_ajob")
     os.chdir('../')
 

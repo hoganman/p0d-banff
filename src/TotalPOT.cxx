@@ -22,7 +22,7 @@ void TotalPOT::SetPOT(){
     _POTRun4WaterMC = 6995 * _POTperFile;
     //while https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
     // says that there are 4197N files, only 4164 are non-zero in size
-    _POTRun5WaterMC = 4164 * _POTperFile;
+    _POTRun5WaterMC = 2.1E21;//4164 * _POTperFile;
     
     const Double_t data_POT = 1E20;
     _POTRun2AirData =  0.35934 * data_POT;
@@ -32,10 +32,10 @@ void TotalPOT::SetPOT(){
     _POTRun4AirData = 1.78271 * data_POT;
     _POTRun4WaterData = 1.64277 * data_POT;
     //taken from https://www.t2k.org/nd280/runco/data/quality/inforuns
-    _POTRun5WaterData = 1.9876e+19 + 4.4013e+19;
+    _POTRun5WaterData = 4.4013e+19;
 
     //taken from ND280AnalysisUtils.cxx v3r22
-    _Run3bAnd3cMCRatio = 0.13542;
+    _Run3bAnd3cDataRatio = 0.13542;
 
 }
 

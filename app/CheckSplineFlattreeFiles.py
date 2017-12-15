@@ -13,6 +13,9 @@ ROOT.gSystem.Load('libP0DBANFF')
 from ROOT import TotalPOT, Header
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
+# how much can the hardcoded numbers in TotalPOT can deviate from
+#   the header trees
+TOLERANCE = 0.02
 
 
 def get_file_header(directory, file_name):
@@ -24,8 +27,11 @@ def get_file_header(directory, file_name):
         print 'The directory \"%s\" does not exist!' % (directory)
         return header
     file_list = sorted(os.listdir(directory))
-    if '%s.root' % (file_name) in file_list:
-        header.ReadHeader(join(directory, '%s.root' % (file_name)))
+    if '%s_splines.root' % (file_name) in file_list:
+        header.ReadHeader(join(directory, '%s_splines.root' % (file_name)))
+    elif '%s_data_splines.root' % (file_name) in file_list:
+        header.ReadHeader(join(directory, '%s_data_splines.root' % (file_name)))
+    # in case we care about flattree output instead
     elif '%s_1.root' % (file_name) in file_list:
         index = 1
         root_file = '%s_%d.root' % (file_name, index)
@@ -33,6 +39,14 @@ def get_file_header(directory, file_name):
             header.AddHeader(join(directory, root_file))
             index += 1
             root_file = '%s_%d.root' % (file_name, index)
+    elif '%s_data_1.root' % (file_name) in file_list:
+        index = 1
+        root_file = '%s_data_%d.root' % (file_name, index)
+        while root_file in file_list:
+            header.AddHeader(join(directory, root_file))
+            index += 1
+            root_file = '%s_data_%d.root' % (file_name, index)
+
     else:
         print 'No matching files \"%s\" found in %s' % (file_name, directory)
     return header
@@ -43,9 +57,9 @@ def check_pot(header, run_name='Run4WaterMC'):
     official_pot = TotalPOT().GetPOT(run_name)
     header_pot = header.GetPOTGoodBeamGoodND280()
     print run_name
-    print '   %e' % (official_pot)
-    print '   %e' % (header_pot)
-    if math.fabs(header_pot - official_pot) / official_pot > 0.01:
+    print 'OFFICIAL: %e' % (official_pot)
+    print 'COUNTED:  %e' % (header_pot)
+    if math.fabs(header_pot - official_pot) / official_pot > TOLERANCE:
         print 'ERROR: %s has a POT mismatch!' % (run_name)
 
 
@@ -54,26 +68,26 @@ def main(argv):
     print 'Running %s' % (argv[0])
 
     mc_directories = [
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run2-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run2-water',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3b-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3c-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-water',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run5-water'
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run2-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run2-water',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run3b-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run3c-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run4-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run4-water',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run5-water'
     ]
 
     data_directories = [
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-water',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3b-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3c-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-water',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run5-water'
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run2-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run2-water',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run3b-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run3c-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run4-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run4-water',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run5-water'
     ]
 
-    flattrees = [
+    files = [
             'Run2_Air',
             'Run2_Water',
             'Run3b_Air',
@@ -83,24 +97,24 @@ def main(argv):
             'Run5_Water'
 
     ]
-    for index in range(0, len(flattrees)):
-        header = get_file_header(mc_directories[index], flattrees[index])
-        check_pot(header, '%sMC' % (flattrees[index]))
-    # for index in range(0, len(flattrees)):
-    #     header = get_file_header(data_directories[index], flattrees[index])
-    #     check_pot(header, '%sData' % (flattrees[index]))
+    for index in range(0, len(files)):
+        header = get_file_header(mc_directories[index], files[index])
+        check_pot(header, '%sMC' % (files[index]))
+    for index in range(0, len(files)):
+        header = get_file_header(data_directories[index], files[index])
+        check_pot(header, '%sData' % (files[index]))
 
     #compare run3b and run3c MC
-    run3b_header = get_file_header(mc_directories[2], flattrees[2])
-    run3c_header = get_file_header(mc_directories[3], flattrees[3])
+    run3b_header = get_file_header(data_directories[2], files[2])
+    run3c_header = get_file_header(data_directories[3], files[3])
     run3b_pot = run3b_header.GetPOTGoodBeamGoodND280()
     run3c_pot = run3c_header.GetPOTGoodBeamGoodND280()
-    run3_mc_ratio = run3b_pot / (run3b_pot + run3c_pot)
-    if math.fabs(run3_mc_ratio/TotalPOT().GetRun3bAnd3cMCRatio() - 1) > 0.01:
+    run3_data_ratio = run3b_pot / (run3b_pot + run3c_pot)
+    if math.fabs(run3_data_ratio/TotalPOT().GetRun3bAnd3cDataRatio() - 1) > TOLERANCE:
         print 'ERROR: run3b and run3c MC ratio does NOT match what is'
         print '       hard coded in ND280AnalysisUtils.cxx'
-        print '       Expected ratio =  %e' % (TotalPOT().GetRun3bAnd3cMCRatio())
-        print '       In files ratio =  %e' % (run3_mc_ratio)
+        print '       Expected ratio =  %e' % (TotalPOT().GetRun3bAnd3cDataRatio())
+        print '       In files ratio =  %e' % (run3_data_ratio)
 
 
 if __name__ == '__main__':

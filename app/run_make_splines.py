@@ -25,6 +25,18 @@ QSUBFLAT = 'python qsubmitter.py'
 QSUBSPLINE = 'python qsubmitter_splines.py'
 
 
+def main(argv):
+    """submits all the qsub python scripts"""
+
+    # Data 6M
+    # submit_ft_data()
+    submit_spline_data()
+
+    # MC 6B
+    # submit_ft_mc()
+    submit_spline_mc()
+
+
 class RunName(object):
     """store upper and lower case spellings of runs"""
 
@@ -110,6 +122,7 @@ def make_qsub_spline_mc(run_name):
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
                                                NEUTMC, run_name.low()))
+    run_type = '-r MC'
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -123,6 +136,7 @@ def make_qsub_spline_mc(run_name):
     this_run.add(queue)
     this_run.add(memory)
     this_run.add(minutes)
+    this_run.add(run_type)
     this_run.add(output_path)
     this_run.add(output_name)
     return this_run
@@ -142,6 +156,7 @@ def make_qsub_spline_data(run_name):
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
                                                DATA, run_name.low()))
+    run_type = '-r data'
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -155,6 +170,7 @@ def make_qsub_spline_data(run_name):
     this_run.add(queue)
     this_run.add(memory)
     this_run.add(minutes)
+    this_run.add(run_type)
     this_run.add(output_path)
     this_run.add(output_name)
     return this_run
@@ -175,7 +191,7 @@ def make_qsub_flattree_data(run_name):
     queue = '-q %s' % (QUEUE)
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
-    output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
+    output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
                                                DATA, run_name.low()))
     if not output_path_name.exists():
         print 'WARNING: directory'
@@ -292,18 +308,6 @@ def submit_ft_data():
     submit(run4w_ft_data, True)
     submit(run4a_ft_data, True)
     submit(run5w_ft_data, False)
-
-
-def main(argv):
-    """submits all the qsub python scripts"""
-
-    # Data 6M
-    submit_ft_data()
-    submit_spline_data()
-
-    # MC 6B
-    submit_ft_mc()
-    submit_spline_mc()
 
 
 if __name__ == "__main__":

@@ -37,7 +37,7 @@ public:
     Double_t GetPOTRun4WaterData() const{ return _POTRun4WaterData;}
     Double_t GetPOTRun5WaterData() const{ return _POTRun5WaterData;}
     ///run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
-    Double_t GetRun3bAnd3cMCRatio() const{ return _Run3bAnd3cMCRatio; }
+    Double_t GetRun3bAnd3cDataRatio() const{ return _Run3bAnd3cDataRatio; }
     Double_t GetPOTperFile() const{ return _POTperFile; }
     Double_t GetPOTperFile_Run6() const{ return _POTperFile_Run6; }
 
@@ -62,7 +62,7 @@ private:
     Double_t _POTRun4AirData;
     Double_t _POTRun4WaterData;
     Double_t _POTRun5WaterData;
-    Double_t _Run3bAnd3cMCRatio;
+    Double_t _Run3bAnd3cDataRatio;
 
     ///the POTperFile for MC
     Double_t _POTperFile;
