@@ -6,6 +6,8 @@ missing"""
 from sys import argv
 from CheckFilePython import checkfile
 from TextFile import ReadTextFile
+from ROOT import gSystem
+gSystem.Load('libP0DBANFF')
 
 DATAINDEX = 0
 MCMAGNETINDEX = 1

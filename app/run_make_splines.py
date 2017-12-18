@@ -18,8 +18,10 @@ DATAMIN = '120'
 OUTPUTBASE = '/physics/home/mhogan'
 FLATTREEBASE = OUTPUTBASE+'/flattrees'
 SPLINEBASE = OUTPUTBASE+'/splines'
-NEUTMC = 'mcp6_Spin_B/neut'
-DATA = 'rdp6_Spin_M'
+NEUTMC_6B = 'mcp6_Spin_B/neut'
+NEUTMC_6L = 'mcp6_Spin_L/neut'
+DATA_6M = 'rdp6_Spin_M'
+DATA_6N = 'rdp6_Spin_N'
 
 QSUBFLAT = 'python qsubmitter.py'
 QSUBSPLINE = 'python qsubmitter_splines.py'
@@ -27,13 +29,16 @@ QSUBSPLINE = 'python qsubmitter_splines.py'
 
 def main(argv):
     """submits all the qsub python scripts"""
+    # source_highland = ShellCommand(
+    #         'source %s/nd280Highland2/v2r22/cmt/setup.sh' % (P0DBANFF))
+    # submit(source_highland)
 
     # Data 6M
-    submit_ft_data()
+    # submit_ft_data()
     submit_spline_data()
 
     # MC 6B and 6L
-    submit_ft_mc()
+    # submit_ft_mc()
     submit_spline_mc()
 
 
@@ -71,10 +76,11 @@ class ShellCommand(object):
         self.command = self.command + ' ' + addition
 
 
-def make_qsub_flattree_mc(run_name):
+def make_qsub_flattree_mc(run_name, production):
     """makes a MC qsubmitter.py command for a particular RunName class input"""
     run_list_file = TextFile('%s/%s/%s.list' % (RUNLISTS,
-                                                NEUTMC, run_name.upper_case()))
+                                                production,
+                                                run_name.upper_case()))
     if not run_list_file.exists():
         print 'ERROR: run list file'
         print '\"%s\"' % (run_list_file.get_file_name())
@@ -86,7 +92,7 @@ def make_qsub_flattree_mc(run_name):
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
-                                               NEUTMC, run_name.low()))
+                                               production, run_name.low()))
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -108,10 +114,10 @@ def make_qsub_flattree_mc(run_name):
     return this_run
 
 
-def make_qsub_spline_mc(run_name):
+def make_qsub_spline_mc(run_name, production):
     """make spline command for mc files"""
     flattree_dir = Directory('%s/%s/%s' % (FLATTREEBASE,
-                                           NEUTMC, run_name.low()))
+                                           production, run_name.low()))
     if not flattree_dir.exists():
         print 'ERROR: there is no directory'
         print '\"%s\"' % (flattree_dir.get())
@@ -121,7 +127,7 @@ def make_qsub_spline_mc(run_name):
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
-                                               NEUTMC, run_name.low()))
+                                               production, run_name.low()))
     run_type = '-r MC'
     if not output_path_name.exists():
         print 'WARNING: directory'
@@ -142,10 +148,11 @@ def make_qsub_spline_mc(run_name):
     return this_run
 
 
-def make_qsub_spline_data(run_name):
+def make_qsub_spline_data(run_name, production):
     """make spline command for data files"""
     flattree_dir = Directory('%s/%s/%s' % (FLATTREEBASE,
-                                           DATA, run_name.low()))
+                                           production,
+                                           run_name.low()))
     if not flattree_dir.exists():
         print 'ERROR: there is no directory'
         print '\"%s\"' % (flattree_dir.get())
@@ -155,7 +162,8 @@ def make_qsub_spline_data(run_name):
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
-                                               DATA, run_name.low()))
+                                               production,
+                                               run_name.low()))
     run_type = '-r data'
     if not output_path_name.exists():
         print 'WARNING: directory'
@@ -176,11 +184,12 @@ def make_qsub_spline_data(run_name):
     return this_run
 
 
-def make_qsub_flattree_data(run_name):
+def make_qsub_flattree_data(run_name, production):
     """makes a data qsubmitter.py command for a
     particular RunName class input"""
     run_list_file = TextFile('%s/%s/%s.list' % (RUNLISTS,
-                                                DATA, run_name.upper_case()))
+                                                production,
+                                                run_name.upper_case()))
     if not run_list_file.exists():
         print 'ERROR: run list file'
         print '\"%s\"' % (run_list_file.get_file_name())
@@ -192,7 +201,8 @@ def make_qsub_flattree_data(run_name):
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
-                                               DATA, run_name.low()))
+                                               production,
+                                               run_name.low()))
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -241,18 +251,18 @@ RUN7B = RunName('run7b-water', 'Run7b_Water')
 
 def submit_ft_mc():
     """submits MC flattree jobs"""
-    # run2w_ft_mc = make_qsub_flattree_mc(RUN2W)
-    # run2a_ft_mc = make_qsub_flattree_mc(RUN2A)
-    # run3b_ft_mc = make_qsub_flattree_mc(RUN3B)
-    # run3c_ft_mc = make_qsub_flattree_mc(RUN3C)
-    # run4w_ft_mc = make_qsub_flattree_mc(RUN4W)
-    # run4a_ft_mc = make_qsub_flattree_mc(RUN4A)
-    # run5c_ft_mc = make_qsub_flattree_mc(RUN5C)
-    run6b_ft_mc = make_qsub_flattree_mc(RUN6B)
-    run6c_ft_mc = make_qsub_flattree_mc(RUN6C)
-    run6d_ft_mc = make_qsub_flattree_mc(RUN6D)
-    run6e_ft_mc = make_qsub_flattree_mc(RUN6E)
-    run7b_ft_mc = make_qsub_flattree_mc(RUN7B)
+    # run2w_ft_mc = make_qsub_flattree_mc(RUN2W, NEUTMC_6B)
+    # run2a_ft_mc = make_qsub_flattree_mc(RUN2A, NEUTMC_6B)
+    # run3b_ft_mc = make_qsub_flattree_mc(RUN3B, NEUTMC_6B)
+    # run3c_ft_mc = make_qsub_flattree_mc(RUN3C, NEUTMC_6B)
+    # run4w_ft_mc = make_qsub_flattree_mc(RUN4W, NEUTMC_6B)
+    # run4a_ft_mc = make_qsub_flattree_mc(RUN4A, NEUTMC_6B)
+    # run5c_ft_mc = make_qsub_flattree_mc(RUN5C, NEUTMC_6B)
+    run6b_ft_mc = make_qsub_flattree_mc(RUN6B, NEUTMC_6B)
+    run6c_ft_mc = make_qsub_flattree_mc(RUN6C, NEUTMC_6B)
+    run6d_ft_mc = make_qsub_flattree_mc(RUN6D, NEUTMC_6B)
+    run6e_ft_mc = make_qsub_flattree_mc(RUN6E, NEUTMC_6B)
+    run7b_ft_mc = make_qsub_flattree_mc(RUN7B, NEUTMC_6L)
 
     # submit(run2w_ft_mc, False)
     # submit(run2a_ft_mc, False)
@@ -270,18 +280,18 @@ def submit_ft_mc():
 
 def submit_spline_mc():
     """submits MC spline jobs"""
-    # run2w_sp_mc = make_qsub_spline_mc(RUN2W)
-    # run2a_sp_mc = make_qsub_spline_mc(RUN2A)
-    # run3b_sp_mc = make_qsub_spline_mc(RUN3B)
-    # run3c_sp_mc = make_qsub_spline_mc(RUN3C)
-    # run4w_sp_mc = make_qsub_spline_mc(RUN4W)
-    # run4a_sp_mc = make_qsub_spline_mc(RUN4A)
-    # run5c_sp_mc = make_qsub_spline_mc(RUN5C)
-    run6b_sp_mc = make_qsub_spline_mc(RUN6B)
-    run6c_sp_mc = make_qsub_spline_mc(RUN6C)
-    run6d_sp_mc = make_qsub_spline_mc(RUN6D)
-    run6e_sp_mc = make_qsub_spline_mc(RUN6E)
-    run7b_sp_mc = make_qsub_spline_mc(RUN7B)
+    # run2w_sp_mc = make_qsub_spline_mc(RUN2W, NEUTMC_6B)
+    # run2a_sp_mc = make_qsub_spline_mc(RUN2A, NEUTMC_6B)
+    # run3b_sp_mc = make_qsub_spline_mc(RUN3B, NEUTMC_6B)
+    # run3c_sp_mc = make_qsub_spline_mc(RUN3C, NEUTMC_6B)
+    # run4w_sp_mc = make_qsub_spline_mc(RUN4W, NEUTMC_6B)
+    # run4a_sp_mc = make_qsub_spline_mc(RUN4A, NEUTMC_6B)
+    # run5c_sp_mc = make_qsub_spline_mc(RUN5C, NEUTMC_6B)
+    run6b_sp_mc = make_qsub_spline_mc(RUN6B, NEUTMC_6B)
+    run6c_sp_mc = make_qsub_spline_mc(RUN6C, NEUTMC_6B)
+    run6d_sp_mc = make_qsub_spline_mc(RUN6D, NEUTMC_6B)
+    run6e_sp_mc = make_qsub_spline_mc(RUN6E, NEUTMC_6B)
+    run7b_sp_mc = make_qsub_spline_mc(RUN7B, NEUTMC_6L)
 
     # submit(run2w_sp_mc, False)
     # submit(run2a_sp_mc, False)
@@ -299,18 +309,18 @@ def submit_spline_mc():
 
 def submit_spline_data():
     """submits data spline jobs"""
-    # run2w_sp_data = make_qsub_spline_data(RUN2W)
-    # run2a_sp_data = make_qsub_spline_data(RUN2A)
-    # run3b_sp_data = make_qsub_spline_data(RUN3B)
-    # run3c_sp_data = make_qsub_spline_data(RUN3C)
-    # run4w_sp_data = make_qsub_spline_data(RUN4W)
-    # run4a_sp_data = make_qsub_spline_data(RUN4A)
-    # run5c_sp_data = make_qsub_spline_data(RUN5C)
-    run6b_sp_data = make_qsub_spline_data(RUN6B)
-    run6c_sp_data = make_qsub_spline_data(RUN6C)
-    run6d_sp_data = make_qsub_spline_data(RUN6D)
-    run6e_sp_data = make_qsub_spline_data(RUN6E)
-    run7b_sp_data = make_qsub_spline_data(RUN7B)
+    # run2w_sp_data = make_qsub_spline_data(RUN2W, DATA_6M)
+    # run2a_sp_data = make_qsub_spline_data(RUN2A, DATA_6M)
+    # run3b_sp_data = make_qsub_spline_data(RUN3B, DATA_6M)
+    # run3c_sp_data = make_qsub_spline_data(RUN3C, DATA_6M)
+    # run4w_sp_data = make_qsub_spline_data(RUN4W, DATA_6M)
+    # run4a_sp_data = make_qsub_spline_data(RUN4A, DATA_6M)
+    # run5c_sp_data = make_qsub_spline_data(RUN5C, DATA_6M)
+    run6b_sp_data = make_qsub_spline_data(RUN6B, DATA_6M)
+    run6c_sp_data = make_qsub_spline_data(RUN6C, DATA_6M)
+    run6d_sp_data = make_qsub_spline_data(RUN6D, DATA_6M)
+    run6e_sp_data = make_qsub_spline_data(RUN6E, DATA_6M)
+    run7b_sp_data = make_qsub_spline_data(RUN7B, DATA_6N)
 
     # submit(run2w_sp_data, True)
     # submit(run2a_sp_data, True)
@@ -328,18 +338,18 @@ def submit_spline_data():
 
 def submit_ft_data():
     """submits data ft jobs"""
-    # run2w_ft_data = make_qsub_flattree_data(RUN2W)
-    # run2a_ft_data = make_qsub_flattree_data(RUN2A)
-    # run3b_ft_data = make_qsub_flattree_data(RUN3B)
-    # run3c_ft_data = make_qsub_flattree_data(RUN3C)
-    # run4w_ft_data = make_qsub_flattree_data(RUN4W)
-    # run4a_ft_data = make_qsub_flattree_data(RUN4A)
-    # run5c_ft_data = make_qsub_flattree_data(RUN5C)
-    run6b_ft_data = make_qsub_flattree_data(RUN6B)
-    run6c_ft_data = make_qsub_flattree_data(RUN6C)
-    run6d_ft_data = make_qsub_flattree_data(RUN6D)
-    run6e_ft_data = make_qsub_flattree_data(RUN6E)
-    run7b_ft_data = make_qsub_flattree_data(RUN7B)
+    # run2w_ft_data = make_qsub_flattree_data(RUN2W, DATA_6M)
+    # run2a_ft_data = make_qsub_flattree_data(RUN2A, DATA_6M)
+    # run3b_ft_data = make_qsub_flattree_data(RUN3B, DATA_6M)
+    # run3c_ft_data = make_qsub_flattree_data(RUN3C, DATA_6M)
+    # run4w_ft_data = make_qsub_flattree_data(RUN4W, DATA_6M)
+    # run4a_ft_data = make_qsub_flattree_data(RUN4A, DATA_6M)
+    # run5c_ft_data = make_qsub_flattree_data(RUN5C, DATA_6M)
+    run6b_ft_data = make_qsub_flattree_data(RUN6B, DATA_6M)
+    run6c_ft_data = make_qsub_flattree_data(RUN6C, DATA_6M)
+    run6d_ft_data = make_qsub_flattree_data(RUN6D, DATA_6M)
+    run6e_ft_data = make_qsub_flattree_data(RUN6E, DATA_6M)
+    run7b_ft_data = make_qsub_flattree_data(RUN7B, DATA_6N)
 
     # submit(run2w_ft_data, True)
     # submit(run2a_ft_data, True)

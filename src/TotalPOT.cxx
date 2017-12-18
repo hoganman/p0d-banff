@@ -41,7 +41,8 @@ void TotalPOT::SetPOT(){
     //taken from https://www.t2k.org/nd280/runco/data/quality/inforuns
     _POTRun5cWaterData = 0.44013 * data_POT;
     _POTRun6bAirData = 1.274120 * data_POT; 
-    _POTRun6cAirData = 0.5224508 * data_POT;
+    //used POT/spills delivered * ND280+DQ = 5.260082e+19 * 95.443% 
+    _POTRun6cAirData = 0.50203 * data_POT;
     _POTRun6dAirData = 0.7666215 * data_POT;
     _POTRun6eAirData = 0.8397245 * data_POT;
     _POTRun7bWaterData = 2.412207 * data_POT;
@@ -67,7 +68,7 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run6cAir"))   return _POTRun6cAirMC;
         if(runName.Contains("Run6dAir"))   return _POTRun6dAirMC;
         if(runName.Contains("Run6eAir"))   return _POTRun6eAirMC;
-        if(runName.Contains("Run7Water")) return _POTRun7bWaterMC;
+        if(runName.Contains("Run7bWater")) return _POTRun7bWaterMC;
 
 	if(runName.Contains("Run2_Air"))   return _POTRun2AirMC;
         if(runName.Contains("Run2_Water")) return _POTRun2WaterMC;
@@ -80,7 +81,7 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run6c_Air"))   return _POTRun6cAirMC;
         if(runName.Contains("Run6d_Air"))   return _POTRun6dAirMC;
         if(runName.Contains("Run6e_Air"))   return _POTRun6eAirMC;
-        if(runName.Contains("Run7_Water")) return _POTRun7bWaterMC;
+        if(runName.Contains("Run7b_Water")) return _POTRun7bWaterMC;
 
     }
     else if(runName.Contains("Data") || runName.Contains("data")){

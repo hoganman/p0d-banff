@@ -1,0 +1,1 @@
+magnet /physics/home/mhogan/splines/mcp6_Spin_L/neut/run7b-water/Run7b_Water_splines.root

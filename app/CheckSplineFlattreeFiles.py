@@ -75,11 +75,11 @@ def main(argv):
             '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run4-air',
             '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run4-water',
             '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run5c-water',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6b-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6c-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6d-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6e-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run7b-water'
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run6b-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run6c-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run6d-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_B/neut/run6e-air',
+            '/physics/home/mhogan/splines/mcp6_Spin_L/neut/run7b-water'
     ]
 
     data_directories = [
@@ -90,11 +90,11 @@ def main(argv):
             '/physics/home/mhogan/splines/rdp6_Spin_M/run4-air',
             '/physics/home/mhogan/splines/rdp6_Spin_M/run4-water',
             '/physics/home/mhogan/splines/rdp6_Spin_M/run5c-water',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6b-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6c-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6d-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6e-air',
-            '/physics/home/mhogan/splines/rdp6_Spin_M/run7b-water'
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run6b-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run6c-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run6d-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_M/run6e-air',
+            '/physics/home/mhogan/splines/rdp6_Spin_N/run7b-water'
     ]
 
     files = [
