@@ -1,1 +1,1 @@
-/physics/home/mhogan/splines/rdp6_Spin_M/run5-water/Run5_Water_data_splines.root
+/physics/home/mhogan/splines/rdp6_Spin_M/run5c-water/Run5c_Water_data_splines.root

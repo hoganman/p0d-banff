@@ -59,7 +59,7 @@ Int_t anaUtils::GetRunPeriod(Int_t run, Int_t subrun){
   else if (run>=90300016 && run<=90300110) return 4;  //run3c air separated based on the pot of data            
   else if (run>=90410000 && run<=90419999) return 5;  //run4 water          
   else if (run>=90400000 && run<=90409999) return 6;  //run4 air            
-  else if (run>=80510000 && run<=80519999) return 8;  //run5 antinu-water
+  else if (run>=80510000 && run<=80519999) return 8;  //run5c antinu-water
   else if (run>=80600000 && run<=80600159) return 9;  //run6b antinu-air
   else if (run>=80600160 && run<=80600219) return 10; //run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
   else if (run>=80600220 && run<=80600299) return 11; //run6d antinu-air

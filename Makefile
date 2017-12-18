@@ -16,6 +16,7 @@ SRC	:= ${P0DBANFFROOT}/src
 MACROS  := ${P0DBANFFROOT}/macros
 BIN	:= ${P0DBANFFROOT}/bin
 DIC     := ${P0DBANFFROOT}/dict
+APP     := ${P0DBANFFROOT}/app
 VPATH    = ${PWD}:$(SRC)
 
 EMPTYSTRING := 
@@ -90,4 +91,7 @@ libP0DBANFF.so: $(ALLOBJS)
 
 #add a rule to clean all generated files from your directory
 clean: 
-	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.*
+	$(RM) $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
+
+cleandist: 
+	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc

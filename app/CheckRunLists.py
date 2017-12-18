@@ -14,6 +14,7 @@ RUNLISTS = P0DBANFF + '/run_lists'
 RDP6M = 'rdp6_Spin_M'
 MCP6B = 'mcp6_Spin_B/neut'
 MCP6BANTI = 'mcp6_Spin_B/anti-neut'
+MCP6LANTI = 'mcp6_Spin_L/anti-neut'
 
 # this library helps ROOT not complain about missing dictionaries
 gSystem.Load('%s/liboaAnalysisReader.so' % (
@@ -27,7 +28,7 @@ def check_oaanalysis_files(file_list, file_list_name):
     for analysis_file in file_list:
         test_file = ROOTFile(analysis_file)
         if not (test_file.contains(RDP6M) or test_file.contains(MCP6B) or
-                test_file.contains(MCP6BANTI)):
+                test_file.contains(MCP6BANTI) or test_file.contains(MCP6LANTI)):
             print 'ROOT file \"%s\" does not contain right \
 file path in %s' % (analysis_file, file_list_name)
         elif test_file.checkfile() is not ROOTFile.IS_GOOD:
@@ -70,8 +71,10 @@ def check_run_list_file(run_list_filename):
 def main(argv):
     """Check both P6 MCP and RDP unless a file/directory is given"""
     if len(argv) == 1:
-        check_directory_run_lists(os.path.join(RUNLISTS, MCP6B))
-        check_directory_run_lists(os.path.join(RUNLISTS, RDP6M))
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6B)) # runs 2-4
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6BANTI)) # runs 5-6
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6LANTI)) # run 7
+        check_directory_run_lists(os.path.join(RUNLISTS, RDP6M)) # runs 2-7
     if len(argv) == 2:
         if ReadTextFile(argv[1]).exists():
             check_run_list_file(argv[1])
