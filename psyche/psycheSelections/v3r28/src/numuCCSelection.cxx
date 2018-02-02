@@ -8,27 +8,6 @@
 #include "trackerSelectionUtils.hxx"
 
 
-/*
-    \\! [numuCCSelection_info]
-
-    <table>
-    <tr><th> #cut  <th> cut class                        <th> defined in file     <th> Cut description
-    <tr><td> 1     <td> EventQualityCut::Apply           <td> baseSelection.cxx   <td> Event quality: good detector and beam quality flags 
-    <tr><td> 2     <td> TotalMultiplicityCut::Apply      <td> numuCCSelection.cxx <td> Total multiplicity cut: at least one track with TPC segments 
-    <tr><td> 3     <td> FindLeadingTracksAction::Apply,   
-                        FindVertexAction::Apply,                                                       
-                        TrackQualityFiducialCut::Apply   <td> numuCCSelection.cxx <td> Select muon candidate as the highest momentum negative (HMN) 
-                                                                                       track with more than 18 clusters in the TPC and initial position in the FGD FV 
-    <tr><td> 4     <td> ExternalVetoCut::Apply           <td> numuCCSelection.cxx <td> External veto cut 
-    <tr><td> 5     <td> ExternalFGD1lastlayersCut::Apply <td> numuCCSelection.cxx <td> External FGD1 last layers cut
-    <tr><td> 6     <td> MuonPIDCut::Apply                <td> numuCCSelection.cxx <td> Muon PID cut
-    </table>
-
-    \\! [numuCCSelection_info]
-*/
-
-
-
 //********************************************************************
 numuCCSelection::numuCCSelection(bool forceBreak): SelectionBase(forceBreak,EventBoxId::kEventBoxTracker) {
 //********************************************************************
@@ -70,6 +49,22 @@ void numuCCSelection::DefineSteps(){
     _MuonPIDStepIndex           = GetStepNumber("muon PID");
     _FindLeadingTracksStepIndex = GetStepNumber("find leading tracks");
     _TotalMultiplicityCutIndex  = GetCutNumber("> 0 tracks ");
+}
+
+//**************************************************
+void numuCCSelection::InitializeEvent(AnaEventC& eventBB){
+//**************************************************
+
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventBB); 
+
+  // Create the appropriate EventBox if it does not exist yet
+  if (!event.EventBoxes[EventBoxId::kEventBoxTracker])
+    event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
+
+  boxUtils::FillTracksWithTPC(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
+  boxUtils::FillTracksWithFGD(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
+  boxUtils::FillTrajsChargedInTPC(event);
+  boxUtils::FillTrajsChargedInFGDAndNoTPC(event, static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
 }
 
 //********************************************************************
@@ -543,22 +538,6 @@ Int_t numuCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h systId,
   if (groups[systId][0] >= 0) IDs[ngroups++] = groups[systId][0];
   
   return ngroups;
-}
-
-//**************************************************
-void numuCCSelection::InitializeEvent(AnaEventC& eventBB){
-//**************************************************
-
-  AnaEventB& event = *static_cast<AnaEventB*>(&eventBB); 
-
-  // Create the appropriate EventBox if it does not exist yet
-  if (!event.EventBoxes[EventBoxId::kEventBoxTracker])
-    event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
-
-  boxUtils::FillTracksWithTPC(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
-  boxUtils::FillTracksWithFGD(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
-  boxUtils::FillTrajsChargedInTPC(event);
-  boxUtils::FillTrajsChargedInFGDAndNoTPC(event, static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
 }
 
 //********************************************************************

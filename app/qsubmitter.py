@@ -273,7 +273,7 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     submission.write('source %s/nd280Highland2/v2r22/cmt/setup.sh\n'%(BASE))
-    submission.write('%s \'${P0DBANFFROOT}/app/ROOTRandomSleep.C(120)\'\n' % (ROOT))
+    submission.write('%s \'${P0DBANFFROOT}/app/ROOTRandomSleep.C(60)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -372,8 +372,8 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
         if jobNum+1 != numJobs:
-            print "sleeping for 30 seconds till next job sub"
-            time.sleep(30) #seconds
+            print "sleeping for 90 seconds till next job sub"
+            time.sleep(90) #seconds
 
         #restart list
         del subFileList[0:]

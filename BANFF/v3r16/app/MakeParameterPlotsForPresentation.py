@@ -135,8 +135,8 @@ for i in xrange(0, len(histoTypes)):
 
     leg = TLegend(0.12+0.3,0.84-0.05,0.42+0.3,0.98-0.05)
     leg.SetFillColor(0)
-    leg.AddEntry(prefitHist, "FHC CC4#pi multi-#pi",  "FEP")
-    leg.AddEntry(postfitHist,"RHC multi-#pi",    "ELP")
+    leg.AddEntry(prefitHist, "Pre fit",  "FEP")
+    leg.AddEntry(postfitHist,"Post fit",    "ELP")
 
     leg.Draw()
 
@@ -186,8 +186,8 @@ for i in xrange(0, len(histoTypes)):
 
     leg = TLegend(0.12+0.3,0.84-0.05,0.5+0.3,0.98-0.05)
     leg.SetFillColor(0)
-    leg.AddEntry(prefitHist, "FHC CC4#pi multi-#pi",  "FEP")
-    leg.AddEntry(postfitHist,"RHC multi-#pi", "ELP")
+    leg.AddEntry(prefitHist, "Pre fit",  "FEP")
+    leg.AddEntry(postfitHist,"Post fit", "ELP")
 
     leg.Draw()
 

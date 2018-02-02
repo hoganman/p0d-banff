@@ -101,6 +101,8 @@
 // Anti-nue FGD2
 #include "antiNueCCFGD2Selection.hxx"
 
+// numu CC Inc P0D -> TPC1
+#include "p0dNumuCCSelection.hxx"
 
 //******************************************************************
 AnalysisManager::AnalysisManager(){
@@ -254,6 +256,12 @@ void AnalysisManager::DefineSelections(){
     sel().AddSelection("kTrackerAntiNuECCFGD2", "AntiNuECC inclusive selection in FGD2", new antiNueCCFGD2Selection());
     sel().AddSelection("kTrackerGammaFGD2",     "GammaBkg selection in FGD2",            new gammaFGD2Selection    ());
 
+    // P0D+TPC1 numu CCInc
+    // "Naive" line copied from above numuCCSelection
+    //sel().AddSelection("kP0DNuMuCC"       ,     "P0D+TPC1 NuMuCC inclusive" , new p0dNumuCCSelection());
+    // HL version from p0dNumuCCAnalysis
+    sel().AddSelection("kP0DNuMuCC",           "inclusive p0dNumuCC selection",     new p0dNumuCCSelection(false));
+
     // Set which run range the selections are valid for using the parameters file
     // If this is not called the selections are applied to all run periods
     // Numu FGD1
@@ -299,6 +307,9 @@ void AnalysisManager::DefineSelections(){
     sel().SetValidRunPeriods("kTrackerNuECCFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerNuECC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNuECCFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerGammaFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerGamma.ValidRunPeriods"));
+
+    // P0D+TPC1 Numu CCInc
+    sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
     
     // Numu FGD1
     if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))
@@ -387,6 +398,9 @@ void AnalysisManager::DefineSelections(){
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2"))
       sel().DisableSelection("kTrackerGammaFGD2");     
+
+    if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuCC"))
+      sel().DisableSelection("kP0DNuMuCC");     
     
 }
 
@@ -719,7 +733,7 @@ bool AnalysisManager::ProcessEvent(const ToyExperiment& toy, AnaEventB& event, W
 
 //******************************************************************
 bool AnalysisManager::ProcessEvent( AnaEventB& event, Float_t& POTweight){
-    //******************************************************************
+//******************************************************************
     
     /*
      This Method Process one event. That means:
@@ -738,20 +752,34 @@ bool AnalysisManager::ProcessEvent( AnaEventB& event, Float_t& POTweight){
      
      */
     bool passed=false;
-    /// Loop over selections
+
+    /// *********** Loop over selections ****************
     
     // Reset event summary sample before applying all selections
     static_cast<AnaEventSummaryB*>(event.Summary)->ResetSummary();
     
     for (std::vector<SelectionBase*>::iterator it=sel().GetSelections().begin();it!=sel().GetSelections().end();it++){
         SelectionBase& selec = **it;
+//DEBUG
+if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
+std::cout << "selection = " << selec.GetName() << std::endl;
+}
         // only enabled selections
-        if (!selec.IsEnabled()) continue;
-        if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
+        if (!selec.IsEnabled()){
+	    continue;
+	}
+        if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))){
+	    continue;
+	}
         
         /// Apply the selection
         bool redo;
         if (selec.Apply(event, redo)) passed=true;
+//DEBUG
+if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
+std::cout << "passed = " << passed << std::endl;
+} 
+
     }
     
     // computes the POT normalization for the current event
@@ -762,7 +790,6 @@ bool AnalysisManager::ProcessEvent( AnaEventB& event, Float_t& POTweight){
         _currentSampleGroup->GetPOT(POTdata, POTmc, POTsand);
         POTweight = POTdata/POTmc;
     }
-    
     return passed;
 }
 
@@ -960,8 +987,14 @@ AnaEventB* AnalysisManager::GetEvent(Int_t evtIndex){
     //******************************************************************
     
     AnaSuperEventB* sevent = GetSuperEvent(evtIndex);
-    if (sevent) return static_cast<AnaEventB*>(sevent->Event);
-    else return NULL;
+    if (sevent){
+	//std::cout << "Super event valid" << std::endl;
+	return static_cast<AnaEventB*>(sevent->Event);
+    }
+    else{
+	//std::cout << "Super event does NOT exist" << std::endl;
+        return NULL;
+    }
 }
 
 //******************************************************************

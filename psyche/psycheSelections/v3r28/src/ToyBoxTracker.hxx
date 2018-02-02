@@ -7,7 +7,7 @@ namespace multipi{
   struct MultiPiBox;
 };
 
-class ToyBoxTracker:public ToyBoxND280{
+class ToyBoxTracker : public ToyBoxND280{
 public :
   
   ToyBoxTracker();

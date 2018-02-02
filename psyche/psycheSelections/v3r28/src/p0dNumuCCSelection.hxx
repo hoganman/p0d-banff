@@ -27,6 +27,14 @@ public:
   //==========================================================
 };
 
+class FillSummaryAction_p0dNumuCC: public StepBase{
+public:
+  using StepBase::Apply;
+  bool Apply(AnaEventC& event, ToyBoxB& box) const;  
+  StepBase* MakeClone(){return new FillSummaryAction_p0dNumuCC();}
+};
+
+
 class FindP0DLeadingTracksAction: public StepBase{
  public:
   using StepBase::Apply;
@@ -46,6 +54,20 @@ class P0DSelectionVetoCut: public StepBase{
   using StepBase::Apply;
   bool Apply(AnaEventC& event, ToyBoxB& box) const;
   StepBase* MakeClone(){return new P0DSelectionVetoCut();}
+};
+
+class TrackQualityP0DFiducialCut: public StepBase{
+  public:
+    using StepBase::Apply;
+    bool Apply(AnaEventC& event, ToyBoxB& box) const;
+    StepBase* MakeClone(){return new TrackQualityP0DFiducialCut();}
+};
+
+class FindP0DVertexAction: public StepBase{
+  public:
+    using StepBase::Apply;
+    bool Apply(AnaEventC& event, ToyBoxB& box) const;
+    StepBase* MakeClone(){return new FindP0DVertexAction();}
 };
 
 #endif
