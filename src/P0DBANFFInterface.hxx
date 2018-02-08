@@ -1,7 +1,12 @@
 #ifndef P0DBANFFInterface_hxx
 #define P0DBANFFInterface_hxx
 
+#include "TString.h"
 #include "TColor.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+#include "TH1.h"
+#include<vector>
 
 class P0DBANFFInterface : public TObject {
 public:
@@ -13,22 +18,43 @@ public:
 
     ///Read in a TFile and check the status of the file contents
     ///If the file is good, return true;
-    Bool_t CheckFile(TString& fileName) const;
+    Bool_t CheckFile(TString fileName) const;
 
     ///Have ROOT sleep for time in seconds
     ///The time is between zero (0) and "scale" seconds.
     ///For scale == 10, then ROOT will sleep between 0 to 10 seconds
     ///The seed is from the current Unix time unless otherwise stated
-    void RandomSleep(const Int_t& nSeconds, Int_t seed=0) const;
+    void RandomSleep(Int_t nSeconds, Int_t seed=0) const;
 
-    /// Split a TString into its components by a separator
-    std::vector<TString> SplitString(const TString& theOpt,
-        const Char_t separator);
+    ///Split a TString into its components by a separator
+    std::vector<TString> SplitString(TString theOpt,
+        Char_t separator) const;
     
-    /// Convert a ROOT file with a canvas to various output formats
-    void SaveCanvasAs(TString& inputFileName, const TString& canvasName,
-        const TString& outputNamePrefix, const TString& formats = "eps,png,pdf",
-        const Char_t delimiter = ',');
+    ///Convert a ROOT file with a canvas to various other file formats
+    ///To specify different file formats, separate them by a char delimiter
+    void SaveCanvasAs(TString inputFileName, TString canvasName = "c1",
+         TString outputNamePrefix = "", TString formats = "eps,png,pdf,root",
+         Char_t delimiter = ',') const;
+ 
+    ///Save a canvas to various file formats.
+    ///Default is eps, png, pdf, and root
+    ///To specify different file formats, separate them by a char delimiter
+    void SaveCanvasAs(TCanvas* const canvas,
+             TString outputNamePrefix, TString formats = "eps,png,pdf,root",
+             Char_t delimiter = ',') const;
+
+
+    ///Applies a set of styles and font size to make
+    ///canvases easier to see in presentations
+    void PrettyUpTH1(TString inFileName, 
+            TString canvasName = "c1", TString histName = "",
+            TString xAxisTitle = "none",  TString yAxisTitle = "none",
+            Int_t lineWidth = 3,  const Int_t lineColor = P0DBANFFInterface::kcbBlack) const;
+
+    ///Applies a set of styles and font size to make
+    ///canvases easier to see in presentations
+    void PrettyUpTH1(TH1* inHist, TString xAxisTitle = "none",  TString yAxisTitle = "none",
+            Int_t lineWidth = 3,  const Int_t lineColor = P0DBANFFInterface::kcbBlack) const;
 
     static const Bool_t GoodFile = true;
     static const Bool_t BadFile  = false;
@@ -54,6 +80,7 @@ public:
     TColor* cbRed   ;
     TColor* cbPurple;
     TColor* cbYellow;
+    TStyle* P0DBANFFStyle;
     ClassDef(P0DBANFFInterface,1)
 };
 
