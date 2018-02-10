@@ -1,24 +1,59 @@
-#include "AnalysisManager.hxx"
-//#include <gperftools/profiler.h>
+#define MAKEBANFFEVENTHISTOGRAMS_CXX
+/*
+ * PROGRAM: MakeBANFFEventHistograms.exe -i <input_file.root> -o <output_file.root>
+ *
+ * MANDATORY ARGUEMENTS:
+ * 	-i <input_file.root> highland/spline file
+ *
+ * OPTIONAL ARGUMENTS:
+ * 	-o <filename> output of program, default BANFF_SelectedEvent_Histograms.root
+ * 	-n <number>   preloads <number> events
+ * 	-d <1/0>      debugging mode, default OFF
+ * 	-p <float>    Data/MC POT  ratio to apply, default 1
+ * 	-b <1/0>      normalize by bin area in histgrams, default OFF
+ */
+
 #include <sys/time.h>
+#include <sys/types.h>
+//#include <sys/sysinfo.h>
 #include <iostream>
 #include <unistd.h>
-#include "sys/types.h"
-//#include "sys/sysinfo.h"
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
-#include "Parameters.hxx"
-#include "ToyMakerExample.hxx"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "TRandom3.h"
 #include "TH2F.h"
 #include "TH1F.h"
+
+//#include <gperftools/profiler.h>
+#include "AnalysisManager.hxx"
 #include "MultiThread.hxx"
-#include <AnalysisUtils.hxx>
+#include "Parameters.hxx"
+#include "ToyMakerExample.hxx"
+#include "AnalysisUtils.hxx"
 
 #ifdef MULTITHREAD
 #include "omp.h"
 #endif 
+
+void PrintUsage(){
+    
+    std::cout << "Usage: MakeBANFFEventHistograms.exe -i <input_file.root> -o <output_file.root>" << std::endl;
+    std::cout << "                                                                                 " << std::endl;
+    std::cout << "MANDATORY ARGUEMENTS:                                                           " << std::endl;
+    std::cout << "	-i <input_file.root> highland/spline file                                   " << std::endl;
+    std::cout << "                                                                                 " << std::endl;
+    std::cout << "OPTIONAL ARGUMENTS:                                                             " << std::endl;
+    std::cout << "      -o <filename> output of program, default BANFF_SelectedEvent_Histograms.root     " << std::endl;
+    std::cout << "	-n <number>   preloads <number> events                                  " << std::endl;
+    std::cout << "	-d <1/0>      debugging mode, default OFF                               " << std::endl;
+    std::cout << "	-p <float>    Data/MC POT  ratio to apply, default 1                    " << std::endl;
+    std::cout << "	-b <1/0>      normalize by bin area in histgrams, default OFF           " << std::endl;
+    exit(1);
+
+}
 
 int parseLine(char* line){
     int i = strlen(line);
@@ -45,6 +80,7 @@ int getValue(){ //Note: this value is in KB!
     return result;
 }
 
+
 int main(int argc, char *argv[]){
 
     // Usage:  MakeBANFFEventHistograms.exe -n N (preloads N events) -d 1/0 (swith on debugging mode, default off) -p X (X = Data/MC POT ratio to apply, default to 1) -b 1/0 (normalise by bin area in histograms, default off) -o outputfilename /path/to/input/file
@@ -54,14 +90,14 @@ int main(int argc, char *argv[]){
     Int_t nmax = -1;
     UInt_t ntoys=1;
     std::string inputFileName = "";
-    std::string inputFileType = "kHighlandTree";
+    //std::string inputFileType = "kHighlandTree";
     Int_t debug=0;
     double pot_ratio = 1;
     bool normalise = 0;
     const char* outfilename = NULL;
 
     for (;;) {
-        int c = getopt(argc, argv, "n:o:d:p:b:");
+        int c = getopt(argc, argv, "n:i:o:d:p:b:");
         if (c < 0)
             break;
         switch (c) {
@@ -70,6 +106,11 @@ int main(int argc, char *argv[]){
                           tmp >> nmax;
                           break;
                       }
+	    case 'i': {
+                          inputFileName = optarg;
+                          break;
+                      }
+
             case 'o': {
                           outfilename = optarg;
                           break;
@@ -94,6 +135,11 @@ int main(int argc, char *argv[]){
         }
     }
 
+    if( inputFileName.length() == 0 ){
+	std::cout << "ERROR: Missing <input_file.root>" << std::endl;
+	PrintUsage();
+    }
+
     // Read the parameters files following the package hierarchy
     // first the top level package. Set the parameters as fixed
     ND::params().LoadParametersFiles(anaUtils::GetPackageHierarchy(), true);
@@ -112,6 +158,11 @@ int main(int argc, char *argv[]){
     int npbins_npi = 14;
     double pbins_npi[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 8000};
 
+    //p0d numu CCInc
+    int npbins_p0dCCInc = 6;
+    double pbins_p0dCCInc[7] = {0, 400, 500, 700, 900, 2500, 5000};
+
+
     //cos(theta) bins
     //CC0pi
     int nctbins_0pi = 11;
@@ -123,21 +174,25 @@ int main(int argc, char *argv[]){
     int nctbins_npi = 11;
     double ctbins_npi[12] = {0, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
 
+    //p0d numu CCInc
+    int nctbins_p0dCCInc = 7;
+    double ctbins_p0dCCInc[8] = {0, 0.6, 0.7, 0.8, 0.9, 0.925, 0.975, 1};
+
     int npbins = 5;
     double pbins[6] = {0, 400, 500, 700, 900, 4000};
 
     int nctbins = 4;
     double ctbins[5] = {0, 0.84, 0.9, 0.94, 1};
 
-    // get the input file name
-    inputFileName = argv[optind++];
+    //// get the input file name
+    //inputFileName = argv[optind++];
 
     double ccqe_weight[25];
     for(int i = 0; i < 25; ++i){
         ccqe_weight[i] = 1;
     }
 
-// Uncomment this section if you want to apply weights from the BANFF input spline files
+    // weights from the BANFF input spline files
     TFile infile(inputFileName.c_str(),"READ");
     TTree* sample_sum;
     bool hasSampleSum=false;
@@ -160,6 +215,9 @@ int main(int argc, char *argv[]){
     TH2F* tuned_ccNu0pi = new TH2F("tuned_ccNu0pi","tuned_ccNu0pi",1000,0,4000,1000,0,1); 
     TH2F* tuned_ccNuNpi = new TH2F("tuned_ccNuNpi","tuned_ccNuNpi",1000,0,4000,1000,0,1); 
 
+    //but is it really tuned?
+    TH2F* ccNuIncp0d = new TH2F("ccNuIncp0d","ccNuIncp0d",1000,0,4000,1000,0,1);
+
     tuned_cc0pi->SetBins(npbins_0pi, pbins_0pi, nctbins_0pi, ctbins_0pi);
     tuned_cc1pi->SetBins(npbins_1pi, pbins_1pi, nctbins_1pi, ctbins_1pi);
     tuned_ccnpi->SetBins(npbins_npi, pbins_npi, nctbins_npi, ctbins_npi);
@@ -167,6 +225,8 @@ int main(int argc, char *argv[]){
     tuned_ccAnuNpi->SetBins(npbins, pbins, nctbins, ctbins);
     tuned_ccNu0pi->SetBins(npbins, pbins, nctbins, ctbins);
     tuned_ccNuNpi->SetBins(npbins, pbins, nctbins, ctbins);
+
+    ccNuIncp0d->SetBins(npbins_p0dCCInc, pbins_p0dCCInc, nctbins_p0dCCInc, ctbins_p0dCCInc);
   
     TTree *tree=new TTree("tree","tree");
     Float_t selmu_mom=-999;
@@ -186,9 +246,10 @@ int main(int argc, char *argv[]){
     Int_t   isFGD1NuMuBkgInAntiNuMuModeCC=-1;
     Int_t   isFGD1NuMuBkgInAntiNuMuModeCC1Track=-1;
     Int_t   isFGD1NuMuBkgInAntiNuMuModeCCNTracks=-1;
+    Int_t   isP0DNuMuCC=-1;
 
     tree->Branch("selmu_mom",&selmu_mom,"selmu_mom/F");
-    tree->Branch("selmu_costheta",&selmu_mom,"selmu_costheta/F");
+    tree->Branch("selmu_costheta",&selmu_costheta,"selmu_costheta/F");
     tree->Branch("niwgW",&niwgW,"niwgW/F");
     tree->Branch("detW",&detW,"detW/F");
     tree->Branch("fluxW",&fluxW,"fluxW/F");
@@ -208,24 +269,28 @@ int main(int argc, char *argv[]){
     tree->Branch("isFGD1NuMuBkgInAntiNuMuModeCC1Track",   &isFGD1NuMuBkgInAntiNuMuModeCC1Track,   "isFGD1NuMuBkgInAntiNuMuModeCC1Track/I");
     tree->Branch("isFGD1NuMuBkgInAntiNuMuModeCCNTracks",  &isFGD1NuMuBkgInAntiNuMuModeCCNTracks,  "isFGD1NuMuBkgInAntiNuMuModeCCNTracks/I");
 
-  
-
-    // This the analysis manager
-    AnalysisManager _man;
-
-    // Make and fill the EventSummary even when the selection is not passed.
-    if(ND::params().GetParameterI("psycheSteering.Selections.ForceFillEventSummary")) _man.sel().SetForceFillEventSummary(true);
-    // Parameters to control the systematics
-    //    bool applyVariationSystematics = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyVariationSystematics");
-    //    bool applyWeightSystematics    = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics");
-    //    bool applyFluxWeightSystematic = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyFluxWeightSystematic");
+    tree->Branch("isP0DNuMuCC",  &isP0DNuMuCC,  "isP0DNuMuCC/I");
 
     // Get the initial amount of memory being used
     double initial_mem = getValue();
 
-    // Print the steps for the numuCC selection
-    _man.sel().GetSelection("kTrackerNumuCC")->DumpSteps();
+    // This the analysis manager
+    AnalysisManager _man;
 
+    // Print the steps for the P0D+TPC1 numuCC selection
+    _man.sel().GetSelection("kP0DNuMuCC")->DumpSteps();
+
+    // Make and fill the EventSummary even when the selection is not passed.
+    if(ND::params().GetParameterI("psycheSteering.Selections.ForceFillEventSummary")) _man.sel().SetForceFillEventSummary(true);
+
+    // Parameters to control the systematics
+    //bool applyVariationSystematics = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyVariationSystematics");
+    //bool applyWeightSystematics    = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics");
+    //bool applyFluxWeightSystematic = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyFluxWeightSystematic");
+
+
+
+    ///*
     // Create the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
     ToyMaker* toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), 
                                              (bool)  ND::params().GetParameterI("psycheSteering.Systematics.ZeroVariation"));
@@ -245,7 +310,9 @@ int main(int argc, char *argv[]){
     // Initialize clock
     gettimeofday(&tim, NULL);
     double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
+    //*/
 
+    //MH: Classes SystematicVariationBase do not exist in psyche v3
     /*
     int n;
     SystematicVariationBase** varSyst = _man.syst().GetVariationSystematics(n);
@@ -313,11 +380,33 @@ int main(int argc, char *argv[]){
         // Get the next event in the Experiment
       if(hasSampleSum)
         sample_sum->GetEvent(j);
-      AnaEventB* event = _man.GetEvent(j);
-      _man.ProcessEvent(*event);
+
+        AnaEventB* event = _man.GetEvent(j);
+        _man.ProcessEvent(*event);
 
         Weight_h detectorWeight;
         Weight_h fluxWeightSyst;
+
+        potW=0;
+        detW=0;
+        fluxW=0;
+        pileupW=0;
+        niwgW=0;
+        isFGD1NuMuCC=0;
+        isFGD1NuMuCC0Pi=0;
+        isFGD1NuMuCC1Pi=0;
+        isFGD1NuMuCCOther=0;
+        isFGD1AntiNuMuCC=0;
+        isFGD1AntiNuMuCC1Track=0;
+        isFGD1AntiNuMuCCNTracks=0;
+        isFGD1NuMuBkgInAntiNuMuModeCC=0;
+        isFGD1NuMuBkgInAntiNuMuModeCC1Track=0;
+        isFGD1NuMuBkgInAntiNuMuModeCCNTracks=0;
+	isP0DNuMuCC = 0;
+        AnaParticleMomB* leptonCandidate = NULL;
+        selmu_mom = 0;//leptonCandidate->Momentum;
+        selmu_costheta= 0;//leptonCandidate->DirectionStart[2];
+
         // Process the current event (bunch). That means applying the systematics, the selections and computing the weights 
         //  - Input:: the event and the toy experiment configuration (variations).
         //  - Output:: the detector systematic weight for the event, the flux weight for that event and whether any of the selections was passed (return bool)
@@ -325,56 +414,67 @@ int main(int argc, char *argv[]){
 
         // If event passed a selection fill a histogram with the event detector systematics weight
         AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
-        if(summary->EventSample != SampleId::kUnassigned){
-          double tune_weight = ccqe_weight[summary->EventSample];
-          potW=POT_weight;
-          detW=detectorWeight;
-          fluxW=fluxWeightSyst;
-          pileupW=event->Weight;
-          niwgW=tune_weight;
-          isFGD1NuMuCC=0;
-          isFGD1NuMuCC0Pi=0;
-          isFGD1NuMuCC1Pi=0;
-          isFGD1NuMuCCOther=0;
-          isFGD1AntiNuMuCC=0;
-          isFGD1AntiNuMuCC1Track=0;
-          isFGD1AntiNuMuCCNTracks=0;
-          isFGD1NuMuBkgInAntiNuMuModeCC=0;
-          isFGD1NuMuBkgInAntiNuMuModeCC1Track=0;
-          isFGD1NuMuBkgInAntiNuMuModeCCNTracks=0;
-          AnaParticleMomB* leptonCandidate = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
-          selmu_mom=leptonCandidate->Momentum;
-          selmu_costheta=leptonCandidate->DirectionStart[2];
-          if(summary->EventSample == SampleId::kFGD1NuMuCC0Pi){
-            isFGD1NuMuCC=1;
-            isFGD1NuMuCC0Pi=1;
-            tuned_cc0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1NuMuCC1Pi){
-            isFGD1NuMuCC=1;
-            isFGD1NuMuCC1Pi=1;
-            tuned_cc1pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1NuMuCCOther){
-            isFGD1NuMuCC=1;
-            isFGD1NuMuCCOther=1;
-            tuned_ccnpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1AntiNuMuCC1Track){
-            isFGD1AntiNuMuCC=1;
-            isFGD1AntiNuMuCC1Track=1;
-            tuned_ccAnu0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1AntiNuMuCCNTracks){
-            isFGD1AntiNuMuCC=1;
-            isFGD1AntiNuMuCCNTracks=1;
-            tuned_ccAnuNpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track){
-            isFGD1NuMuBkgInAntiNuMuModeCC=1;
-            isFGD1NuMuBkgInAntiNuMuModeCC1Track=1;
-            tuned_ccNu0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }else if(summary->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks){
-            isFGD1NuMuBkgInAntiNuMuModeCC=1;
-            isFGD1NuMuBkgInAntiNuMuModeCCNTracks=1;
-            tuned_ccNuNpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
-          }
-        }
+        if(summary->EventSample == SampleId::kUnassigned){
+	    continue;
+	}
+
+        //if(summary->EventSample == SampleId::kP0DNuMuCC){
+	//    std::cout << "===============" << std::endl;
+	//    std::cout << "POD+TPC1 event!" << std::endl;
+	//    std::cout << "===============" << std::endl;
+	//}
+        double tune_weight = ccqe_weight[summary->EventSample];
+        potW=POT_weight;
+        detW=detectorWeight;
+        fluxW=fluxWeightSyst;
+        pileupW=event->Weight;
+        niwgW=tune_weight;
+        leptonCandidate = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
+        selmu_mom=leptonCandidate->Momentum;
+        selmu_costheta=leptonCandidate->DirectionStart[2];
+
+        if(summary->EventSample == SampleId::kFGD1NuMuCC0Pi){
+          isFGD1NuMuCC=1;
+          isFGD1NuMuCC0Pi=1;
+          tuned_cc0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1NuMuCC1Pi){
+          isFGD1NuMuCC=1;
+          isFGD1NuMuCC1Pi=1;
+          tuned_cc1pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1NuMuCCOther){
+          isFGD1NuMuCC=1;
+          isFGD1NuMuCCOther=1;
+          tuned_ccnpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1AntiNuMuCC1Track){
+          isFGD1AntiNuMuCC=1;
+          isFGD1AntiNuMuCC1Track=1;
+          tuned_ccAnu0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1AntiNuMuCCNTracks){
+          isFGD1AntiNuMuCC=1;
+          isFGD1AntiNuMuCCNTracks=1;
+          tuned_ccAnuNpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track){
+          isFGD1NuMuBkgInAntiNuMuModeCC=1;
+          isFGD1NuMuBkgInAntiNuMuModeCC1Track=1;
+          tuned_ccNu0pi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks){
+          isFGD1NuMuBkgInAntiNuMuModeCC=1;
+          isFGD1NuMuBkgInAntiNuMuModeCCNTracks=1;
+          tuned_ccNuNpi->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+        }else if(summary->EventSample == SampleId::kP0DNuMuCC){
+std::cout << "Got to P0D" << std::endl;
+//std::cout << leptonCandidate->DirectionStart[0] << std::endl;
+//std::cout << leptonCandidate->DirectionStart[1] << std::endl;
+//std::cout << leptonCandidate->DirectionStart[2] << std::endl;
+//std::cout << leptonCandidate->PositionStart[0] << std::endl;
+//std::cout << leptonCandidate->PositionStart[1] << std::endl;
+//std::cout << leptonCandidate->PositionStart[2] << std::endl;
+std::cout << selmu_mom << std::endl;
+std::cout << selmu_costheta << std::endl;
+	    isP0DNuMuCC = 1;
+	    //ccNuIncp0d->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2], (detectorWeight*fluxWeightSyst*tune_weight*POT_weight*pileupW).Systematic);
+	    ccNuIncp0d->Fill(leptonCandidate->Momentum, leptonCandidate->DirectionStart[2]);
+	}
         tree->Fill();
     }
     /*
@@ -438,6 +538,16 @@ int main(int argc, char *argv[]){
         }
     }
 
+    for(int i = 1; i <= ccNuIncp0d->GetNbinsX(); ++i){
+        double p_width = 1;
+        double q_width = 1;
+        if(normalise) p_width = (pbins_p0dCCInc[i] - pbins_p0dCCInc[i-1])/50.0;
+        for(int j = 1; j <= ccNuIncp0d->GetNbinsY(); ++j){
+            if(normalise) q_width = (ctbins[j] - ctbins[j-1])/0.05;
+            double contents = ccNuIncp0d->GetBinContent(i, j);
+            ccNuIncp0d->SetBinContent(i, j, contents/(q_width*p_width));
+        }
+    }
 
 
     tuned_cc0pi->Write();
@@ -447,6 +557,7 @@ int main(int argc, char *argv[]){
     tuned_ccAnuNpi->Write();
     tuned_ccNu0pi->Write();
     tuned_ccNuNpi->Write();
+    ccNuIncp0d->Write();
     tree->Write();
     outfile.Close();
 

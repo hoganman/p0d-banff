@@ -41,6 +41,8 @@ Parameters to control Detector Variation Systematics
 Parameters to control Detector Variation Systematics
 
  < psycheSystematics.Tracker.FullCorrelations  = 0 >
+ DEBUG
+ originally 0
  < psycheSystematics.Tracker.UseP0DFV  = 0 >
 
 

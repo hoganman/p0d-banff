@@ -18,6 +18,7 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
   if ((det==SubDetId::kFGD1 || det==SubDetId::kFGD) && !EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD1]) processFGD1 = true;
   if ((det==SubDetId::kFGD2 || det==SubDetId::kFGD) && !EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2]) processFGD2 = true;
   if (det==SubDetId::kP0D && !EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV]) processP0D = true;
+//std::cout << "processP0D = " << processP0D << std::endl;
 
   if (!processFGD1 && !processFGD2 && !processP0D) return;
 
@@ -83,6 +84,34 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
     }
   }
 
+  /*
+  if (processP0D){
+
+//std::cout << "nTPC = " << nTPC << std::endl;
+    //kTracksWithTPCInP0DFV,
+    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV]=0;
+    anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV], nTPC);
+    
+    //kTracksWithGoodQualityTPCInP0DFV,
+    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV]=0;
+    anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV], nTPC);
+
+    //kTracksWithTPCAndP0D,
+    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D]=0;
+    anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D], nTPC);
+
+    //kTracksWithP0DAndNoTPC
+    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithP0DAndNoTPC]=0;
+    anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithP0DAndNoTPC], nTPC);
+
+    //kTracksWithGoodQualityTPCAndP0D
+    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCAndP0D]=0;
+    anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCAndP0D], nTPC);
+
+  }
+  */
+
+
 
   //loop over tpc tracks
   for (Int_t i=0;i<nTPC; ++i){
@@ -97,6 +126,8 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
     bool inFGD1end    = false;
     bool inFGD2start  = false;
     bool inFGD2end    = false;
+    bool inP0Dstart  = false;
+    bool inP0Dend    = false;
 
     if (processTPC){
       EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPC][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPC]++] = track;
@@ -104,13 +135,20 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
         EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCorFGD1][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCorFGD1]++] = track;
       if(processFGD2)
         EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCorFGD2][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCorFGD2]++] = track;
+
     }
+
     // Does it have FGD as well ? here not...
     if (processFGD1 && anaUtils::TrackUsesDet(*track, SubDetId::kFGD1))
       EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD1][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD1]++] = track;
 
     if (processFGD2 && anaUtils::TrackUsesDet(*track, SubDetId::kFGD2))
       EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2]++] = track;
+
+    /*
+    if (processP0D && anaUtils::TrackUsesDet(*track, SubDetId::kP0D))
+      EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D]++] = track;
+    */
         
     // Apply the fiducial cut
     inFGD1start = cutUtils::FiducialCut(track->PositionStart, SubDetId::kFGD1);
@@ -118,6 +156,9 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
      
     inFGD2start = cutUtils::FiducialCut(track->PositionStart, SubDetId::kFGD2);
     inFGD2end   = cutUtils::FiducialCut(track->PositionEnd,   SubDetId::kFGD2);
+
+    inP0Dstart = cutUtils::FiducialCut(track->PositionStart, SubDetId::kP0D);
+    inP0Dend = cutUtils::FiducialCut(track->PositionEnd, SubDetId::kP0D);
      
     if (processFGD1){
       if (inFGD1start){
@@ -138,6 +179,14 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
         EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCWithStartOrEndInFGD2FV][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCWithStartOrEndInFGD2FV]++] = track;  
       }
     }
+
+    /*
+    if(processP0D){
+	if(inP0Dstart){
+	    EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV]++] = track;
+	} 
+    }
+    */
     
     // Apply the track quality cut
     if (!cutUtils::TrackQualityCut(*track)) continue;
@@ -160,8 +209,16 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
         EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCWithStartOrEndInFGD2FV][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCWithStartOrEndInFGD2FV]++] = track;  
       }
     }
+    /*
+    if (processP0D){
+      if (inP0Dstart){
+        EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV][EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV]++] = track;
+      }
+    }
+    */
        
-  }
+  } //end of loop over tpc tracks
+
   if (processFGD1){
     anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInFGD1FV],
                        EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCInFGD1FV], nTPC);
@@ -191,10 +248,10 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
                        EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV], nTPC);
    
     anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCWithStartOrEndInFGD2FV],
-    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCWithStartOrEndInFGD2FV], nTPC);
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCWithStartOrEndInFGD2FV], nTPC);
 
     anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCWithStartOrEndInFGD2FV],
-    EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCWithStartOrEndInFGD2FV], nTPC);
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCWithStartOrEndInFGD2FV], nTPC);
  
     anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2],
                        EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2], nTPC);
@@ -204,6 +261,32 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
                        EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCorFGD2]+nTPC);
 
   }
+
+  /*
+  if (processP0D){
+//std::cout << "nTPC = " << nTPC << std::endl;
+    //kTracksWithTPCInP0DFV,
+    anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV],
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCInP0DFV], nTPC);
+    
+    //kTracksWithGoodQualityTPCInP0DFV,
+    anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV],
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV], nTPC);
+
+    //kTracksWithTPCAndP0D,
+    anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D],
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndP0D], nTPC);
+
+    //kTracksWithP0DAndNoTPC
+    anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithP0DAndNoTPC],
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithP0DAndNoTPC], nTPC);
+
+    //kTracksWithGoodQualityTPCAndP0D
+    anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCAndP0D],
+                       EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCAndP0D], nTPC);
+  }
+  */
+
 
 }
 

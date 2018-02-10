@@ -26,7 +26,7 @@ Parameters to control Flux weigthing. Folder, Version and Tunning now in psycheN
 Parameters to control Selections
 
 FGD1
- < psycheSteering.Selections.EnableTrackerNumuCC                       = 0 >
+ < psycheSteering.Selections.EnableTrackerNumuCC                       = 1 >
  < psycheSteering.Selections.EnableTrackerNumuCCMultiPi                = 1 >
  < psycheSteering.Selections.EnableTrackerNumuCC4pi                    = 0 >
  < psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi             = 0 >
@@ -61,6 +61,7 @@ FGD2
  < psycheSteering.Selections.EnableTrackerAntiNuECCFGD2                    = 0 >
  < psycheSteering.Selections.EnableTrackerGammaFGD2                        = 0 >
 
+P0D+TPC1
  < psycheSteering.Selections.EnableP0DNuMuCC                               = 1 >
 
 Parameter to control which run periods selectionsare valid for.  
@@ -89,7 +90,7 @@ List valid runs using a comma separated string
 By default EventSummary class is created and filled when the selection is passed. But this might be necessary also for events not passing the selection
 The user can force the EventSummary to be filled always. 
 
- < psycheSteering.Selections.ForceFillEventSummary = 0 >
+ < psycheSteering.Selections.ForceFillEventSummary = 1 >
 
 -------------------------------------------------------------
 Parameters to control Detector Variation Systematics

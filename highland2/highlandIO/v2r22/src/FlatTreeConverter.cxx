@@ -1239,7 +1239,7 @@ void FlatTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
       if (track->nP0DSegments==(int)NMAXP0DS)
         continue;
       AnaP0DParticle* seg = static_cast<AnaP0DParticle*>(MakeP0dTrack());
-      int p0d = 0;
+      int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
       FillP0dInfo(itrk, p0d, seg);
       track->P0DSegments[track->nP0DSegments++] = seg;
     }
@@ -1433,9 +1433,13 @@ void FlatTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* segB){
   seg->Length         = (trP0DLength)[itrk][p0d];
 
   for (int i=0;i<3;i++){
+    seg->DirectionStart[i]   = (trP0DDirectionStart)[itrk][p0d][i];
     seg->DirectionEnd[i]   = (trP0DDirectionEnd)[itrk][p0d][i];
   }
-  
+  for (int i=0;i<4;i++){
+    seg->PositionStart[i]   = (trP0DPositionStart)[itrk][p0d][i];
+    seg->PositionEnd[i]   = (trP0DPositionEnd)[itrk][p0d][i];
+  }
   
 #if VERSION_HAS_P0D_AVERAGED_TIME  
   seg->AvgTime        = (trP0DAvgTime)[itrk][p0d];

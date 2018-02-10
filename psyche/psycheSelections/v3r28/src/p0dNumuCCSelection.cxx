@@ -20,9 +20,9 @@ void p0dNumuCCSelection::DefineSteps(){
     AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),           true);
     AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),      true);  
     AddStep(StepBase::kAction, "find leading tracks", new FindP0DLeadingTracksAction());  
-    AddStep(StepBase::kAction, "find vertex",         new FindP0DVertexAction());  
+    AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());  
     AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumuCC());
-    AddStep(StepBase::kCut,    "quality+P0Dfiducial", new TrackQualityP0DFiducialCut(),   true);  
+    AddStep(StepBase::kCut,    "quality+P0Dfiducial", new TrackQualityFiducialCut(),   true);  
     AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
     AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(), true);
     SetBranchAlias(0,"trunk");
@@ -35,15 +35,19 @@ void p0dNumuCCSelection::InitializeEvent(AnaEventC& eventC){
   AnaEventB& event = *static_cast<AnaEventB*>(&eventC); 
 
 //DEBUG
-std::cout << "New p0dNumuCCSelection event initialized" << std::endl;
-event.Print();
+//std::cout << "New p0dNumuCCSelection event initialized" << std::endl;
+//event.Print();
 
   // Create the appropriate EventBox if it does not exist yet
   if (!event.EventBoxes[EventBoxId::kEventBoxTracker]){
     event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
 //DEBUG
-std::cout << "New EventBoxTracker object created" << std::endl;
+//std::cout << "New EventBoxTracker object created" << std::endl;
   }
+  //else{
+//DEBUG
+//std::cout << "EventBoxTracker already exists" << std::endl;
+  //}
 
   boxUtils::FillTracksWithTPC(event,static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
   boxUtils::FillTracksWithP0D(event);
@@ -153,8 +157,11 @@ bool FillSummaryAction_p0dNumuCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
     // Cast the ToyBox to the appropriate type
     ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
 
-    if(!box.HMNtrack)
+    if(!box.HMNtrack){
+//DEBUG
+//std::cout << "No HMNtrack for FillSummaryAction" << std::endl;
 	return false;
+    }
 
     static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DNuMuCC] = box.HMNtrack;
     for(int i = 0; i < 4; ++i){
@@ -171,7 +178,6 @@ bool FillSummaryAction_p0dNumuCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
 
-/*
   // Cast the ToyBox to the appropriate type
   ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
 
@@ -180,19 +186,7 @@ bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
   // For this selection the main track is the HMN track
   box.MainTrack = box.HMNtrack;
   return true;
-*/
-  // Cast the ToyBox to the appropriate type
-  ToyBoxTracker* box = dynamic_cast<ToyBoxTracker*>(&boxB); 
 
-
-  trackerSelUtils::FindLeadingTracks(event, *box);
-
-//DEBIG
-std::cout << "box->HMNtrack =  " << box->HMNtrack << std::endl;
-
-  // For this selection the main track is the HMN track
-  box->MainTrack = box->HMNtrack;
-  return true;
 
 }
 
@@ -226,25 +220,19 @@ bool TrackQualityP0DFiducialCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
   (void)event;
 
   // Cast the ToyBox to the appropriate type
-  //ToyBoxTracker& box = *(dynamic_cast<ToyBoxTracker*>(&boxB)); 
-  //ToyBoxTracker* pbox = dynamic_cast<ToyBoxTracker*>(&boxB); 
-  ToyBoxTracker* pbox = static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
   
-  //ToyBoxND280& box_nd280 = *static_cast<ToyBoxND280*>(&boxB); 
-  //ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&box_nd280); 
-  if(!pbox){
-      std::cout << "No pointer to ToyBoxTracker!" << std::endl;
-      return false;
-  }
-  else{
-      std::cout << "pbox vertex is " << pbox->Vertex << std::endl;
-      return pbox->Vertex;
-  }
-  //std::cout << "box lepton candidate is " << (box.MainTrack) << std::endl;
-  //std::cout << "box true vertex is " << (box.TrueVertex) << std::endl;
+  //if(!box){
+  //    std::cout << "No pointer to ToyBoxTracker!" << std::endl;
+  //    return false;
+  //}
+  //else{
+  //    std::cout << "pbox vertex is " << pbox->Vertex << std::endl;
+  //    return pbox->Vertex;
+  //}
   //std::cout << "box vertex is " << (box.Vertex) << std::endl;
 
-  //return (box.Vertex);
+  return (box.Vertex);
 }
 
 //**************************************************
@@ -264,12 +252,12 @@ bool FindP0DVertexAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
     box.TrueVertex = NULL;
 
     if (!box.MainTrack){
-	std::cout << "No AnaVertexB created" << std::endl;
+	//std::cout << "No AnaVertexB created" << std::endl;
 	return false;
     }
-    else{
-	std::cout << "AnaVertexB was created!" << std::endl;
-    }
+    //else{
+    //    //std::cout << "AnaVertexB was created!" << std::endl;
+    //}
 
     box.Vertex = new AnaVertexB();
     anaUtils::CreateArray(box.Vertex->Particles, 1);

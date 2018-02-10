@@ -1593,6 +1593,7 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
   track->nTPCSegments  = 0;
   track->nFGDSegments  = 0;
   track->nECALSegments = 0;
+  track->nP0DSegments  = 0;
   for (int i = 0; i < SubDetId::kInvalidSubdetector; ++i){
     SubDetId::SubDetEnum idet = static_cast<SubDetId::SubDetEnum>(i);
     if(!SubDetId::GetDetectorUsed(track->Detector, idet)) continue;
@@ -1622,7 +1623,17 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
       AnaECALParticleB* seg = MakeEcalTrack();
       int ecal = convUtils::GetLocalDetEnum(SubDetId::kECAL, idet);
       FillEcalInfo(itrk, ecal, seg);
-      track->ECALSegments[track->nECALSegments++] = seg;
+      track->ECALSegments[track->nECALSegments] = seg;
+      track->nECALSegments++;
+    }
+    else if(SubDetId::IsP0DDetector(idet)){
+      if (track->nP0DSegments==(int)NMAXP0DS)
+        continue;
+      AnaP0DParticleB* seg = MakeP0dTrack();
+      int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
+      FillP0dInfo(itrk, p0d, seg);
+      track->P0DSegments[track->nP0DSegments] = seg;
+      track->nP0DSegments++;
     }
 
   }
@@ -1636,6 +1647,7 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
   track->nTPCSegments  = 0;
   track->nFGDSegments  = 0;
   track->nECALSegments = 0;
+  track->nP0DSegments  = 0;
   for (int i = 0; i < SubDetId::kInvalidSubdetector; ++i){
     SubDetId::SubDetEnum idet = static_cast<SubDetId::SubDetEnum>(i);
     if(!SubDetId::GetDetectorUsed(track->Detector, idet)) continue;
@@ -1660,7 +1672,18 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
       AnaECALParticleB* seg = MakeEcalTrack();
       int ecal = convUtils::GetLocalDetEnum(SubDetId::kECAL, idet);
       FillEcalInfo(itrk, ecal, seg);
-      track->ECALSegments[track->nECALSegments++] = seg;
+      track->ECALSegments[track->nECALSegments] = seg;
+      track->nECALSegments++;
+    }
+
+    else if(SubDetId::IsP0DDetector(idet)){
+      if (track->nP0DSegments==(int)NMAXP0DS)
+        continue;
+      AnaP0DParticleB* seg = MakeP0dTrack();
+      int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
+      FillP0dInfo(itrk, p0d, seg);
+      track->P0DSegments[track->nP0DSegments] = seg;
+      track->nP0DSegments++;
     }
   }
 

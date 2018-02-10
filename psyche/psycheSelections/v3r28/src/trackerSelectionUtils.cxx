@@ -128,7 +128,7 @@ bool trackerSelUtils::FindLeadingTracks(const AnaEventC& event, ToyBoxB& boxB){
     groupID = EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV;
 
 //DEBUG 
-std::cout << "LeadingTracks kP0D" << std::endl;
+//std::cout << "LeadingTracks kP0D" << std::endl;
 
   }
   else{
@@ -137,49 +137,6 @@ std::cout << "LeadingTracks kP0D" << std::endl;
 
   // Retrieve the EventBoxTracker
   EventBoxB* EventBox = event.EventBoxes[EventBoxId::kEventBoxTracker];
-
-//DEBUG 
-if (det == SubDetId::kP0D){
-/*
-std::cout << "nRecoObjs in FGD1 and TPC = " << EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV] << std::endl;
-for(Int_t jFGD1Track = 0; jFGD1Track < EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV]; jFGD1Track++){
-AnaRecObjectC** selTracks = EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV];
-AnaTrackB* track = static_cast<AnaTrackB*>(selTracks[jFGD1Track]);
-std::cout << "track start Z = " << track->PositionStart[2] << std::endl;
-}
-std::cout << "nRecoObjs in FGD2 and TPC = " << EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV] << std::endl;
-for(Int_t jFGD2Track = 0; jFGD2Track < EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV]; jFGD2Track++){
-AnaRecObjectC** selTracks = EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV];
-AnaTrackB* track = static_cast<AnaTrackB*>(selTracks[jFGD2Track]);
-std::cout << "track start Z = " << track->PositionStart[2] << std::endl;
-}
-std::cout << "nRecoObjs in P0D  and TPC = " << EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV] << std::endl;
-*/
-EventBoxB* EventBoxP0D = event.EventBoxes[EventBoxId::kEventBoxP0D];
-
-if(!EventBoxP0D){
-std::cout << "No EventBoxP0D" << std::endl;
-}
-else{
-std::cout << "nRecoObjs in FGD1 and TPC = " << EventBoxP0D->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV] << std::endl;
-for(Int_t jFGD1Track = 0; jFGD1Track < EventBoxP0D->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV]; jFGD1Track++){
-AnaRecObjectC** selTracks = EventBoxP0D->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV];
-AnaTrackB* track = static_cast<AnaTrackB*>(selTracks[jFGD1Track]);
-std::cout << "track start Z = " << track->PositionStart[2] << std::endl;
-}
-std::cout << "nRecoObjs in FGD2 and TPC = " << EventBoxP0D->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV] << std::endl;
-for(Int_t jFGD2Track = 0; jFGD2Track < EventBoxP0D->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV]; jFGD2Track++){
-AnaRecObjectC** selTracks = EventBoxP0D->RecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV];
-AnaTrackB* track = static_cast<AnaTrackB*>(selTracks[jFGD2Track]);
-std::cout << "track start Z = " << track->PositionStart[2] << std::endl;
-}
-std::cout << "nRecoObjs in P0D  and TPC = " << EventBoxP0D->nRecObjectsInGroup[EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV] << std::endl;
-}
-
-}
-
-
-
 
   AnaRecObjectC** selTracks = EventBox->RecObjectsInGroup[groupID];
   int nTPC=EventBox->nRecObjectsInGroup[groupID];

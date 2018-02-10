@@ -758,12 +758,13 @@ bool AnalysisManager::ProcessEvent( AnaEventB& event, Float_t& POTweight){
     // Reset event summary sample before applying all selections
     static_cast<AnaEventSummaryB*>(event.Summary)->ResetSummary();
     
-    for (std::vector<SelectionBase*>::iterator it=sel().GetSelections().begin();it!=sel().GetSelections().end();it++){
+    for (std::vector<SelectionBase*>::iterator it=sel().GetSelections().begin();it!=sel().GetSelections().end();it++)
+    {
         SelectionBase& selec = **it;
 //DEBUG
-if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
-std::cout << "selection = " << selec.GetName() << std::endl;
-}
+//if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
+//std::cout << "selection = " << selec.GetName() << std::endl;
+//}
         // only enabled selections
         if (!selec.IsEnabled()){
 	    continue;
@@ -775,10 +776,10 @@ std::cout << "selection = " << selec.GetName() << std::endl;
         /// Apply the selection
         bool redo;
         if (selec.Apply(event, redo)) passed=true;
-//DEBUG
-if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
-std::cout << "passed = " << passed << std::endl;
-} 
+////DEBUG
+//if(selec.GetSampleId() == SampleId::kP0DNuMuCC){
+//std::cout << "passed = " << passed << std::endl;
+//} 
 
     }
     
