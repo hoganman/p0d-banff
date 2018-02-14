@@ -11,7 +11,7 @@ bool suppress_err_msg = true;
 
 //********************************************************************
 RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
-  //********************************************************************
+//********************************************************************
 
   _firstFile = true; 
   _entry_roo=0;
@@ -26,9 +26,7 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
   _spill = NULL;
   _prevEvent=NULL;
 
-
   fChain = flattree;
-
 
   // initialize to 0 the number of entries
   _nentries =0;
@@ -66,10 +64,9 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
     for (UInt_t j = 0; j < 4; j++) {
       sTrueVertexPosition[i][j]         = 0;
       sTrueVertexNuParentDecPoint[i][j] = 0;
-    }
-
-    for (UInt_t j = 0; j < 3; j++) {
-      sTrueVertexNuDir[i][j] = 0;
+      if(j < 3){
+        sTrueVertexNuDir[i][j] = 0;
+      }
     }
   }
 
@@ -95,19 +92,19 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
     for (int j = 0; j < 4; j++) {
       sTrueParticlePosition[i][j]    = 0;
       sTrueParticlePositionEnd[i][j] = 0;
-    }
-    for (int j = 0; j < 3; j++) {
-      sTrueParticleDirection[i][j] = 0;
+      if(j < 3){
+        sTrueParticleDirection[i][j] = 0;
+      }
     }
     sTrueParticleNDetCrossings[i] = 0;
     for (UInt_t j = 0; j < NMAXCROSSEDDET; j++) {
       for (int k = 0; k < 4; k++) {
         sTrueParticleEntrancePosition[i][j][k] = 0;
         sTrueParticleExitPosition[i][j][k]     = 0;
-      }
-      for (int k = 0; k < 3; k++) {
-        sTrueParticleEntranceMomentum[i][j][k] = 0;
-        sTrueParticleExitMomentum[i][j][k]     = 0;
+	if(k < 3){
+          sTrueParticleEntranceMomentum[i][j][k] = 0;
+          sTrueParticleExitMomentum[i][j][k]     = 0;
+	}
       }
       sTrueParticleDetector[i][j] = 0;
       sTrueParticleInActive[i][j] = 0;
@@ -200,14 +197,13 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
       trDetUsed[i][j] = 0;
     }
 
-    for (int j = 0; j < 3; j++) {
-      trDirectionStart[i][j] = 0;
-      trDirectionEnd[i][j]   = 0;
-    }
-
     for (int j = 0; j < 4; j++) {
       trPositionStart[i][j] = 0;
       trPositionEnd[i][j]   = 0;
+      if(j<3){
+        trDirectionStart[i][j] = 0;
+        trDirectionEnd[i][j]   = 0;
+      }
     }
 
     for (int j = 0; j < 3; j++) {
@@ -236,16 +232,15 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
       trTpcPurity[i][j]              = 0;
       trTpcTrueParticleID[i][j]      = 0;
 
-      for (int k = 0; k < 3; k++) {
-        trTpcRefitDirection[i][j][k] = 0;
-        trTpcDirectionStart[i][j][k] = 0;
-        trTpcDirectionEnd[i][j][k]   = 0;
-      }
-
       for (int k = 0; k < 4; k++) {
         trTpcRefitPosition[i][j][k] = 0;
         trTpcPositionStart[i][j][k] = 0;
         trTpcPositionEnd[i][j][k]   = 0;
+	if(k<3){
+          trTpcRefitDirection[i][j][k] = 0;
+          trTpcDirectionStart[i][j][k] = 0;
+          trTpcDirectionEnd[i][j][k]   = 0;
+	}
       }
     }
 
@@ -268,14 +263,13 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
       trFgdVertex7x7[i][j]   = 0;
       trFgdVertexLayer[i][j] = 0;
 
-      for (int k = 0; k < 3; k++) {
-        trFgdDirectionStart[i][j][k] = 0;
-        trFgdDirectionEnd[i][j][k]   = 0;
-      }
-
       for (int k = 0; k < 4; k++) {
         trFgdPositionStart[i][j][k] = 0;
         trFgdPositionEnd[i][j][k]   = 0;
+	if(k < 3){
+          trFgdDirectionStart[i][j][k] = 0;
+          trFgdDirectionEnd[i][j][k]   = 0;
+	}
       }
     }
 
@@ -294,15 +288,14 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
       trECALMostUpStreamLayerHit[i][j] = 0;
 
 
-      for (int k = 0; k < 3; k++) {
-        trECALDirectionStart[i][j][k] = 0;
-        trECALDirectionEnd[i][j][k]   = 0;
-        trECALShowerPosition[i][j][k] = 0;
-      }
-
       for (int k = 0; k < 4; k++) {
         trECALPositionStart[i][j][k] = 0;
         trECALPositionEnd[i][j][k]   = 0;
+	if(k<3){
+          trECALDirectionStart[i][j][k] = 0;
+          trECALDirectionEnd[i][j][k]   = 0;
+          trECALShowerPosition[i][j][k] = 0;
+	}
       }
     }
 
@@ -640,6 +633,8 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackDirection",                        sTrueParticleDirection,                        &b_sTrueParticleDirection);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackEntrancePosition",                 sTrueParticleEntrancePosition,                 &b_sTrueParticleEntrancePosition);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackExitPosition",                     sTrueParticleExitPosition,                     &b_sTrueParticleExitPosition);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackEntranceMomentum",                 sTrueParticleEntranceMomentum,                 &b_sTrueParticleEntranceMomentum);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackExitMomentum",                     sTrueParticleExitMomentum,                     &b_sTrueParticleExitMomentum);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackInActive",                         sTrueParticleInActive,                         &b_sTrueParticleInActive);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackDetector",                         sTrueParticleDetector,                         &b_sTrueParticleDetector);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackNDetCrossings",                    sTrueParticleNDetCrossings,                    &b_sTrueParticleNDetCrossings);
@@ -793,7 +788,7 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trECALDirectionStart",       trECALDirectionStart,       &b_trECALDirectionStart);
 //  anaUtils::ConfigureTreeBranch(fChain, "trECALDirectionEnd",         trECALDirectionEnd,         &b_trECALDirectionEnd);
   anaUtils::ConfigureTreeBranch(fChain, "trECALPositionStart",        trECALPositionStart,        &b_trECALPositionStart);
-//  anaUtils::ConfigureTreeBranch(fChain, "trECALPositionEnd",          trECALPositionEnd,          &b_trECALPositionEnd);
+  anaUtils::ConfigureTreeBranch(fChain, "trECALPositionEnd",          trECALPositionEnd,          &b_trECALPositionEnd);
 //  anaUtils::ConfigureTreeBranch(fChain, "trECALEDeposit",             trECALEDeposit,             &b_trECALEDeposit);
   anaUtils::ConfigureTreeBranch(fChain, "trECALAvgTime",              trECALAvgTime,              &b_trECALAvgTime);
 
@@ -808,16 +803,17 @@ void RedoTreeConverter::DefineBranches(){
 
   
   
-  //        anaUtils::ConfigureTreeBranch(fChain, "trSMRDDirectionStart", trSMRDDirectionStart, &b_trSMRDDirectionStart);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionStart", trSMRDPositionStart, &b_trSMRDPositionStart);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionEnd", trSMRDPositionEnd, &b_trSMRDPositionEnd);
+  anaUtils::ConfigureTreeBranch(fChain, "trSMRDDirectionStart", trSMRDDirectionStart, &b_trSMRDDirectionStart);
+  anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionStart",  trSMRDPositionStart,  &b_trSMRDPositionStart);
+  anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionEnd",    trSMRDPositionEnd,    &b_trSMRDPositionEnd);
   //        anaUtils::ConfigureTreeBranch(fChain, "trSMRDAvgTime", trSMRDAvgTime, &b_trSMRDAvgTime);
 
-  anaUtils::ConfigureTreeBranch(fChain, "trP0DLength", trP0DLength, &b_trP0DLength);
-  anaUtils::ConfigureTreeBranch(fChain, "trP0DELoss", trP0DELoss, &b_trP0DELoss);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trP0DDirectionStart", trP0DDirectionStart, &b_trP0DDirectionStart);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionStart", trP0DPositionStart, &b_trP0DPositionStart);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionEnd", trP0DPositionEnd, &b_trP0DPositionEnd);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DNNodes",         trP0DNNodes,         &b_trP0DNNodes);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DLength",         trP0DLength,         &b_trP0DLength);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DELoss",          trP0DELoss,          &b_trP0DELoss);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DDirectionStart", trP0DDirectionStart, &b_trP0DDirectionStart);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionStart",  trP0DPositionStart,  &b_trP0DPositionStart);
+  anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionEnd",    trP0DPositionEnd,    &b_trP0DPositionEnd);
 
   fChain->SetBranchStatus("*",1);
   /*
@@ -1594,6 +1590,7 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
   track->nFGDSegments  = 0;
   track->nECALSegments = 0;
   track->nP0DSegments  = 0;
+  track->nSMRDSegments = 0; 
   for (int i = 0; i < SubDetId::kInvalidSubdetector; ++i){
     SubDetId::SubDetEnum idet = static_cast<SubDetId::SubDetEnum>(i);
     if(!SubDetId::GetDetectorUsed(track->Detector, idet)) continue;
@@ -1615,6 +1612,22 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
       track->FGDSegments[track->nFGDSegments] = seg;
       track->nFGDSegments++;
     }
+    else if(SubDetId::IsP0DDetector(idet)){
+      if (track->nP0DSegments==(int)NMAXP0DS)
+        continue;
+      AnaP0DParticleB* seg = MakeP0dTrack();
+      int p0d = 0;
+      FillP0dInfo(itrk, p0d, seg);
+      track->P0DSegments[track->nP0DSegments++] = seg;
+    }
+    else if(SubDetId::IsSMRDDetector(idet)){
+      if (track->nSMRDSegments==(int)NMAXSMRDS)
+        continue;
+      AnaSMRDParticleB* seg = MakeSmrdTrack();
+      int smrd = convUtils::GetLocalDetEnum(SubDetId::kSMRD, idet);
+      FillSmrdInfo(itrk, smrd, seg);
+      track->SMRDSegments[track->nSMRDSegments++] = seg;
+    }
 
     else if(SubDetId::IsECALDetector(idet)){
       if (track->nECALSegments==(int)NMAXECALS)
@@ -1623,17 +1636,7 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
       AnaECALParticleB* seg = MakeEcalTrack();
       int ecal = convUtils::GetLocalDetEnum(SubDetId::kECAL, idet);
       FillEcalInfo(itrk, ecal, seg);
-      track->ECALSegments[track->nECALSegments] = seg;
-      track->nECALSegments++;
-    }
-    else if(SubDetId::IsP0DDetector(idet)){
-      if (track->nP0DSegments==(int)NMAXP0DS)
-        continue;
-      AnaP0DParticleB* seg = MakeP0dTrack();
-      int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
-      FillP0dInfo(itrk, p0d, seg);
-      track->P0DSegments[track->nP0DSegments] = seg;
-      track->nP0DSegments++;
+      track->ECALSegments[track->nECALSegments++] = seg;
     }
 
   }
@@ -1675,7 +1678,6 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
       track->ECALSegments[track->nECALSegments] = seg;
       track->nECALSegments++;
     }
-
     else if(SubDetId::IsP0DDetector(idet)){
       if (track->nP0DSegments==(int)NMAXP0DS)
         continue;
@@ -1686,8 +1688,6 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
       track->nP0DSegments++;
     }
   }
-
-
 
 }
 
@@ -1845,7 +1845,7 @@ void RedoTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* seg){
   
   for (int i = 0; i < 4; i++){
     seg->PositionStart[i] = (trECALPositionStart)[itrk][ecal][i];
-  //  seg->PositionEnd[i]   = (trECALPositionEnd)[itrk][ecal][i];
+    seg->PositionEnd  [i] = (trECALPositionEnd)  [itrk][ecal][i];
   }
   
 }
@@ -1873,8 +1873,8 @@ void RedoTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* seg){
   SubDetId::SetDetectorUsed(seg->Detector, SubDetId::kP0D);
 
   seg->Length = (trP0DLength)[itrk][p0d];
-  seg->ELoss = (trP0DELoss)[itrk][p0d];
-
+  seg->ELoss  = (trP0DELoss)[itrk][p0d];
+  seg->NNodes = (int)(trP0DNNodes)[itrk][p0d];
   for (int i=0;i<4;i++){
     seg->PositionStart[i] = (trP0DPositionStart)[itrk][p0d][i];
     seg->PositionEnd[i]   = (trP0DPositionEnd)[itrk][p0d][i];
@@ -1922,7 +1922,7 @@ void RedoTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
 
     anaUtils::CopyArray(sTrueParticleEntrancePosition[itrk][i], cross->EntrancePosition, 4);
     anaUtils::CopyArray(sTrueParticleExitPosition[itrk][i], cross->ExitPosition, 4);
-    
+
     anaUtils::CopyArray(sTrueParticleEntranceMomentum[itrk][i], cross->EntranceMomentum, 3);
     anaUtils::CopyArray(sTrueParticleExitMomentum[itrk][i],     cross->ExitMomentum,     3);
 
