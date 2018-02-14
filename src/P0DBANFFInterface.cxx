@@ -21,14 +21,14 @@ P0DBANFFInterface::P0DBANFFInterface()
 {
     // CB pallate taken from Brian Connelly
     // http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
-    cbBlack  = new TColor(kcbBlack ,0,0,0,"cbBlack");
-    cbOrange = new TColor(kcbOrange,.9,.6,0,"cbOrange");
-    cbSky    = new TColor(kcbSky   ,.35,.7,.9,"cbSky");
-    cbGreen  = new TColor(kcbGreen ,0,.6,.5,"cbGreen");
-    cbBlue   = new TColor(kcbBlue  ,0,.45,.7,"cbBlue");
-    cbRed    = new TColor(kcbRed   ,.8,.4,0,"cbRed");
-    cbPurple = new TColor(kcbPurple,.8,.6,.7,"cbPurple");
-    cbYellow = new TColor(kcbYellow,.95,.90,.25,"cbYellow");
+    cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");
+    cbOrange = new TColor(kcbOrange, 0.90, 0.60, 0.00, "cbOrange");
+    cbSky    = new TColor(kcbSky   , 0.35, 0.70, 0.90, "cbSky");
+    cbGreen  = new TColor(kcbGreen , 0.00, 0.60, 0.50, "cbGreen");
+    cbBlue   = new TColor(kcbBlue  , 0.00, 0.45, 0.70, "cbBlue");
+    cbRed    = new TColor(kcbRed   , 0.80, 0.40, 0.00, "cbRed");
+    cbPurple = new TColor(kcbPurple, 0.80, 0.60, 0.70, "cbPurple");
+    cbYellow = new TColor(kcbYellow, 0.95, 0.90, 0.25, "cbYellow");
 
     P0DBANFFStyle = new TStyle("P0DBANFFStyle","Color style + colorblind frendly palletes");
     TGaxis::SetMaxDigits(3);
