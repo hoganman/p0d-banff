@@ -5,8 +5,8 @@
 #################################################
 
 if [ -z ${P0DBANFFROOT+x} ]; then
-    echo "P0DBANFFROOT was not declared. Setting it to "/physics/home/mhogan/software/p0d-banff/p0d-banff
-    export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
+    echo "P0DBANFFROOT was not declared. Setting it to "$HOME/software/p0d-banff
+    export P0DBANFFROOT=$HOME/software/p0d-banff
 fi
 
 if [ -z ${ROOTSYS+x} ]; then 
@@ -22,8 +22,8 @@ CMTPATH=${P0DBANFFROOT}:${CMTPATH}
 CMTPROJECTPATH=${P0DBANFFROOT}/../:${CMTPROJECTPATH}
 
 source ${P0DBANFFROOT}/nd280Highland2/*/cmt/setup.sh
-source ${P0DBANFFROOT}/nd280Psyche/*/cmt/setup.sh
-source ${P0DBANFFROOT}/BANFF/v3r16/cmt/setup.sh
+# source ${P0DBANFFROOT}/nd280Psyche/v3r32/cmt/setup.sh
+#source ${P0DBANFFROOT}/BANFF/v3r16/cmt/setup.sh
 
 export T2KREWEIGHT=${P0DBANFFROOT}/T2KReWeight
 PATH=${T2KREWEIGHT}/bin:${T2KREWEIGHT}/app:${PATH}
@@ -99,6 +99,6 @@ export NIWGREWEIGHT_INPUTS=${NIWG}/inputs
 #before you try to run any program.
 #This can be accomplished by sourcing the normal script used to setup CMT
 #followed by the setup script in the cmt directory of psycheSteering.
-source ${P0DBANFFROOT}/psyche/psycheSteering/v3r18/cmt/setup.sh
+source ${P0DBANFFROOT}/psyche/psycheSteering/v3r24/cmt/setup.sh
 LD_LIBRARY_PATH=${PSYCHECOREROOT}/Linux-x86_64:$LD_LIBRARY_PATH
 ###################

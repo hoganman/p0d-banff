@@ -1,0 +1,38 @@
+package highland2/antiNumuCCMultiPiAnalysis
+version v2r6
+
+manager Pawel Przewlocki <pawel.przewlocki@ncbj.gov.pl>
+author nd280-software@mailman.t2k.org
+
+branches cmt src doc app 
+
+use antiNumuCCAnalysis * highland2
+use numuCCMultiPiAnalysis * highland2
+
+# Build methods to include.
+document doxygen doxygen -group=documentation src/*.cpp src/*.h src/*.hxx src/*.cxx ../doc/*.dox
+
+# Build information used by packages that use this one.
+macro antiNumuCCMultiPiAnalysis_cppflags " -DANTINUMUCCMULTIPIANALYSIS_USED"
+macro antiNumuCCMultiPiAnalysis_linkopts " -L$(ANTINUMUCCMULTIPIANALYSISROOT)/$(antiNumuCCMultiPiAnalysis_tag) -lantiNumuCCMultiPiAnalysis "
+macro antiNumuCCMultiPiAnalysis_stamps " $(ANTINUMUCCMULTIPIANALYSISROOT)/$(antiNumuCCMultiPiAnalysis_tag)/antiNumuCCMultiPiAnalysis.stamp"
+
+# The paths to find this library.
+path_remove PATH "$(ANTINUMUCCMULTIPIANALYSISROOT)"
+path_prepend PATH "$(ANTINUMUCCMULTIPIANALYSISROOT)/$(antiNumuCCMultiPiAnalysis_tag)"
+path_remove LD_LIBRARY_PATH "$(ANTINUMUCCMULTIPIANALYSISROOT)"
+path_prepend LD_LIBRARY_PATH "$(ANTINUMUCCMULTIPIANALYSISROOT)/$(antiNumuCCMultiPiAnalysis_tag)"
+path_remove DYLD_LIBRARY_PATH "" \
+	    Darwin	      "$(ANTINUMUCCMULTIPIANALYSISROOT)"
+path_prepend DYLD_LIBRARY_PATH "" \
+	     Darwin	       "$(ANTINUMUCCMULTIPIANALYSISROOT)/$(antiNumuCCMultiPiAnalysis_tag)"
+
+
+# The library to build
+library antiNumuCCMultiPiAnalysis *.cxx  ../dict/*.cxx
+
+application RunAntiNumuCCMultiPiAnalysis ../app/RunAntiNumuCCMultiPiAnalysis*.cxx
+
+# tests
+document doxygen doxygen -group=documentation ../scripts/* ../doc/*.dox
+
