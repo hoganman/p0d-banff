@@ -5,8 +5,8 @@
 #################################################
 
 if [ -z ${P0DBANFFROOT+x} ]; then
-    echo "P0DBANFFROOT was not declared. Setting it to "$HOME/software/p0d-banff
-    export P0DBANFFROOT=$HOME/software/p0d-banff
+    echo "P0DBANFFROOT was not declared. Setting it to /physics/home/mhogan/software/p0d-banff/p0d-banff"
+    export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
 fi
 
 if [ -z ${ROOTSYS+x} ]; then 
@@ -31,7 +31,8 @@ LD_LIBRARY_PATH=${T2KREWEIGHT}/lib:${LD_LIBRARY_PATH}
 
 # ND280 oaAnalysis libs (See README for generating this)
 # Only needed with ./configure --enable-oaanalysis
-export OAANALYSISREADERROOT=$T2KREWEIGHT/Linux-x86_64
+# export OAANALYSISREADERROOT=$T2KREWEIGHT/Linux-x86_64
+export OAANALYSISREADERROOT=$T2KREWEIGHT
 export OAANALYSISLIBS=$OAANALYSISREADERROOT
 export LD_LIBRARY_PATH=$OAANALYSISLIBS:$LD_LIBRARY_PATH
 #T2KREWEIGHT complains that "Use of uninitialized value $ENV{"OAANALYSISREADERROOT"} in concatenation (.) or string at ./configure line 141."

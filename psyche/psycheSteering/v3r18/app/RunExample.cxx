@@ -191,7 +191,7 @@ int main(int argc, char *argv[]){
     std::cout << "time: " << t1-t0 << std::endl;
 
     _man.sel().PrintStatistics();
-    std::cout << "# events passing selection: " << npassed << std::endl;
+    //std::cout << "# events passing selection: " << npassed << std::endl;
     
     //  ProfilerStop();
 

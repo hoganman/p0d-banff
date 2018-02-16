@@ -373,7 +373,7 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
 
         if jobNum+1 != numJobs:
             print "sleeping for 90 seconds till next job sub"
-            time.sleep(90) #seconds
+            time.sleep(90)  # seconds
 
         #restart list
         del subFileList[0:]

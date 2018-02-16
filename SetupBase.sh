@@ -3,6 +3,7 @@
 # Prelim / P0D-BANFF Project independent #
 #######################
 OLD_PATH=$PATH
+OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 #######################
 SOFTWARE=/physics/software
 export PYTHONPATH=./:/physics/INSTALLATION/bin
@@ -44,4 +45,5 @@ source ${ND280}/ROOT/v5r34p09n04/Linux-x86_64/root/bin/thisroot.sh
 
 #######################
 PATH=$OLD_PATH:$PATH
+LD_LIBRARY_PATH=$OLD_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 #######################

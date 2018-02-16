@@ -71,6 +71,9 @@ public:
   /// with the weights for each selection
   bool ProcessEvent(const ToyExperiment& toy, AnaEventB& event, std::vector<Weight_h>& totalWeightSystVector, std::vector<Weight_h>& fluxWeightSystVector);
   bool ProcessEvent(const ToyExperiment& toy, AnaEventB& event, std::vector<Weight_h>& totalWeightSystVector, std::vector<Weight_h>& fluxWeightSystVector, Float_t& POTweight);
+  
+  /// Function to retrieve each individual weight systematics applied
+  bool ProcessEventWithIndividualWeightSyst(const ToyExperiment& toy, AnaEventB& event, Weight_h* totalWeightSystMap, Weight_h& fluxWeightSyst);
   bool ProcessEvent(AnaEventB& event, Float_t& POTWeight);
   bool ProcessEvent(AnaEventB& event);
 
@@ -238,6 +241,9 @@ protected:
   
   bool _doFGD1;
   bool _doFGD2;
+
+  /// Wether you want to check at every event if all the selection are exclusive
+  bool _StrictExclusiveness;
 
 };
 

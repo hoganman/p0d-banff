@@ -41,7 +41,7 @@ ARCH_OK =
 # ROOT headers and libraries
 
 ROOT_INCLUDES  = -I$(shell root-config --incdir)
-ROOT_LIBRARIES = $(shell root-config --glibs) -lMinuit -lGeom -lEG
+ROOT_LIBRARIES = $(shell root-config --glibs) -lMinuit -lGeom -lEG -lXMLIO -lXMLParser
 
 ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_GENIE)),YES)
 ROOT_LIBRARIES := $(ROOT_LIBRARIES) -lEGPythia6

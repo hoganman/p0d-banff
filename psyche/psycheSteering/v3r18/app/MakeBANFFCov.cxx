@@ -20,8 +20,8 @@
 #include "omp.h"
 #endif 
 
-int parseLine(char* line){
-    int i = strlen(line);
+Int_t parseLine(char* line){
+    Int_t i = strlen(line);
     while (*line < '0' || *line > '9') line++;
     line[i-3] = '\0';
     i = atoi(line);
@@ -29,9 +29,9 @@ int parseLine(char* line){
 }
 
 
-int getValue(){ //Note: this value is in KB!
+Int_t getValue(){ //Note: this value is in KB!
     FILE* file = fopen("/proc/self/status", "r");
-    int result = -1;
+    Int_t result = -1;
     char line[128];
     if (!file) return 0;
 
@@ -44,9 +44,9 @@ int getValue(){ //Note: this value is in KB!
     fclose(file);
     return result;
 }
-void  DivideMatrix(const int nbins,TH2F *hratio,TH2F *hnum, TH2F *hden){
-  for(int i=0;i<nbins;i++){
-    for(int j=0;j<nbins;j++){
+void  DivideMatrix(const Int_t nbins,TH2F *hratio,TH2F *hnum, TH2F *hden){
+  for(Int_t i=0;i<nbins;i++){
+    for(Int_t j=0;j<nbins;j++){
       double num=hnum->GetBinContent(i+1,j+1);
       double den=hden->GetBinContent(i+1,j+1);
       double ratio=0;
@@ -56,9 +56,9 @@ void  DivideMatrix(const int nbins,TH2F *hratio,TH2F *hnum, TH2F *hden){
     }
   }
 }
-void  MakeErrorMatrix(const int nbins,TH2F *hcov,TH2F *herr){
-  for(int i=0;i<nbins;i++){
-    for(int j=0;j<nbins;j++){
+void  MakeErrorMatrix(const Int_t nbins,TH2F *hcov,TH2F *herr){
+  for(Int_t i=0;i<nbins;i++){
+    for(Int_t j=0;j<nbins;j++){
       double cov=hcov->GetBinContent(i+1,j+1);
       double sign=0;
       if(cov!=0)
@@ -67,13 +67,13 @@ void  MakeErrorMatrix(const int nbins,TH2F *hcov,TH2F *herr){
     }
   }
 }
-void  MakeCovarianceBANFFStyle(const int nbins,int ntoys,TH2F *hcov,TH2F *hcov_st,TH2F *hcov_w,TH1F *prior, TH2F *hn_va_norm, TH1F *hn_w0,TH1F *hn_Nom){
+void  MakeCovarianceBANFFStyle(const Int_t nbins,Int_t ntoys,TH2F *hcov,TH2F *hcov_st,TH2F *hcov_w,TH1F *prior, TH2F *hn_va_norm, TH1F *hn_w0,TH1F *hn_Nom){
   float NA_av=0;
   float na_av[500]={0};
   if(nbins>500){ std::cout<<" too small size definition"<<std::endl; return;}
-  for(int i=0;i<nbins;i++){
+  for(Int_t i=0;i<nbins;i++){
     na_av[i]=0;
-    for(int ia=0;ia<ntoys;ia++){
+    for(Int_t ia=0;ia<ntoys;ia++){
       float nai=hn_va_norm->GetBinContent(ia+1,i+1);
       na_av[i]+=nai;
       NA_av+=nai;
@@ -86,8 +86,8 @@ void  MakeCovarianceBANFFStyle(const int nbins,int ntoys,TH2F *hcov,TH2F *hcov_s
   float cov_ww[500][500]={{0}};
   float cov[500][500]={{0}};
   std::cout<<" BANFF Style\n********************** "<<std::endl;
-  for(int i=0;i<nbins;i++){
-    for(int j=0;j<nbins;j++){
+  for(Int_t i=0;i<nbins;i++){
+    for(Int_t j=0;j<nbins;j++){
       cov_st[i][j]=0;
       float niw,njw,nomi,nomj;
       niw=hn_w0->GetBinContent(i+1);
@@ -104,7 +104,7 @@ void  MakeCovarianceBANFFStyle(const int nbins,int ntoys,TH2F *hcov,TH2F *hcov_s
 	
       }
       // float nnomi=hn_nom->GetBinContent(i+1);
-      for(int ia=0;ia<ntoys;ia++){
+      for(Int_t ia=0;ia<ntoys;ia++){
 	float nai,naj;
 	nai=hn_va_norm->GetBinContent(ia+1,i+1);
 	naj=hn_va_norm->GetBinContent(ia+1,j+1);
@@ -126,13 +126,13 @@ void  MakeCovarianceBANFFStyle(const int nbins,int ntoys,TH2F *hcov,TH2F *hcov_s
 
 }
 
-void  MakeCovarianceNUMUStyle(const int nbins,int ntoys,TH2F *hcov, TH2F *hn_va,  TH2F *hn_a,TH1F *hn_Nom){
+void  MakeCovarianceNUMUStyle(const Int_t nbins,Int_t ntoys,TH2F *hcov, TH2F *hn_va,  TH2F *hn_a,TH1F *hn_Nom){
   if(nbins>500){ std::cout<<" too small size definition"<<std::endl; return;}
   float NA_av=0;
   float na_av[500]={0};
-  for(int i=0;i<nbins;i++){
+  for(Int_t i=0;i<nbins;i++){
     na_av[i]=0;
-    for(int ia=0;ia<ntoys;ia++){
+    for(Int_t ia=0;ia<ntoys;ia++){
       float nai=hn_va->GetBinContent(ia+1,i+1);
       na_av[i]+=nai;
       NA_av+=nai;
@@ -141,11 +141,11 @@ void  MakeCovarianceNUMUStyle(const int nbins,int ntoys,TH2F *hcov, TH2F *hn_va,
   }
   std::cout<<" numu Style\n********************** "<<std::endl;
   float cov[500][500]={{0}};
-  for(int i=0;i<nbins;i++){
-    for(int j=0;j<nbins;j++){
+  for(Int_t i=0;i<nbins;i++){
+    for(Int_t j=0;j<nbins;j++){
       cov[i][j]=0;
       // float nnomi=hn_nom->GetBinContent(i+1);
-      for(int ia=0;ia<ntoys;ia++){
+      for(Int_t ia=0;ia<ntoys;ia++){
 	float nai,naj,nomi,nomj;
 	nai=hn_a->GetBinContent(ia+1,i+1);
 	naj=hn_a->GetBinContent(ia+1,j+1);
@@ -172,7 +172,7 @@ void  MakeCovarianceNUMUStyle(const int nbins,int ntoys,TH2F *hcov, TH2F *hn_va,
 
 
 
-int main(int argc, char *argv[]){
+Int_t main(Int_t argc, char *argv[]){
 
     // Usage:  MakeBANFFEventHistograms.exe -n N (preloads N events) -d 1/0 (swith on debugging mode, default off) -p X (X = Data/MC POT ratio to apply, default to 1) -b 1/0 (normalise by bin area in histograms, default off) -o outputfilename /path/to/input/file
 
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]){
     const char* outfilename = NULL;
 
     for (;;) {
-        int c = getopt(argc, argv, "n:t:o:d:p:b:");
+        Int_t c = getopt(argc, argv, "n:t:o:d:p:b:");
         if (c < 0)
             break;
         switch (c) {
@@ -231,13 +231,13 @@ int main(int argc, char *argv[]){
     ND::params().LoadParametersFiles(anaUtils::GetPackageHierarchy(), true);
 
     // Make sure no parameters have been accessed yet
-    ND::params().SetReadParamOverrideFilePointPassed();
+    ND::params().SetReadParamOverrideFilePoInt_tPassed();
 
     
-    int npbins[7]={10,10,10,5,5,5,5};
-    int ncbins[7]={7,7,7,4,4,4,4};
-    int nbins=0;
-    for(int is=0;is<7;is++) nbins+=(ncbins[is]*npbins[is]);
+    Int_t npbins[7]={10,10,10,5,5,5,5};
+    Int_t ncbins[7]={7,7,7,4,4,4,4};
+    Int_t nbins=0;
+    for(Int_t is=0;is<7;is++) nbins+=(ncbins[is]*npbins[is]);
 
     double pbins[7][11]={{0,300,500,600,700,900,1000,1500,3000,5000,30000}, //numu
 			 {0,300,500,600,700,900,1000,1500,3000,5000,30000}, //numu
@@ -259,7 +259,7 @@ int main(int argc, char *argv[]){
     inputFileName = argv[optind++];
 
     double ccqe_weight[25];
-    for(int i = 0; i < 25; ++i){
+    for(Int_t i = 0; i < 25; ++i){
         ccqe_weight[i] = 1;
     }
 
@@ -328,13 +328,12 @@ int main(int argc, char *argv[]){
     tree->Branch("isFGD1NuMuBkgInAntiNuMuModeCCQE",   &isFGD1NuMuBkgInAntiNuMuModeCCQE,   "isFGD1NuMuBkgInAntiNuMuModeCCQE/I");
     tree->Branch("isFGD1NuMuBkgInAntiNuMuModeCCnQE",  &isFGD1NuMuBkgInAntiNuMuModeCCnQE,  "isFGD1NuMuBkgInAntiNuMuModeCCnQE/I");
 
-  
-
     // This the analysis manager
     AnalysisManager _man;
 
     // Make and fill the EventSummary even when the selection is not passed.
     if(ND::params().GetParameterI("psycheSteering.Selections.ForceFillEventSummary")) _man.sel().SetForceFillEventSummary(true);
+
     // Parameters to control the systematics
     bool applyVariationSystematics = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyVariationSystematics");
     bool applyWeightSystematics    = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics");
@@ -343,7 +342,7 @@ int main(int argc, char *argv[]){
     // Get the initial amount of memory being used
     double initial_mem = getValue();
 
-    // Print the steps for the numuCC selection
+    // PrInt_t the steps for the numuCC selection
     _man.sel().GetSelection("kTrackerNumuCC")->DumpSteps();
 
     std::vector<SystematicBase*>  allSyst = _man.syst().GetSystematics();
@@ -351,7 +350,7 @@ int main(int argc, char *argv[]){
     ToyExperiment toy0 = (*_man.syst().CreateToyExperiment()); 
     
     Int_t nsyst=toy.GetNSystematics();
-    for(int i=0;i<nsyst;i++){
+    for(Int_t i=0;i<nsyst;i++){
       if(!allSyst[i])continue;
       if(allSyst[i]->Name()=="kBFieldDist")
 	allSyst[i]->SetPDF(SystematicBase::kUniform);
@@ -370,7 +369,7 @@ int main(int argc, char *argv[]){
     std::vector<double> systpull[1000][20];
     /// Define the throws and generate them 
     for (UInt_t itoy= 0; itoy<ntoys;itoy++){  
-      for(int isyst = 0; isyst < nsyst; isyst++){
+      for(Int_t isyst = 0; isyst < nsyst; isyst++){
 	for (UInt_t ipar = 0;ipar<toy.GetNParameters(isyst);ipar++){
 	  Float_t var;
 	  if(allSyst[isyst]->PDF()== SystematicBase::kUniform)
@@ -405,8 +404,8 @@ int main(int argc, char *argv[]){
     
     float* mom = new float[nmax*ntoys+1];
     float* weight = new float[nmax*ntoys+1];
-    for(int j = 0; j<nmax; ++j){
-        for(unsigned int k = 0; k < ntoys;  ++k){
+    for(Int_t j = 0; j<nmax; ++j){
+        for(unsigned Int_t k = 0; k < ntoys;  ++k){
             weight[j*ntoys + k] = -99999;
             mom[j*ntoys + k] = -1;
         }
@@ -414,11 +413,11 @@ int main(int argc, char *argv[]){
 
 
 #ifdef MULTITHREAD
-    int nCores = atoi(getenv("OMP_NUM_THREADS"));
+    Int_t nCores = atoi(getenv("OMP_NUM_THREADS"));
 #define EPT nmax/nCores
 #pragma omp parallel for num_threads(nCores) schedule(dynamic,EPT)
 #endif
-    for(int j = 0; j < nmax; ++j){
+    for(Int_t j = 0; j < nmax; ++j){
         // 1. ----------------------------------------------------------
         // Get the next event in the Experiment
       if(hasSampleSum)
@@ -435,7 +434,7 @@ int main(int argc, char *argv[]){
       }
       
 
-      int isampleNom=-1;
+      Int_t isampleNom=-1;
       if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC0Pi)        isampleNom=0;	
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC1Pi)   isampleNom=1;	
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCCOther) isampleNom=2;	
@@ -445,13 +444,13 @@ int main(int argc, char *argv[]){
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCCnQE)isampleNom=6;
 
       if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample != SampleId::kUnassigned){
-	int shift=0;
-	for(int is=0;is<7;is++){
+	Int_t shift=0;
+	for(Int_t is=0;is<7;is++){
 	  if(is>0)shift+=npbins[is-1]*ncbins[is-1];
-	  int bb=0;
+	  Int_t bb=0;
 	  if(is==isampleNom){
-	    for(int ic=0;ic<ncbins[is];ic++){
-	      for(int ip=0;ip<npbins[is];ip++){
+	    for(Int_t ic=0;ic<ncbins[is];ic++){
+	      for(Int_t ip=0;ip<npbins[is];ip++){
 		selmu_mom=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->Momentum;
 		selmu_costheta=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->DirectionStart[2];
 		if((selmu_mom>=pbins[is][ip] && selmu_mom<pbins[is][ip+1]) && (selmu_costheta>=cbins[is][ic] && selmu_costheta<cbins[is][ic+1])){
@@ -472,7 +471,7 @@ int main(int argc, char *argv[]){
       Float_t detectorWeight0;
       Float_t fluxWeight0;
       _man.ProcessEvent(toy,*event,detectorWeight0,fluxWeight0);//result with 0 variation
-      int isampleZero=-1;
+      Int_t isampleZero=-1;
       if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC0Pi)        isampleZero=0;	
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC1Pi)   isampleZero=1;	
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCCOther) isampleZero=2;	
@@ -482,12 +481,12 @@ int main(int argc, char *argv[]){
       else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCCnQE)isampleZero=6;
 
       if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample != SampleId::kUnassigned){
-	int shift=0;
-	for(int is=0;is<7;is++){
+	Int_t shift=0;
+	for(Int_t is=0;is<7;is++){
 	  if(is>0)shift+=npbins[is-1]*ncbins[is-1];
-	  int bb=0;	 
-	  for(int ic=0;ic<ncbins[is];ic++){
-	    for(int ip=0;ip<npbins[is];ip++){
+	  Int_t bb=0;	 
+	  for(Int_t ic=0;ic<ncbins[is];ic++){
+	    for(Int_t ip=0;ip<npbins[is];ip++){
 	      double selmu_mom0=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->Momentum;
 	      double selmu_costheta0=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->DirectionStart[2];
 	    
@@ -519,7 +518,7 @@ int main(int argc, char *argv[]){
 	Float_t detectorWeight;
 	Float_t fluxWeight;
 	_man.ProcessEvent(toy,*event,detectorWeight,fluxWeight);//result with 0 variation
-	int isample=-1;
+	Int_t isample=-1;
 	if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC0Pi)        isample=0;	
 	else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCC1Pi)   isample=1;	
 	else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuCCOther) isample=2;	
@@ -529,12 +528,12 @@ int main(int argc, char *argv[]){
 	else if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample == SampleId::kFGD1NuMuBkgInAntiNuModeCCnQE)isample=6;
 
 	if(static_cast<AnaEventSummaryB*>(event->Summary)->EventSample != SampleId::kUnassigned){
-	  int shift=0;
-	  for(int is=0;is<7;is++){
+	  Int_t shift=0;
+	  for(Int_t is=0;is<7;is++){
 	    if(is>0)shift+=npbins[is-1]*ncbins[is-1];
-	    int bb=0;
-	    for(int ic=0;ic<ncbins[is];ic++){
-	      for(int ip=0;ip<npbins[is];ip++){
+	    Int_t bb=0;
+	    for(Int_t ic=0;ic<ncbins[is];ic++){
+	      for(Int_t ip=0;ip<npbins[is];ip++){
 		selmu_mom=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->Momentum;
 		selmu_costheta=static_cast<AnaEventSummaryB*>(event->Summary)->LeptonCandidate[static_cast<AnaEventSummaryB*>(event->Summary)->EventSample]->DirectionStart[2];
 		if((selmu_mom>=pbins[is][ip] && selmu_mom<pbins[is][ip+1]) && (selmu_costheta>=cbins[is][ic] && selmu_costheta<cbins[is][ic+1])){
@@ -564,10 +563,10 @@ int main(int argc, char *argv[]){
     TH2F *herr_w=new TH2F("herr_w","BANFF",nbins,0,nbins,nbins,0,nbins);
     TH2F *herr_BANFFstyle=new TH2F("herr_BANFFstyle","BANFF",nbins,0,nbins,nbins,0,nbins);
     TH1F *prior_BANFFstyle=new TH1F("prior_BANFFstyle","BANFF",nbins,0,nbins);
-    MakeCovarianceBANFFStyle((const int)nbins,ntoys,hcov_BANFFstyle,hcov_st,hcov_w,prior_BANFFstyle, hnOnlyVarvstoynorm, hnOnlyWZero,hnNom);
-    MakeErrorMatrix((const int) nbins,hcov_BANFFstyle,herr_BANFFstyle);
-    MakeErrorMatrix((const int) nbins,hcov_st,herr_st);
-    MakeErrorMatrix((const int) nbins,hcov_w,herr_w);
+    MakeCovarianceBANFFStyle((const Int_t)nbins,ntoys,hcov_BANFFstyle,hcov_st,hcov_w,prior_BANFFstyle, hnOnlyVarvstoynorm, hnOnlyWZero,hnNom);
+    MakeErrorMatrix((const Int_t) nbins,hcov_BANFFstyle,herr_BANFFstyle);
+    MakeErrorMatrix((const Int_t) nbins,hcov_st,herr_st);
+    MakeErrorMatrix((const Int_t) nbins,hcov_w,herr_w);
     hcov_BANFFstyle->Write();
     hcov_st->Write();
     hcov_w->Write();
@@ -581,16 +580,16 @@ int main(int argc, char *argv[]){
     TH2F *herr_NUMUstyle=new TH2F("herr_NUMUstyle","NUMU",nbins,0,nbins,nbins,0,nbins);
     TH2F *herr_NUMUstyleNew=new TH2F("herr_NUMUstyleNew","NUMU",nbins,0,nbins,nbins,0,nbins);
    
-    MakeCovarianceNUMUStyle((const int) nbins,ntoys,hcov_NUMUstyle,hnOnlyVarvstoy,hnvstoy,hnNom);
-    MakeCovarianceNUMUStyle((const int) nbins,ntoys,hcov_NUMUstyleNew,hnOnlyVarvstoynorm,hnvstoy,hnNom);
-    MakeErrorMatrix((const int) nbins,hcov_NUMUstyle,herr_NUMUstyle);
-    MakeErrorMatrix((const int) nbins,hcov_NUMUstyleNew,herr_NUMUstyleNew);
+    MakeCovarianceNUMUStyle((const Int_t) nbins,ntoys,hcov_NUMUstyle,hnOnlyVarvstoy,hnvstoy,hnNom);
+    MakeCovarianceNUMUStyle((const Int_t) nbins,ntoys,hcov_NUMUstyleNew,hnOnlyVarvstoynorm,hnvstoy,hnNom);
+    MakeErrorMatrix((const Int_t) nbins,hcov_NUMUstyle,herr_NUMUstyle);
+    MakeErrorMatrix((const Int_t) nbins,hcov_NUMUstyleNew,herr_NUMUstyleNew);
     TH2F *hcov_ratio=new TH2F("hcov_ratio","BANFF",nbins,0,nbins,nbins,0,nbins);
     TH2F *hcov_ratioNew=new TH2F("hcov_ratioNew","BANFF",nbins,0,nbins,nbins,0,nbins);
     TH2F *hcov_ratioNUMU=new TH2F("hcov_ratioNUMU","NUMU",nbins,0,nbins,nbins,0,nbins);
-    DivideMatrix((const int) nbins,hcov_ratio,hcov_BANFFstyle,hcov_NUMUstyle);
-    DivideMatrix((const int) nbins,hcov_ratioNUMU,hcov_NUMUstyleNew,hcov_NUMUstyle);
-    DivideMatrix((const int) nbins,hcov_ratioNew,hcov_BANFFstyle,hcov_NUMUstyleNew);
+    DivideMatrix((const Int_t) nbins,hcov_ratio,hcov_BANFFstyle,hcov_NUMUstyle);
+    DivideMatrix((const Int_t) nbins,hcov_ratioNUMU,hcov_NUMUstyleNew,hcov_NUMUstyle);
+    DivideMatrix((const Int_t) nbins,hcov_ratioNew,hcov_BANFFstyle,hcov_NUMUstyleNew);
     hcov_ratio->Write();
     hcov_ratioNew->Write();
     hcov_ratioNUMU->Write();
@@ -616,5 +615,5 @@ int main(int argc, char *argv[]){
     std::cout << "The program used " << (final_mem-initial_mem)/1024 << "Mb of memory in total" << std::endl;
 
     //  ProfilerStop();
-    _man.sel().PrintStatistics();
+    _man.sel().PrInt_tStatistics();
 }
