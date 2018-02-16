@@ -9,31 +9,30 @@ branches cmt doc
 # Master package to specify highland2 package versions and the psyche released version
 
 # psyche packages
-use nd280Psyche v3r26
+use nd280Psyche v3r32
 
 # base highland2 packages
-use highlandCore v2r22 highland2
-use oaAnalysisReader v2r10 highland2
+use highlandCore v2r24 highland2
+use oaAnalysisReader v2r12 highland2
 use highlandEventModel v2r20 highland2
-use highlandTools v2r18 highland2
-#use highlandTools v2r17p1 highland2
-use highlandUtils v2r22 highland2
-use highlandIO v2r22 highland2
-use highlandCorrections v2r8 highland2 
+use highlandTools v2r20 highland2
+use highlandUtils v2r24 highland2
+use highlandIO v2r24 highland2
+use highlandCorrections v2r10 highland2 
 use highlandSystematics v2r4 highland2
-use baseAnalysis v2r20 highland2 
+use baseAnalysis v2r22 highland2 
 
 # tracker analyses
-use baseTrackerAnalysis v2r12 highland2 
+use baseTrackerAnalysis v2r14 highland2 
 use numuCCAnalysis v2r14 highland2
-use numuCCMultiPiAnalysis v2r8 highland2
+use numuCCMultiPiAnalysis v2r12 highland2
 use antiNumuCCAnalysis v2r4 highland2
-use antiNumuCCMultiPiAnalysis v2r2 highland2
+use antiNumuCCMultiPiAnalysis v2r6 highland2
 use numuCCMultiTargetAnalysis v2r12 highland2
-use numuBkgInAntiNuModeAnalysis v2r6 highland2
-use nueCCAnalysis v2r18 highland2
-use antiNueCCAnalysis v2r10 highland2
-use gammaAnalysis v2r12 highland2 
+use numuBkgInAntiNuModeAnalysis v2r8 highland2
+use nueCCAnalysis v2r22 highland2
+use antiNueCCAnalysis v2r12 highland2
+use gammaAnalysis v2r14 highland2 
 
 # P0D-tracker analyses
 use p0dNumuCCAnalysis v2r14 highland2

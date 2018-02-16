@@ -2,14 +2,14 @@
 
 echo
 echo Working on nd280Highland2 version v2r22
-echo Moving to /physics/home/mhogan/software/t2k-software-clone
-cd /physics/home/mhogan/software/t2k-software-clone
+echo Moving to /home/other/mhogan/software/p0d-banff
+cd /home/other/mhogan/software/p0d-banff
 
 cmt co nd280Psyche
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t nd280Psyche/ | head -1)
-echo replacing \'v3r26\' with \'$HEADVERSION\' for nd280Psyche in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use nd280Psyche                       v3r26"/"use nd280Psyche $HEADVERSION"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v3r31\' with \'$HEADVERSION\' for nd280Psyche in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use nd280Psyche v3r31"/"use nd280Psyche $HEADVERSION"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 # checkout all psyche packages
 nd280Psyche/$HEADVERSION/cmt/checkout_HEAD -s
 nd280Psyche/$HEADVERSION/cmt/checkout_HEAD_$HEADVERSION
@@ -19,158 +19,158 @@ echo Back to nd280Highland2 version v2r22
 cmt co highland2/highlandCore
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandCore/ | head -1)
-echo replacing \'v2r21\' with \'$HEADVERSION\' for highlandCore in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandCore                      v2r21   highland2"/"use highlandCore $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r22\' with \'$HEADVERSION\' for highlandCore in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandCore v2r22 highland2"/"use highlandCore $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/oaAnalysisReader
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/oaAnalysisReader/ | head -1)
-echo replacing \'v2r9\' with \'$HEADVERSION\' for oaAnalysisReader in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use oaAnalysisReader                  v2r9    highland2"/"use oaAnalysisReader $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r10\' with \'$HEADVERSION\' for oaAnalysisReader in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use oaAnalysisReader v2r10 highland2"/"use oaAnalysisReader $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandEventModel
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandEventModel/ | head -1)
-echo replacing \'v2r19\' with \'$HEADVERSION\' for highlandEventModel in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandEventModel                v2r19   highland2"/"use highlandEventModel $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r20\' with \'$HEADVERSION\' for highlandEventModel in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandEventModel v2r20 highland2"/"use highlandEventModel $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandTools
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandTools/ | head -1)
-echo replacing \'v2r17p1\' with \'$HEADVERSION\' for highlandTools in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandTools                     v2r17p1 highland2"/"use highlandTools $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r18\' with \'$HEADVERSION\' for highlandTools in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandTools v2r18 highland2"/"use highlandTools $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandUtils
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandUtils/ | head -1)
-echo replacing \'v2r19\' with \'$HEADVERSION\' for highlandUtils in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandUtils                     v2r19   highland2"/"use highlandUtils $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r22\' with \'$HEADVERSION\' for highlandUtils in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandUtils v2r22 highland2"/"use highlandUtils $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandIO
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandIO/ | head -1)
-echo replacing \'v2r21\' with \'$HEADVERSION\' for highlandIO in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandIO                        v2r21   highland2"/"use highlandIO $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r22\' with \'$HEADVERSION\' for highlandIO in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandIO v2r22 highland2"/"use highlandIO $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandCorrections
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandCorrections/ | head -1)
-echo replacing \'v2r7\' with \'$HEADVERSION\' for highlandCorrections in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandCorrections               v2r7    highland2"/"use highlandCorrections $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r8\' with \'$HEADVERSION\' for highlandCorrections in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandCorrections v2r8 highland2"/"use highlandCorrections $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandSystematics
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandSystematics/ | head -1)
-echo replacing \'v2r3\' with \'$HEADVERSION\' for highlandSystematics in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandSystematics               v2r3    highland2"/"use highlandSystematics $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r4\' with \'$HEADVERSION\' for highlandSystematics in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandSystematics v2r4 highland2"/"use highlandSystematics $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/baseAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/baseAnalysis/ | head -1)
-echo replacing \'v2r19\' with \'$HEADVERSION\' for baseAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use baseAnalysis                      v2r19   highland2"/"use baseAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r20\' with \'$HEADVERSION\' for baseAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use baseAnalysis v2r20 highland2"/"use baseAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/baseTrackerAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/baseTrackerAnalysis/ | head -1)
-echo replacing \'v2r11\' with \'$HEADVERSION\' for baseTrackerAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use baseTrackerAnalysis               v2r11   highland2"/"use baseTrackerAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r12\' with \'$HEADVERSION\' for baseTrackerAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use baseTrackerAnalysis v2r12 highland2"/"use baseTrackerAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/numuCCAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/numuCCAnalysis/ | head -1)
-echo replacing \'v2r13\' with \'$HEADVERSION\' for numuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use numuCCAnalysis                    v2r13   highland2"/"use numuCCAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r14\' with \'$HEADVERSION\' for numuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use numuCCAnalysis v2r14 highland2"/"use numuCCAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/numuCCMultiPiAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/numuCCMultiPiAnalysis/ | head -1)
-echo replacing \'v2r7\' with \'$HEADVERSION\' for numuCCMultiPiAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use numuCCMultiPiAnalysis             v2r7    highland2"/"use numuCCMultiPiAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r8\' with \'$HEADVERSION\' for numuCCMultiPiAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use numuCCMultiPiAnalysis v2r8 highland2"/"use numuCCMultiPiAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/antiNumuCCAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/antiNumuCCAnalysis/ | head -1)
-echo replacing \'v2r3\' with \'$HEADVERSION\' for antiNumuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use antiNumuCCAnalysis                v2r3    highland2"/"use antiNumuCCAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r4\' with \'$HEADVERSION\' for antiNumuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use antiNumuCCAnalysis v2r4 highland2"/"use antiNumuCCAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/antiNumuCCMultiPiAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/antiNumuCCMultiPiAnalysis/ | head -1)
-echo replacing \'v2r1\' with \'$HEADVERSION\' for antiNumuCCMultiPiAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use antiNumuCCMultiPiAnalysis         v2r1    highland2"/"use antiNumuCCMultiPiAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r2\' with \'$HEADVERSION\' for antiNumuCCMultiPiAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use antiNumuCCMultiPiAnalysis v2r2 highland2"/"use antiNumuCCMultiPiAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/numuCCMultiTargetAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/numuCCMultiTargetAnalysis/ | head -1)
-echo replacing \'v2r11\' with \'$HEADVERSION\' for numuCCMultiTargetAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use numuCCMultiTargetAnalysis         v2r11   highland2"/"use numuCCMultiTargetAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r12\' with \'$HEADVERSION\' for numuCCMultiTargetAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use numuCCMultiTargetAnalysis v2r12 highland2"/"use numuCCMultiTargetAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/numuBkgInAntiNuModeAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/numuBkgInAntiNuModeAnalysis/ | head -1)
-echo replacing \'v2r5\' with \'$HEADVERSION\' for numuBkgInAntiNuModeAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use numuBkgInAntiNuModeAnalysis       v2r5    highland2"/"use numuBkgInAntiNuModeAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r6\' with \'$HEADVERSION\' for numuBkgInAntiNuModeAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use numuBkgInAntiNuModeAnalysis v2r6 highland2"/"use numuBkgInAntiNuModeAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/nueCCAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/nueCCAnalysis/ | head -1)
-echo replacing \'v2r17\' with \'$HEADVERSION\' for nueCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use nueCCAnalysis                     v2r17   highland2"/"use nueCCAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r18\' with \'$HEADVERSION\' for nueCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use nueCCAnalysis v2r18 highland2"/"use nueCCAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/antiNueCCAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/antiNueCCAnalysis/ | head -1)
-echo replacing \'v2r9\' with \'$HEADVERSION\' for antiNueCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use antiNueCCAnalysis                 v2r9    highland2"/"use antiNueCCAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r10\' with \'$HEADVERSION\' for antiNueCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use antiNueCCAnalysis v2r10 highland2"/"use antiNueCCAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/gammaAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/gammaAnalysis/ | head -1)
-echo replacing \'v2r11\' with \'$HEADVERSION\' for gammaAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use gammaAnalysis                     v2r11   highland2"/"use gammaAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r12\' with \'$HEADVERSION\' for gammaAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use gammaAnalysis v2r12 highland2"/"use gammaAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/p0dNumuCCAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/p0dNumuCCAnalysis/ | head -1)
-echo replacing \'v2r13\' with \'$HEADVERSION\' for p0dNumuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use p0dNumuCCAnalysis                 v2r13   highland2"/"use p0dNumuCCAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r14\' with \'$HEADVERSION\' for p0dNumuCCAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use p0dNumuCCAnalysis v2r14 highland2"/"use p0dNumuCCAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/p0dNumuCCQEAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/p0dNumuCCQEAnalysis/ | head -1)
-echo replacing \'v2r11p1\' with \'$HEADVERSION\' for p0dNumuCCQEAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use p0dNumuCCQEAnalysis               v2r11p1 highland2"/"use p0dNumuCCQEAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r12\' with \'$HEADVERSION\' for p0dNumuCCQEAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use p0dNumuCCQEAnalysis v2r12 highland2"/"use p0dNumuCCQEAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/baseP0DAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/baseP0DAnalysis/ | head -1)
-echo replacing \'v2r5\' with \'$HEADVERSION\' for baseP0DAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use baseP0DAnalysis                   v2r5    highland2"/"use baseP0DAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r6\' with \'$HEADVERSION\' for baseP0DAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use baseP0DAnalysis v2r6 highland2"/"use baseP0DAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/tutorialAnalysis
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/tutorialAnalysis/ | head -1)
-echo replacing \'v2r15\' with \'$HEADVERSION\' for tutorialAnalysis in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use tutorialAnalysis                  v2r15   highland2"/"use tutorialAnalysis $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r16\' with \'$HEADVERSION\' for tutorialAnalysis in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use tutorialAnalysis v2r16 highland2"/"use tutorialAnalysis $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandValidation
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandValidation/ | head -1)
-echo replacing \'v2r15\' with \'$HEADVERSION\' for highlandValidation in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandValidation                v2r15   highland2"/"use highlandValidation $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r16\' with \'$HEADVERSION\' for highlandValidation in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandValidation v2r16 highland2"/"use highlandValidation $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandDoc
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandDoc/ | head -1)
-echo replacing \'v2r1\' with \'$HEADVERSION\' for highlandDoc in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandDoc                       v2r1    highland2"/"use highlandDoc $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r2\' with \'$HEADVERSION\' for highlandDoc in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandDoc v2r2 highland2"/"use highlandDoc $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 cmt co highland2/highlandND280Doc
 # change ./requirements replacing the version number with the one just checked out
 HEADVERSION=$(ls -t highland2/highlandND280Doc/ | head -1)
-echo replacing \'v2r1\' with \'$HEADVERSION\' for highlandND280Doc in nd280Highland2/v2r22/cmt/./requirements
-sed -i -e s/"use highlandND280Doc                  v2r1    highland2"/"use highlandND280Doc $HEADVERSION highland2"/g /physics/home/mhogan/software/t2k-software-clone/nd280Highland2/v2r22/cmt/./requirements
+echo replacing \'v2r2\' with \'$HEADVERSION\' for highlandND280Doc in nd280Highland2/v2r22/cmt/./requirements
+sed -i -e s/"use highlandND280Doc v2r2 highland2"/"use highlandND280Doc $HEADVERSION highland2"/g /home/other/mhogan/software/p0d-banff/nd280Highland2/v2r22/cmt/./requirements
 
 echo
 echo All done!

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+echo
+echo Working on nd280Psyche version v3r32
+echo Moving to /home/other/mhogan/software/p0d-banff
+cd /home/other/mhogan/software/p0d-banff
+
+cmt co psyche/psychePolicy
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psychePolicy/ | head -1)
+echo replacing \'v3r3\' with \'$HEADVERSION\' for psychePolicy in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psychePolicy      v3r3    psyche"/"use psychePolicy $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheCore
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheCore/ | head -1)
+echo replacing \'v3r25p1\' with \'$HEADVERSION\' for psycheCore in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheCore        v3r25p1 psyche"/"use psycheCore $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheEventModel
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheEventModel/ | head -1)
+echo replacing \'v3r23\' with \'$HEADVERSION\' for psycheEventModel in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheEventModel  v3r23   psyche"/"use psycheEventModel $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheUtils
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheUtils/ | head -1)
+echo replacing \'v3r23\' with \'$HEADVERSION\' for psycheUtils in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheUtils       v3r23   psyche"/"use psycheUtils $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheND280Utils
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheND280Utils/ | head -1)
+echo replacing \'v3r25p1\' with \'$HEADVERSION\' for psycheND280Utils in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheND280Utils  v3r25p1 psyche"/"use psycheND280Utils $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheIO
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheIO/ | head -1)
+echo replacing \'v3r17p3\' with \'$HEADVERSION\' for psycheIO in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheIO          v3r17p3 psyche"/"use psycheIO $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheSelections
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheSelections/ | head -1)
+echo replacing \'v3r31\' with \'$HEADVERSION\' for psycheSelections in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheSelections  v3r31   psyche"/"use psycheSelections $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheSystematics
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheSystematics/ | head -1)
+echo replacing \'v3r27\' with \'$HEADVERSION\' for psycheSystematics in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheSystematics v3r27   psyche"/"use psycheSystematics $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+
+cmt co psyche/psycheSteering
+# change ./requirements replacing the version number with the one just checked out
+HEADVERSION=$(ls -t psyche/psycheSteering/ | head -1)
+echo replacing \'v3r23\' with \'$HEADVERSION\' for psycheSteering in nd280Psyche/v3r32/cmt/requirements
+sed -i -e s/"use psycheSteering    v3r23   psyche"/"use psycheSteering $HEADVERSION psyche"/g /home/other/mhogan/software/p0d-banff/nd280Psyche/v3r32/cmt/requirements
+

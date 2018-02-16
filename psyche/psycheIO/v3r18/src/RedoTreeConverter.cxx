@@ -568,12 +568,12 @@ RedoTreeConverter::RedoTreeConverter():InputConverter("flattree"){
 
 //********************************************************************
 bool RedoTreeConverter::Initialize(){
-  //********************************************************************
+//********************************************************************
 
-  // Set branch addresses and branch pointers
+// Set branch addresses and branch pointers
   if (!fChain) return false;
 
-  // Check the existence of the _treeName tree
+// Check the existence of the _treeName tree
   if (!gDirectory->FindObjectAny(_treeName.c_str())) return false;
 
   fCurrent = -1;
@@ -584,38 +584,38 @@ bool RedoTreeConverter::Initialize(){
 
 //********************************************************************
 void RedoTreeConverter::DefineBranches(){
-  //********************************************************************
+//********************************************************************
 
 
 
-  // The branches commented below are not read becouse they are not currently needed by any analysis. 
-  // This is equivalent to setting their status to 0, as it was done in the previous version
+// The branches commented below are not read becouse they are not currently needed by any analysis. 
+// This is equivalent to setting their status to 0, as it was done in the previous version
 
-  // Now set branch addresses for integer variables
+// Now set branch addresses for integer variables
   anaUtils::ConfigureTreeBranch(fChain, "sRun", &sRun, &b_sRun);
   
   anaUtils::ConfigureTreeBranch(fChain, "sSubRun", &sSubrun, &b_sSubrun);
   
   anaUtils::ConfigureTreeBranch(fChain, "sEvt", &sEvt, &b_sEvt);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sEventTime", &sEventTime, &b_sEventTime);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sNTotalTrueTracks", &sNTotalTrueParticles, &b_sNTotalTrueParticles);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sNTotalTrueVertices", &sNTotalTrueVertices, &b_sNTotalTrueVertices);
+//    anaUtils::ConfigureTreeBranch(fChain, "sEventTime", &sEventTime, &b_sEventTime);
+//    anaUtils::ConfigureTreeBranch(fChain, "sNTotalTrueTracks", &sNTotalTrueParticles, &b_sNTotalTrueParticles);
+//    anaUtils::ConfigureTreeBranch(fChain, "sNTotalTrueVertices", &sNTotalTrueVertices, &b_sNTotalTrueVertices);
   anaUtils::ConfigureTreeBranch(fChain, "sBeamGoodSpill", &sBeamGoodSpill, &b_sBeamGoodSpill);
   anaUtils::ConfigureTreeBranch(fChain, "sDQGoodDaq", &sDQGoodDaq, &b_sDQGoodDaq);
 
   anaUtils::ConfigureTreeBranch(fChain, "sNTrueVertices", &sNTrueVertices, &b_sNTrueVertices);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexID", sTrueVertexID, &b_sTrueVertexID);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxIndex", sTrueVertexRooVtxIndex, &b_sTrueVertexRooVtxIndex);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxEntry", sTrueVertexRooVtxEntry, &b_sTrueVertexRooVtxEntry);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexReacCode", sTrueVertexReacCode, &b_sTrueVertexReacCode);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNTrueParticles", sTrueVertexNTrueParticles, &b_sTrueVertexNTrueParticles);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNBaryons", sTrueVertexNBaryons, &b_sTrueVertexNBaryons);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxIndex", sTrueVertexRooVtxIndex, &b_sTrueVertexRooVtxIndex);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxEntry", sTrueVertexRooVtxEntry, &b_sTrueVertexRooVtxEntry);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexReacCode", sTrueVertexReacCode, &b_sTrueVertexReacCode);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNTrueParticles", sTrueVertexNTrueParticles, &b_sTrueVertexNTrueParticles);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNBaryons", sTrueVertexNBaryons, &b_sTrueVertexNBaryons);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexBunch", sTrueVertexBunch, &b_sTrueVertexBunch);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuPDG", sTrueVertexNuPDG, &b_sTrueVertexNuPDG);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexTargetPDG", sTrueVertexTargetPDG, &b_sTrueVertexTargetPDG);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuParentPDG", sTrueVertexNuParentPDG, &b_sTrueVertexNuParentPDG);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexTargetPDG", sTrueVertexTargetPDG, &b_sTrueVertexTargetPDG);
+//    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuParentPDG", sTrueVertexNuParentPDG, &b_sTrueVertexNuParentPDG);
 
-  // True track info
+// True track info
   anaUtils::ConfigureTreeBranch(fChain, "sNTrueTracks",                               &sNTrueParticles,                              &b_sNTrueParticles);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackID",                               sTrueParticleID,                               &b_sTrueParticleID);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackPDG",                              sTrueParticlePDG,                              &b_sTrueParticlePDG);
@@ -646,14 +646,14 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "sNFgdTimeBins", &sNFgdTimeBins, &b_sNFgdTimeBins);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinNHits1", sFgdTimeBinNHits1, &b_sFgdTimeBinNHits1);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinNHits2", sFgdTimeBinNHits2, &b_sFgdTimeBinNHits2);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinG4ID", sFgdTimeBinG4ID, &b_sFgdTimeBinG4ID);
+//    anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinG4ID", sFgdTimeBinG4ID, &b_sFgdTimeBinG4ID);
 
   anaUtils::ConfigureTreeBranch(fChain, "Bunch", &Bunch, &b_Bunch);
   anaUtils::ConfigureTreeBranch(fChain, "Weight", &Weight, &b_Weight);
-  //    anaUtils::ConfigureTreeBranch(fChain, "NVertices", &NVertices, &b_NVertices);
-  //    anaUtils::ConfigureTreeBranch(fChain, "vPrimaryIndex", &vPrimaryIndex, &b_vPrimaryIndex);
-  //    anaUtils::ConfigureTreeBranch(fChain, "vBunch", &vBunch, &b_vBunch);
-  //    anaUtils::ConfigureTreeBranch(fChain, "vNDOF", &vNDOF, &b_vNDOF);
+//    anaUtils::ConfigureTreeBranch(fChain, "NVertices", &NVertices, &b_NVertices);
+//    anaUtils::ConfigureTreeBranch(fChain, "vPrimaryIndex", &vPrimaryIndex, &b_vPrimaryIndex);
+//    anaUtils::ConfigureTreeBranch(fChain, "vBunch", &vBunch, &b_vBunch);
+//    anaUtils::ConfigureTreeBranch(fChain, "vNDOF", &vNDOF, &b_vNDOF);
   anaUtils::ConfigureTreeBranch(fChain, "vNReconParticles", &vNReconParticles, &b_vNReconParticles);
   anaUtils::ConfigureTreeBranch(fChain, "vNTrueVerticesMatch", &vNTrueVerticesMatch, &b_vNTrueVerticesMatch);
   anaUtils::ConfigureTreeBranch(fChain, "vParticlesUniqueID", &vParticlesUniqueID, &b_vParticlesUniqueID);
@@ -661,19 +661,19 @@ void RedoTreeConverter::DefineBranches(){
 
   anaUtils::ConfigureTreeBranch(fChain, "NTracks", &NParticles, &b_NParticles);
   anaUtils::ConfigureTreeBranch(fChain, "trUniqueID", trUniqueID, &b_trUniqueID);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trStatus", trStatus, &b_trStatus);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trBunch", trBunch, &b_trBunch);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNReconVertices", &trNReconVertices, &b_trNReconVertices);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trDetectors", trDetectors, &b_trDetectors);
+//    anaUtils::ConfigureTreeBranch(fChain, "trStatus", trStatus, &b_trStatus);
+//    anaUtils::ConfigureTreeBranch(fChain, "trBunch", trBunch, &b_trBunch);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNReconVertices", &trNReconVertices, &b_trNReconVertices);
+//    anaUtils::ConfigureTreeBranch(fChain, "trDetectors", trDetectors, &b_trDetectors);
   anaUtils::ConfigureTreeBranch(fChain, "trDetUsed", trDetUsed, &b_trDetUsed);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNTPCs", trNTPCs, &b_trNTPCs);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNFGDs", trNFGDs, &b_trNFGDs);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNECALs", trNECALs, &b_trNECALs);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNSMRDs", trNSMRDs, &b_trNSMRDs);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNP0Ds", trNP0Ds, &b_trNP0Ds);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNTPCs", trNTPCs, &b_trNTPCs);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNFGDs", trNFGDs, &b_trNFGDs);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNECALs", trNECALs, &b_trNECALs);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNSMRDs", trNSMRDs, &b_trNSMRDs);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNP0Ds", trNP0Ds, &b_trNP0Ds);
   anaUtils::ConfigureTreeBranch(fChain, "trNHits", trNHits, &b_trNHits);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNNodes", trNNodes, &b_trNNodes);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trNDOF", trNDOF, &b_trNDOF);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNNodes", trNNodes, &b_trNNodes);
+//    anaUtils::ConfigureTreeBranch(fChain, "trNDOF", trNDOF, &b_trNDOF);
   anaUtils::ConfigureTreeBranch(fChain, "trTrueTrackID", trTrueParticleID, &b_trTrueParticleID);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcDetector", trTpcDetector, &b_trTpcDetector);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcNNodes", trTpcNNodes, &b_trTpcNNodes);
@@ -682,31 +682,31 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trFgdNNodes", trFgdNNodes, &b_trFgdNNodes);
   anaUtils::ConfigureTreeBranch(fChain, "trFgdContainment", trFgdContainment, &b_trFgdContainment);
  
-  //    anaUtils::ConfigureTreeBranch(fChain, "trSMRDDetector", trSMRDDetector, &b_trSMRDDetector);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trSMRDNNodes", trSMRDNNodes, &b_trSMRDNNodes);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trP0DDetector", trP0DDetector, &b_trP0DDetector);
-  //    anaUtils::ConfigureTreeBranch(fChain, "trP0DNNodes", trP0DNNodes, &b_trP0DNNodes);
+//    anaUtils::ConfigureTreeBranch(fChain, "trSMRDDetector", trSMRDDetector, &b_trSMRDDetector);
+//    anaUtils::ConfigureTreeBranch(fChain, "trSMRDNNodes", trSMRDNNodes, &b_trSMRDNNodes);
+//    anaUtils::ConfigureTreeBranch(fChain, "trP0DDetector", trP0DDetector, &b_trP0DDetector);
+//    anaUtils::ConfigureTreeBranch(fChain, "trP0DNNodes", trP0DNNodes, &b_trP0DNNodes);
 
-  //        anaUtils::ConfigureTreeBranch(fChain, "sPOTSincePreviousSpill", &sPOTSincePreviousSpill, &b_sPOTSincePreviousSpill);
+//        anaUtils::ConfigureTreeBranch(fChain, "sPOTSincePreviousSpill", &sPOTSincePreviousSpill, &b_sPOTSincePreviousSpill);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuEnergy", sTrueVertexNuEnergy, &b_sTrueVertexNuEnergy);
-  //        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexQ2", sTrueVertexQ2, &b_sTrueVertexQ2);
+//        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexQ2", sTrueVertexQ2, &b_sTrueVertexQ2);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexPosition", sTrueVertexPosition, &b_sTrueVertexPosition);
-  //        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuParentDecPoint", sTrueVertexNuParentDecPoint, &b_sTrueVertexNuParentDecPoint);
-  //        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuDir", sTrueVertexNuDir, &b_sTrueVertexNuDir);
+//        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuParentDecPoint", sTrueVertexNuParentDecPoint, &b_sTrueVertexNuParentDecPoint);
+//        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuDir", sTrueVertexNuDir, &b_sTrueVertexNuDir);
 
-  //        anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackPurity", sTrueParticlePurity, &b_sTrueParticlePurity);
+//        anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackPurity", sTrueParticlePurity, &b_sTrueParticlePurity);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinMinTime",       sFgdTimeBinMinTime,       &b_sFgdTimeBinMinTime);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinMaxTime",       sFgdTimeBinMaxTime,       &b_sFgdTimeBinMaxTime);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinRawChargeSum1", sFgdTimeBinRawChargeSum1, &b_sFgdTimeBinRawChargeSum1);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinRawChargeSum2", sFgdTimeBinRawChargeSum2, &b_sFgdTimeBinRawChargeSum2);
 
   anaUtils::ConfigureTreeBranch(fChain, "vPosition", &vPosition, &b_vPosition);
-  //        anaUtils::ConfigureTreeBranch(fChain, "vVariance", &vVariance, &b_vVariance);
-  //        anaUtils::ConfigureTreeBranch(fChain, "vChi2", &vChi2, &b_vChi2);
+//        anaUtils::ConfigureTreeBranch(fChain, "vVariance", &vVariance, &b_vVariance);
+//        anaUtils::ConfigureTreeBranch(fChain, "vChi2", &vChi2, &b_vChi2);
   anaUtils::ConfigureTreeBranch(fChain, "vTrueVerticesClean", &vTrueVerticesClean, &b_vTrueVerticesClean);
   anaUtils::ConfigureTreeBranch(fChain, "vTrueVerticesCompl", &vTrueVerticesCompl, &b_vTrueVerticesCompl);
 
-  //        anaUtils::ConfigureTreeBranch(fChain, "trChi2", trChi2, &b_trChi2);
+//        anaUtils::ConfigureTreeBranch(fChain, "trChi2", trChi2, &b_trChi2);
   anaUtils::ConfigureTreeBranch(fChain, "trCharge",               trCharge,               &b_trCharge);
   anaUtils::ConfigureTreeBranch(fChain, "trToFFGD1_FGD2",         trToFFGD1_FGD2,         &b_trToFFGD1_FGD2);
   anaUtils::ConfigureTreeBranch(fChain, "trToFP0D_FGD1",          trToFP0D_FGD1,          &b_trToFP0D_FGD1);
@@ -724,16 +724,16 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trMomentum",             trMomentum,             &b_trMomentum);
   anaUtils::ConfigureTreeBranch(fChain, "trMomentumFlip",         trMomentumFlip,         &b_trMomentumFlip);
 
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumError", trMomentumError, &b_trMomentumError);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumMuon", trMomentumMuon, &b_trMomentumMuon);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorMuon", trMomentumErrorMuon, &b_trMomentumErrorMuon);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumProton", trMomentumProton, &b_trMomentumProton);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorProton", trMomentumErrorProton, &b_trMomentumErrorProton);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumEle", trMomentumEle, &b_trMomentumEle);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorEle", trMomentumErrorEle, &b_trMomentumErrorEle);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumEle", trRangeMomentumEle, &b_trRangeMomentumEle);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumError", trMomentumError, &b_trMomentumError);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumMuon", trMomentumMuon, &b_trMomentumMuon);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorMuon", trMomentumErrorMuon, &b_trMomentumErrorMuon);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumProton", trMomentumProton, &b_trMomentumProton);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorProton", trMomentumErrorProton, &b_trMomentumErrorProton);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumEle", trMomentumEle, &b_trMomentumEle);
+//        anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorEle", trMomentumErrorEle, &b_trMomentumErrorEle);
+//        anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumEle", trRangeMomentumEle, &b_trRangeMomentumEle);
   anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumMuon", trRangeMomentumMuon, &b_trRangeMomentumMuon);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumProton", trRangeMomentumProton, &b_trRangeMomentumProton);
+//        anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumProton", trRangeMomentumProton, &b_trRangeMomentumProton);
 
   anaUtils::ConfigureTreeBranch(fChain, "trDirectionStart",                        trDirectionStart,         &b_trDirectionStart);
   anaUtils::ConfigureTreeBranch(fChain, "trDirectionEnd",                          trDirectionEnd,           &b_trDirectionEnd);
@@ -756,13 +756,13 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxExpEle",                         trTpcdEdxExpEle,          &b_trTpcdEdxExpEle);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxExpP",                           trTpcdEdxExpP,            &b_trTpcdEdxExpP);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxExpPi",                          trTpcdEdxExpPi,           &b_trTpcdEdxExpPi);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxExpK", trTpcdEdxExpK, &b_trTpcdEdxExpK);
+//        anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxExpK", trTpcdEdxExpK, &b_trTpcdEdxExpK);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaMu",                        trTpcdEdxSigmaMu,         &b_trTpcdEdxSigmaMu);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaEle",                       trTpcdEdxSigmaEle,        &b_trTpcdEdxSigmaEle);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaP",                         trTpcdEdxSigmaP,          &b_trTpcdEdxSigmaP);
   anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaPi",                        trTpcdEdxSigmaPi,         &b_trTpcdEdxSigmaPi);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaK", trTpcdEdxSigmaK, &b_trTpcdEdxSigmaK);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trTpcPurity", trTpcPurity, &b_trTpcPurity);
+//        anaUtils::ConfigureTreeBranch(fChain, "trTpcdEdxSigmaK", trTpcdEdxSigmaK, &b_trTpcdEdxSigmaK);
+//        anaUtils::ConfigureTreeBranch(fChain, "trTpcPurity", trTpcPurity, &b_trTpcPurity);
 
   anaUtils::ConfigureTreeBranch(fChain, "trFgdDirectionStart", trFgdDirectionStart, &b_trFgdDirectionStart);
   anaUtils::ConfigureTreeBranch(fChain, "trFgdPositionStart",  trFgdPositionStart,  &b_trFgdPositionStart);
@@ -773,15 +773,15 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trFgdPullp",          trFgdPullp,          &b_trFgdPullp);
   anaUtils::ConfigureTreeBranch(fChain, "trFgdPullpi",         trFgdPullpi,         &b_trFgdPullpi);
   anaUtils::ConfigureTreeBranch(fChain, "trFgdPullno",         trFgdPullno,         &b_trFgdPullno);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdAvgTime", trFgdAvgTime, &b_trFgdAvgTime);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex1x1", trFgdVertex1x1, &b_trFgdVertex1x1);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex3x3", trFgdVertex3x3, &b_trFgdVertex3x3);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex5x5", trFgdVertex5x5, &b_trFgdVertex5x5);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex7x7", trFgdVertex7x7, &b_trFgdVertex7x7);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertexLayer", trFgdVertexLayer, &b_trFgdVertexLayer);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdAvgTime", trFgdAvgTime, &b_trFgdAvgTime);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex1x1", trFgdVertex1x1, &b_trFgdVertex1x1);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex3x3", trFgdVertex3x3, &b_trFgdVertex3x3);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex5x5", trFgdVertex5x5, &b_trFgdVertex5x5);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertex7x7", trFgdVertex7x7, &b_trFgdVertex7x7);
+//        anaUtils::ConfigureTreeBranch(fChain, "trFgdVertexLayer", trFgdVertexLayer, &b_trFgdVertexLayer);
 
   
-  // ECal variables
+// ECal variables
  // anaUtils::ConfigureTreeBranch(fChain, "trECALDetector",             trECALDetector,             &b_trECALDetector);
   anaUtils::ConfigureTreeBranch(fChain, "trECALNNodes",               trECALNNodes,               &b_trECALNNodes);
 //  anaUtils::ConfigureTreeBranch(fChain, "trECALIsShowerLike",         trECALIsShowerLike,         &b_trECALIsShowerLike);
@@ -806,7 +806,7 @@ void RedoTreeConverter::DefineBranches(){
   anaUtils::ConfigureTreeBranch(fChain, "trSMRDDirectionStart", trSMRDDirectionStart, &b_trSMRDDirectionStart);
   anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionStart",  trSMRDPositionStart,  &b_trSMRDPositionStart);
   anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionEnd",    trSMRDPositionEnd,    &b_trSMRDPositionEnd);
-  //        anaUtils::ConfigureTreeBranch(fChain, "trSMRDAvgTime", trSMRDAvgTime, &b_trSMRDAvgTime);
+//        anaUtils::ConfigureTreeBranch(fChain, "trSMRDAvgTime", trSMRDAvgTime, &b_trSMRDAvgTime);
 
   anaUtils::ConfigureTreeBranch(fChain, "trP0DNNodes",         trP0DNNodes,         &b_trP0DNNodes);
   anaUtils::ConfigureTreeBranch(fChain, "trP0DLength",         trP0DLength,         &b_trP0DLength);
@@ -819,177 +819,177 @@ void RedoTreeConverter::DefineBranches(){
   /*
      fChain->SetBranchStatus("*",0);
 
-     fChain->SetBranchStatus("sPOTSincePreviousSpill",0);   //!
-     fChain->SetBranchStatus("sRun",1);   //!
-     fChain->SetBranchStatus("sEvt",1);   //!
-     fChain->SetBranchStatus("sEventTime",0);   //!
-     fChain->SetBranchStatus("sNTotalTrueParticles",0);   //!
-     fChain->SetBranchStatus("sNTotalTrueVertices",0);   //!
-     fChain->SetBranchStatus("sBeamGoodSpill",1);   //!
-     fChain->SetBranchStatus("sDQGoodDaq",1);   //!
-     fChain->SetBranchStatus("sNTrueVertices",1);   //!
-     fChain->SetBranchStatus("sTrueVertexID",1);   //!
-     fChain->SetBranchStatus("sTrueVertexRooVtxIndex",0);   //!
-     fChain->SetBranchStatus("sTrueVertexRooVtxEntry",0);   //!
-     fChain->SetBranchStatus("sTrueVertexReacCode",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNTrueParticles",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNReconTracks",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNReconVertices",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNBaryons",0);   //!
-     fChain->SetBranchStatus("sTrueVertexBunch",1);   //!
-     fChain->SetBranchStatus("sTrueVertexNuPDG",1);   //!
-     fChain->SetBranchStatus("sTrueVertexTargetPDG",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNuEnergy",1);   //!
-     fChain->SetBranchStatus("sTrueVertexQ2",0);   //!
-     fChain->SetBranchStatus("sTrueVertexPosition",1);   //!
-     fChain->SetBranchStatus("sTrueVertexNuParentPDG",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNuParentDecPoint",0);   //!
-     fChain->SetBranchStatus("sTrueVertexNuDir",0);   //!
-     fChain->SetBranchStatus("sNTrueParticles",1);   //!
-     fChain->SetBranchStatus("sTrueTrackID",1);   //!
-     fChain->SetBranchStatus("sTrueTrackBunch",0);   //!
-     fChain->SetBranchStatus("sTrueTrackPDG",1);   //!
-     fChain->SetBranchStatus("sTrueTrackParentPDG",1);   //!
-     fChain->SetBranchStatus("sTrueTrackGParentPDG",1);   //!
-     fChain->SetBranchStatus("sTrueTrackPrimaryID",1);   //!
-     fChain->SetBranchStatus("sTrueTrackParentID",1);   //!
-     fChain->SetBranchStatus("sTrueTrackPurity",0);   //!
-     fChain->SetBranchStatus("sTrueTrackMomentum",1);   //!
-     fChain->SetBranchStatus("sTrueTrackCharge",1);   //!
-     fChain->SetBranchStatus("sTrueTrackVertexIndex",1);   //!
-     fChain->SetBranchStatus("sTrueTrackTruthVertexID",1);   //!
-     fChain->SetBranchStatus("sTrueTrackNReconTracks",0);   //!
-     fChain->SetBranchStatus("sTrueTrackPosition",1);   //!
-     fChain->SetBranchStatus("sTrueTrackPositionEnd",1);   //!
-     fChain->SetBranchStatus("sTrueTrackDirection",1);   //!
+     fChain->SetBranchStatus("sPOTSincePreviousSpill",0); //!
+     fChain->SetBranchStatus("sRun",1); //!
+     fChain->SetBranchStatus("sEvt",1); //!
+     fChain->SetBranchStatus("sEventTime",0); //!
+     fChain->SetBranchStatus("sNTotalTrueParticles",0); //!
+     fChain->SetBranchStatus("sNTotalTrueVertices",0); //!
+     fChain->SetBranchStatus("sBeamGoodSpill",1); //!
+     fChain->SetBranchStatus("sDQGoodDaq",1); //!
+     fChain->SetBranchStatus("sNTrueVertices",1); //!
+     fChain->SetBranchStatus("sTrueVertexID",1); //!
+     fChain->SetBranchStatus("sTrueVertexRooVtxIndex",0); //!
+     fChain->SetBranchStatus("sTrueVertexRooVtxEntry",0); //!
+     fChain->SetBranchStatus("sTrueVertexReacCode",0); //!
+     fChain->SetBranchStatus("sTrueVertexNTrueParticles",0); //!
+     fChain->SetBranchStatus("sTrueVertexNReconTracks",0); //!
+     fChain->SetBranchStatus("sTrueVertexNReconVertices",0); //!
+     fChain->SetBranchStatus("sTrueVertexNBaryons",0); //!
+     fChain->SetBranchStatus("sTrueVertexBunch",1); //!
+     fChain->SetBranchStatus("sTrueVertexNuPDG",1); //!
+     fChain->SetBranchStatus("sTrueVertexTargetPDG",0); //!
+     fChain->SetBranchStatus("sTrueVertexNuEnergy",1); //!
+     fChain->SetBranchStatus("sTrueVertexQ2",0); //!
+     fChain->SetBranchStatus("sTrueVertexPosition",1); //!
+     fChain->SetBranchStatus("sTrueVertexNuParentPDG",0); //!
+     fChain->SetBranchStatus("sTrueVertexNuParentDecPoint",0); //!
+     fChain->SetBranchStatus("sTrueVertexNuDir",0); //!
+     fChain->SetBranchStatus("sNTrueParticles",1); //!
+     fChain->SetBranchStatus("sTrueTrackID",1); //!
+     fChain->SetBranchStatus("sTrueTrackBunch",0); //!
+     fChain->SetBranchStatus("sTrueTrackPDG",1); //!
+     fChain->SetBranchStatus("sTrueTrackParentPDG",1); //!
+     fChain->SetBranchStatus("sTrueTrackGParentPDG",1); //!
+     fChain->SetBranchStatus("sTrueTrackPrimaryID",1); //!
+     fChain->SetBranchStatus("sTrueTrackParentID",1); //!
+     fChain->SetBranchStatus("sTrueTrackPurity",0); //!
+     fChain->SetBranchStatus("sTrueTrackMomentum",1); //!
+     fChain->SetBranchStatus("sTrueTrackCharge",1); //!
+     fChain->SetBranchStatus("sTrueTrackVertexIndex",1); //!
+     fChain->SetBranchStatus("sTrueTrackTruthVertexID",1); //!
+     fChain->SetBranchStatus("sTrueTrackNReconTracks",0); //!
+     fChain->SetBranchStatus("sTrueTrackPosition",1); //!
+     fChain->SetBranchStatus("sTrueTrackPositionEnd",1); //!
+     fChain->SetBranchStatus("sTrueTrackDirection",1); //!
      fChain->SetBranchStatus("sTrueTrackNDetCrossings",1);
      fChain->SetBranchStatus("sTrueTrackEntrancePosition",1);
      fChain->SetBranchStatus("sTrueTrackExitPosition",1);
      fChain->SetBranchStatus("sTrueTrackDetector",1);
      fChain->SetBranchStatus("sTrueTrackInActive",1);
-     fChain->SetBranchStatus("sNFgdTimeBins",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinMinTime",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinMaxTime",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinNHits1",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinNHits2",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinRawChargeSum1",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinRawChargeSum2",1);   //!
-     fChain->SetBranchStatus("sFgdTimeBinG4ID",0);   //!
-     fChain->SetBranchStatus("Bunch",1);   //!
-     fChain->SetBranchStatus("Weight",1);   //!
-     fChain->SetBranchStatus("NVertices",1);   //!
-     fChain->SetBranchStatus("vPrimaryIndex",1);   //!
-     fChain->SetBranchStatus("vBunch",0);   //!
-     fChain->SetBranchStatus("vPosition",1);   //!
-     fChain->SetBranchStatus("vVariance",0);   //!
-     fChain->SetBranchStatus("vChi2",0);   //!
-     fChain->SetBranchStatus("vNDOF",0);   //!
-     fChain->SetBranchStatus("vNReconParticles",1);   //!
-  fChain->SetBranchStatus("vNTrueVerticesMatch",1);   //!
-  fChain->SetBranchStatus("vParticlesUniqueID",1);   //!
-  fChain->SetBranchStatus("vTrueVertexIndex",1);   //!
-  fChain->SetBranchStatus("vTrueVerticesClean",1);   //!
-  fChain->SetBranchStatus("vTrueVerticesCompl",1);   //!
-  fChain->SetBranchStatus("NTracks",1);   //!
-  fChain->SetBranchStatus("trUniqueID",1);   //!
-  fChain->SetBranchStatus("trStatus",0);   //!
-  fChain->SetBranchStatus("trBunch",0);   //!
-  fChain->SetBranchStatus("trNReconVertices",0);   //!
-  fChain->SetBranchStatus("trDetectors",0);   //!
-  fChain->SetBranchStatus("trDetUsed",1);   //!
-  fChain->SetBranchStatus("trNTPCs",0);   //!
-  fChain->SetBranchStatus("trNFGDs",0);   //!
-  fChain->SetBranchStatus("trNECALs",0);   //!
-  fChain->SetBranchStatus("trNSMRDs",0);   //!
-  fChain->SetBranchStatus("trNP0Ds",0);   //!
-  fChain->SetBranchStatus("trNHits",1);   //!
-  fChain->SetBranchStatus("trNNodes",0);   //!
-  fChain->SetBranchStatus("trNDOF",0);   //!
-  fChain->SetBranchStatus("trChi2",0);   //!
-  fChain->SetBranchStatus("trCharge",1);   //!
-  fChain->SetBranchStatus("trToFFGD1_FGD2",       1);   //!
-  fChain->SetBranchStatus("trToFP0D_FGD1",       1);   //!
-  fChain->SetBranchStatus("trToFECal_FGD1",       1);   //!
-  fChain->SetBranchStatus("trToFECal_FGD2",       1);   //!
-  fChain->SetBranchStatus("trToFFlag_FGD1_FGD2",       1);   //!
-  fChain->SetBranchStatus("trToFFlag_P0D_FGD1",       1);   //!
-  fChain->SetBranchStatus("trToFFlag_ECal_FGD1",       1);   //!
-  fChain->SetBranchStatus("trToFFlag_ECal_FGD2",       1);   //!
-  fChain->SetBranchStatus("trMomentum",1);   //!
-  fChain->SetBranchStatus("trMomentumError",0);   //!
-  fChain->SetBranchStatus("trMomentumMuon",0);   //!
-  fChain->SetBranchStatus("trMomentumErrorMuon",0);   //!
-  fChain->SetBranchStatus("trMomentumProton",0);   //!
-  fChain->SetBranchStatus("trMomentumErrorProton",0);   //!
-  fChain->SetBranchStatus("trMomentumEle",0);   //!
-  fChain->SetBranchStatus("trMomentumErrorEle",0);   //!
-  fChain->SetBranchStatus("trRangeMomentumEle",0);   //!
-  fChain->SetBranchStatus("trRangeMomentumMuon",0);   //!
-  fChain->SetBranchStatus("trRangeMomentumProton",0);   //!
-  fChain->SetBranchStatus("trDirectionStart",1);   //!
-  fChain->SetBranchStatus("trDirectionEnd",0);   //!
-  fChain->SetBranchStatus("trPositionStart",1);   //!
-  fChain->SetBranchStatus("trPositionEnd",1);   //!
-  fChain->SetBranchStatus("trTpcDetector",1);   //!
-  fChain->SetBranchStatus("trTpcNNodes",1);   //!
-  fChain->SetBranchStatus("trTpcDirectionStart",1);   //!
-  fChain->SetBranchStatus("trTpcPositionStart",1);   //!
-  fChain->SetBranchStatus("trTpcPositionEnd",1);   //!
-  fChain->SetBranchStatus("trTpcCharge",1);   //!
-  fChain->SetBranchStatus("trTpcMomentum",1);   //!
-  fChain->SetBranchStatus("trTpcMomentumError",1);   //!
+     fChain->SetBranchStatus("sNFgdTimeBins",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinMinTime",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinMaxTime",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinNHits1",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinNHits2",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinRawChargeSum1",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinRawChargeSum2",1); //!
+     fChain->SetBranchStatus("sFgdTimeBinG4ID",0); //!
+     fChain->SetBranchStatus("Bunch",1); //!
+     fChain->SetBranchStatus("Weight",1); //!
+     fChain->SetBranchStatus("NVertices",1); //!
+     fChain->SetBranchStatus("vPrimaryIndex",1); //!
+     fChain->SetBranchStatus("vBunch",0); //!
+     fChain->SetBranchStatus("vPosition",1); //!
+     fChain->SetBranchStatus("vVariance",0); //!
+     fChain->SetBranchStatus("vChi2",0); //!
+     fChain->SetBranchStatus("vNDOF",0); //!
+     fChain->SetBranchStatus("vNReconParticles",1); //!
+  fChain->SetBranchStatus("vNTrueVerticesMatch",1); //!
+  fChain->SetBranchStatus("vParticlesUniqueID",1); //!
+  fChain->SetBranchStatus("vTrueVertexIndex",1); //!
+  fChain->SetBranchStatus("vTrueVerticesClean",1); //!
+  fChain->SetBranchStatus("vTrueVerticesCompl",1); //!
+  fChain->SetBranchStatus("NTracks",1); //!
+  fChain->SetBranchStatus("trUniqueID",1); //!
+  fChain->SetBranchStatus("trStatus",0); //!
+  fChain->SetBranchStatus("trBunch",0); //!
+  fChain->SetBranchStatus("trNReconVertices",0); //!
+  fChain->SetBranchStatus("trDetectors",0); //!
+  fChain->SetBranchStatus("trDetUsed",1); //!
+  fChain->SetBranchStatus("trNTPCs",0); //!
+  fChain->SetBranchStatus("trNFGDs",0); //!
+  fChain->SetBranchStatus("trNECALs",0); //!
+  fChain->SetBranchStatus("trNSMRDs",0); //!
+  fChain->SetBranchStatus("trNP0Ds",0); //!
+  fChain->SetBranchStatus("trNHits",1); //!
+  fChain->SetBranchStatus("trNNodes",0); //!
+  fChain->SetBranchStatus("trNDOF",0); //!
+  fChain->SetBranchStatus("trChi2",0); //!
+  fChain->SetBranchStatus("trCharge",1); //!
+  fChain->SetBranchStatus("trToFFGD1_FGD2",       1); //!
+  fChain->SetBranchStatus("trToFP0D_FGD1",       1); //!
+  fChain->SetBranchStatus("trToFECal_FGD1",       1); //!
+  fChain->SetBranchStatus("trToFECal_FGD2",       1); //!
+  fChain->SetBranchStatus("trToFFlag_FGD1_FGD2",       1); //!
+  fChain->SetBranchStatus("trToFFlag_P0D_FGD1",       1); //!
+  fChain->SetBranchStatus("trToFFlag_ECal_FGD1",       1); //!
+  fChain->SetBranchStatus("trToFFlag_ECal_FGD2",       1); //!
+  fChain->SetBranchStatus("trMomentum",1); //!
+  fChain->SetBranchStatus("trMomentumError",0); //!
+  fChain->SetBranchStatus("trMomentumMuon",0); //!
+  fChain->SetBranchStatus("trMomentumErrorMuon",0); //!
+  fChain->SetBranchStatus("trMomentumProton",0); //!
+  fChain->SetBranchStatus("trMomentumErrorProton",0); //!
+  fChain->SetBranchStatus("trMomentumEle",0); //!
+  fChain->SetBranchStatus("trMomentumErrorEle",0); //!
+  fChain->SetBranchStatus("trRangeMomentumEle",0); //!
+  fChain->SetBranchStatus("trRangeMomentumMuon",0); //!
+  fChain->SetBranchStatus("trRangeMomentumProton",0); //!
+  fChain->SetBranchStatus("trDirectionStart",1); //!
+  fChain->SetBranchStatus("trDirectionEnd",0); //!
+  fChain->SetBranchStatus("trPositionStart",1); //!
+  fChain->SetBranchStatus("trPositionEnd",1); //!
+  fChain->SetBranchStatus("trTpcDetector",1); //!
+  fChain->SetBranchStatus("trTpcNNodes",1); //!
+  fChain->SetBranchStatus("trTpcDirectionStart",1); //!
+  fChain->SetBranchStatus("trTpcPositionStart",1); //!
+  fChain->SetBranchStatus("trTpcPositionEnd",1); //!
+  fChain->SetBranchStatus("trTpcCharge",1); //!
+  fChain->SetBranchStatus("trTpcMomentum",1); //!
+  fChain->SetBranchStatus("trTpcMomentumError",1); //!
   fChain->SetBranchStatus("trTpcRefitMomentum",1);
-  fChain->SetBranchStatus("trTpcBackMomentum",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxMeas",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxExpMu",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxExpEle",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxExpP",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxExpPi",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxExpK",0);   //!
-  fChain->SetBranchStatus("trTpcdEdxSigmaMu",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxSigmaEle",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxSigmaP",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxSigmaPi",1);   //!
-  fChain->SetBranchStatus("trTpcdEdxSigmaK",0);   //!
-  fChain->SetBranchStatus("trTpcPurity",0);   //!
-  fChain->SetBranchStatus("trFgdDetector",1);   //!
-  fChain->SetBranchStatus("trFgdNNodes",1);   //!
-  fChain->SetBranchStatus("trFgdDirectionStart",1);   //!
-  fChain->SetBranchStatus("trFgdPositionStart",1);   //!
-  fChain->SetBranchStatus("trFgdPositionEnd",1);   //!
-  fChain->SetBranchStatus("trFgdX",1);   //!
-  fChain->SetBranchStatus("trFgdE",1);   //!
-  fChain->SetBranchStatus("trFgdPullmu",1);   //!
-  fChain->SetBranchStatus("trFgdPullp",1);   //!
-  fChain->SetBranchStatus("trFgdPullpi",1);   //!
-  fChain->SetBranchStatus("trFgdPullno",1);   //!
-  fChain->SetBranchStatus("trFgdContainment",1);   //!
-  fChain->SetBranchStatus("trFgdAvgTime",0);   //!
-  fChain->SetBranchStatus("trFgdVertex1x1",0);   //!
-  fChain->SetBranchStatus("trFgdVertex3x3",0);   //!
-  fChain->SetBranchStatus("trFgdVertex5x5",0);   //!
-  fChain->SetBranchStatus("trFgdVertex7x7",0);   //!
-  fChain->SetBranchStatus("trFgdVertexLayer",0);   //!
-  fChain->SetBranchStatus("trECALDetector",0);   //!
-  fChain->SetBranchStatus("trECALNNodes",0);   //!
-  fChain->SetBranchStatus("trECALDirectionStart",0);   //!
-  fChain->SetBranchStatus("trECALPositionStart",0);   //!
-  fChain->SetBranchStatus("trECALPositionEnd",0);   //!
-  fChain->SetBranchStatus("trECALEMEnergy",0);   //!
-  fChain->SetBranchStatus("trECALEDeposit",0);   //!
-  fChain->SetBranchStatus("trECALIsShowerLike",0);   //!
-  fChain->SetBranchStatus("trECALAvgTime",0);   //!
-  fChain->SetBranchStatus("trSMRDDetector",0);   //!
-  fChain->SetBranchStatus("trSMRDNNodes",0);   //!
-  fChain->SetBranchStatus("trSMRDDirectionStart",0);   //!
-  fChain->SetBranchStatus("trSMRDPositionStart",0);   //!
-  fChain->SetBranchStatus("trSMRDPositionEnd",0);   //!
-  fChain->SetBranchStatus("trSMRDAvgTime",0);   //!
-  fChain->SetBranchStatus("trP0DDetector",0);   //!
-  fChain->SetBranchStatus("trP0DNNodes",0);   //!
-  fChain->SetBranchStatus("trP0DDirectionStart",0);   //!
-  fChain->SetBranchStatus("trP0DPositionStart",0);   //!
-  fChain->SetBranchStatus("trP0DPositionEnd",0);   //!
+  fChain->SetBranchStatus("trTpcBackMomentum",1); //!
+  fChain->SetBranchStatus("trTpcdEdxMeas",1); //!
+  fChain->SetBranchStatus("trTpcdEdxExpMu",1); //!
+  fChain->SetBranchStatus("trTpcdEdxExpEle",1); //!
+  fChain->SetBranchStatus("trTpcdEdxExpP",1); //!
+  fChain->SetBranchStatus("trTpcdEdxExpPi",1); //!
+  fChain->SetBranchStatus("trTpcdEdxExpK",0); //!
+  fChain->SetBranchStatus("trTpcdEdxSigmaMu",1); //!
+  fChain->SetBranchStatus("trTpcdEdxSigmaEle",1); //!
+  fChain->SetBranchStatus("trTpcdEdxSigmaP",1); //!
+  fChain->SetBranchStatus("trTpcdEdxSigmaPi",1); //!
+  fChain->SetBranchStatus("trTpcdEdxSigmaK",0); //!
+  fChain->SetBranchStatus("trTpcPurity",0); //!
+  fChain->SetBranchStatus("trFgdDetector",1); //!
+  fChain->SetBranchStatus("trFgdNNodes",1); //!
+  fChain->SetBranchStatus("trFgdDirectionStart",1); //!
+  fChain->SetBranchStatus("trFgdPositionStart",1); //!
+  fChain->SetBranchStatus("trFgdPositionEnd",1); //!
+  fChain->SetBranchStatus("trFgdX",1); //!
+  fChain->SetBranchStatus("trFgdE",1); //!
+  fChain->SetBranchStatus("trFgdPullmu",1); //!
+  fChain->SetBranchStatus("trFgdPullp",1); //!
+  fChain->SetBranchStatus("trFgdPullpi",1); //!
+  fChain->SetBranchStatus("trFgdPullno",1); //!
+  fChain->SetBranchStatus("trFgdContainment",1); //!
+  fChain->SetBranchStatus("trFgdAvgTime",0); //!
+  fChain->SetBranchStatus("trFgdVertex1x1",0); //!
+  fChain->SetBranchStatus("trFgdVertex3x3",0); //!
+  fChain->SetBranchStatus("trFgdVertex5x5",0); //!
+  fChain->SetBranchStatus("trFgdVertex7x7",0); //!
+  fChain->SetBranchStatus("trFgdVertexLayer",0); //!
+  fChain->SetBranchStatus("trECALDetector",0); //!
+  fChain->SetBranchStatus("trECALNNodes",0); //!
+  fChain->SetBranchStatus("trECALDirectionStart",0); //!
+  fChain->SetBranchStatus("trECALPositionStart",0); //!
+  fChain->SetBranchStatus("trECALPositionEnd",0); //!
+  fChain->SetBranchStatus("trECALEMEnergy",0); //!
+  fChain->SetBranchStatus("trECALEDeposit",0); //!
+  fChain->SetBranchStatus("trECALIsShowerLike",0); //!
+  fChain->SetBranchStatus("trECALAvgTime",0); //!
+  fChain->SetBranchStatus("trSMRDDetector",0); //!
+  fChain->SetBranchStatus("trSMRDNNodes",0); //!
+  fChain->SetBranchStatus("trSMRDDirectionStart",0); //!
+  fChain->SetBranchStatus("trSMRDPositionStart",0); //!
+  fChain->SetBranchStatus("trSMRDPositionEnd",0); //!
+  fChain->SetBranchStatus("trSMRDAvgTime",0); //!
+  fChain->SetBranchStatus("trP0DDetector",0); //!
+  fChain->SetBranchStatus("trP0DNNodes",0); //!
+  fChain->SetBranchStatus("trP0DDirectionStart",0); //!
+  fChain->SetBranchStatus("trP0DPositionStart",0); //!
+  fChain->SetBranchStatus("trP0DPositionEnd",0); //!
   fChain->SetBranchStatus("trTrueParticleID",1); //!
   fChain->SetBranchStatus("trTpcTrueParticleID",1); //!
   */
@@ -997,7 +997,7 @@ void RedoTreeConverter::DefineBranches(){
 
 //********************************************************************
 RedoTreeConverter::~RedoTreeConverter(){
-  //********************************************************************
+//********************************************************************
 
   if (!fChain) return;
 
@@ -1012,11 +1012,11 @@ RedoTreeConverter::~RedoTreeConverter(){
 
 //****************************************************************************
 bool RedoTreeConverter::AddFileToTChain(const std::string& inputString){
-  //****************************************************************************
+//****************************************************************************
 
   std::cout << "RedoTreeConverter::AddFileToTChain(). Adding file: " << inputString << std::endl;
 
-  // ------------- Check that the file has some entries. Otherwise ignore it -----------------
+// ------------- Check that the file has some entries. Otherwise ignore it -----------------
   TChain dummy(_treeName.c_str());
   dummy.AddFile(inputString.c_str());
   if (dummy.GetEntries("sEvt>=0") == 0){
@@ -1025,11 +1025,11 @@ bool RedoTreeConverter::AddFileToTChain(const std::string& inputString){
   }
 
 
-  // Open the file to do few checks
+// Open the file to do few checks
   TFile *f = TFile::Open(inputString.c_str()); 
   f->cd(); 
 
-  // ------------- Check that the header tree exists (needed for POT counting). If it doesn't ignore the file -----------------
+// ------------- Check that the header tree exists (needed for POT counting). If it doesn't ignore the file -----------------
 
   if (!gDirectory->FindObjectAny("header")){
     std::cout << "      ----> This file does not contain a header tree. IGNORED !!!!" << std::endl;
@@ -1037,7 +1037,7 @@ bool RedoTreeConverter::AddFileToTChain(const std::string& inputString){
   }
 
 
-  // ----------  Deal with RooTrackerVtx trees. Only for the first file
+// ----------  Deal with RooTrackerVtx trees. Only for the first file
 
   if( _firstFile ) {
     fGenie=fNeut=false;
@@ -1074,7 +1074,7 @@ bool RedoTreeConverter::AddFileToTChain(const std::string& inputString){
 
   f->Close(); 
 
-  // ------------- Add the file to the RooTrackerVtx chain
+// ------------- Add the file to the RooTrackerVtx chain
 
   if( fGenie && GRooTrackerVTX) {
     GRooTrackerVTX->AddFile(inputString.c_str());
@@ -1083,18 +1083,18 @@ bool RedoTreeConverter::AddFileToTChain(const std::string& inputString){
     NRooTrackerVTX->AddFile(inputString.c_str());
   }
 
-  // ------------- Add the file to the FlatTree chain
+// ------------- Add the file to the FlatTree chain
   flattree->AddFile(inputString.c_str());  
 
 
-  // Define the branches to be read from the input tree only once after reading the first file
-  // Need to re-initialize now we know which type of highland tree we are dealing with
+// Define the branches to be read from the input tree only once after reading the first file
+// Need to re-initialize now we know which type of highland tree we are dealing with
   if( _firstFile ) {
     _firstFile = false;
     DefineBranches();
   }
   /*
-  // Define Data/MC status: use the first valid entry in the flat tree
+// Define Data/MC status: use the first valid entry in the flat tree
   Long64_t nentries = GetEntries();  
   for (Long64_t i = 0; i<nentries; i++){
   Int_t entry_temp = flattree->GetEntry(i);
@@ -1111,17 +1111,17 @@ return header().AddHeader(inputString);
 
 //*****************************************************************************
 Int_t RedoTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Read contents of entry.
+// Read contents of entry.
   if (!fChain) return 0;
 
-  // Create an instance of AnaSpill
+// Create an instance of AnaSpill
   spill = MakeSpill();
 
   Int_t entry_temp;
 
-  // Get a new entry from the flat tree
+// Get a new entry from the flat tree
   entry_temp = flattree->GetEntry(entry);
  
 
@@ -1133,25 +1133,25 @@ Int_t RedoTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
     }
   }
 
-  // Print the current file
+// Print the current file
   TString filename(flattree->GetFile()->GetName());   
   if( filename != _currentfilename ) {
     std::cout << " Running on file : " << filename << std::endl; 
     _currentfilename = filename;
   }
 
-  // Fill the general spill info
+// Fill the general spill info
   _spill = static_cast<AnaSpillB*>(spill);
   FillInfo(_spill);
 
-  // Always make the out of bunch
+// Always make the out of bunch
   _spill->OutOfBunch = MakeBunch();
 
   int evt_prev=sEvt;
 
   while (sEvt==evt_prev && entry < _nentries){
 
-    // Create and fill a new bunch
+  // Create and fill a new bunch
     if (Bunch==-1) {
       FillBunchInfo(_spill->TrueParticles, _spill->OutOfBunch);
     } else {
@@ -1160,16 +1160,16 @@ Int_t RedoTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
       FillBunchInfo(_spill->TrueParticles, bunch);
     }
 
-    // increment the entry number
+  // increment the entry number
     entry++;
 
-    // break if we have reach the maximum entry number
+  // break if we have reach the maximum entry number
     if (entry>=_nentries) break;
 
-    // save the previous event number
+  // save the previous event number
     evt_prev=sEvt;
 
-    // get a new entry from the input tree
+  // get a new entry from the input tree
     entry_temp = flattree->GetEntry(entry);
   }
 
@@ -1178,16 +1178,16 @@ Int_t RedoTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
 
 //*****************************************************************************
 Int_t RedoTreeConverter::GetEvent(Long64_t& entry, AnaEventC*& event){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Read contents of entry.
+// Read contents of entry.
   if (!fChain) return 0;
   Int_t entry_temp;
 
-  // get a new entry from the input tree
+// get a new entry from the input tree
   entry_temp = flattree->GetEntry(entry);
 
-  // Reed the RooTrackerVtx when exists
+// Reed the RooTrackerVtx when exists
   if (entry_temp>0 && sRun > 1000000) {
     if (fGenie && GRooTrackerVTX) GRooTrackerVTX->GetEntry(entry);
     if (fNeut  && NRooTrackerVTX){
@@ -1196,20 +1196,20 @@ Int_t RedoTreeConverter::GetEvent(Long64_t& entry, AnaEventC*& event){
     }
   }
 
-  // Print the current file
+// Print the current file
   TString filename(flattree->GetFile()->GetName());   
   if( filename != _currentfilename ) {
     std::cout << " Running on file : " << filename << std::endl; 
     _currentfilename = filename;
   }
 
-  // Create a new event
+// Create a new event
   event = new AnaEventB();
 
-  // Fill the event info;
+// Fill the event info;
   FillEventInfo(static_cast<AnaEventB*>(event));
 
-  // Increment entry number
+// Increment entry number
   entry++;
 
   _prevEvent=static_cast<AnaEventB*>(event);
@@ -1218,43 +1218,43 @@ Int_t RedoTreeConverter::GetEvent(Long64_t& entry, AnaEventC*& event){
 
 //********************************************************************
 void RedoTreeConverter::IncrementPOTBySpill() {
-  //********************************************************************
+//********************************************************************
 
-  //  ND::header().IncrementPOTBySpill(*_spill);
+//  ND::header().IncrementPOTBySpill(*_spill);
 }
 
 //*****************************************************************************
 Long64_t RedoTreeConverter::GetEntries(){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // if this is the first time this function is called get the number of entries
-  // Comment out for now, since Asher needs to call GetEntries for every tree when not using preloading
-  //if (_nentries==0)
+// if this is the first time this function is called get the number of entries
+// Comment out for now, since Asher needs to call GetEntries for every tree when not using preloading
+//if (_nentries==0)
   _nentries = GetChain()->GetEntries("sEvt>=0");
 
-  // just returns the number of entries otherwise
+// just returns the number of entries otherwise
   return _nentries;
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillEventInfo(AnaEventB* event){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // When the previous event has the same event number it means that we are in the same Spill.
-  // In this case we can copy all common spill info from the previous event
+// When the previous event has the same event number it means that we are in the same Spill.
+// In this case we can copy all common spill info from the previous event
   bool filled = false;
   if (_prevEvent){
     if (sEvt == _prevEvent->EventInfo.Event){
-      // Don't copy bunch info but clone truth
+    // Don't copy bunch info but clone truth
       event->Copy(*_prevEvent, false);
       filled = true;
     }
   }
-  // otherwise this is a new spill and everything should be filled
+// otherwise this is a new spill and everything should be filled
   if (!filled)
     FillEventSpillInfo(event);
 
-  // Now we fill the Bunch info
+// Now we fill the Bunch info
   event->Bunch = Bunch;
   event->Weight = Weight;
 
@@ -1280,7 +1280,7 @@ void RedoTreeConverter::FillEventInfo(AnaEventB* event){
 
 //*****************************************************************************
 void RedoTreeConverter::FillEventSpillInfo(AnaEventB* event){
-  //*****************************************************************************
+//*****************************************************************************
 
   if (sRun==0 || sRun>1000000)
     event->EventInfo.IsMC = true;
@@ -1290,7 +1290,7 @@ void RedoTreeConverter::FillEventSpillInfo(AnaEventB* event){
   event->EventInfo.Run    = sRun;
   event->EventInfo.Event  = sEvt;
   event->EventInfo.SetIsSandMC();
-  // Fill the true vertices vector. This should be called before filling the true particles vector
+// Fill the true vertices vector. This should be called before filling the true particles vector
   event->nTrueVertices = 0;
   anaUtils::CreateArray(event->TrueVertices, sNTrueVertices);
   for (int i=0;i<sNTrueVertices;i++){
@@ -1300,23 +1300,23 @@ void RedoTreeConverter::FillEventSpillInfo(AnaEventB* event){
     event->nTrueVertices++;
   }
 
-  // Fill the true particles vector
+// Fill the true particles vector
   event->nTrueParticles = 0;
   anaUtils::CreateArray(event->TrueParticles, sNTrueParticles);
   for (int i=0;i<sNTrueParticles;i++){
     AnaTrueParticleB* particle = MakeTrueParticle();
     FillTrueParticleInfo(event, i, particle);
-    // if(!particle->TrueVertex){
-    //   delete particle;
-    //   continue;
-    // }
+  // if(!particle->TrueVertex){
+  //   delete particle;
+  //   continue;
+  // }
     event->TrueParticles[event->nTrueParticles] = particle;
     event->nTrueParticles++;
   }
 
-  // Give the proper size to the TrueParticles vector for each TrueVertex. 
-  // This can be done only after filling the general True Particle vector (above) since is in this process 
-  // when the TrueVertex <---> TrueParticle association is done
+// Give the proper size to the TrueParticles vector for each TrueVertex. 
+// This can be done only after filling the general True Particle vector (above) since is in this process 
+// when the TrueVertex <---> TrueParticle association is done
   for (int i=0;i<event->nTrueVertices;i++){
     anaUtils::ResizeArray(event->TrueVertices[i]->TrueParticles, event->TrueVertices[i]->nTrueParticles, sNTrueParticles);
   }
@@ -1326,13 +1326,13 @@ void RedoTreeConverter::FillEventSpillInfo(AnaEventB* event){
   FillDQInfo(event->DataQuality);
   FillBeamInfo(event->Beam);
 
-  // FGD time bin info
+// FGD time bin info
   FillFgdTimeBinInfo(event);    
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillInfo(AnaSpillB* spill){
-  //*****************************************************************************
+//*****************************************************************************
   spill->EventInfo = MakeEventInfo();
 
   if (sRun==0 || sRun>1000000)
@@ -1347,7 +1347,7 @@ void RedoTreeConverter::FillInfo(AnaSpillB* spill){
   spill->NTotalTrueParticles   = sNTotalTrueParticles;
   spill->NTotalTrueVertices = sNTotalTrueVertices;
 
-  // Fill the true vertices vector. This should be called before filling the true particles vector
+// Fill the true vertices vector. This should be called before filling the true particles vector
   spill->TrueVertices.clear();
   int nVertices = std::min((int)NMAXTRUEVERTICES, sNTrueVertices);
   for (int i = 0; i < nVertices; i++){
@@ -1357,12 +1357,12 @@ void RedoTreeConverter::FillInfo(AnaSpillB* spill){
     spill->TrueVertices.push_back(vertex);
   }
 
-  // Fill the true particles vector
+// Fill the true particles vector
   spill->TrueParticles.clear();
   int nParts = std::min((int)NMAXTRUEPARTICLES, sNTrueParticles);
   for (int i = 0; i < nParts; i++){
     AnaTrueParticleB* particle = MakeTrueParticle();
-    // Create an array to have the same input as for event 
+  // Create an array to have the same input as for event 
     AnaTrueVertexB** trueVertices = NULL;
     
     anaUtils::CreateArray(trueVertices, spill->TrueVertices.size());
@@ -1379,15 +1379,15 @@ void RedoTreeConverter::FillInfo(AnaSpillB* spill){
   spill->Beam = MakeBeam();
   FillDQInfo(spill->DataQuality);
   FillBeamInfo(spill->Beam);
-  //  FillTriggerInfo(&spill->Trigger);
+//  FillTriggerInfo(&spill->Trigger);
 
-  // FGD time bin info
+// FGD time bin info
   FillFgdTimeBinInfo(spill->FgdTimeBins);
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillBunchInfo(std::vector<AnaTrueParticleB*>& trueParticles, AnaBunchB* bunch){
-  //*****************************************************************************
+//*****************************************************************************
 
   bunch->Bunch  = Bunch;
   bunch->Weight = Weight;
@@ -1409,9 +1409,9 @@ void RedoTreeConverter::FillBunchInfo(std::vector<AnaTrueParticleB*>& truePartic
 
 //*****************************************************************************
 void RedoTreeConverter::FillFgdTimeBinInfo(std::vector<AnaFgdTimeBinB*>& FgdTimeBins){
-  //*****************************************************************************
+//*****************************************************************************
 
-  //loop over fgd time bins
+//loop over fgd time bins
   for(int ibin=0; ibin<sNFgdTimeBins; ibin++) {      
 
     AnaFgdTimeBinB* abin = MakeFgdTimeBin();
@@ -1422,15 +1422,15 @@ void RedoTreeConverter::FillFgdTimeBinInfo(std::vector<AnaFgdTimeBinB*>& FgdTime
     abin->NHits[1]        = sFgdTimeBinNHits2[ibin];
     abin->RawChargeSum[0] = sFgdTimeBinRawChargeSum1[ibin];
     abin->RawChargeSum[1] = sFgdTimeBinRawChargeSum2[ibin];    
-    //    abin->G4ID = sFgdTimeBinG4ID[ibin];
+  //    abin->G4ID = sFgdTimeBinG4ID[ibin];
   }
 }  
 
 //*****************************************************************************
 void RedoTreeConverter::FillFgdTimeBinInfo(AnaEventB* event){
-  //*****************************************************************************
+//*****************************************************************************
 
-  //loop over fgd time bins
+//loop over fgd time bins
   event->nFgdTimeBins = 0;
   anaUtils::CreateArray(event->FgdTimeBins, sNFgdTimeBins);
   for(int ibin=0; ibin<sNFgdTimeBins; ibin++) {      
@@ -1444,20 +1444,20 @@ void RedoTreeConverter::FillFgdTimeBinInfo(AnaEventB* event){
     abin->NHits[1]        = sFgdTimeBinNHits2[ibin];
     abin->RawChargeSum[0] = sFgdTimeBinRawChargeSum1[ibin];
     abin->RawChargeSum[1] = sFgdTimeBinRawChargeSum2[ibin];    
-    //    abin->G4ID = sFgdTimeBinG4ID[ibin];
+  //    abin->G4ID = sFgdTimeBinG4ID[ibin];
   }
 }  
 
 //*****************************************************************************
 void RedoTreeConverter::FillDQInfo(AnaDataQualityB* dq){
-  //*****************************************************************************
+//*****************************************************************************
 
   dq->GoodDaq   = sDQGoodDaq;
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillBeamInfo(AnaBeamB* beam){
-  //*****************************************************************************
+//*****************************************************************************
 
   beam->GoodSpill = sBeamGoodSpill;
 }
@@ -1465,11 +1465,11 @@ void RedoTreeConverter::FillBeamInfo(AnaBeamB* beam){
 
 //*****************************************************************************
 void RedoTreeConverter::FillTrackInfo(AnaEventB* event, int itrk, AnaTrackB* track){
-  //*****************************************************************************
+//*****************************************************************************
   track->Index                = itrk;
   track->UniqueID             = (trUniqueID)[itrk];
-  //  track->Status           = (trStatus)[itrk];
-  //  track->Detectors        = (trDetectors)[itrk];
+//  track->Status           = (trStatus)[itrk];
+//  track->Detectors        = (trDetectors)[itrk];
   track->Charge               = (trCharge)[itrk];
   track->NHits                = (trNHits)[itrk];
   track->NNodes               = (trNNodes)[itrk];
@@ -1487,7 +1487,7 @@ void RedoTreeConverter::FillTrackInfo(AnaEventB* event, int itrk, AnaTrackB* tra
   track->ToF.Flag_ECal_FGD1   = (trToFFlag_ECal_FGD1)[itrk];
   track->ToF.Flag_DSECal_FGD2 = (trToFFlag_DSECal_FGD2)[itrk];
   track->ToF.Flag_ECal_FGD2   = (trToFFlag_ECal_FGD2)[itrk];
-  //  track->MomentumError = (trMomentumError)[itrk];
+//  track->MomentumError = (trMomentumError)[itrk];
 
   track->RangeMomentumMuon  = (trRangeMomentumMuon)[itrk];
 
@@ -1501,20 +1501,20 @@ void RedoTreeConverter::FillTrackInfo(AnaEventB* event, int itrk, AnaTrackB* tra
 
   FillSubdetectorInfo(event, itrk, track);
 
-  // Find the true particle associated with this recon track
+// Find the true particle associated with this recon track
   FindTrueParticle(event, trTrueParticleID[itrk], track->TrueObject);
 
-  // Save all recon tracks associated to this true particle
+// Save all recon tracks associated to this true particle
   /*
      if (track->TrueObject){
      AnaTrueObjectC* thistrueobj = track->TrueObject;
 
-  // Vectors are already filled with null pointers --> fill, remove last one (that should be null) and sort
+// Vectors are already filled with null pointers --> fill, remove last one (that should be null) and sort
   thistrueobj->ReconParticles.insert(thistrueobj->ReconParticles.begin(),track);
   if (thistrueobj->ReconParticles.back())
   if ( ! suppress_err_msg) std::cout << "minor error 73731" << std::endl;
   if ( ! thistrueobj->ReconParticles.back()) thistrueobj->ReconParticles.pop_back();
-  // sort here to keep handle associations from different bunches
+// sort here to keep handle associations from different bunches
   std::sort(thistrueobj->ReconParticles.begin(), thistrueobj->ReconParticles.end(), AnaTrackB::CompareMomentum);
 
   }
@@ -1523,12 +1523,12 @@ void RedoTreeConverter::FillTrackInfo(AnaEventB* event, int itrk, AnaTrackB* tra
 
 //*****************************************************************************
 void RedoTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& trueParticles, int itrk, AnaTrackB* track){
-  //*****************************************************************************
+//*****************************************************************************
 
   track->Index              = itrk;
   track->UniqueID           = (trUniqueID)[itrk];
-  //  track->Status        = (trStatus)[itrk];
-  //  track->Detectors     = (trDetectors)[itrk];
+//  track->Status        = (trStatus)[itrk];
+//  track->Detectors     = (trDetectors)[itrk];
   track->Charge             = (trCharge)[itrk];
   track->NHits              = (trNHits)[itrk];
   track->NNodes             = (trNNodes)[itrk];
@@ -1548,7 +1548,7 @@ void RedoTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& truePartic
   track->ToF.Flag_DSECal_FGD2 = (trToFFlag_DSECal_FGD2)[itrk];
   track->ToF.Flag_ECal_FGD2   = (trToFFlag_ECal_FGD2)[itrk];
   
-  //  track->MomentumError = (trMomentumError)[itrk];
+//  track->MomentumError = (trMomentumError)[itrk];
 
   track->RangeMomentumMuon  = (trRangeMomentumMuon)[itrk];
 
@@ -1562,20 +1562,20 @@ void RedoTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& truePartic
 
   FillSubdetectorInfo(trueParticles, itrk, track);
 
-  // Find the true track associated with this recon track
+// Find the true track associated with this recon track
   FindTrueParticle(trueParticles, trTrueParticleID[itrk], track->TrueObject);
 
-  // Save all recon tracks associated to this true particle
+// Save all recon tracks associated to this true particle
   /*
      if (track->TrueObject){
      AnaTrueObjectC* thistrueobj = track->TrueObject;
 
-  // Vectors are already filled with null pointers --> fill, remove last one (that should be null) and sort
+// Vectors are already filled with null pointers --> fill, remove last one (that should be null) and sort
   thistrueobj->ReconParticles.insert(thistrueobj->ReconParticles.begin(),track);
   if (thistrueobj->ReconParticles.back())
   if ( ! suppress_err_msg) std::cout << "minor error 73731" << std::endl;
   if ( ! thistrueobj->ReconParticles.back()) thistrueobj->ReconParticles.pop_back();
-  // sort here to keep handle associations from different bunches
+// sort here to keep handle associations from different bunches
   std::sort(thistrueobj->ReconParticles.begin(), thistrueobj->ReconParticles.end(), AnaTrackB::CompareMomentum);
 
   }
@@ -1584,7 +1584,7 @@ void RedoTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& truePartic
 
 //*****************************************************************************
 void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& trueParticles, int itrk, AnaTrackB* track){
-  //*****************************************************************************
+//*****************************************************************************
 
   track->nTPCSegments  = 0;
   track->nFGDSegments  = 0;
@@ -1645,7 +1645,7 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
 
 //*****************************************************************************
 void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrackB* track){
-  //*****************************************************************************
+//*****************************************************************************
 
   track->nTPCSegments  = 0;
   track->nFGDSegments  = 0;
@@ -1693,7 +1693,7 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
 
 //*****************************************************************************
 void RedoTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticles, int itrk, int tpc, AnaTPCParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   convUtils::ConvertTPCDetEnumToBitField(seg->Detector, tpc);
 
@@ -1701,7 +1701,7 @@ void RedoTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
   seg->NNodes         = (int)(trTpcNNodes)[itrk][tpc];
   seg->Momentum       = (trTpcMomentum)[itrk][tpc];
   seg->MomentumError  = (trTpcMomentumError)[itrk][tpc];
-  //    seg->Length         = (trTpcLength)[itrk][tpc];
+//    seg->Length         = (trTpcLength)[itrk][tpc];
 
   seg->RefitMomentum  = (trTpcRefitMomentum)[itrk][tpc];
   seg->EFieldRefitMomentum  = (trTpcEFieldRefitMomentum)[itrk][tpc];
@@ -1718,7 +1718,7 @@ void RedoTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
   seg->dEdxSigmaProton = (trTpcdEdxSigmaP)[itrk][tpc];
   seg->dEdxSigmaPion   = (trTpcdEdxSigmaPi)[itrk][tpc];
 
-  //    seg->Purity   = (trTpcPurity)[itrk][tpc];
+//    seg->Purity   = (trTpcPurity)[itrk][tpc];
 
 
   for (int i=0;i<4;i++){
@@ -1728,16 +1728,16 @@ void RedoTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
 
   for (int i=0;i<3;i++){
     seg->DirectionStart[i] = (trTpcDirectionStart)[itrk][tpc][i];
-    //     seg->DirectionEnd[i]   = (trTpcDirectionEnd)[itrk][tpc][i];
+  //     seg->DirectionEnd[i]   = (trTpcDirectionEnd)[itrk][tpc][i];
   }
 
-  // Find the true particle assiciated with this recon particle
+// Find the true particle assiciated with this recon particle
   FindTrueParticle(trueParticles, (trTpcTrueParticleID)[itrk][tpc], seg->TrueObject);
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillTpcInfo(AnaEventB* event, int itrk, int tpc, AnaTPCParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   convUtils::ConvertTPCDetEnumToBitField(seg->Detector, tpc);
 
@@ -1745,7 +1745,7 @@ void RedoTreeConverter::FillTpcInfo(AnaEventB* event, int itrk, int tpc, AnaTPCP
   seg->NNodes         = (int)(trTpcNNodes)[itrk][tpc];
   seg->Momentum       = (trTpcMomentum)[itrk][tpc];
   seg->MomentumError  = (trTpcMomentumError)[itrk][tpc];
-  //    seg->Length         = (trTpcLength)[itrk][tpc];
+//    seg->Length         = (trTpcLength)[itrk][tpc];
 
 
   seg->RefitMomentum  = (trTpcRefitMomentum)[itrk][tpc];
@@ -1763,7 +1763,7 @@ void RedoTreeConverter::FillTpcInfo(AnaEventB* event, int itrk, int tpc, AnaTPCP
   seg->dEdxSigmaProton = (trTpcdEdxSigmaP)[itrk][tpc];
   seg->dEdxSigmaPion   = (trTpcdEdxSigmaPi)[itrk][tpc];
 
-  //    seg->Purity   = (trTpcPurity)[itrk][tpc];
+//    seg->Purity   = (trTpcPurity)[itrk][tpc];
 
 
   for (int i=0;i<4;i++){
@@ -1773,21 +1773,21 @@ void RedoTreeConverter::FillTpcInfo(AnaEventB* event, int itrk, int tpc, AnaTPCP
 
   for (int i=0;i<3;i++){
     seg->DirectionStart[i] = (trTpcDirectionStart)[itrk][tpc][i];
-    //       seg->DirectionEnd[i]   = (trTpcDirectionEnd)[itrk][tpc][i];
+  //       seg->DirectionEnd[i]   = (trTpcDirectionEnd)[itrk][tpc][i];
   }
 
-  // Find the true track assiciated with this recon particle
+// Find the true track assiciated with this recon particle
   FindTrueParticle(event, (trTpcTrueParticleID)[itrk][tpc], seg->TrueObject);
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillFgdInfo(int itrk, int fgd, AnaFGDParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   convUtils::ConvertFGDDetEnumToBitField(seg->Detector, fgd);
 
   seg->NNodes         = (int)(trFgdNNodes)[itrk][fgd];
-  //  seg->Length         = (trFgdLength)[itrk][fgd];
+//  seg->Length         = (trFgdLength)[itrk][fgd];
 
   seg->Pullmu       = (trFgdPullmu)[itrk][fgd];
   seg->Pullp        = (trFgdPullp)[itrk][fgd];
@@ -1813,14 +1813,14 @@ void RedoTreeConverter::FillFgdInfo(int itrk, int fgd, AnaFGDParticleB* seg){
 
   for (int i=0;i<3;i++){
     seg->DirectionStart[i] = (trFgdDirectionStart)[itrk][fgd][i];
-    //        seg->DirectionEnd[i]   = (trFgdDirectionEnd)[itrk][fgd][i];
+  //        seg->DirectionEnd[i]   = (trFgdDirectionEnd)[itrk][fgd][i];
   }
 
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   convUtils::ConvertECALDetEnumToBitField(seg->Detector, ecal);
 
@@ -1830,9 +1830,9 @@ void RedoTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* seg){
   seg->PIDMipEm             = trECALPIDMipEm[itrk][ecal];
   seg->PIDEmHip             = trECALPIDEmHip[itrk][ecal];
 
-  //seg->IsShowerLike         = trECALIsShowerLike[itrk][ecal];
-  //seg->AvgTime              = trECALAvgTime[itrk][ecal];
-  //seg->EDeposit             = trECALEDeposit[itrk][ecal];
+//seg->IsShowerLike         = trECALIsShowerLike[itrk][ecal];
+//seg->AvgTime              = trECALAvgTime[itrk][ecal];
+//seg->EDeposit             = trECALEDeposit[itrk][ecal];
   
   
   seg->MostUpStreamLayerHit = (int)trECALMostUpStreamLayerHit[itrk][ecal];
@@ -1840,7 +1840,7 @@ void RedoTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* seg){
   for (int i = 0; i < 3; i++){
     seg->ShowerPosition[i] = (trECALShowerPosition)[itrk][ecal][i];
     seg->DirectionStart[i] = (trECALDirectionStart)[itrk][ecal][i];
-    //seg->DirectionEnd[i]   = (trECALDirectionStart)[itrk][ecal][i];
+  //seg->DirectionEnd[i]   = (trECALDirectionStart)[itrk][ecal][i];
   }
   
   for (int i = 0; i < 4; i++){
@@ -1852,7 +1852,7 @@ void RedoTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* seg){
 
 //*****************************************************************************
 void RedoTreeConverter::FillSmrdInfo(int itrk, int smrd, AnaSMRDParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   convUtils::ConvertSMRDDetEnumToBitField(seg->Detector, smrd);
 
@@ -1868,7 +1868,7 @@ void RedoTreeConverter::FillSmrdInfo(int itrk, int smrd, AnaSMRDParticleB* seg){
 
 //*****************************************************************************
 void RedoTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* seg){
-  //*****************************************************************************    
+//*****************************************************************************    
 
   SubDetId::SetDetectorUsed(seg->Detector, SubDetId::kP0D);
 
@@ -1887,7 +1887,7 @@ void RedoTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* seg){
 
 //*****************************************************************************
 void RedoTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB** trueVertices, int itrk, AnaTrueParticleB* particle){
-  //*****************************************************************************
+//*****************************************************************************
   particle->ID         = (sTrueParticleID)[itrk];
   particle->PrimaryID  = (sTrueParticlePrimaryID)[itrk];
   particle->ParentID   = (sTrueParticleParentID)[itrk];
@@ -1910,7 +1910,7 @@ void RedoTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
 
   particle->nDetCrossings = 0;
   UInt_t nCrossings = sTrueParticleNDetCrossings[itrk];
-  // for backward compatibility since  sTrueParticleNDetCrossings have been just introduced in FlatTree
+// for backward compatibility since  sTrueParticleNDetCrossings have been just introduced in FlatTree
   if( nCrossings==0 || nCrossings > NMAXCROSSEDDET ) nCrossings = NMAXCROSSEDDET; 
   anaUtils::CreateArray(particle->DetCrossings, nCrossings);
   for(UInt_t i=0;i<nCrossings;i++){
@@ -1935,9 +1935,9 @@ void RedoTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
 
   for (int i = 0; i < ntrueVertices; ++i){
     if (particle->VertexID == trueVertices[i]->ID){
-      // Associate the vertex to this track
+    // Associate the vertex to this track
       particle->TrueVertex = trueVertices[i];
-      // add this track to the list of true tracks in the true vertex
+    // add this track to the list of true tracks in the true vertex
       if((UInt_t)particle->TrueVertex->nTrueParticles >= NMAXTRUEPARTICLES) break;
       particle->TrueVertex->TrueParticles[particle->TrueVertex->nTrueParticles] = particle;	
       particle->TrueVertex->nTrueParticles++;
@@ -1948,7 +1948,7 @@ void RedoTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
 
 //*****************************************************************************
 void RedoTreeConverter::FillTrueParticleInfo(AnaEventB* event, int itrk, AnaTrueParticleB* particle){
-  //*****************************************************************************
+//*****************************************************************************
  
   if (!event) 
     return;
@@ -1958,7 +1958,7 @@ void RedoTreeConverter::FillTrueParticleInfo(AnaEventB* event, int itrk, AnaTrue
 
 //*****************************************************************************
 void RedoTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertex){
-  //*****************************************************************************
+//*****************************************************************************
 
   vertex->ID = sTrueVertexID[ivtx];
   vertex->NuPDG = sTrueVertexNuPDG[ivtx];
@@ -1968,16 +1968,16 @@ void RedoTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertex){
 
   vertex->Bunch    = sTrueVertexBunch[ivtx];
 
-  // will be updated in FillTrueParticleInfo
+// will be updated in FillTrueParticleInfo
   anaUtils::CreateArray(vertex->TrueParticles, sNTrueParticles);
   vertex->nTrueParticles = 0;	
 }
 
 //*****************************************************************************
 void RedoTreeConverter::FindTrueParticle(std::vector<AnaTrueParticleB*>& trueParticles, int ID, AnaTrueObjectC*& trueTrack){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Compare the IDs to find the AnaTrueObjectC associated with this recon particle.
+// Compare the IDs to find the AnaTrueObjectC associated with this recon particle.
   trueTrack = NULL;
 
   if (ID==-999) return; // there's no true track association
@@ -1993,9 +1993,9 @@ void RedoTreeConverter::FindTrueParticle(std::vector<AnaTrueParticleB*>& truePar
 
 //*****************************************************************************
 void RedoTreeConverter::FindTrueParticle(AnaEventB* event, int ID, AnaTrueObjectC*& trueTrack){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Compare the IDs to find the AnaTrueObjectC associated with this recon particle.
+// Compare the IDs to find the AnaTrueObjectC associated with this recon particle.
   trueTrack = NULL;
   if (ID==-999) return; // there's no true track association
 
@@ -2010,29 +2010,29 @@ void RedoTreeConverter::FindTrueParticle(AnaEventB* event, int ID, AnaTrueObject
 
 //*****************************************************************************
 void RedoTreeConverter::FillVertexInfo(int ivtx, AnaVertexB* vertex, AnaEventB* event){
-  //*****************************************************************************
+//*****************************************************************************
 
   vertex->PrimaryIndex = (vPrimaryIndex)[ivtx];
   anaUtils::CopyArray(vPosition[ivtx], vertex->Position, 4);
 
-  // Find AnaParticleB associated with this global vertex
+// Find AnaParticleB associated with this global vertex
   for (int d = 0; d < vNReconParticles[ivtx]; d++) {
     AnaParticleB* matchedParticle = FindParticle(vParticlesUniqueID[ivtx][d], event);
     if ( ! matchedParticle) continue;
 
-    // fill only if in this bunch, should be already sorted in flat tree, then null pointers will be added at the end
-    //    if (matchedParticle->Bunch != Bunch) continue;
-    //    vertex->Particles.push_back(matchedParticle);
+  // fill only if in this bunch, should be already sorted in flat tree, then null pointers will be added at the end
+  //    if (matchedParticle->Bunch != Bunch) continue;
+  //    vertex->Particles.push_back(matchedParticle);
 
-    // Save vertices info in AnaParticleB
-    //    matchedParticle->ReconVertices.push_back(vertex);
+  // Save vertices info in AnaParticleB
+  //    matchedParticle->ReconVertices.push_back(vertex);
 
-    // choose the vertex more primary (in this bunch)
-    //        if ( ! matchedParticle->Vertex || matchedParticle->Vertex->PrimaryIndex > vertex->PrimaryIndex)
-    //            matchedParticle->Vertex = vertex;
+  // choose the vertex more primary (in this bunch)
+  //        if ( ! matchedParticle->Vertex || matchedParticle->Vertex->PrimaryIndex > vertex->PrimaryIndex)
+  //            matchedParticle->Vertex = vertex;
   }
 
-  // Find true vertices associated with this global vertex (by index)
+// Find true vertices associated with this global vertex (by index)
   for (int d = 0; d < vNTrueVerticesMatch[ivtx]; d++) {
     std::pair<AnaTrueVertexB*, AnaRecTrueMatchB> myMatch;
     int thisTrueVertexIndex = vTrueVertexIndex[ivtx][d];
@@ -2046,37 +2046,37 @@ void RedoTreeConverter::FillVertexInfo(int ivtx, AnaVertexB* vertex, AnaEventB* 
     vertex->TrueVerticesMatch.push_back(myMatch);
   }
 
-  // Let's keep also vertex->TrueVertex by now (the user could just called GetMainTrueVertex instead)
+// Let's keep also vertex->TrueVertex by now (the user could just called GetMainTrueVertex instead)
   vertex->TrueVertex = vertex->GetMainTrueVertex(false); // vertex->GetMainTrueVertex() could replace this info
 }
 
 
 //*****************************************************************************
 void RedoTreeConverter::FillVertexInfo(int ivtx, AnaVertexB* vertex, AnaBunchB* bunch){
-  //*****************************************************************************
+//*****************************************************************************
 
   vertex->PrimaryIndex = (vPrimaryIndex)[ivtx];
   vertex->Bunch        = (vBunch)[ivtx];
   anaUtils::CopyArray(vPosition[ivtx], vertex->Position, 4);
 
-  // Find AnaParticleB associated with this global vertex
+// Find AnaParticleB associated with this global vertex
   for (int d = 0; d < vNReconParticles[ivtx]; d++) {
     AnaParticleB* matchedParticle = FindParticle(vParticlesUniqueID[ivtx][d], bunch);
     if ( ! matchedParticle) continue;
 
-    // fill only if in this bunch, should be already sorted in flat tree, then null pointers will be added at the end
-    //    if (matchedParticle->Bunch != Bunch) continue;
-    //    vertex->Particles.push_back(matchedParticle);
+  // fill only if in this bunch, should be already sorted in flat tree, then null pointers will be added at the end
+  //    if (matchedParticle->Bunch != Bunch) continue;
+  //    vertex->Particles.push_back(matchedParticle);
 
-    // Save vertices info in AnaParticleB
-    //    matchedParticle->ReconVertices.push_back(vertex);
+  // Save vertices info in AnaParticleB
+  //    matchedParticle->ReconVertices.push_back(vertex);
 
-    // choose the vertex more primary (in this bunch)
-    //        if ( ! matchedParticle->Vertex || matchedParticle->Vertex->PrimaryIndex > vertex->PrimaryIndex)
-    //            matchedParticle->Vertex = vertex;
+  // choose the vertex more primary (in this bunch)
+  //        if ( ! matchedParticle->Vertex || matchedParticle->Vertex->PrimaryIndex > vertex->PrimaryIndex)
+  //            matchedParticle->Vertex = vertex;
   }
 
-  // Find true vertices associated with this global vertex (by index)
+// Find true vertices associated with this global vertex (by index)
   for (int d = 0; d < vNTrueVerticesMatch[ivtx]; d++) {
     std::pair<AnaTrueVertexB*, AnaRecTrueMatchB> myMatch;
     int thisTrueVertexIndex = vTrueVertexIndex[ivtx][d];
@@ -2090,30 +2090,30 @@ void RedoTreeConverter::FillVertexInfo(int ivtx, AnaVertexB* vertex, AnaBunchB* 
     vertex->TrueVerticesMatch.push_back(myMatch);
   }
 
-  // Let's keep also vertex->TrueVertex, by now
+// Let's keep also vertex->TrueVertex, by now
   vertex->TrueVertex = vertex->GetMainTrueVertex(); // vertex->GetMainTrueVertex() could replace this info
 }
 
 //*****************************************************************************
 AnaParticleB* RedoTreeConverter::FindParticle(int ID, AnaEventB* event){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Compare the UniqueID to find the corresponding AnaParticleB
-  // AnaParticleB already exists because it is saved for first
-  // Look first in the same event bunch as the vertex
+// Compare the UniqueID to find the corresponding AnaParticleB
+// AnaParticleB already exists because it is saved for first
+// Look first in the same event bunch as the vertex
   for (int ittrack = 0; ittrack < event->nParticles; ittrack++) {
 
     if (ID == event->Particles[ittrack]->UniqueID) return event->Particles[ittrack];
   }
 
-  //We are not using out of bunch tracks in the BANFF fit, so cannot do these checks.
+//We are not using out of bunch tracks in the BANFF fit, so cannot do these checks.
 
-  //    // If not found, look into OutOfBunch (saved for first in the Flat Tree, if parameters enabled)
-  //    if (_spill->OutOfBunch) {
-  //        for (ittrack = _spill->OutOfBunch->Particles.begin(); ittrack != _spill->OutOfBunch->Particles.end(); ittrack++) {
-  //            if (ID == (*ittrack)->UniqueID) return *ittrack;
-  //        }
-  //    }
+//    // If not found, look into OutOfBunch (saved for first in the Flat Tree, if parameters enabled)
+//    if (_spill->OutOfBunch) {
+//        for (ittrack = _spill->OutOfBunch->Particles.begin(); ittrack != _spill->OutOfBunch->Particles.end(); ittrack++) {
+//            if (ID == (*ittrack)->UniqueID) return *ittrack;
+//        }
+//    }
 
   if (event->Bunch != -1) //&& _spill->OutOfBunch->Bunch != -999)
     if ( ! suppress_err_msg) std::cout << "minor error 0999" << std::endl;
@@ -2123,18 +2123,18 @@ AnaParticleB* RedoTreeConverter::FindParticle(int ID, AnaEventB* event){
 
 //*****************************************************************************
 AnaParticleB* RedoTreeConverter::FindParticle(int ID, AnaBunchB* bunch){
-  //*****************************************************************************
+//*****************************************************************************
 
-  // Compare the UniqueID to find the corresponding AnaParticleB
-  // AnaParticleB already exists because it is saved for first
+// Compare the UniqueID to find the corresponding AnaParticleB
+// AnaParticleB already exists because it is saved for first
   std::vector<AnaParticleB*>::iterator ittrack;
 
-  // Look first in the same bunch of the vertex
+// Look first in the same bunch of the vertex
   for (ittrack = bunch->Particles.begin(); ittrack != bunch->Particles.end(); ittrack++) {
     if (ID == (*ittrack)->UniqueID) return *ittrack;
   }
 
-  // If not found, look into OutOfBunch (saved for first in the Flat Tree, if parameters enabled)
+// If not found, look into OutOfBunch (saved for first in the Flat Tree, if parameters enabled)
   if (_spill->OutOfBunch) {
     for (ittrack = _spill->OutOfBunch->Particles.begin(); ittrack != _spill->OutOfBunch->Particles.end(); ittrack++) {
       if (ID == (*ittrack)->UniqueID) return *ittrack;
