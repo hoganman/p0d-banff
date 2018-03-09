@@ -33,13 +33,14 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle = new TStyle("P0DBANFFStyle","Color style + colorblind frendly palletes");
     TGaxis::SetMaxDigits(3);
     P0DBANFFStyle->SetOptStat("i");
-    P0DBANFFStyle->SetTitleXSize(0.06);
-    P0DBANFFStyle->SetTitleYSize(0.06);
+    P0DBANFFStyle->SetStatFormat("10g");
+    P0DBANFFStyle->SetTitleXSize(0.055);
+    P0DBANFFStyle->SetTitleYSize(0.055);
     P0DBANFFStyle->SetStripDecimals(kFALSE);
     P0DBANFFStyle->SetCanvasBorderMode(0);
-    P0DBANFFStyle->SetFillColor(10);
     P0DBANFFStyle->SetOptTitle(kFALSE);
     P0DBANFFStyle->SetEndErrorSize(4);
+    P0DBANFFStyle->SetFillColor(0);
     gROOT->SetStyle("P0DBANFFStyle");
 
 }
@@ -63,7 +64,8 @@ P0DBANFFInterface::~P0DBANFFInterface()
 void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
         TString canvasName, TString histName,
         TString xAxisTitle, TString yAxisTitle,
-        Int_t lineWidth, const Int_t lineColor) const
+        UInt_t lineColor, UInt_t fillColor,
+	UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
   if(!CheckFile(inFileName))
@@ -76,25 +78,19 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
   TCanvas* canvas = NULL;
   if(canvasName.Length() > 0)
       canvas = static_cast<TCanvas*>(inputFile->Get(canvasName.Data()));
-  else
+  if(!canvas)
   {
-    TIter iter(inputFile->GetListOfKeys());
-    TKey* key = static_cast<TKey*>(iter.Next());
-    while(key){
-      TString name = key->GetName();
-      if(!name.Contains(canvasName) && !name.Contains("c1") && !name.Contains("canvas"))
-      {
-        key = static_cast<TKey*>(iter.Next());
-        continue;
-      }
-      canvas = static_cast<TCanvas*>(key->ReadObj());
-      break;
-    }
+    std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data() 
+	      << std::endl;
+    const TList* keys = inputFile->GetListOfKeys();
+    canvas = static_cast<TCanvas*>(FindObjectInFileByName(keys, "c1"));
+    if(!canvas)
+      canvas = static_cast<TCanvas*>(FindObjectInFileByName(keys, "canvas"));
   }
   if(!canvas)
   {
-    std::cerr << "ERROR: No canvas found using standard names: \"c1\" and \"canvas\" and"
-              << canvasName.Data() << std::endl;
+    std::cerr << "ERROR: No canvas found using standard names: \"c1\" and \
+\"canvas\" and " << canvasName.Data() << std::endl;
     return;
   }
 
@@ -139,11 +135,41 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
 
 }
 
+//**************************************************
+void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
+        TString xAxisTitle, TString yAxisTitle,
+	Double_t textSizeChange) const
+//**************************************************
+{
+  if(!stack)
+  {
+    std::cerr << "ERROR: Invalid input THStack*"
+              << std::endl;
+    return;
+  }
+  stack->Draw("goff");
+  if(!xAxisTitle.Contains("none"))
+  {
+      stack->GetXaxis()->SetTitle(xAxisTitle.Data());
+      stack->GetXaxis()->SetTitleOffset(0.85);
+  }
+  if(!yAxisTitle.Contains("none"))
+  {
+      stack->GetYaxis()->SetTitle(yAxisTitle.Data());
+      stack->GetYaxis()->SetTitleOffset(0.85);
+  }
+  if(textSizeChange > 0)
+  {
+      stack->GetXaxis()->SetTitleSize(stack->GetXaxis()->GetTitleSize()*(1+textSizeChange));
+      stack->GetYaxis()->SetTitleSize(stack->GetYaxis()->GetTitleSize()*(1+textSizeChange));
+  }
+}
 
 //**************************************************
 void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
         TString xAxisTitle, TString yAxisTitle,
-        Int_t lineWidth, Int_t lineColor) const
+        UInt_t lineColor, UInt_t fillColor,
+	UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
   if(!inHist)
@@ -152,20 +178,28 @@ void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
               << std::endl;
     return;
   }
-  const Double_t textSizeIncreaase = 0.5;
   inHist->SetTitle("");
-  if(!xAxisTitle.Contains("none")){
+  if(!xAxisTitle.Contains("none"))
+  {
       inHist->GetXaxis()->SetTitle(xAxisTitle.Data());
+      inHist->GetXaxis()->SetTitleOffset(0.85);
   }
-  inHist->GetXaxis()->SetTitleOffset(0.85);
-  inHist->GetXaxis()->SetTitleSize(inHist->GetXaxis()->GetTitleSize()*(1+textSizeIncreaase));
-  if(!yAxisTitle.Contains("none")){
+  if(!yAxisTitle.Contains("none"))
+  {
       inHist->GetYaxis()->SetTitle(yAxisTitle.Data());
+      inHist->GetYaxis()->SetTitleOffset(0.85);
   }
-  inHist->GetYaxis()->SetTitleOffset(0.85);
-  inHist->GetYaxis()->SetTitleSize(inHist->GetYaxis()->GetTitleSize()*(1+textSizeIncreaase));
-  inHist->SetLineWidth(lineWidth);
-  inHist->SetLineColor(lineColor);
+  if(textSizeChange > 0)
+  {
+      inHist->GetXaxis()->SetTitleSize(inHist->GetXaxis()->GetTitleSize()*(1+textSizeChange));
+      inHist->GetYaxis()->SetTitleSize(inHist->GetYaxis()->GetTitleSize()*(1+textSizeChange));
+  }
+  if(lineWidth > 0)
+      inHist->SetLineWidth(lineWidth);
+  if(lineColor > 0)
+      inHist->SetLineColor(lineColor);
+  if(fillColor > 0)
+      inHist->SetFillColor(fillColor);
 
 }
 
@@ -329,7 +363,7 @@ void P0DBANFFInterface::SaveCanvasAs(TString inputFileName,
 
 //**************************************************
 std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
-    Char_t separator) const
+	Char_t separator) const
 //**************************************************
 {
    // splits the option string at 'separator' and fills the list
@@ -351,4 +385,26 @@ std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
       splitOpt = splitOpt.Strip(TString::kLeading,separator);
    }
    return splitV;
+}
+
+
+//**************************************************
+TObject* P0DBANFFInterface::FindObjectInFileByName(const TList* inList,
+	const TString name_search) const
+//**************************************************
+{
+    TObject* result = NULL;
+    TIter iter(inList);
+    TKey* key = static_cast<TKey*>(iter.Next());
+    while(key){
+      TString name = key->GetName();
+      if(!name.Contains(name_search))
+      {
+        key = static_cast<TKey*>(iter.Next());
+        continue;
+      }
+      result = key->ReadObj();
+      break;
+    }
+    return result;
 }

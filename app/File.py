@@ -23,10 +23,13 @@ class File(object):
 
     def exists(self, file_name=''):
         """checks if the file in question exists"""
+        result = 0
         if len(file_name) == 0:
-            return int(isfile(self.get_file_name()))
-        else:
-            return int(isfile(file_name))
+            file_name = self.get_file_name()
+        result = int(isfile(self.get_file_name()))
+        if result != 1:
+            print 'ERROR! File "%s" does not exist!' % (file_name)
+        return result
 
     def is_file(self, file_name=''):
         """test if a file"""

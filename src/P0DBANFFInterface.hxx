@@ -6,7 +6,8 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TH1.h"
-#include<vector>
+#include "THStack.h"
+#include <vector>
 
 class P0DBANFFInterface : public TObject {
 public:
@@ -49,12 +50,27 @@ public:
     void PrettyUpTH1(TString inFileName, 
             TString canvasName = "c1", TString histName = "",
             TString xAxisTitle = "none",  TString yAxisTitle = "none",
-            Int_t lineWidth = 3,  const Int_t lineColor = P0DBANFFInterface::kcbBlack) const;
+            UInt_t lineColor = P0DBANFFInterface::kcbBlue, UInt_t fillColor = 0,
+	    UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
     void PrettyUpTH1(TH1* inHist, TString xAxisTitle = "none",  TString yAxisTitle = "none",
-            Int_t lineWidth = 3,  const Int_t lineColor = P0DBANFFInterface::kcbBlack) const;
+            UInt_t lineColor = P0DBANFFInterface::kcbBlue, UInt_t fillColor = 0,
+	    UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+
+    ///Applies a set of styles and font size to make
+    ///canvases easier to see in presentations
+    void PrettyUpTHStack(THStack* stack, TString xAxisTitle = "none",  TString yAxisTitle = "none",
+            Double_t textSizeChange = 0.0) const;
+
+    TStyle* GetThisStyle() const {return P0DBANFFStyle;}
+
+protected:
+
+    TObject* FindObjectInFileByName(const TList* inList, const TString name_search) const;
+
+public:
 
     static const Bool_t GoodFile = true;
     static const Bool_t BadFile  = false;
@@ -72,6 +88,8 @@ public:
     static const Int_t kcbPurple = 107;
     static const Int_t kcbYellow = 108;
 
+protected:
+
     TColor* cbBlack ;
     TColor* cbOrange;
     TColor* cbSky   ;
@@ -81,7 +99,11 @@ public:
     TColor* cbPurple;
     TColor* cbYellow;
     TStyle* P0DBANFFStyle;
+
+public:
+
     ClassDef(P0DBANFFInterface,1)
+
 };
 
 #endif

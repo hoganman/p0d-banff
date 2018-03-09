@@ -32,8 +32,8 @@ def main(argv):
     # source_highland = ShellCommand(
     #         'source %s/nd280Highland2/v2r22/cmt/setup.sh' % (P0DBANFF))
     # submit(source_highland)
-    submit_flattree_jobs()
-    # submit_spline_jobs()
+    # submit_flattree_jobs()
+    submit_spline_jobs()
 
 
 class RunName(object):

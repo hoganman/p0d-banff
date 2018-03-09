@@ -11,6 +11,10 @@ class ROOTFile(File):
         super(ROOTFile, self).__init__(input_file_name)
         self.status = self.checkfile()
 
+    def valid(self):
+        """A bool equivalent of checkfile"""
+        return self.status == self.IS_GOOD
+
     def checkfile(self):
         """Checks if the file is bad (0) or good (1)"""
         if not self.exists():

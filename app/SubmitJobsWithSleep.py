@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+import File
+
 """A simple python tool to resubmit jobs after qsubmitter.py has been run
     Inputs
         1: submission directory (manadatory)
@@ -7,10 +10,10 @@
         4: submission script name with %d in it (assumes 'submit_ajob_%d.sh')
         5: sleep time in seconds (assumes 20)
 
-    Simple example: 
+    Simple example:
         python SubmitJobsWithSleep /path/to/jobs/dir
-    Detailed example with 10 sec wait time b/n submits:
-        python SubmitJobsWithSleep /path/to/jobs/dir 10 1 1000 submit_ajob_%d.sh 
+    Detailed example with 5 sec wait time b/n submits:
+        python SubmitJobsWithSleep /path/to/jobs/dir 5 1 100 submit_ajob_%d.sh
 """
 from os import system, popen
 from time import sleep
@@ -19,7 +22,7 @@ from sys import argv, exit
 
 def printusage(programname='SubmitJobsWithSleep.py'):
     """if the number of args is < 1, then print this
-        or if any invalid input 
+        or if any invalid input
     """
     print programname
     print "input 1: submission directory (manadatory)"
@@ -75,7 +78,6 @@ def main(argv):
     else:
         lastjob = 1000
 
-
     if nuserargs > 4:
         try:
             submissionscript = str(argv[5])
@@ -87,11 +89,13 @@ def main(argv):
     if nuserargs > 5:
         print 'Too many inputs'
         printusage()
-    
+
     print 'Submiting jobs now'
-    for job in range(firstjob,lastjob+1):
-        jobscript = jobscriptsdir + '/' + submissionscript % (job)
-        system('qsub %s' % (jobscript))
+    for job in range(firstjob, lastjob+1):
+        jobscript_name = jobscriptsdir + '/' + submissionscript % (job)
+        if not File.File(jobscript_name).exists():
+            continue
+        system('qsub %s' % (jobscript_name))
         sleep(sleeptime)
     print 'DONE submitting jobs'
 

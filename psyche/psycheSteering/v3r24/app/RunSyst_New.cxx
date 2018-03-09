@@ -1,18 +1,26 @@
+
 #include "AnalysisManager.hxx"
 #include "ND280AnalysisUtils.hxx"
+#include "ToyMakerExample.hxx"
+#include "Parameters.hxx"
+#include "MultiThread.hxx"
+
+#include "TCanvas.h"
+#include "TH1F.h"
+#include "TRandom3.h"
+#include "TDirectory.h"
+#include "TGeoManager.h"
+
+#include <vector>
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "ToyMakerExample.hxx"
-#include <Parameters.hxx>
-#include <TCanvas.h>
-#include <TH1.h>
-#include <TH1F.h>
-#include "TRandom3.h"
-#include "MultiThread.hxx"
-
 const int nWeights = 21;
 const int nToys = 1000;
+
+std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
+std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
+Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition);
   
 int main(int argc, char *argv[]){
 
@@ -91,6 +99,8 @@ int main(int argc, char *argv[]){
   TTree* RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
   if(!RTV){ std::cerr << "No NRooTrackerVtx in the file, exiting." << std::cerr; throw;}
   inputFile->Close();
+  TGeoManager* geoManager = NULL;
+
   // Initialize clock
   timeval tim;
   gettimeofday(&tim, NULL);
@@ -155,6 +165,13 @@ int main(int argc, char *argv[]){
   Double_t LeptonCosNom   ;
   Double_t WeightNom      ;
   Double_t FluxWeightNom  ;
+  Double_t tVtxX;
+  Double_t tVtxY;
+  Double_t tVtxZ;
+  Double_t vtxX;
+  Double_t vtxY;
+  Double_t vtxZ;
+  Int_t onWaterTarget;
 
    
   Int_t    Toy            [nToys];
@@ -235,6 +252,15 @@ int main(int argc, char *argv[]){
     tree->Branch("LeptonCosNom",    &LeptonCosNom,    "LeptonCosNom/D"   );
     tree->Branch("WeightNom",       &WeightNom,       "WeightNom/D"      );
     tree->Branch("FluxWeightNom",   &FluxWeightNom,   "FluxWeightNom/D"  );
+
+    tree->Branch("vtxX" ,&vtxX ,"vtxX/D");
+    tree->Branch("vtxY" ,&vtxY ,"vtxY/D");
+    tree->Branch("vtxZ" ,&vtxZ ,"vtxZ/D");
+    tree->Branch("tVtxX",&tVtxX,"tVtxX/D");
+    tree->Branch("tVtxY",&tVtxY,"tVtxY/D");
+    tree->Branch("tVtxZ",&tVtxZ,"tVtxZ/D");
+    tree->Branch("onWaterTarget",&onWaterTarget,"onWaterTarget/I");
+    
     int nt = nToys;
     if(ThrowToys){
       tree->Branch("nToys",          &nt,              "nToys/I");
@@ -266,11 +292,18 @@ int main(int argc, char *argv[]){
     // Get the number of entries in the tree
     nmax = std::min(nmax, (int)_man.input().GetEntries());
 
+    if(gDirectory->FindObjectAny("ND280Geometry"))
+	std::cout << "Found ND280Geometry" << std::endl;
+
     std::cout << "RunSyst: loop over " << nmax << " entries" << std::endl;
   
     Long64_t entry = 0;
     while (entry < nmax) {
       
+      if(!geoManager)
+	  geoManager = static_cast<TGeoManager*>(gDirectory->FindObjectAny("ND280Geometry"));
+      
+
       if(entry%100 == 0)
         std::cout << "Progress " << 100.*entry/nmax << "%" << std::endl;
 
@@ -318,6 +351,13 @@ int main(int argc, char *argv[]){
       WeightNom       = -999;
       TrueVertexIDNom = -999;
       SelectionNom    = -999;
+      tVtxX = -999; 
+      tVtxY = -999;
+      tVtxZ = -999;
+      vtxX =  -999;
+      vtxY =  -999;
+      vtxZ =  -999;
+      onWaterTarget = -1;
  
       //_man.syst().InitializeEventSystematics(_man.sel(),*event);
       bool passednom = _man.ProcessEvent(*ZeroVarToy, *event, totalweight, fluxWeightSyst);
@@ -325,19 +365,39 @@ int main(int argc, char *argv[]){
       if(passednom){
         FillTree=true;
         AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
-        if(summary && summary->EventSample){
-          npassed[summary->EventSample]++;
-          LeptonMomNom    = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum);
-          LeptonCosNom    = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->DirectionStart[2]);
-          SelectionNom    = (Int_t)   summary->EventSample;
-          FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
-          WeightNom       = (Double_t)totalweight.Correction;
-          EventNumber     = (Int_t)   (*event).EventInfo.Event;
-          if(summary->TrueVertex[summary->EventSample]){
-            TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID; 
-            TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
-            TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
+	if(!summary || !summary->EventSample)
+	    continue;
+
+        npassed[summary->EventSample]++;
+	AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
+	AnaTrueVertexB* trVtx = static_cast<AnaTrueVertexB*>(summary->TrueVertex[summary->EventSample]);
+
+	tVtxX = trVtx->Position[0];
+	tVtxY = trVtx->Position[1];
+	tVtxZ = trVtx->Position[2];
+
+	vtxX = summary->VertexPosition[summary->EventSample][0];
+	vtxY = summary->VertexPosition[summary->EventSample][1];
+	vtxZ = summary->VertexPosition[summary->EventSample][2];
+
+
+        LeptonMomNom    = lepCand->Momentum;
+        LeptonCosNom    = lepCand->DirectionStart[2];
+        SelectionNom    = (Int_t)   summary->EventSample;
+        FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
+        WeightNom       = (Double_t)totalweight.Correction;
+        EventNumber     = (Int_t)   (*event).EventInfo.Event;
+        if(summary->TrueVertex[summary->EventSample]){
+          TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID; 
+          TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
+          TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
           }
+        if(geoManager && summary->EventSample == SampleId::kP0DNuMuCC)
+        {
+	    TLorentzVector start = trVtx->Position;
+            Int_t tmp = IsWaterP0Dule(geoManager,start);
+	    //onWaterTarget = (tmp - (tmp % 10)) / 10;
+	    onWaterTarget = (tmp % 10);
         }
       }      
             
@@ -468,7 +528,163 @@ int main(int argc, char *argv[]){
   for (unsigned int i = 0; i < SampleId::kNSamples; ++i){
     std::cout << "# events passing selection, Selection "<< SampleId::ConvertSample((SampleId::SampleEnum)i) << ": " << npassed[i] << std::endl;
   }
-
-
   
 }
+
+Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition)
+{
+
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  // * NOTICE : There is a special case where the P0Dule number will return 40 *
+  // *          this means that the position                                   *
+  // *          is in the 39 CECal_0/P0Dule_6/Epoxy/DownstreamCover_0          *
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+  //
+  // this funtion will return an int such that (return value)%10 will be 1 if the position is in water and 0 if not
+  // and ((return value)-(return value)%10)/10 will be the P0Dule index
+  // P0Dule index starts at 0 (most upstream P0Dule of the upstream P0D ecal) and ends at 39 (most downstream P0Dule
+  // of the downstream P0D ecal)
+  // The central water target consists of P0Dules 8-32 inclusive
+
+  //P0DuleOrLayer: 1= p0dule number, 2=layer X(1)/Y(2), 3=LayerIndex (1 -> 80)
+
+  Int_t IsOnWater = -1;
+  // -1 = not in the P0D, -2 = in the P0D not in a SuperP0Dule
+  // -3 = in SuperP0Dule but not in a P0Dule or WT or Radiator
+  // -4 = in a P0Dule but not in Epoxy (where the bars are)
+
+  std::string PositionPath = GetMCGeoPositionPath( tmpGeoManger, StartPosition );
+  //cout<<PositionPath<<endl;
+  std::string LeftWater = "LeftTarget";
+  std::string RightWater = "RightTarget";
+
+  IsOnWater=0;
+
+  size_t LeftOnWater = PositionPath.find(LeftWater);
+  //if(LeftOnWater!=std::string::npos) cout << "on Left Water Target" << endl;
+  //if(LeftOnWater!=std::string::npos) return 1;
+  if(LeftOnWater!=std::string::npos) IsOnWater=1;
+  size_t RightOnWater = PositionPath.find(RightWater);
+  //if(RightOnWater!=std::string::npos) cout << "on Right Water Target" << endl;
+  //if(RightOnWater!=std::string::npos) return 1;
+  if(RightOnWater!=std::string::npos) IsOnWater=1;
+
+  //const char* PosPathStr = PositionPath.c_str();
+  //const int LeftOnWater = strstr(PosPathStr, "LeftTarget");
+  //const int RightOnWater = strstr(PosPathStr, "RightTarget");
+  //cout << LeftOnWater << " " << RightOnWater << endl;
+
+  std::vector<std::string> DetectorVolumes
+    = SplitString( PositionPath.c_str(), '/');
+
+  //Element 5 should be /P0D/
+  //Element 6 should be /USECal_0/ or /USTarget_0/ or /CTarget_0/ or /CECal_0/
+  //Element 7 should be /P0Dule_#/ or /Radiator_#/ or /Target_#/ where # gives the p0dule number with in the superp0dule (0-6 for ecals and 0-12 for targets)
+
+  Int_t returnP0DuleNumber = -9999;
+  Int_t returnXorYLayer = -9999;
+
+  if (DetectorVolumes.size() < 6 )
+    return (-1);
+
+  if (DetectorVolumes[5] != "P0D_0")
+    return (-1);
+
+  if (DetectorVolumes.size() == 6)
+    return (-2);
+
+  if (DetectorVolumes[6]!="USECal_0" && DetectorVolumes[6]!="CECal_0" && DetectorVolumes[6]!="USTarget_0" && DetectorVolumes[6]!="CTarget_0")
+    return (-2);
+
+  if (DetectorVolumes.size() == 7)
+    return (-3);
+
+  std::vector<std::string> tmpInSuperP0Dule
+    = SplitString(DetectorVolumes[7].c_str(),'_');
+
+  if (tmpInSuperP0Dule[0]!="P0Dule" && tmpInSuperP0Dule[0]!="Radiator" && tmpInSuperP0Dule[0]!="Target")
+    return (-3);
+
+  Int_t SuperP0DuleOffset=0;
+  if(DetectorVolumes[6] == "USTarget_0")
+    SuperP0DuleOffset = 7;
+  if(DetectorVolumes[6] == "CTarget_0")
+    SuperP0DuleOffset = 20;
+  if(DetectorVolumes[6] == "CECal_0")
+    SuperP0DuleOffset = 33;
+
+  returnP0DuleNumber = atoi(tmpInSuperP0Dule[1].c_str());
+
+  Int_t P0DuleByP0DuleOffset = 0;
+  if(tmpInSuperP0Dule[0]=="Radiator" || tmpInSuperP0Dule[0]=="Target") {
+    returnXorYLayer = 1;
+    if (DetectorVolumes[6] != "CECal_0")
+      P0DuleByP0DuleOffset = 1;
+  }
+
+  if(tmpInSuperP0Dule[0] == "P0Dule") {
+
+    if(DetectorVolumes.size() == 8)
+      returnXorYLayer = -4;
+      //      return ( -4 );
+
+    if(DetectorVolumes.size() > 8) {
+
+      if(DetectorVolumes[8] != "Epoxy_0") {
+
+        if(DetectorVolumes[8]=="BottomLIFrame_0" || DetectorVolumes[8]=="BottomLICover_0" || DetectorVolumes[8]=="TopMPPCFrame_0")
+          returnXorYLayer = 1;
+
+        if(DetectorVolumes[8]=="SideLIFrame_0" || DetectorVolumes[8]=="SideLICover_0" || DetectorVolumes[8]=="SideMPPCFrame_0")
+          returnXorYLayer = 2;
+      }
+
+      if(DetectorVolumes[8] == "Epoxy_0") {
+
+        if(DetectorVolumes.size() == 9)
+          returnXorYLayer = 2;
+
+        if(DetectorVolumes.size() > 9){
+
+          if(DetectorVolumes[9]=="X_0" ||DetectorVolumes[9]=="UpstreamCover_0")
+            returnXorYLayer = 1;
+
+          if(DetectorVolumes[9] == "Y_0")
+            returnXorYLayer = 2;
+
+          if(DetectorVolumes[9] == "DownstreamCover_0") {
+            returnXorYLayer = 1;
+            P0DuleByP0DuleOffset = 1;
+          }
+
+        } // if > 9
+      } // Epoxy_0
+    } // if > 8
+  } // if P0Dule
+
+  return (returnP0DuleNumber+ SuperP0DuleOffset + P0DuleByP0DuleOffset)*10 + IsOnWater;
+}
+
+
+std::vector<std::string> SplitString(const std::string &inString, char SplitBy)
+{
+  std::vector<std::string> outStringVec;
+
+  std::stringstream WorkOnThisString( inString );
+  std::string tmpStringPart;
+
+  while ( std::getline( WorkOnThisString, tmpStringPart, SplitBy) ) {
+    outStringVec.push_back( tmpStringPart );
+  }
+
+  return (outStringVec );
+}
+
+
+std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition)
+{
+  thisGeoManger->InitTrack( checkPosition.X(), checkPosition.Y(), checkPosition.Z(), 0, 0, 1); // 0, 0, 1 = the direction vector
+  std::string tmpMCPath = thisGeoManger->GetPath();
+  return ( tmpMCPath );
+}
+
