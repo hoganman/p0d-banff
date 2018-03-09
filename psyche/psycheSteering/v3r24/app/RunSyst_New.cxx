@@ -16,11 +16,82 @@
 #include <unistd.h>
 
 const int nWeights = 21;
-const int nToys = 1000;
+const int nToys = 1;//1000;
 
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
 std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
 Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition);
+//determines if NC, CC0Pi, CC1Pi, CCOther
+class Topology : public TObject {
+
+public: 
+    Topology (AnaTrueVertexB* trVtx) : TObject() {
+
+	NuMu = false;
+	NuENuebar = false;
+	NuMubar = false;
+	CCzeroPi = false;
+	CConePi = false;      
+	CCOther = false;      
+	NC = false;
+
+	if(!trVtx)
+	    return;
+
+	UInt_t nPiPluses = 0;
+	UInt_t nPiMinuses = 0;
+	UInt_t nPiZeros = 0;
+	UInt_t nEM = 0;
+	UInt_t nOther = 0;
+
+	const Int_t nuPDG = trVtx->NuPDG;
+
+	if(abs(nuPDG) != 12 && abs(nuPDG) != 14)
+	    NC = true;
+
+	else
+	{
+	    if(nuPDG == 14)
+		NuMu = true;
+	    else if(nuPDG == -14)
+		NuMubar = true;
+	    else if(abs(nuPDG) == 12)
+		NuENuebar = true;
+
+	    const UInt_t nTrueParticles = trVtx->TrueParticlesVect.size();
+	    std::vector<AnaTrueParticleB*> trParticles = trVtx->TrueParticlesVect;
+	    for(std::vector<AnaTrueParticleB*>::iterator it = trParticles.begin(); it!=trParticles.end(); ++it){
+	        AnaTrueParticleB* trPart = *it;
+	        const Int_t PDG = trPart->PDG;
+	        if(PDG == 211)
+	    	nPiPluses++;
+	        else if(PDG == -211)
+	    	nPiMinuses++;
+	        else if(PDG == 111)
+	    	nPiZeros++;
+	        else if(abs(PDG) == 11 || PDG == 22)
+	    	nEM++;
+	        else
+	    	nOther++;
+	    }
+	    if(nPiMinuses + nPiZeros + nPiPluses + nOther == 0)
+		CCzeroPi = true;
+	    else if(nPiMinuses + nPiPluses == 1 && nPiZeros == 0 && nOther == 0)
+		CConePi = true;
+	    else
+		CCOther = true;
+	}
+    }
+
+    Bool_t NuMu;
+    Bool_t NuENuebar;
+    Bool_t NuMubar;
+    Bool_t CCzeroPi;
+    Bool_t CConePi;
+    Bool_t CCOther;
+    Bool_t NC;
+};
+
   
 int main(int argc, char *argv[]){
 
@@ -96,7 +167,7 @@ int main(int argc, char *argv[]){
 
   
   TFile* inputFile = new TFile(inputFileName.c_str(), "READ");
-  TTree* RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
+  TTree* RTV = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
   if(!RTV){ std::cerr << "No NRooTrackerVtx in the file, exiting." << std::cerr; throw;}
   inputFile->Close();
   TGeoManager* geoManager = NULL;
@@ -156,22 +227,27 @@ int main(int argc, char *argv[]){
   Int_t Run         = -999;
   Int_t SubRun      = -999;
   Int_t EventNumber = -999;
+  Int_t isNC        = -999;
+  Int_t isCC        = -999;
+  Int_t isCCzeroPi  = -999;
+  Int_t isCConePi   = -999;
+  Int_t isCCOther   = -999;
 
-  Int_t    TrueVertexIDNom;
-  Int_t    SelectionNom   ;
-  Double_t TrueEnuNom     ;
-  Int_t    TrueNuPDGNom   ;
-  Double_t LeptonMomNom   ;
-  Double_t LeptonCosNom   ;
-  Double_t WeightNom      ;
-  Double_t FluxWeightNom  ;
-  Double_t tVtxX;
-  Double_t tVtxY;
-  Double_t tVtxZ;
-  Double_t vtxX;
-  Double_t vtxY;
-  Double_t vtxZ;
-  Int_t onWaterTarget;
+  Int_t    TrueVertexIDNom = -999;
+  Int_t    SelectionNom    = -999;
+  Double_t TrueEnuNom      = -999;
+  Int_t    TrueNuPDGNom    = -999;
+  Double_t LeptonMomNom    = -999;
+  Double_t LeptonCosNom    = -999;
+  Double_t WeightNom       = -999;
+  Double_t FluxWeightNom   = -999;
+  Double_t tVtxX = -999;
+  Double_t tVtxY = -999;
+  Double_t tVtxZ = -999;
+  Double_t vtxX = -999;
+  Double_t vtxY = -999;
+  Double_t vtxZ = -999;
+  Int_t onWaterTarget = -999;
 
    
   Int_t    Toy            [nToys];
@@ -245,6 +321,12 @@ int main(int argc, char *argv[]){
     tree->Branch("EventNumber",     &EventNumber,     "EventNumber/I");
 
     tree->Branch("SelectionNom",    &SelectionNom,    "SelectionNom/I"   );
+    tree->Branch("isNC",       &isNC,      "isNC/I");
+    tree->Branch("isCC",       &isCC,      "isCC/I");
+    tree->Branch("isCCzeroPi", &isCCzeroPi,"isCCzeroPi/I");
+    tree->Branch("isCConePi",  &isCConePi, "isCConePi/I");
+    tree->Branch("isCCOther",  &isCCOther, "isCCOther/I");
+
     tree->Branch("TrueEnuNom",      &TrueEnuNom,      "TrueEnuNom/D"     );
     tree->Branch("TrueNuPDGNom",    &TrueNuPDGNom,    "TrueNuPDGNom/I"   );
     tree->Branch("TrueVertexIDNom", &TrueVertexIDNom, "TrueVertexIDNom/I");
@@ -375,11 +457,9 @@ int main(int argc, char *argv[]){
 	tVtxX = trVtx->Position[0];
 	tVtxY = trVtx->Position[1];
 	tVtxZ = trVtx->Position[2];
-
 	vtxX = summary->VertexPosition[summary->EventSample][0];
 	vtxY = summary->VertexPosition[summary->EventSample][1];
 	vtxZ = summary->VertexPosition[summary->EventSample][2];
-
 
         LeptonMomNom    = lepCand->Momentum;
         LeptonCosNom    = lepCand->DirectionStart[2];
@@ -387,11 +467,26 @@ int main(int argc, char *argv[]){
         FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
         WeightNom       = (Double_t)totalweight.Correction;
         EventNumber     = (Int_t)   (*event).EventInfo.Event;
-        if(summary->TrueVertex[summary->EventSample]){
+        if(trVtx)
+	{
+	  isNC = 0;
+	  isCCzeroPi = 0;
+	  isCConePi = 0;
+	  isCCOther = 0;
           TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID; 
           TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
           TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
-          }
+	  Topology top(trVtx);
+	  if (top.NC)
+	      isNC = 1;
+	  else if (top.CCzeroPi)
+	      isCCzeroPi = 1;
+	  else if(top.CConePi)
+	      isCCzeroPi = 1;
+	  else
+	      isCCOther = 1;
+	  
+        }
         if(geoManager && summary->EventSample == SampleId::kP0DNuMuCC)
         {
 	    TLorentzVector start = trVtx->Position;
@@ -399,7 +494,8 @@ int main(int argc, char *argv[]){
 	    //onWaterTarget = (tmp - (tmp % 10)) / 10;
 	    onWaterTarget = (tmp % 10);
         }
-      }      
+      }
+
             
       /// 2. ====================================================================
       /// Loop over toy experiments
@@ -687,4 +783,5 @@ std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentz
   std::string tmpMCPath = thisGeoManger->GetPath();
   return ( tmpMCPath );
 }
+
 
