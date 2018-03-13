@@ -10,22 +10,17 @@
 package main
 
 import (
+	"P0DBANFF/check"
+	"P0DBANFF/directory"
+	"P0DBANFF/file"
 	"bufio"
 	"fmt"
-	"os"
-	//"os/exec"
 	"github.com/pborman/getopt/v2"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 )
-
-/* if anything bad happens, be sure to let the user know */
-func Check(e error) {
-	if e != nil {
-		panic(e)
-		os.Exit(1)
-	}
-}
 
 /* replace all instances of "\n" from stdio with "" */
 func GetFromInput(request string) (retString string) {
@@ -33,13 +28,21 @@ func GetFromInput(request string) (retString string) {
 	//create stdin instance
 	reader := bufio.NewReader(os.Stdin)
 	retString, err := reader.ReadString('\n')
-	Check(err)
+	if !check.Nil(err) {
+		fmt.Println("ERROR: Could not get input")
+		panic(err)
+		os.Exit(1)
+	}
 	retString = strings.Replace(retString, "\n", "", -1)
 	return
 }
 
 /* get each line of "path" as entry in "lines" */
 func ReadLines(path string) (lines []string) {
+	if exists, _ := file.Exists(path); !exists {
+		fmt.Println("ERROR: File does not exist!")
+		os.Exit(1)
+	}
 	inFile, _ := os.Open(path)
 	//only close file until function has returned
 	defer inFile.Close()
@@ -48,7 +51,7 @@ func ReadLines(path string) (lines []string) {
 		os.Exit(1)
 	}
 	//declare large array to store all possible files
-	var tmplines [10000]string
+	var tmplines [100000]string
 	scanner := bufio.NewScanner(inFile)
 	scanner.Split(bufio.ScanLines)
 
@@ -84,8 +87,15 @@ func Download(remoteFile, remoteDirectory, outputDirectory string, status chan s
 	localFileFullPath := fmt.Sprintf("%s/%s", outputDirectory, remoteFile)
 	//join the command and options with a space between each
 	fullcmd := strings.Join([]string{program, VOname, remoteFileFullPath, localFileFullPath}, " ")
-	//cmd := exec.Command(program, VOname, remoteFile, localFile)
-	//err := cmd.Run()
+	cmd := exec.Command(program, "--vo", "t2k.org", "-v", fmt.Sprintf("srm://t2ksrm.nd280.org/nd280data/%s/%s", remoteDirectory, remoteFile), localFileFullPath)
+	//cmd := exec.Command("/bin/sleep", "5")
+	err := cmd.Run()
+	if !check.Nil(err) {
+		fmt.Println("A problem occured with job", fullcmd)
+		fmt.Println(err)
+		panic(err)
+		//confirmContinue := GetFromInput("Would you like to continue (y/N)?")
+	}
 	status <- fullcmd
 }
 
@@ -95,7 +105,7 @@ func TRIUMFDownloadTool() {
 	var outputDir, TRIUMFDir string
 	//the result of finishing a Download
 	//feel free to change this, but not too high to slow down other routine downloads
-	const nRoutines = 3
+	const nRoutines = 5
 
 	// Declare the flags to be used
 	//usage help flag
@@ -126,6 +136,18 @@ func TRIUMFDownloadTool() {
 	} else {
 		getopt.Usage()
 		os.Exit(1)
+	}
+
+	if exists, _ := directory.Exists(outputDir); !exists {
+		errMsg := fmt.Sprintf("ERROR: \"%s\" does NOT exist ", outputDir)
+		fmt.Println(errMsg)
+		os.Exit(1)
+		getopt.Usage()
+	}
+	if len(inputFiles) < 1 {
+		fmt.Println("ERROR: no files to download")
+		os.Exit(1)
+		getopt.Usage()
 	}
 
 	fmt.Println("The number of files to download are", len(inputFiles))
