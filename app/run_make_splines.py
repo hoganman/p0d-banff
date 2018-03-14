@@ -32,8 +32,8 @@ def main(argv):
     # source_highland = ShellCommand(
     #         'source %s/nd280Highland2/v2r22/cmt/setup.sh' % (P0DBANFF))
     # submit(source_highland)
-    # submit_flattree_jobs()
-    submit_spline_jobs()
+    submit_flattree_jobs()
+    # submit_spline_jobs()
 
 
 class RunName(object):
@@ -271,7 +271,7 @@ def submit_ft_mc():
     run7b_ft_mc = make_qsub_flattree_mc(RUN7B, NEUTMC_6L)
 
     submit(run2w_ft_mc, True)
-    submit(run2a_ft_mc, True)
+    submit(run2a_ft_mc, False)
     submit(run3b_ft_mc, False)
     submit(run3c_ft_mc, False)
     submit(run4w_ft_mc, False)

@@ -103,3 +103,5 @@ export NIWGREWEIGHT_INPUTS=${NIWG}/inputs
 source ${P0DBANFFROOT}/psyche/psycheSteering/v3r24/cmt/setup.sh
 LD_LIBRARY_PATH=${PSYCHECOREROOT}/Linux-x86_64:$LD_LIBRARY_PATH
 ###################
+
+export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go:$P0DBANFFROOT/go
