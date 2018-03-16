@@ -104,6 +104,7 @@
 
 // numu CC Inc P0D -> TPC1
 #include "p0dNumuCCSelection.hxx"
+#include "p0dNumubarCCSelection.hxx"
 
 //******************************************************************
 AnalysisManager::AnalysisManager(){
@@ -263,6 +264,8 @@ void AnalysisManager::DefineSelections(){
 
   // P0D+TPC1 numu CCInc
   sel().AddSelection("kP0DNuMuCC"       ,     "P0D+TPC1 NuMuCC inclusive" , new p0dNumuCCSelection());
+  // P0D+TPC1 numubar CCInc
+  sel().AddSelection("kP0DNuMuBarCC"       ,     "P0D+TPC1 NuMuBarCC inclusive" , new p0dNumubarCCSelection());
 
   // Set which run range the selections are valid for using the parameters file
   // If this is not called the selections are applied to all run periods
@@ -312,6 +315,7 @@ void AnalysisManager::DefineSelections(){
 
   // P0D+TPC1 Numu CCInc
   sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kP0DNuMuBarCC",         ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
 
   // Numu FGD1
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))

@@ -67,6 +67,7 @@ FGD2
 
 P0D+TPC1
  < psycheSteering.Selections.EnableP0DNuMuCC                               = 1 >
+ < psycheSteering.Selections.EnableP0DNuMuBarCC                            = 1 >
 
 Parameter to control which run periods selectionsare valid for.  
 Look at AnalysisUtils.cxx to find run period numbering - Run period 8 = run 5 anti-neutrino data/MC

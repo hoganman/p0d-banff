@@ -124,6 +124,7 @@ namespace SampleId{
     kFGD2GammaInAntiNuMode,
     // P0D
     kP0DNuMuCC,
+    kP0DNuMuBarCC,
     kNSamples
   };
 

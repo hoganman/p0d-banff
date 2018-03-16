@@ -82,6 +82,7 @@ std::string SampleId::ConvertSample(SampleEnum sample){
     else if (sample == kFGD2NuEBkgInAntiNuModeCCOther)    ssample = "FGD2 NuE Bkg In Anti NuMode CCOther";
 
     else if (sample == kP0DNuMuCC)                        ssample = "kP0DNuMuCCInclusive";
+    else if (sample == kP0DNuMuBarCC)                     ssample = "kP0DNuMuBarCCInclusive";
 
     else                                                  ssample = "Unassigned";
 
@@ -162,6 +163,9 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
     
     else if (sample == kFGD1Gamma)                        ssample = "kTrackerGamma";
     else if (sample == kFGD2Gamma)                        ssample = "kTrackerGammaFGD2";
+
+    else if (sample == kP0DNuMuCC)                        ssample = "kP0DNuMuCCInclusive";
+    else if (sample == kP0DNuMuBarCC)                     ssample = "kP0DNuMuBarCCInclusive";
 
     else                                                  ssample = "Unassigned";
 
