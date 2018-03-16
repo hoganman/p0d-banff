@@ -372,8 +372,8 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        print "sleeping for 120 seconds till next job sub"
-        time.sleep(120) #seconds
+        print "sleeping for 60 seconds till next job sub"
+        time.sleep(60) #seconds
 
         #restart list
         del subFileList[0:]
