@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 import sys, getopt,os,datetime,math,glob,time,subprocess 
 
@@ -9,10 +9,9 @@ inOptions = {
         'h:':['help=','this help message'],
         'H:':['hours=','max time limit in hours'],
         'j:':['other=','other options separated by the # (pound) character'],
-        'L:':['list=','input file list'],
+        'L:':['list=','input file directory'],
         'm:':['memory=','per-job maximum memory limit in MEGAbytes'],
         'M:':['minutes=','max time in minutes'],
-        'n:':['num-jobs=','number of jobs at max'],
         'N:':['hostname=','sets the node/hostname (no defaults set)'],
         'o:':['output-name-prefix=','output file prefix (example -o naME produces naME_1.root)'],
         'O:':['opportunistic-nodes=','Use opportunistic nodes (default=0)'],
@@ -20,25 +19,20 @@ inOptions = {
         'P:':['priority=','job priority'],
         'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run=','run number'],
+        'r:':['run_type=','run number'],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
-#       s_cpu     The per-process CPU time limit in seconds.
-#       s_data    The per-process maximum memory limit in bytes.
-#       s_vmem    The same as s_data (if both are set the minimum is used).
-#       h_cpu     The per-job CPU time limit in seconds.
-#       h_data    The per-job maximum memory limit in bytes.
-#       h_vmem    The same as h_data (if both are set the minimum is used).
+
 
 csuhpc = -1
-isMC = False
+isMC = True
 queueTag = '$' 
-HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
-RUNCREATEFLATTREE = subprocess.Popen(['which','RunCreateFlatTree.exe'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]
+PSYCHESTEERINGROOT = os.getenv('PSYCHESTEERINGROOT')
+RUNSYSTNEW = '%s/Linux-x86_64/RunSyst_New.exe' %(PSYCHESTEERINGROOT)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
 PYTHONPATH = '%s:%s/macros'%(os.getenv('PYTHONPATH'),BASE)
@@ -48,7 +42,7 @@ LD_LIBRARY_PATH=os.getenv('LD_LIBRARY_PATH')
 nNodes = 43
 nFreeUseNodes = 19
 physicsNodes = [40,41,42,43]
-FlatTrees = []
+GenWeightss = []
 fileList = {} # a dictionary with a oaAnalysis file as the key and 0(unused) or 1(used) as the value
 totalTimeInHours = 0
 
@@ -206,7 +200,7 @@ def CreateExportedPathsScript(submissionFileName):
 
 
 
-def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
+def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
 
     CWD = os.getcwd()
     #create the submission script
@@ -272,15 +266,14 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('source %s/nd280Highland2/v2r22/cmt/setup.sh\n'%(BASE))
-    submission.write('%s \'${P0DBANFFROOT}/app/ROOTRandomSleep.C(60)\'\n' % (ROOT))
+    submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
     submission.close()
     os.system('chmod +x %s'%(submissionFileName))
 
-def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
+def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     #create filelist
     CWD = os.getcwd()
     subFileListName = '%s/filelists/filelist_%d.txt'%(CWD,jobNum)
@@ -288,23 +281,31 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
     for fileEntry in subFileList:
         subFile.write(fileEntry+'\n')
     subFile.close()
+    if(len(subFileList)) != 1:
+        print 'ERROR: Wrong size of file list for job '+str(jobNum+1)
+    INPUT = subFileList[0]
+    runType = ''
+    if isMC:
+        runType = 'MC'
+    else:
+        runType = 'data'
     #create job
     jobFileName = 'ajob_'+str(jobNum)+'.sh'
     job = open(jobFileName,'w')
     job.write('#!/bin/sh\n')
     outputFile = '%s_%d.root'%(outputName,jobNum)
     outputFileAndPath = '%s/%s'%(outputPath,outputFile)
-    FTOUTPUT = '%s/%s'%(outputPath,outputFile)
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
+    OUTPUT = '%s/%s'%(outputPath,outputFile)
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    command = '  %s -v -o %s %s \n'%(RUNCREATEFLATTREE,outputFileAndPath,subFileListName)
+    command = '%s -i %s -o %s \n' %(RUNSYSTNEW, INPUT, OUTPUT)
     job.write(command)
     job.write('fi\n')
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    job.write('  echo "The FlatTree failed! There was some kind of crash!"\n')
+    job.write('  echo "The GenWeights failed! There was some kind of crash!"\n')
     job.write('  exit 1\n')
     job.write('fi\n')
     job.write('\n')
@@ -312,7 +313,7 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
     os.system('chmod +x %s'%(jobFileName))
 
 
-def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
+def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
 
     subFileList = []
     os.mkdir('filelists')
@@ -362,18 +363,17 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
         if len(subFileList) == 0:
             break
         #create submit script
-        CreateFlatTreeSubmissionScript(jobNum+1,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
+        CreateGenWeightsSubmissionScript(jobNum+1,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
 
         #create job script
-        FlatTrees.append(outputFile)
-        CreateFlatTreeJobScript(jobNum+1,subFileList,runNumber,outputPath,outputName)
+        GenWeightss.append(outputFile)
+        CreateGenWeightsJobScript(jobNum+1,subFileList,outputPath,outputName)
 
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        if jobNum+1 != numJobs:
-            print "sleeping for 120 seconds till next job sub"
-            time.sleep(120)  # seconds
+        print "sleeping for 120 seconds till next job sub"
+        time.sleep(120) #seconds
 
         #restart list
         del subFileList[0:]
@@ -405,23 +405,22 @@ def MakeHaddScript(outputPath,outputName,ExportedPathsName,lastJobNumber,jobSubm
 
 def GetListofFiles(inputlistfile):
     filelist = []
-    if not os.path.isfile(inputlistfile):
-        return filelist
-    infile = open(inputlistfile)
-    line = infile.readline()
-    while len(line) > 0:
-        #skip comment lines
-        if line.find('#') == -1:
-            filelist.append(line.split('\n')[0])
+    if os.path.isfile(inputlistfile):
+        infile = open(inputlistfile)
         line = infile.readline()
-    infile.close()
+        while len(line) > 0:
+            #skip comment lines
+            if line.find('#') == -1:
+                filelist.append(line.split('\n')[0])
+            line = infile.readline()
+        infile.close()
+    elif os.path.isdir(inputlistfile):
+        for file in glob.glob('%s/*.root' %(inputlistfile)):
+            filelist.append(file)
+
     return filelist
 
 def main(argv):
-    if HIGHLANDIOROOT.find('None') == 0:
-        print 'You must have HIGHLANDIOROOT exported for this script to work'
-        print helpstatement
-        sys.exit(2)
     shortArgsList = []
     longArgsList = []
     argDescriptionList = []
@@ -431,8 +430,8 @@ def main(argv):
         longArgsList.insert(0,sublist[0])
         argDescriptionList.insert(0,sublist[1])
     shortArgs = ''.join(shortArgsList)
-    inputList = ''
-    runNumber = -1
+    inputDirectory = ''
+    run_type = 'MC'
     outputPath = ''
     outputName = ''
     numJobs = -1
@@ -451,7 +450,7 @@ def main(argv):
     useQueueName = ''
     useHostName = ''
     useOpportunisticNodes = 0
-    helpstatement = 'qsubmitter.py [OPTIONS]\n'
+    helpstatement = 'qsubmitter_splines.py [OPTIONS]\n'
     for ele in range(0,len(shortArgsList)):
         helpstatement=helpstatement+'-%s/--%s == %s \n'%(shortArgsList[ele][0:1],longArgsList[ele][0:len(longArgsList[ele])-1],argDescriptionList[ele])
     try:
@@ -473,17 +472,15 @@ def main(argv):
             print helpstatement
             sys.exit()
         elif opt in ('-L',GetLongOption('-L')):
-            inputList = arg
+            inputDirectory = arg
         elif opt in ('-r',GetLongOption('-r')):
-            runNumber = int(arg)
+            run_type = arg
         elif opt in ('-p',GetLongOption('-p')):
             outputPath = arg
         elif opt in ('-P',GetLongOption('-P')):
 	    priority = int(arg)
         elif opt in ('-o',GetLongOption('-o')):
             outputName = arg
-        elif opt in ('-n',GetLongOption('-n')):
-            numJobs = int(arg)
         elif opt in ('-Q',GetLongOption('-Q')):
             numFilesPerJob = int(arg)
         elif opt in ('-H',GetLongOption('-H')):
@@ -514,13 +511,16 @@ def main(argv):
             sys.exit()
     #end loop over options
 
-    localFileList = GetListofFiles(inputList)
+    localFileList = GetListofFiles(inputDirectory)
     global fileList
     for aFile in localFileList:
         fileList[aFile] = 0
     otherRequirementsList = []
+    numJobs = len(localFileList)
+    print 'There are '+str(len(localFileList))+' files to process\n'
+    #print localFileList
 
-    if len(inputList) == 0 or len(fileList) == 0:
+    if len(inputDirectory) == 0 or len(fileList) == 0:
         print 'ERROR: Invalid file list! Check the file name or contents.'
         print helpstatement
         sys.exit()
@@ -537,8 +537,9 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(outputPath) == 0:
-        print 'WARNING: Output path is the CWD.'
-        outputPath = '.'
+        print 'ERROR: No output path set!'
+        print helpstatement
+        sys.exit()
     if len(clusterName) == 0:
         print 'WARNING: No cluster name specified! Using csuhpc as default'
         clusterName = 'csuhpc'
@@ -589,6 +590,20 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
+    global isMC
+    if run_type not in ('DATA','data','Data') and run_type not in ('MC', 'mc'):
+        print 'ERROR: Must specify if MC or data'
+        print helpstatement
+        sys.exit()
+    elif run_type in ('DATA','data','Data'):
+        isMC = False
+    elif run_type in ('MC', 'mc', 'Mc'):
+        isMC = True
+    else:
+        print 'ERROR: Must specify if MC or data'
+        print helpstatement
+        sys.exit()
+
     InitNodes()
     #make directory for new jobs
     currentTime = datetime.datetime.now()
@@ -604,7 +619,7 @@ def main(argv):
     walltimeMinutes = walltimeMinutes if walltimeMinutes >= 0 else 0
     walltimeHours = walltimeHours if walltimeHours >= 0 else 0
     totalTimeInHours = float(walltimeHours + 1./60. * walltimeMinutes)
-    MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
+    MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
     MakeHaddScript(outputPath,outputName,ExportedPathsName,numJobs,"submit_ajob")
     os.chdir('../')
 
