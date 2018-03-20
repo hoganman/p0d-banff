@@ -33,7 +33,8 @@ int CheckFileROOT(TString fileName = ""){
       status =  0;
     else 
       status = 1;
-    f->Close();
+    if(f)
+      f->Close();
   }
   return status;
 }
