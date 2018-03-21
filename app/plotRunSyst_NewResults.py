@@ -5,8 +5,13 @@
 from ROOTFile import ROOTFile
 import ROOT
 import sys
-# import os
 from os.path import join
+from T2KPOT import T2KPOT
+
+# Which selection to run
+P0DNUMUCCSELECTION = 88
+P0DNUMUBARCCSELECTION = 89
+SELECTION = P0DNUMUCCSELECTION
 
 # P0DBANFFInterface class to make plots pretty
 INTFACE = None
@@ -17,32 +22,14 @@ SKY = 0
 GREEN = 0
 STACK_COLORS = []
 
+# legend coordinates
 X1 = 0.64196
 Y1 = 0.606272
 X2 = 0.894472
 Y2 = 0.892765
 
-POT_SCALE = 1.0e+21
-RUN2_WTR_MCPOT = 1.203412e+21
-RUN2_AIR_MCPOT = 9.239371e+20
-RUN3B_AIR_MCPOT = 4.478639e+20
-RUN3C_AIR_MCPOT = 2.632266e+21
-RUN4_AIR_MCPOT = 3.499604e+21
-RUN4_WTR_MCPOT = 3.497117e+21
-RUN5C_WTR_MCPOT = 2.277663e+21
-RUN6B_AIR_MCPOT = 1.417404e+21
-RUN6C_AIR_MCPOT = 5.275622e+20
-RUN6D_AIR_MCPOT = 6.884002e+20
-# RUN6E_AIR_MCPOT = 8.594394e+20
-# RUN7B_WTR_MCPOT = 3.370465e+21
-
-FHC_WTR_MCPOT = RUN2_WTR_MCPOT + RUN4_WTR_MCPOT
-FHC_AIR_MCPOT = RUN2_AIR_MCPOT + RUN3B_AIR_MCPOT + RUN3C_AIR_MCPOT \
-          + RUN4_AIR_MCPOT
-RHC_WTR_MCPOT = RUN5C_WTR_MCPOT  \
-        # + RUN7B_WTR_MCPOT
-RHC_AIR_MCPOT = RUN6B_AIR_MCPOT + RUN6C_AIR_MCPOT + RUN6D_AIR_MCPOT  \
-        # + RUN6E_AIR_MCPOT
+# POT
+POT_SCALE = T2KPOT.FHC_WTR_DATAPOT  # 1.0e+21
 
 
 class sample(object):
@@ -54,14 +41,11 @@ class sample(object):
         self.chain = chain
         self.plot_title = plot_title
         self.save_title = save_title
-        self.pot_scale = 1
+        self.scale = 1
+        self.pot_scale = 'DEFAULT'
 
     def __str__(self):
         return self.plot_title
-
-    def set_pot_scale(self, scale):
-        """Normalize plots by POT"""
-        self.pot_scale = scale
 
     def make_H1D(self, hist_save_title, var, n_bins, low, high, cuts=''):
         """create TH1 and return it"""
@@ -70,8 +54,8 @@ class sample(object):
         hist_name = 'h1d%s_%s' % (hist_save_title, self.save_title)
         hist = ROOT.TH1D(hist_name, '', n_bins, low, high)
         self.chain.Draw('%s>>%s' % (var, hist_name), cuts, 'goff')
-        if self.pot_scale != 1:
-            hist.Scale(self.pot_scale)
+        if self.scale != 1:
+            hist.Scale(self.scale)
         return hist
 
     def make_H2D(self, hist_save_title, varX, n_binsX, lowX, highX,
@@ -83,8 +67,8 @@ class sample(object):
         hist = ROOT.TH2D(hist_name, '', n_binsX, lowX, highX,
                          n_binsY, lowY, highY)
         self.chain.Draw('%s:%s>>%s' % (varY, varX, hist_name), cuts, 'goff')
-        if self.pot_scale != 1:
-            hist.Scale(self.pot_scale)
+        if self.scale != 1:
+            hist.Scale(self.scale)
         return hist
 
 
@@ -229,7 +213,8 @@ def main(argv):
     global INTFACE
     try:
         INTFACE = ROOT.P0DBANFFInterface()
-    except:
+    except Exception as exc:
+        print type(exc)
         print "unable to load libP0DBANFF.so"
         sys.exit(1)
 
@@ -246,28 +231,55 @@ def main(argv):
     STACK_COLORS.append(RED)
 
     tree_name = 'all'
-    file_path = '/physics/home/mhogan/systematics'
-    Run2Air = 'Run2_Air_%d.root'
-    Run2Wtr = 'Run2_Water_%d.root'
-    Run3bAir = 'Run3b_Air_%d.root'
-    Run3cAir = 'Run3c_Air_%d.root'
-    Run4Air = 'Run4_Air_%d.root'
-    Run4Wtr = 'Run4_Water_%d.root'
-    Run5cWtr = 'Run5c_Water_%d.root'
-    Run6bAir = 'Run6b_Air_%d.root'
-    Run6cAir = 'Run6c_Air_%d.root'
-    Run6dAir = 'Run6d_Air_%d.root'
+    file_path = '/Raid/home/mhogan/systematics'
+    Run2Air = 'Run2_Air_hadd.root'
+    Run2Wtr = 'Run2_Water_hadd.root'
+    Run3bAir = 'Run3b_Air_hadd.root'
+    Run3cAir = 'Run3c_Air_hadd.root'
+    Run4Air = 'Run4_Air_hadd.root'
+    Run4Wtr = 'Run4_Water_hadd.root'
+    Run5cWtr = 'Run5c_Water_hadd.root'
+    Run6bAir = 'Run6b_Air_hadd.root'
+    Run6cAir = 'Run6c_Air_hadd.root'
+    Run6dAir = 'Run6d_Air_hadd.root'
+    Run6eAir = 'Run6e_Air_hadd.root'
+    Run7bWtr = 'Run7b_Water_hadd.root'
 
-    chn_Run2Air = get_chain_from_files(tree_name, join(file_path, Run2Air))
-    chn_Run2Wtr = get_chain_from_files(tree_name, join(file_path, Run2Wtr))
-    chn_Run3bAir = get_chain_from_files(tree_name, join(file_path, Run3bAir))
-    chn_Run3cAir = get_chain_from_files(tree_name, join(file_path, Run3cAir))
-    chn_Run4Air = get_chain_from_files(tree_name, join(file_path, Run4Air))
-    chn_Run4Wtr = get_chain_from_files(tree_name, join(file_path, Run4Wtr))
-    chn_Run5cWtr = get_chain_from_files(tree_name, join(file_path, Run5cWtr))
-    chn_Run6bAir = get_chain_from_files(tree_name, join(file_path, Run6bAir))
-    chn_Run6cAir = get_chain_from_files(tree_name, join(file_path, Run6cAir))
-    chn_Run6dAir = get_chain_from_files(tree_name, join(file_path, Run6dAir))
+    chn_Run2Air = ROOT.TChain(tree_name)
+    chn_Run2Air.Add(join(file_path, Run2Air))
+    chn_Run2Wtr = ROOT.TChain(tree_name)
+    chn_Run2Wtr.Add(join(file_path, Run2Wtr))
+    chn_Run3bAir = ROOT.TChain(tree_name)
+    chn_Run3bAir.Add(join(file_path, Run3bAir))
+    chn_Run3cAir = ROOT.TChain(tree_name)
+    chn_Run3cAir.Add(join(file_path, Run3cAir))
+    chn_Run4Air = ROOT.TChain(tree_name)
+    chn_Run4Air.Add(join(file_path, Run4Air))
+    chn_Run4Wtr = ROOT.TChain(tree_name)
+    chn_Run4Wtr.Add(join(file_path, Run4Wtr))
+    chn_Run5cWtr = ROOT.TChain(tree_name)
+    chn_Run5cWtr.Add(join(file_path, Run5cWtr))
+    chn_Run6bAir = ROOT.TChain(tree_name)
+    chn_Run6bAir.Add(join(file_path, Run6bAir))
+    chn_Run6cAir = ROOT.TChain(tree_name)
+    chn_Run6cAir.Add(join(file_path, Run6cAir))
+    chn_Run6dAir = ROOT.TChain(tree_name)
+    chn_Run6dAir.Add(join(file_path, Run6dAir))
+    chn_Run6eAir = ROOT.TChain(tree_name)
+    chn_Run6eAir.Add(join(file_path, Run6eAir))
+    chn_Run7bWtr = ROOT.TChain(tree_name)
+    chn_Run7bWtr.Add(join(file_path, Run7bWtr))
+
+    # chn_Run2Air = get_chain_from_files(tree_name, join(file_path, Run2Air))
+    # chn_Run2Wtr = get_chain_from_files(tree_name, join(file_path, Run2Wtr))
+    # chn_Run3bAir = get_chain_from_files(tree_name, join(file_path, Run3bAir))
+    # chn_Run3cAir = get_chain_from_files(tree_name, join(file_path, Run3cAir))
+    # chn_Run4Air = get_chain_from_files(tree_name, join(file_path, Run4Air))
+    # chn_Run4Wtr = get_chain_from_files(tree_name, join(file_path, Run4Wtr))
+    # chn_Run5cWtr = get_chain_from_files(tree_name, join(file_path, Run5cWtr))
+    # chn_Run6bAir = get_chain_from_files(tree_name, join(file_path, Run6bAir))
+    # chn_Run6cAir = get_chain_from_files(tree_name, join(file_path, Run6cAir))
+    # chn_Run6dAir = get_chain_from_files(tree_name, join(file_path, Run6dAir))
     # chn_Run6eAir = get_chain_from_files(tree_name, join(file_path, Run6eAir))
     # chn_Run7bWtr = get_chain_from_files(tree_name, join(file_path, Run7bWtr))
 
@@ -280,22 +292,27 @@ def main(argv):
     chn_FHC_Air.Add(chn_Run4Air)
 
     chn_RHC_Wtr = chn_Run5cWtr
-    # chn_RHC_Wtr.Add(chn_Run7bWtc)
+    chn_RHC_Wtr.Add(chn_Run7bWtr)
 
     chn_RHC_Air = chn_Run6bAir
     chn_RHC_Air.Add(chn_Run6cAir)
     chn_RHC_Air.Add(chn_Run6dAir)
-    # chn_RHC_Air.Add(chn_Run6eAir)
+    chn_RHC_Air.Add(chn_Run6eAir)
 
     FHC_Wtr = sample(chn_FHC_Wtr, 'FHC Water', 'fhc_water')
     RHC_Wtr = sample(chn_RHC_Wtr, 'RHC Water', 'rhc_water')
     FHC_Air = sample(chn_FHC_Air, 'FHC Air', 'fhc_air')
     RHC_Air = sample(chn_RHC_Air, 'RHC Air', 'rhc_air')
 
-    FHC_Wtr.pot_scale = (POT_SCALE)/(RUN2_WTR_MCPOT)
-    RHC_Wtr.pot_scale = (POT_SCALE)/(RUN5C_WTR_MCPOT)
-    FHC_Air.pot_scale = (POT_SCALE)/(RUN2_AIR_MCPOT)
-    RHC_Air.pot_scale = (POT_SCALE)/(RUN6B_AIR_MCPOT)
+    FHC_Wtr.scale = (T2KPOT.FHC_WTR_DATAPOT)/(T2KPOT.FHC_WTR_MCPOT)
+    RHC_Wtr.scale = (T2KPOT.RHC_WTR_DATAPOT)/(T2KPOT.RHC_WTR_MCPOT)
+    FHC_Air.scale = (T2KPOT.FHC_AIR_DATAPOT)/(T2KPOT.FHC_AIR_MCPOT)
+    RHC_Air.scale = (T2KPOT.RHC_AIR_DATAPOT)/(T2KPOT.RHC_AIR_MCPOT)
+
+    FHC_Wtr.pot_scale = T2KPOT.FHC_WTR_DATAPOT
+    RHC_Wtr.pot_scale = T2KPOT.RHC_WTR_DATAPOT
+    FHC_Air.pot_scale = T2KPOT.FHC_AIR_DATAPOT
+    RHC_Air.pot_scale = T2KPOT.RHC_AIR_DATAPOT
 
     all_samples = [
             FHC_Wtr,
@@ -304,7 +321,7 @@ def main(argv):
             RHC_Air
     ]
 
-    nom_sel = selection_info('nom_sel', 'SelectionNom==88',
+    nom_sel = selection_info('nom_sel', 'SelectionNom==%d' % (SELECTION),
                              'P0D numuCC-inclusive')
     numu_cc_sel = selection_info('numu_cc_sel',
                                  '%s && TrueNuPDGNom==14' % (nom_sel),
@@ -326,21 +343,21 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
             other_sel
     ]
     evts_p_bin = 'Events / bin'
-    evts_p_bin_p_pot = '%s / 10^{21} PoT' % (evts_p_bin)
 
     # loop over sample classes
     for smpl in all_samples:
+        evts_p_bin_p_pot = '%s / %s PoT' % (evts_p_bin, smpl.pot_scale)
 
         # # neutrino energy
-        # hist_Enu = stack_info('TrueEnuNom*1e-3', 25, 0., 5.0,
-        #                       'True Neutrino Energy [GeV]',
-        #                       evts_p_bin_p_pot)
-        # hist_Enu.set_log_y(True)
-        # hist_Enu.set_min(1)
+        hist_Enu = stack_info('TrueEnuNom*1e-3', 15, 0., 5.0,
+                              'True Neutrino Energy [GeV]',
+                              evts_p_bin_p_pot)
+        hist_Enu.set_log_y(True)
+        hist_Enu.set_min(1)
         # hist_Enu.set_max(1.1*8e+3)  # hard coded number
-        # make_stack(smpl, all_selections, hist_Enu, 'trueE_nu')
+        make_stack(smpl, all_selections, hist_Enu, 'trueE_nu')
 
-        # # lepton candidate momentum
+        # lepton candidate momentum
         hist_Pmu = stack_info('LeptonMomNom*1e-3', 25, 0., 5.0,
                               'Lepton Candidate Momentum [GeV/c]',
                               evts_p_bin_p_pot)
