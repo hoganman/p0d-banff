@@ -299,7 +299,11 @@ def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    command = '%s -i %s -o %s \n' %(RUNSYSTNEW, INPUT, OUTPUT)
+    command = ''
+    if isMC:
+        command = '%s -i %s -o %s \n' %(RUNSYSTNEW, INPUT, OUTPUT)
+    else:
+        command = '%s -i %s -o %s -d \n' %(RUNSYSTNEW, INPUT, OUTPUT)
     job.write(command)
     job.write('fi\n')
     job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
@@ -445,6 +449,7 @@ def main(argv):
     otherRequirements = ''
     emailAddress = ''
     clusterName = ''
+    is_data = 0
     global csuhpc
     global queueTag
     useQueueName = ''
