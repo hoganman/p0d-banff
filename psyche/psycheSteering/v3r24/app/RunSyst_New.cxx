@@ -18,8 +18,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-const int nWeights = 21;
-const int nToys = 1;//1000;
+const Int_t nWeights = 21;
+const Int_t nToys = 0;//1000;
+const Int_t debug = 0;
 
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
 std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
@@ -31,20 +32,25 @@ int main(int argc, char *argv[]){
 
   std::string programName = argv[0];
   std::string paramFile = "";
-  int nmax = 100000000;
   std::string inputFileName = "";
   std::string inputFileType = "kHighlandTree";
   std::string outputFileName= "";
-  Bool_t isAntiNu = false;
-  int ntoys;
-  Int_t debug = 0;
+
+  Int_t nmax = 100000000;
+  Int_t ntoys;
   Int_t preload=1;
+
+  Bool_t isAntiNu = false;
+  Bool_t isData = false;
+
+  TGeoManager* geoManager = NULL;
+
   if(argc < 4){
     std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents)" << std::endl;
     throw;
   }
   for (;;) {
-    int c = getopt(argc, argv, "n:o:i:");
+    int c = getopt(argc, argv, "n:o:i:d");
     if (c < 0)
       break;
     switch (c) {
@@ -60,6 +66,10 @@ int main(int argc, char *argv[]){
       case 'i': {
         inputFileName = optarg;
         break;
+      }
+      case 'd': 
+      {
+	isData = true;		
       }
       default: {
         std::cerr << optarg << " is an unknown option" << std::endl;
@@ -101,11 +111,19 @@ int main(int argc, char *argv[]){
   }
 
   
-  TFile* inputFile = new TFile(inputFileName.c_str(), "READ");
-  TTree* RTV = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
-  if(!RTV){ std::cerr << "No NRooTrackerVtx in the file, exiting." << std::cerr; throw;}
+  TFile* inputFile = TFile::Open(inputFileName.c_str());
+  if(!inputFile)
+  {
+      std::cerr << "No input file, exiting..." << std::cerr; 
+      throw;
+  }
+  TTree* RTV       = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
+  if(!RTV && !isData)
+  { 
+      std::cerr << "No NRooTrackerVtx in the file, exiting..." << std::cerr; 
+      throw;
+  }
   inputFile->Close();
-  TGeoManager* geoManager = NULL;
 
   // Initialize clock
   timeval tim;
@@ -118,7 +136,6 @@ int main(int argc, char *argv[]){
   if(ND::params().GetParameterI("psycheSteering.Selections.ForceFillEventSummary"))
     _man.sel().SetForceFillEventSummary(true);
 
-
   // Initialize the InputManager by specifying the input type and the input file
   if (!_man.input().Initialize(inputFileName,inputFileType, false)) return false;
   std::vector<EventVariationBase*> allVar  = _man.evar().GetEventVariations();
@@ -126,36 +143,42 @@ int main(int argc, char *argv[]){
   isAntiNu = IsAntiNu(inputFileName);
   _man.sel().DumpSelections();
   
-  // Create a ToyMaker to configure the toy experiment. Initialize it with a random seed
-  ToyMaker* toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), 
-  (bool)  ND::params().GetParameterI("psycheSteering.Systematics.ZeroVariation"));
-  // Create and fill the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
-  std::cout << "Creating " <<  nToys << " toy experiments" << std::endl;
-  toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics()); 
-
-  ToyMaker* ZeroVarToyMaker = new ToyMakerExample(1, true);
-  ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics()); 
-  ToyExperiment* ZeroVarToy = ZeroVarToyMaker->GetToyExperiment(0);
-
+  ToyMaker* toyMaker = NULL;
+  ToyMaker* ZeroVarToyMaker = NULL;
+  ToyExperiment* ZeroVarToy = NULL;
   std::vector<float> weights;
-  // Print the steps for the different selections
-  if (debug>0){
-    //_man.sel().GetSelection("kTrackerNumuCC")->DumpSteps();
-    //_man.sel().GetSelection("kTrackerNumuCCMultiPi")->DumpSteps();
-    _man.syst().DumpVariationSystematics();
-    _man.syst().DumpWeightSystematics();
-  }
+  if(!isData)
+  {
+    // Create a ToyMaker to configure the toy experiment. Initialize it with a random seed
+    toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), 
+    (bool)  ND::params().GetParameterI("psycheSteering.Systematics.ZeroVariation"));
+    // Create and fill the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
+    std::cout << "Creating " <<  nToys << " toy experiments" << std::endl;
+    toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics()); 
 
-  if(preload){
-    std::cout<<" preloading!!!! "<<std::endl;
-    // Preload nmax events from the file
-    if (!_man.ReadEvents(inputFileName, nmax)) return 0;
-    if(nmax < 0) nmax = _man.GetEntries();
-    _man.SetNEventsToProcess(nmax);
-  }else{
-    // Create the array of PreviousToyBox
-    std::cout << "Creating to the box array" << std::endl;
-    _man.sel().CreateToyBoxArray(nmax);
+    ZeroVarToyMaker = new ToyMakerExample(1, true);
+    ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics()); 
+    ZeroVarToy = ZeroVarToyMaker->GetToyExperiment(0);
+
+    // Print the steps for the different selections
+    if (debug>0){
+      //_man.sel().GetSelection("kTrackerNumuCC")->DumpSteps();
+      //_man.sel().GetSelection("kTrackerNumuCCMultiPi")->DumpSteps();
+      _man.syst().DumpVariationSystematics();
+      _man.syst().DumpWeightSystematics();
+    }
+
+    if(preload){
+      std::cout <<" preloading!!!! "<<std::endl;
+      // Preload nmax events from the file
+      if (!_man.ReadEvents(inputFileName, nmax)) return 0;
+      if(nmax < 0) nmax = _man.GetEntries();
+      _man.SetNEventsToProcess(nmax);
+    }else{
+      // Create the array of PreviousToyBox
+      std::cout << "Creating to the box array" << std::endl;
+      _man.sel().CreateToyBoxArray(nmax);
+    }
   }
 
   //std::cout << "The number of events = " << nmax << std::endl;
@@ -189,7 +212,6 @@ int main(int argc, char *argv[]){
   Double_t vtxZ = -999;
   Int_t onWaterTarget = -999;
 
-   
   Int_t    Toy            [nToys];
   Int_t    TrueVertexIDToy[nToys];
   Int_t    SelectionToy   [nToys];
@@ -205,10 +227,13 @@ int main(int argc, char *argv[]){
     std::cerr << "Change the hard coded value at the beginning of RunSyst_New.cxx" << std::endl;
     throw;
   }
-  for (std::vector<EventWeightBase*>::iterator it = _man.eweight().GetEventWeights().begin(); it != _man.eweight().GetEventWeights().end(); ++it) {
-    if(*it == NULL) continue;
-    if(!(*it)->IsEnabled()) continue;
-    std::cout << (*it)->GetName() << std::endl;
+
+  std::vector<EventWeightBase*>::EW_iteratorerator EW_iterator;
+  for (EW_iterator = _man.eweight().GetEventWeights().begin(); EW_iterator != _man.eweight().GetEventWeights().end(); ++EW_iterator) {
+    EventWeightBase* ewb = *EW_iterator;
+    if(!ewb) continue;
+    if(!(ewb->IsEnabled())) continue;
+    std::cout << ewb->GetName() << std::endl;
   }
   
   
@@ -228,8 +253,9 @@ int main(int argc, char *argv[]){
       WeightIndToy[iSyst][iToy] = -999;
     }    
   }
-  TTree *tree;
-  TFile *outfile = new TFile(outputFileName.c_str(),"RECREATE");
+
+  TTree *tree = NULL;
+  TFile *outfile = new TFile(outputFileName.c_str(), "RECREATE");
   std::vector<std::string> systnametree;
   for (std::vector<EventVariationBase*>::iterator it = allVar.begin(); it != allVar.end(); ++it) {
     if(*it == NULL) continue;
@@ -324,10 +350,10 @@ int main(int argc, char *argv[]){
     Long64_t entry = 0;
     while (entry < nmax) {
       
-      if(!geoManager)
+      if(!geoManager && !isData)
 	  geoManager = static_cast<TGeoManager*>(gDirectory->FindObjectAny("ND280Geometry"));
 
-      if(entry%100 == 0)
+      if(entry % 100 == 0)
         std::cout << "Progress " << 100.*entry/nmax << "%" << std::endl;
 
       // 1. ====================================================================
