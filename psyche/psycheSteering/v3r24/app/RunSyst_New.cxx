@@ -70,6 +70,7 @@ int main(int argc, char *argv[]){
       case 'd': 
       {
 	isData = true;		
+	break;
       }
       default: {
         std::cerr << optarg << " is an unknown option" << std::endl;
@@ -77,6 +78,8 @@ int main(int argc, char *argv[]){
       }
     }
   }
+
+  std::cout << "is Data: " << isData << std::endl;
     
   preload=0;
 #ifndef MULTITHREAD
@@ -99,15 +102,26 @@ int main(int argc, char *argv[]){
   ND::params().SetReadParamOverrideFilePointPassed();
 
   // Parameters to control the systematics
-  bool applyVariationSystematics  = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyVariationSystematics");
-  bool applyWeightSystematics     = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics");
-  bool applyFluxWeightSystematics = (bool)ND::params().GetParameterI("psycheSteering.FluxWeighting.Enable");
-  bool RunAllSyst                 = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunAllSyst");
-  bool RunOnInidividualSyst       = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunOnInidividualSyst");
-  bool ThrowToys                  = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.ThrowToys");
-  if(!applyFluxWeightSystematics && !applyVariationSystematics && !applyWeightSystematics) { 
-    std::cout<<" no systematics is set to be applied "<<std::endl;
-    throw;
+
+  bool applyVariationSystematics  = false;
+  bool applyWeightSystematics     = false;
+  bool applyFluxWeightSystematics = false;
+  bool RunAllSyst                 = false;
+  bool RunOnInidividualSyst       = false;
+  bool ThrowToys                  = false;
+
+  if(!isData)
+  {
+    applyVariationSystematics  = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyVariationSystematics");
+    applyWeightSystematics     = (bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics");
+    applyFluxWeightSystematics = (bool)ND::params().GetParameterI("psycheSteering.FluxWeighting.Enable");
+    RunAllSyst                 = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunAllSyst");
+    RunOnInidividualSyst       = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunOnInidividualSyst");
+    ThrowToys                  = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.ThrowToys");
+    if(!applyFluxWeightSystematics && !applyVariationSystematics && !applyWeightSystematics) { 
+      std::cout<<" no systematics is set to be applied "<<std::endl;
+      throw;
+    }
   }
 
   
@@ -168,13 +182,23 @@ int main(int argc, char *argv[]){
       _man.syst().DumpWeightSystematics();
     }
 
+  }
+  if(!isData)
+  {
+    std::cout << "Preloading data events!" << std::endl;
+    if (!_man.ReadEvents(inputFileName, nmax)) return 0;
+    if(nmax < 0) nmax = _man.GetEntries();
+    _man.SetNEventsToProcess(nmax);
+  }
+  else {
     if(preload){
       std::cout <<" preloading!!!! "<<std::endl;
       // Preload nmax events from the file
       if (!_man.ReadEvents(inputFileName, nmax)) return 0;
       if(nmax < 0) nmax = _man.GetEntries();
       _man.SetNEventsToProcess(nmax);
-    }else{
+    }
+    else{
       // Create the array of PreviousToyBox
       std::cout << "Creating to the box array" << std::endl;
       _man.sel().CreateToyBoxArray(nmax);
@@ -228,7 +252,7 @@ int main(int argc, char *argv[]){
     throw;
   }
 
-  std::vector<EventWeightBase*>::EW_iteratorerator EW_iterator;
+  std::vector<EventWeightBase*>::iterator EW_iterator;
   for (EW_iterator = _man.eweight().GetEventWeights().begin(); EW_iterator != _man.eweight().GetEventWeights().end(); ++EW_iterator) {
     EventWeightBase* ewb = *EW_iterator;
     if(!ewb) continue;
@@ -360,34 +384,44 @@ int main(int argc, char *argv[]){
       // Fill the event structure
 
       bool FillTree = false;
-      AnaEventB* event;
+      AnaEventB* event = NULL;
+
       if(preload)
         event=  _man.GetEvent(entry);
       else{
         event = static_cast<AnaEventB*>((_man.LoadSuperEvent(entry))->Event);
       }
+
+std::cout << "got event" << std::endl;
       
       // Fill the EventBox
       if (!preload)
+      {
         _man.sel().InitializeEvent(*event);
+        std::cout << "initialized" << std::endl;
+      }
       
-      // Run the  nominal selection
-      // Create the SystBox array (only the first time it is called for each systematic)
-      if (_man.evar().HasEventVariations()){
-        // Create the SystBox array (only the first time it is called for each EventVariation)
-        _man.evar().Initialize(nmax);
+      if(!isData)
+      {
+      
+        // Run the  nominal selection
+        // Create the SystBox array (only the first time it is called for each systematic)
+        if (_man.evar().HasEventVariations()){
+          // Create the SystBox array (only the first time it is called for each EventVariation)
+          _man.evar().Initialize(nmax);
     
-        // Initialize The SystBox for EventVariations
-        _man.evar().InitializeEvent(_man.sel(),*event);
-      }    
+          // Initialize The SystBox for EventVariations
+          _man.evar().InitializeEvent(_man.sel(),*event);
+        }    
 
-      if (_man.eweight().HasEventWeights()){
-        // Create the SystBox array (only the first time it is called for each EventWeight)
-        _man.eweight().Initialize(_man.sel(),nmax);
+        if (_man.eweight().HasEventWeights()){
+          // Create the SystBox array (only the first time it is called for each EventWeight)
+          _man.eweight().Initialize(_man.sel(),nmax);
     
-        // Initialize The SystBox for variation systematics
-        _man.eweight().InitializeEvent(_man.sel(),*event);
-      }    
+          // Initialize The SystBox for variation systematics
+          _man.eweight().InitializeEvent(_man.sel(),*event);
+        }    
+      }
       // Initialize The SystBox for variation systematics
       //if (!preload)
 
@@ -416,7 +450,12 @@ int main(int argc, char *argv[]){
       isOther = -999;
  
       //_man.syst().InitializeEventSystematics(_man.sel(),*event);
-      bool passednom = _man.ProcessEvent(*ZeroVarToy, *event, totalweight, fluxWeightSyst);
+      bool passednom = false;
+
+      if(!isData)
+	passednom = _man.ProcessEvent(*ZeroVarToy, *event, totalweight, fluxWeightSyst);
+      else
+        passednom = _man.ProcessEvent(*event);
        
       if(passednom){
         FillTree=true;
@@ -431,9 +470,6 @@ int main(int argc, char *argv[]){
 	AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
 	AnaTrueVertexB* trVtx = static_cast<AnaTrueVertexB*>(summary->TrueVertex[summary->EventSample]);
 
-	tVtxX = trVtx->Position[0];
-	tVtxY = trVtx->Position[1];
-	tVtxZ = trVtx->Position[2];
 	vtxX = summary->VertexPosition[summary->EventSample][0];
 	vtxY = summary->VertexPosition[summary->EventSample][1];
 	vtxZ = summary->VertexPosition[summary->EventSample][2];
@@ -441,48 +477,27 @@ int main(int argc, char *argv[]){
         LeptonMomNom    = lepCand->Momentum;
         LeptonCosNom    = lepCand->DirectionStart[2];
         SelectionNom    = (Int_t)   summary->EventSample;
-        FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
-        WeightNom       = (Double_t)totalweight.Correction;
-        EventNumber     = (Int_t)   (*event).EventInfo.Event;
+	if(!isData)
+	{
+          FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
+          WeightNom       = (Double_t)totalweight.Correction;
+          EventNumber     = (Int_t)   (*event).EventInfo.Event;
+	}
         if(trVtx)
 	{
-
+	  tVtxX = trVtx->Position[0];
+	  tVtxY = trVtx->Position[1];
+	  tVtxZ = trVtx->Position[2];
           TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID; 
           TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
           TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
-	  /*
-	  AnaTrueVertex* anaTrVtx = dynamic_cast<AnaTrueVertex*>(trVtx);
-	  if(trVtx->Position[0] < 1012.45 && trVtx->Position[1] < 1130.99 && trVtx->Position[2] < -938.753 && trVtx->Position[0] > -1092.79 && trVtx->Position[1] > -1107.39 && trVtx->Position[2] > -3296.48 && vtxX < 1012.45 && vtxY < 1130.99 && vtxZ < -938.753 && vtxX> -1092.79 && vtxY>-1107.39 && vtxZ > -3296.48){
-	    const Int_t topo = anaUtils::GetTopology(*anaTrVtx,SubDetId::kP0D,isAntiNu);
-	  isBKG = 0;
-	  isCCzeroPi = 0;
-	  isCConePi = 0;
-	  isCCOther = 0;
-	  isOOF = 0;
-	  isNoTrueVtx = 0;
-	  isOther = 0;
-	    if(topo == anaUtils::CC_0pi_0meson)
-	        isCCzeroPi = 1;
-	    else if(topo == anaUtils::CC_1pi_0meson)
-	        isCConePi = 1;
-	    else if(topo == anaUtils::CC_other)
-	        isCCOther = 1;
-	    else if(topo == anaUtils::BKG)
-	        isBKG = 1;
-	    else if(topo == -1)
-	        isNoTrueVtx = 1;
-	    else
-	        isOther = 1;
-	  }
-	  */
-	  	  
-        }
-        if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
-        {
-	    TLorentzVector start = trVtx->Position;
-            Int_t tmp = IsWaterP0Dule(geoManager,start);
-	    //onWaterTarget = (tmp - (tmp % 10)) / 10;
-	    onWaterTarget = (tmp % 10);
+          if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
+          {
+	      TLorentzVector start = trVtx->Position;
+              Int_t tmp = IsWaterP0Dule(geoManager,start);
+	      //onWaterTarget = (tmp - (tmp % 10)) / 10;
+	      onWaterTarget = (tmp % 10);
+          }
         }
       }
             
