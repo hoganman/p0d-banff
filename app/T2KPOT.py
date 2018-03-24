@@ -41,3 +41,23 @@ class T2KPOT(object):
 
     def __str__(self):
         return self.name
+
+
+class TN80POT(object):
+    """The POT used in TN-80"""
+
+    RUN1_WTR_DATAPOT = 2.946e+19
+    RUN2_WTR_DATAPOT = 4.286e+19
+    RUN2_AIR_DATAPOT = 3.552e+19
+    RUN3_AIR_DATAPOT = 13.48e+19
+    RUN4_WTR_DATAPOT = 16.24e+19
+    RUN4_AIR_DATAPOT = 15.86e+19
+
+    WTR_DATAPOT = 23.47e+19
+    AIR_DATAPOT = 32.89e+19
+
+    def __init__(self):
+        self.name = 'TN80POT'
+
+    def __str__(self):
+        return self.name

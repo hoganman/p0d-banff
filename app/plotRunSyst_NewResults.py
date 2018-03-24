@@ -7,6 +7,7 @@ import ROOT
 import sys
 from os.path import join
 from T2KPOT import T2KPOT
+from T2KPOT import TN80POT
 
 # Which selection to run
 P0DNUMUCCSELECTION = 88
@@ -27,9 +28,6 @@ X1 = 0.64196
 Y1 = 0.606272
 X2 = 0.894472
 Y2 = 0.892765
-
-# POT
-POT_SCALE = T2KPOT.FHC_WTR_DATAPOT  # 1.0e+21
 
 
 class sample(object):
@@ -304,14 +302,14 @@ def main(argv):
     FHC_Air = sample(chn_FHC_Air, 'FHC Air', 'fhc_air')
     RHC_Air = sample(chn_RHC_Air, 'RHC Air', 'rhc_air')
 
-    FHC_Wtr.scale = (T2KPOT.FHC_WTR_DATAPOT)/(T2KPOT.FHC_WTR_MCPOT)
+    FHC_Wtr.scale = (TN80POT.WTR_DATAPOT)/(T2KPOT.FHC_WTR_MCPOT)
+    FHC_Air.scale = (TN80POT.AIR_DATAPOT)/(T2KPOT.FHC_AIR_MCPOT)
     RHC_Wtr.scale = (T2KPOT.RHC_WTR_DATAPOT)/(T2KPOT.RHC_WTR_MCPOT)
-    FHC_Air.scale = (T2KPOT.FHC_AIR_DATAPOT)/(T2KPOT.FHC_AIR_MCPOT)
     RHC_Air.scale = (T2KPOT.RHC_AIR_DATAPOT)/(T2KPOT.RHC_AIR_MCPOT)
 
-    FHC_Wtr.pot_scale = T2KPOT.FHC_WTR_DATAPOT
+    FHC_Wtr.pot_scale = TN80POT.WTR_DATAPOT
+    FHC_Air.pot_scale = TN80POT.AIR_DATAPOT
     RHC_Wtr.pot_scale = T2KPOT.RHC_WTR_DATAPOT
-    FHC_Air.pot_scale = T2KPOT.FHC_AIR_DATAPOT
     RHC_Air.pot_scale = T2KPOT.RHC_AIR_DATAPOT
 
     all_samples = [
@@ -349,7 +347,7 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
         evts_p_bin_p_pot = '%s / %s PoT' % (evts_p_bin, smpl.pot_scale)
 
         # # neutrino energy
-        hist_Enu = stack_info('TrueEnuNom*1e-3', 15, 0., 5.0,
+        hist_Enu = stack_info('TrueEnuNom*1e-3', 50, 0., 5.0,
                               'True Neutrino Energy [GeV]',
                               evts_p_bin_p_pot)
         hist_Enu.set_log_y(True)
@@ -358,28 +356,35 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
         make_stack(smpl, all_selections, hist_Enu, 'trueE_nu')
 
         # lepton candidate momentum
-        hist_Pmu = stack_info('LeptonMomNom*1e-3', 25, 0., 5.0,
+        hist_Pmu = stack_info('LeptonMomNom*1e-3', 35, 0., 5.0,
                               'Lepton Candidate Momentum [GeV/c]',
                               evts_p_bin_p_pot)
         hist_Pmu.set_log_y(True)
         make_stack(smpl, all_selections, hist_Pmu, 'recoP_mu')
 
         # lepton candidate cos(theta)
-        hist_cosq = stack_info('LeptonCosNom', 20, 0.5, 1.0,
+        hist_cosq = stack_info('LeptonCosNom', 25, 0.5, 1.0,
                                'Lepton Candidate cos(#theta)',
                                evts_p_bin_p_pot)
         hist_cosq.set_log_y(True)
         make_stack(smpl, all_selections, hist_cosq, 'recocosq_mu')
 
+        # lepton candidate theta
+        hist_q = stack_info('TMath::ACos(LeptonCosNom)*TMath::RadToDeg()',
+                            50, 0.0, 90., 'Lepton Candidate #theta',
+                            evts_p_bin_p_pot)
+        hist_q.set_log_y(True)
+        make_stack(smpl, all_selections, hist_q, 'recoq_mu')
+
         # lepton candidate true Z position
-        hist_trueZ = stack_info('tVtxZ*1e-3', 40, -3.4, -0.85,
+        hist_trueZ = stack_info('tVtxZ*1e-3', 29, -3.2, -1.2,
                                 'True Vertex Z Position [m]',
                                 evts_p_bin_p_pot)
         hist_trueZ.set_log_y(True)
         make_stack(smpl, all_selections, hist_trueZ, 'trueVtxZ')
 
         # lepton candidate reco Z position
-        hist_recoZ = stack_info('vtxZ*1e-3', 40, -3.4, -0.85,
+        hist_recoZ = stack_info('vtxZ*1e-3', 29, -3.2, -1.2,
                                 'Reco Vertex Z Position [m]',
                                 evts_p_bin_p_pot)
         hist_recoZ.set_log_y(True)
