@@ -1,20 +1,22 @@
-/* A container for storing the POT from various runs for
- * MC: 6B
- * Data: 6M
- *
- * */
-
 #ifndef TotalPOT_hxx
 #define TotalPOT_hxx
 
-#include"Rtypes.h"
-#include"TString.h"
-#include<iostream>
+/* 
+ * A container for storing the POT from various runs for
+ * pyROOT does not like namespaces, but classes
+ * MC: 6B and 6L
+ * Data: 6M and 6N
+ *
+*/
 
-class TotalPOT {
+#include"TObject.h"
+#include"TString.h"
+#include"Rtypes.h"
+
+class TotalPOT: public TObject {
 
 public:
-    TotalPOT();
+    TotalPOT(){SetPOT();}
     virtual ~TotalPOT(){}
 
     ///Using input string, get run POT
@@ -34,6 +36,12 @@ public:
     Double_t GetPOTRun6eAirMC() const{ return _POTRun6eAirMC;}
     Double_t GetPOTRun7WaterMC() const{ return _POTRun7bWaterMC;}
 
+    Double_t GetPOTFHCWaterMC() const{ return _POTFHCWaterMC; }
+    Double_t GetPOTFHCAirMC() const{ return _POTFHCAirMC; }
+    Double_t GetPOTRHCWaterMC() const{ return _POTRHCWaterMC; }
+    Double_t GetPOTRHCAirMC() const{ return _POTRHCAirMC; }
+
+    Double_t GetPOTRun1WaterData() const{ return _POTRun1WaterData; }
     Double_t GetPOTRun2AirData() const{ return _POTRun2AirData;}
     Double_t GetPOTRun2WaterData() const{ return _POTRun2WaterData;}
     Double_t GetPOTRun3bAirData() const{ return _POTRun3bAirData;}
@@ -46,6 +54,12 @@ public:
     Double_t GetPOTRun6dAirData() const{ return _POTRun6dAirData;}
     Double_t GetPOTRun6eAirData() const{ return _POTRun6eAirData;}
     Double_t GetPOTRun7bWaterData() const{ return _POTRun7bWaterData;}
+
+    Double_t GetPOTFHCWaterData() const{ return _POTFHCWaterData; }
+    Double_t GetPOTFHCAirData() const{ return _POTFHCAirData; }
+    Double_t GetPOTRHCWaterData() const{ return _POTRHCWaterData; }
+    Double_t GetPOTRHCAirData() const{ return _POTRHCAirData; }
+
     ///run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
     Double_t GetRun3bAnd3cDataRatio() const{ return _Run3bAnd3cDataRatio; }
     Double_t GetPOTperFile() const{ return _POTperFile; }
@@ -70,6 +84,12 @@ private:
     Double_t _POTRun6eAirMC;
     Double_t _POTRun7bWaterMC;
 
+    Double_t _POTFHCWaterMC;
+    Double_t _POTFHCAirMC;
+    Double_t _POTRHCWaterMC;
+    Double_t _POTRHCAirMC;
+
+    Double_t _POTRun1WaterData;
     Double_t _POTRun2AirData;
     Double_t _POTRun2WaterData;
     Double_t _POTRun3bAirData;
@@ -82,12 +102,19 @@ private:
     Double_t _POTRun6dAirData;
     Double_t _POTRun6eAirData;
     Double_t _POTRun7bWaterData;
+
+    Double_t _POTFHCWaterData;
+    Double_t _POTFHCAirData;
+    Double_t _POTRHCWaterData;
+    Double_t _POTRHCAirData;
+
     Double_t _Run3bAnd3cDataRatio;
 
     ///the POTperFile for MC
     Double_t _POTperFile;
     Double_t _POTperFile_Run6;
 
+    ClassDef(TotalPOT,2)
 };
 
 #endif

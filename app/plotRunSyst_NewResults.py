@@ -2,12 +2,10 @@
 """A script that makes histogram of the resulting TTree from
    RunSyst_New.exe """
 
-from ROOTFile import ROOTFile
 import ROOT
+import ROOTChain
 import sys
 from os.path import join
-from T2KPOT import T2KPOT
-from T2KPOT import TN80POT
 
 # Which selection to run
 P0DNUMUCCSELECTION = 88
@@ -16,12 +14,12 @@ SELECTION = P0DNUMUCCSELECTION
 
 # P0DBANFFInterface class to make plots pretty
 INTFACE = None
-BLACK = 0
-RED = 0
-BLUE = 0
-SKY = 0
-GREEN = 0
 STACK_COLORS = []
+BLACK = 1
+
+# Classes from P0DBANFF library for POT numbers
+T2K = None
+TN80 = None
 
 # legend coordinates
 X1 = 0.64196
@@ -189,44 +187,29 @@ def make_stack(evt_sample, all_selections, hist_labels, save_title):
     return
 
 
-def get_chain_from_files(tree_name, file_names, first_num=1, last_num=100):
-    """read in a TChain of from a set of files like /path/to/file%d.root"""
-    chain = ROOT.TChain(tree_name)
-    for num in range(first_num, last_num+1):
-        testFile = ROOTFile(file_names % (num))
-        # print testFile.get_file_name()
-        if not testFile.valid():
-            continue
-        chain.Add(testFile.get_file_name())
-    return chain
-
-
 def main(argv):
     """main"""
     helpstatement = "plotRunSyst_NewResults.py (no args)"
     if len(argv) > 0:
         print helpstatement
-    ROOT.gSystem.Load("libP0DBANFF")
+    ROOT.gSystem.Load("P0DBANFF")
     ROOT.gROOT.SetBatch(1)
-    global INTFACE
+    global INTFACE, T2K, TN80
     try:
         INTFACE = ROOT.P0DBANFFInterface()
+        T2K = ROOT.TotalPOT()
+        TN80 = ROOT.TN80()
     except Exception as exc:
         print type(exc)
         print "unable to load libP0DBANFF.so"
         sys.exit(1)
 
-    global BLACK, RED, BLUE, SKY, GREEN
+    global STACK_COLORS, BLACK
     BLACK = INTFACE.kcbBlack
-    BLUE = INTFACE.kcbBlue
-    SKY = INTFACE.kcbSky
-    GREEN = INTFACE.kcbGreen
-    RED = INTFACE.kcbRed
-    global STACK_COLORS
-    STACK_COLORS.append(BLUE)
-    STACK_COLORS.append(SKY)
-    STACK_COLORS.append(GREEN)
-    STACK_COLORS.append(RED)
+    STACK_COLORS.append(INTFACE.kcbBlack)
+    STACK_COLORS.append(INTFACE.kcbBlue)
+    STACK_COLORS.append(INTFACE.kcbSky)
+    STACK_COLORS.append(INTFACE.kcbRed)
 
     tree_name = 'all'
     file_path = '/Raid/home/mhogan/systematics'
@@ -243,74 +226,86 @@ def main(argv):
     Run6eAir = 'Run6e_Air_hadd.root'
     Run7bWtr = 'Run7b_Water_hadd.root'
 
-    chn_Run2Air = ROOT.TChain(tree_name)
-    chn_Run2Air.Add(join(file_path, Run2Air))
-    chn_Run2Wtr = ROOT.TChain(tree_name)
-    chn_Run2Wtr.Add(join(file_path, Run2Wtr))
-    chn_Run3bAir = ROOT.TChain(tree_name)
-    chn_Run3bAir.Add(join(file_path, Run3bAir))
-    chn_Run3cAir = ROOT.TChain(tree_name)
-    chn_Run3cAir.Add(join(file_path, Run3cAir))
-    chn_Run4Air = ROOT.TChain(tree_name)
-    chn_Run4Air.Add(join(file_path, Run4Air))
-    chn_Run4Wtr = ROOT.TChain(tree_name)
-    chn_Run4Wtr.Add(join(file_path, Run4Wtr))
-    chn_Run5cWtr = ROOT.TChain(tree_name)
-    chn_Run5cWtr.Add(join(file_path, Run5cWtr))
-    chn_Run6bAir = ROOT.TChain(tree_name)
-    chn_Run6bAir.Add(join(file_path, Run6bAir))
-    chn_Run6cAir = ROOT.TChain(tree_name)
-    chn_Run6cAir.Add(join(file_path, Run6cAir))
-    chn_Run6dAir = ROOT.TChain(tree_name)
-    chn_Run6dAir.Add(join(file_path, Run6dAir))
-    chn_Run6eAir = ROOT.TChain(tree_name)
-    chn_Run6eAir.Add(join(file_path, Run6eAir))
-    chn_Run7bWtr = ROOT.TChain(tree_name)
-    chn_Run7bWtr.Add(join(file_path, Run7bWtr))
+    # chn_MCRun2Air = ROOT.TChain(tree_name)
+    # chn_MCRun2Air.Add(join(file_path, Run2Air))
+    # chn_MCRun2Wtr = ROOT.TChain(tree_name)
+    # chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
+    # chn_MCRun3bAir = ROOT.TChain(tree_name)
+    # chn_MCRun3bAir.Add(join(file_path, Run3bAir))
+    # chn_MCRun3cAir = ROOT.TChain(tree_name)
+    # chn_MCRun3cAir.Add(join(file_path, Run3cAir))
+    # chn_MCRun4Air = ROOT.TChain(tree_name)
+    # chn_MCRun4Air.Add(join(file_path, Run4Air))
+    # chn_MCRun4Wtr = ROOT.TChain(tree_name)
+    # chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
+    # chn_MCRun5cWtr = ROOT.TChain(tree_name)
+    # chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
+    # chn_MCRun6bAir = ROOT.TChain(tree_name)
+    # chn_MCRun6bAir.Add(join(file_path, Run6bAir))
+    # chn_MCRun6cAir = ROOT.TChain(tree_name)
+    # chn_MCRun6cAir.Add(join(file_path, Run6cAir))
+    # chn_MCRun6dAir = ROOT.TChain(tree_name)
+    # chn_MCRun6dAir.Add(join(file_path, Run6dAir))
+    # chn_MCRun6eAir = ROOT.TChain(tree_name)
+    # chn_MCRun6eAir.Add(join(file_path, Run6eAir))
+    # chn_MCRun7bWtr = ROOT.TChain(tree_name)
+    # chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
 
-    # chn_Run2Air = get_chain_from_files(tree_name, join(file_path, Run2Air))
-    # chn_Run2Wtr = get_chain_from_files(tree_name, join(file_path, Run2Wtr))
-    # chn_Run3bAir = get_chain_from_files(tree_name, join(file_path, Run3bAir))
-    # chn_Run3cAir = get_chain_from_files(tree_name, join(file_path, Run3cAir))
-    # chn_Run4Air = get_chain_from_files(tree_name, join(file_path, Run4Air))
-    # chn_Run4Wtr = get_chain_from_files(tree_name, join(file_path, Run4Wtr))
-    # chn_Run5cWtr = get_chain_from_files(tree_name, join(file_path, Run5cWtr))
-    # chn_Run6bAir = get_chain_from_files(tree_name, join(file_path, Run6bAir))
-    # chn_Run6cAir = get_chain_from_files(tree_name, join(file_path, Run6cAir))
-    # chn_Run6dAir = get_chain_from_files(tree_name, join(file_path, Run6dAir))
-    # chn_Run6eAir = get_chain_from_files(tree_name, join(file_path, Run6eAir))
-    # chn_Run7bWtr = get_chain_from_files(tree_name, join(file_path, Run7bWtr))
+    chn_MCRun2Air = ROOTChain.get_chain_from_files(tree_name,
+                                                   join(file_path, Run2Air))
+    chn_MCRun2Wtr = ROOTChain.get_chain_from_files(tree_name,
+                                                   join(file_path, Run2Wtr))
+    chn_MCRun3bAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run3bAir))
+    chn_MCRun3cAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run3cAir))
+    chn_MCRun4Air = ROOTChain.get_chain_from_files(tree_name,
+                                                   join(file_path, Run4Air))
+    chn_MCRun4Wtr = ROOTChain.get_chain_from_files(tree_name,
+                                                   join(file_path, Run4Wtr))
+    chn_MCRun5cWtr = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run5cWtr))
+    chn_MCRun6bAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run6bAir))
+    chn_MCRun6cAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run6cAir))
+    chn_MCRun6dAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run6dAir))
+    chn_MCRun6eAir = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run6eAir))
+    chn_MCRun7bWtr = ROOTChain.get_chain_from_files(tree_name,
+                                                    join(file_path, Run7bWtr))
 
-    chn_FHC_Wtr = chn_Run2Wtr
-    chn_FHC_Wtr.Add(chn_Run4Wtr)
+    chn_FHC_Wtr = chn_MCRun2Wtr
+    chn_FHC_Wtr.Add(chn_MCRun4Wtr)
 
-    chn_FHC_Air = chn_Run2Air
-    chn_FHC_Air.Add(chn_Run3bAir)
-    chn_FHC_Air.Add(chn_Run3cAir)
-    chn_FHC_Air.Add(chn_Run4Air)
+    chn_FHC_Air = chn_MCRun2Air
+    chn_FHC_Air.Add(chn_MCRun3bAir)
+    chn_FHC_Air.Add(chn_MCRun3cAir)
+    chn_FHC_Air.Add(chn_MCRun4Air)
 
-    chn_RHC_Wtr = chn_Run5cWtr
-    chn_RHC_Wtr.Add(chn_Run7bWtr)
+    chn_RHC_Wtr = chn_MCRun5cWtr
+    chn_RHC_Wtr.Add(chn_MCRun7bWtr)
 
-    chn_RHC_Air = chn_Run6bAir
-    chn_RHC_Air.Add(chn_Run6cAir)
-    chn_RHC_Air.Add(chn_Run6dAir)
-    chn_RHC_Air.Add(chn_Run6eAir)
+    chn_RHC_Air = chn_MCRun6bAir
+    chn_RHC_Air.Add(chn_MCRun6cAir)
+    chn_RHC_Air.Add(chn_MCRun6dAir)
+    chn_RHC_Air.Add(chn_MCRun6eAir)
 
     FHC_Wtr = sample(chn_FHC_Wtr, 'FHC Water', 'fhc_water')
     RHC_Wtr = sample(chn_RHC_Wtr, 'RHC Water', 'rhc_water')
     FHC_Air = sample(chn_FHC_Air, 'FHC Air', 'fhc_air')
     RHC_Air = sample(chn_RHC_Air, 'RHC Air', 'rhc_air')
 
-    FHC_Wtr.scale = (TN80POT.WTR_DATAPOT)/(T2KPOT.FHC_WTR_MCPOT)
-    FHC_Air.scale = (TN80POT.AIR_DATAPOT)/(T2KPOT.FHC_AIR_MCPOT)
-    RHC_Wtr.scale = (T2KPOT.RHC_WTR_DATAPOT)/(T2KPOT.RHC_WTR_MCPOT)
-    RHC_Air.scale = (T2KPOT.RHC_AIR_DATAPOT)/(T2KPOT.RHC_AIR_MCPOT)
+    FHC_Wtr.scale = TN80.GetPOTWaterData()/T2K.GetPOTWaterMC()
+    FHC_Air.scale = TN80.GetPOTAirData()/T2K.GetFHCAirMC()
+    RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
+    RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
 
-    FHC_Wtr.pot_scale = TN80POT.WTR_DATAPOT
-    FHC_Air.pot_scale = TN80POT.AIR_DATAPOT
-    RHC_Wtr.pot_scale = T2KPOT.RHC_WTR_DATAPOT
-    RHC_Air.pot_scale = T2KPOT.RHC_AIR_DATAPOT
+    FHC_Wtr.pot_scale = TN80.GetPOTWaterData()
+    FHC_Air.pot_scale = TN80.GetPOTAirData()
+    RHC_Wtr.pot_scale = T2K.GetPOTRHCWaterData()
+    RHC_Air.pot_scale = T2K.GetPOTRHCAirData()
 
     all_samples = [
             FHC_Wtr,
@@ -417,34 +412,6 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
                                 evts_p_bin_p_pot)
         hist_recoY.set_log_y(True)
         make_stack(smpl, all_selections, hist_recoY, 'recoVtxY')
-    # relevant branches
-    # Branch("SelectionNom"
-    # Branch("TrueEnuNom"
-    # Branch("TrueNuPDGNom"
-    # Branch("TrueVertexIDNom"
-    # Branch("LeptonMomNom"
-    # Branch("LeptonCosNom"
-    # Branch("WeightNom"
-    # Branch("FluxWeightNom",
-    # Branch("vtxX" ,&vtxX ,"vtx
-    # Branch("vtxY" ,&vtxY ,"vtx
-    # Branch("vtxZ" ,&vtxZ ,"vtx
-    # Branch("tVtxX",&tVtxX,"tVt
-    # Branch("tVtxY",&tVtxY,"tVt
-    # Branch("tVtxZ",&tVtxZ,"tVt
-    # Branch("onWaterTarget"
-    # Branch("nToys"
-    # Branch("Toy"
-    # Branch("TrueVertexIDToy"
-    # Branch("SelectionToy"
-    # Branch("TrueEnuToy"
-    # Branch("TrueNuPDGToy"
-    # Branch("LeptonMomToy"
-    # Branch("LeptonCosToy"
-    # Branch("WeightToy"
-    # Branch("nSyst"
-    # Branch("WeightIndToy"
-    # Branch("FluxWeightToy"
 
 
 if __name__ == "__main__":
