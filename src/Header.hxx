@@ -80,7 +80,7 @@ public :
 
   /// returns the Data/MC mode
   bool GetIsMC() const{return _IsMC;}
-  
+
   /// Returns the software version
   const std::string& GetSoftwareVersion(){return _SoftwareVersion;}
 
@@ -104,7 +104,7 @@ public :
   Int_t _Spill_BadND280;
   Int_t _Spill_GoodBeamGoodND280;
 
-  /// data or MC mode 
+  /// data or MC mode
   bool _IsMC;
 
   /// The software version used to create the original oaAnalysis file of the last input file

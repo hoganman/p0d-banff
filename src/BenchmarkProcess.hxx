@@ -1,7 +1,6 @@
 #ifndef BenchmarkProcess_hxx
 #define BenchmarkProcess_hxx
 
-#include"TObject.h"
 #include"TBenchmark.h"
 #include"TString.h"
 

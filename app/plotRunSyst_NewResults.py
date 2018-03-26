@@ -3,7 +3,9 @@
    RunSyst_New.exe """
 
 import ROOT
+from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem
 import ROOTChain
+import ROOTHStack
 import sys
 from os.path import join
 
@@ -48,7 +50,7 @@ class sample(object):
         if len(var) < 1:
             return None
         hist_name = 'h1d%s_%s' % (hist_save_title, self.save_title)
-        hist = ROOT.TH1D(hist_name, '', n_bins, low, high)
+        hist = TH1D(hist_name, '', n_bins, low, high)
         self.chain.Draw('%s>>%s' % (var, hist_name), cuts, 'goff')
         if self.scale != 1:
             hist.Scale(self.scale)
@@ -60,8 +62,8 @@ class sample(object):
         if len(varX) < 1 or len(varY) < 1:
             return None
         hist_name = 'h2d%s_%s' % (hist_save_title, self.save_title)
-        hist = ROOT.TH2D(hist_name, '', n_binsX, lowX, highX,
-                         n_binsY, lowY, highY)
+        hist = TH2D(hist_name, '', n_binsX, lowX, highX,
+                    n_binsY, lowY, highY)
         self.chain.Draw('%s:%s>>%s' % (varY, varX, hist_name), cuts, 'goff')
         if self.scale != 1:
             hist.Scale(self.scale)
@@ -80,41 +82,14 @@ class selection_info(object):
         return self.cuts
 
 
-class stack_info(object):
-    """store the save name, plot var and binning, and axes labels"""
-
-    def __init__(self, plot_var, n_bins, low_val, high_val, x_title, y_title):
-        self.plot_var = plot_var
-        self.n_bins = n_bins
-        self.low_X = low_val
-        self.high_X = high_val
-        self.x_title = x_title
-        self.y_title = y_title
-        self.minimum = -1
-        self.maximum = -1
-        self.log_y = False
-
-    def set_log_y(self, log_y=True):
-        """should log_y also be shown"""
-        self.log_y = log_y
-
-    def set_min(self, minimum=1):
-        """define the minimum for the stack"""
-        self.minimum = minimum
-
-    def set_max(self, maximum):
-        """define the maximum for the stack"""
-        self.maximum = maximum
-
-
 def make_stack(evt_sample, all_selections, hist_labels, save_title):
     """Take sample (evt_sample) and separate it by
     selection (all_selections). The histogram labels are stored in
     hist_labels and saved as save_title.root """
 
     save_as = '%s_%s' % (save_title, evt_sample.save_title)
-    canvas = ROOT.TCanvas("canvas", "", 800, 600)
-    legend = ROOT.TLegend(X1, Y1, X2, Y2, evt_sample.plot_title)
+    canvas = TCanvas("canvas", "", 800, 600)
+    legend = TLegend(X1, Y1, X2, Y2, evt_sample.plot_title)
     legend.SetFillStyle(0)
     legend.SetLineColor(0)
     legend.SetBorderSize(0)
@@ -138,8 +113,8 @@ def make_stack(evt_sample, all_selections, hist_labels, save_title):
 
     hists.reverse()
 
-    h_stack = ROOT.THStack('%s_stack' % (save_title), '')
-    h_total = ROOT.TH1D('%s_total' % (save_title), '', n_bins, low_X, high_X)
+    h_stack = THStack('%s_stack' % (save_title), '')
+    h_total = TH1D('%s_total' % (save_title), '', n_bins, low_X, high_X)
     INTFACE.PrettyUpTH1(h_total, hist_labels.x_title, hist_labels.y_title,
                         BLACK)
     for index in range(0, len(all_selections)):
@@ -173,8 +148,8 @@ def make_stack(evt_sample, all_selections, hist_labels, save_title):
         h_total.SetMaximum(old_max)
         h_total.Draw()
         h_stack.Draw('same')
-        INTFACE.SaveCanvasAs(canvas, join('plots',
-                                          '%s_log' % (save_as)))
+        INTFACE.SaveCanvasAs(
+                canvas, join('plots', '%s_log' % (save_as)))
         canvas.SetLogy(0)
 
     h_total.Delete()
@@ -192,18 +167,18 @@ def main(argv):
     helpstatement = "plotRunSyst_NewResults.py (no args)"
     if len(argv) > 0:
         print helpstatement
-    ROOT.gSystem.Load("P0DBANFF")
-    ROOT.gROOT.SetBatch(1)
+    gSystem.Load("P0DBANFF")
     global INTFACE, T2K, TN80
     try:
         INTFACE = ROOT.P0DBANFFInterface()
         T2K = ROOT.TotalPOT()
-        TN80 = ROOT.TN80()
+        TN80 = ROOT.TN80POT()
     except Exception as exc:
         print type(exc)
         print "unable to load libP0DBANFF.so"
         sys.exit(1)
 
+    INTFACE.SetBatch(True)
     global STACK_COLORS, BLACK
     BLACK = INTFACE.kcbBlack
     STACK_COLORS.append(INTFACE.kcbBlack)
@@ -211,7 +186,8 @@ def main(argv):
     STACK_COLORS.append(INTFACE.kcbSky)
     STACK_COLORS.append(INTFACE.kcbRed)
 
-    tree_name = 'all'
+    mc_name = 'all'
+    # data_name = 'nominal'
     file_path = '/Raid/home/mhogan/systematics'
     Run2Air = 'Run2_Air_hadd.root'
     Run2Wtr = 'Run2_Water_hadd.root'
@@ -226,55 +202,43 @@ def main(argv):
     Run6eAir = 'Run6e_Air_hadd.root'
     Run7bWtr = 'Run7b_Water_hadd.root'
 
-    # chn_MCRun2Air = ROOT.TChain(tree_name)
+    # chn_MCRun2Air = ROOT.TChain(mc_name)
     # chn_MCRun2Air.Add(join(file_path, Run2Air))
-    # chn_MCRun2Wtr = ROOT.TChain(tree_name)
+    # chn_MCRun2Wtr = ROOT.TChain(mc_name)
     # chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
-    # chn_MCRun3bAir = ROOT.TChain(tree_name)
+    # chn_MCRun3bAir = ROOT.TChain(mc_name)
     # chn_MCRun3bAir.Add(join(file_path, Run3bAir))
-    # chn_MCRun3cAir = ROOT.TChain(tree_name)
+    # chn_MCRun3cAir = ROOT.TChain(mc_name)
     # chn_MCRun3cAir.Add(join(file_path, Run3cAir))
-    # chn_MCRun4Air = ROOT.TChain(tree_name)
+    # chn_MCRun4Air = ROOT.TChain(mc_name)
     # chn_MCRun4Air.Add(join(file_path, Run4Air))
-    # chn_MCRun4Wtr = ROOT.TChain(tree_name)
+    # chn_MCRun4Wtr = ROOT.TChain(mc_name)
     # chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
-    # chn_MCRun5cWtr = ROOT.TChain(tree_name)
+    # chn_MCRun5cWtr = ROOT.TChain(mc_name)
     # chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
-    # chn_MCRun6bAir = ROOT.TChain(tree_name)
+    # chn_MCRun6bAir = ROOT.TChain(mc_name)
     # chn_MCRun6bAir.Add(join(file_path, Run6bAir))
-    # chn_MCRun6cAir = ROOT.TChain(tree_name)
+    # chn_MCRun6cAir = ROOT.TChain(mc_name)
     # chn_MCRun6cAir.Add(join(file_path, Run6cAir))
-    # chn_MCRun6dAir = ROOT.TChain(tree_name)
+    # chn_MCRun6dAir = ROOT.TChain(mc_name)
     # chn_MCRun6dAir.Add(join(file_path, Run6dAir))
-    # chn_MCRun6eAir = ROOT.TChain(tree_name)
+    # chn_MCRun6eAir = ROOT.TChain(mc_name)
     # chn_MCRun6eAir.Add(join(file_path, Run6eAir))
-    # chn_MCRun7bWtr = ROOT.TChain(tree_name)
+    # chn_MCRun7bWtr = ROOT.TChain(mc_name)
     # chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
 
-    chn_MCRun2Air = ROOTChain.get_chain_from_files(tree_name,
-                                                   join(file_path, Run2Air))
-    chn_MCRun2Wtr = ROOTChain.get_chain_from_files(tree_name,
-                                                   join(file_path, Run2Wtr))
-    chn_MCRun3bAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run3bAir))
-    chn_MCRun3cAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run3cAir))
-    chn_MCRun4Air = ROOTChain.get_chain_from_files(tree_name,
-                                                   join(file_path, Run4Air))
-    chn_MCRun4Wtr = ROOTChain.get_chain_from_files(tree_name,
-                                                   join(file_path, Run4Wtr))
-    chn_MCRun5cWtr = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run5cWtr))
-    chn_MCRun6bAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run6bAir))
-    chn_MCRun6cAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run6cAir))
-    chn_MCRun6dAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run6dAir))
-    chn_MCRun6eAir = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run6eAir))
-    chn_MCRun7bWtr = ROOTChain.get_chain_from_files(tree_name,
-                                                    join(file_path, Run7bWtr))
+    chn_MCRun2Air = ROOTChain.get(mc_name, join(file_path, Run2Air))
+    chn_MCRun2Wtr = ROOTChain.get(mc_name, join(file_path, Run2Wtr))
+    chn_MCRun3bAir = ROOTChain.get(mc_name, join(file_path, Run3bAir))
+    chn_MCRun3cAir = ROOTChain.get(mc_name, join(file_path, Run3cAir))
+    chn_MCRun4Air = ROOTChain.get(mc_name, join(file_path, Run4Air))
+    chn_MCRun4Wtr = ROOTChain.get(mc_name, join(file_path, Run4Wtr))
+    chn_MCRun5cWtr = ROOTChain.get(mc_name, join(file_path, Run5cWtr))
+    chn_MCRun6bAir = ROOTChain.get(mc_name, join(file_path, Run6bAir))
+    chn_MCRun6cAir = ROOTChain.get(mc_name, join(file_path, Run6cAir))
+    chn_MCRun6dAir = ROOTChain.get(mc_name, join(file_path, Run6dAir))
+    chn_MCRun6eAir = ROOTChain.get(mc_name, join(file_path, Run6eAir))
+    chn_MCRun7bWtr = ROOTChain.get(mc_name, join(file_path, Run7bWtr))
 
     chn_FHC_Wtr = chn_MCRun2Wtr
     chn_FHC_Wtr.Add(chn_MCRun4Wtr)
@@ -342,7 +306,7 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
         evts_p_bin_p_pot = '%s / %s PoT' % (evts_p_bin, smpl.pot_scale)
 
         # # neutrino energy
-        hist_Enu = stack_info('TrueEnuNom*1e-3', 50, 0., 5.0,
+        hist_Enu = ROOTHStack('TrueEnuNom*1e-3', 50, 0., 5.0,
                               'True Neutrino Energy [GeV]',
                               evts_p_bin_p_pot)
         hist_Enu.set_log_y(True)
@@ -351,63 +315,63 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
         make_stack(smpl, all_selections, hist_Enu, 'trueE_nu')
 
         # lepton candidate momentum
-        hist_Pmu = stack_info('LeptonMomNom*1e-3', 35, 0., 5.0,
+        hist_Pmu = ROOTHStack('LeptonMomNom*1e-3', 35, 0., 5.0,
                               'Lepton Candidate Momentum [GeV/c]',
                               evts_p_bin_p_pot)
         hist_Pmu.set_log_y(True)
         make_stack(smpl, all_selections, hist_Pmu, 'recoP_mu')
 
         # lepton candidate cos(theta)
-        hist_cosq = stack_info('LeptonCosNom', 25, 0.5, 1.0,
+        hist_cosq = ROOTHStack('LeptonCosNom', 25, 0.5, 1.0,
                                'Lepton Candidate cos(#theta)',
                                evts_p_bin_p_pot)
         hist_cosq.set_log_y(True)
         make_stack(smpl, all_selections, hist_cosq, 'recocosq_mu')
 
         # lepton candidate theta
-        hist_q = stack_info('TMath::ACos(LeptonCosNom)*TMath::RadToDeg()',
+        hist_q = ROOTHStack('TMath::ACos(LeptonCosNom)*TMath::RadToDeg()',
                             50, 0.0, 90., 'Lepton Candidate #theta',
                             evts_p_bin_p_pot)
         hist_q.set_log_y(True)
         make_stack(smpl, all_selections, hist_q, 'recoq_mu')
 
         # lepton candidate true Z position
-        hist_trueZ = stack_info('tVtxZ*1e-3', 29, -3.2, -1.2,
+        hist_trueZ = ROOTHStack('tVtxZ*1e-3', 29, -3.2, -1.2,
                                 'True Vertex Z Position [m]',
                                 evts_p_bin_p_pot)
         hist_trueZ.set_log_y(True)
         make_stack(smpl, all_selections, hist_trueZ, 'trueVtxZ')
 
         # lepton candidate reco Z position
-        hist_recoZ = stack_info('vtxZ*1e-3', 29, -3.2, -1.2,
+        hist_recoZ = ROOTHStack('vtxZ*1e-3', 29, -3.2, -1.2,
                                 'Reco Vertex Z Position [m]',
                                 evts_p_bin_p_pot)
         hist_recoZ.set_log_y(True)
         make_stack(smpl, all_selections, hist_recoZ, 'recoVtxZ')
 
         # lepton candidate true X position
-        hist_trueX = stack_info('tVtxX*1e-3', 25, -1.1, 1.1,
+        hist_trueX = ROOTHStack('tVtxX*1e-3', 25, -1.1, 1.1,
                                 'True Vertex X Position [m]',
                                 evts_p_bin_p_pot)
         hist_trueX.set_log_y(True)
         make_stack(smpl, all_selections, hist_trueX, 'trueVtxX')
 
         # lepton candidate reco X position
-        hist_recoX = stack_info('vtxX*1e-3', 25, -1.1, 1.1,
+        hist_recoX = ROOTHStack('vtxX*1e-3', 25, -1.1, 1.1,
                                 'Reco Vertex X Position [m]',
                                 evts_p_bin_p_pot)
         hist_recoX.set_log_y(True)
         make_stack(smpl, all_selections, hist_recoX, 'recoVtxX')
 
         # lepton candidate true Y position
-        hist_trueY = stack_info('tVtxY*1e-3', 25, -1.1, 1.1,
+        hist_trueY = ROOTHStack('tVtxY*1e-3', 25, -1.1, 1.1,
                                 'True Vertex Y Position [m]',
                                 evts_p_bin_p_pot)
         hist_trueY.set_log_y(True)
         make_stack(smpl, all_selections, hist_trueY, 'trueVtxY')
 
         # lepton candidate reco Y position
-        hist_recoY = stack_info('vtxY*1e-3', 25, -1.1, 1.1,
+        hist_recoY = ROOTHStack('vtxY*1e-3', 25, -1.1, 1.1,
                                 'Reco Vertex Y Position [m]',
                                 evts_p_bin_p_pot)
         hist_recoY.set_log_y(True)

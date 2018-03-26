@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
     return false;
   }
   TFile* inputFile = new TFile(inputFileName.c_str(), "READ");
-  TTree* RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
+  TTree* RTV = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
   if(!RTV){ std::cerr << "No NRooTrackerVtx in the file, exiting." << std::cerr; throw;}
   inputFile->Close();
   // Initialize clock
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]){
     tree->Branch("WeightNom",       &WeightNom,       "WeightNom/D");
     tree->Branch("FluxWeightNom",   &FluxWeightNom,   "FluxWeightNom/D");
 
-    tree->Branch("nToys",          &nToys,           "nToys/I");
+    tree->Branch("nToys",           &nToys,          "nToys/I");
     tree->Branch("Toy",             Toy,             "Toy[nToys]/I");
     tree->Branch("TrueVertexIDToy", TrueVertexIDToy, "TrueVertexIDToy[nToys]/I");
     tree->Branch("SelectionToy",    SelectionToy,    "SelectionToy[nToys]/I");

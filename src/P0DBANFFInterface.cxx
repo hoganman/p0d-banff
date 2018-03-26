@@ -2,6 +2,7 @@
 
 #include"P0DBANFFInterface.hxx"
 ClassImp(P0DBANFFInterface)
+#include<iostream>
 
 #include"TDatime.h"
 #include"TFile.h"
@@ -13,7 +14,6 @@ ClassImp(P0DBANFFInterface)
 #include"TGaxis.h"
 #include"TROOT.h"
 #include"TKey.h"
-#include<iostream>
 
 //**************************************************
 P0DBANFFInterface::P0DBANFFInterface()
@@ -65,7 +65,7 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
         TString canvasName, TString histName,
         TString xAxisTitle, TString yAxisTitle,
         UInt_t lineColor, UInt_t fillColor,
-	UInt_t lineWidth, Double_t textSizeChange) const
+    UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
   if(!CheckFile(inFileName))
@@ -80,8 +80,8 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
       canvas = static_cast<TCanvas*>(inputFile->Get(canvasName.Data()));
   if(!canvas)
   {
-    std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data() 
-	      << std::endl;
+    std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data()
+          << std::endl;
     const TList* keys = inputFile->GetListOfKeys();
     canvas = static_cast<TCanvas*>(FindObjectInFileByName(keys, "c1"));
     if(!canvas)
@@ -138,7 +138,7 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName,
 //**************************************************
 void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
         TString xAxisTitle, TString yAxisTitle,
-	Double_t textSizeChange) const
+    Double_t textSizeChange) const
 //**************************************************
 {
   if(!stack)
@@ -169,7 +169,7 @@ void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
 void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
         TString xAxisTitle, TString yAxisTitle,
         UInt_t lineColor, UInt_t fillColor,
-	UInt_t lineWidth, Double_t textSizeChange) const
+    UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
   if(!inHist)
@@ -363,7 +363,7 @@ void P0DBANFFInterface::SaveCanvasAs(TString inputFileName,
 
 //**************************************************
 std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
-	Char_t separator) const
+    Char_t separator) const
 //**************************************************
 {
    // splits the option string at 'separator' and fills the list
@@ -390,7 +390,7 @@ std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
 
 //**************************************************
 TObject* P0DBANFFInterface::FindObjectInFileByName(const TList* inList,
-	const TString name_search) const
+    const TString name_search) const
 //**************************************************
 {
     TObject* result = NULL;

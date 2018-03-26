@@ -44,7 +44,7 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT){
   double tmp_POT_GoodBeamGoodND280;
   int tmp_Spill_GoodBeamGoodND280;
   double tmp_POT_0KA, tmp_POT_200KA, tmp_POT_250KA, tmp_POT_m250KA, tmp_POT_OtherKA;
-  char tmp_SoftwareVersion[100];  
+  char tmp_SoftwareVersion[100];
   TBranch* b_tmp_SoftwareVersion = nullptr;
   TBranch* b_tmp_POT_NoCut = nullptr;
   TBranch* b_tmp_POT_BadBeam = nullptr;
@@ -58,9 +58,9 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT){
   TBranch* b_tmp_Spill_NoCut = nullptr;
   TBranch* b_tmp_Spill_BadBeam = nullptr;
   TBranch* b_tmp_Spill_BadND280 = nullptr;
-  TBranch* b_tmp_Spill_GoodBeamGoodND280 = nullptr;  
+  TBranch* b_tmp_Spill_GoodBeamGoodND280 = nullptr;
 
-  if (tree->FindLeaf("POT_NoCut")){   
+  if (tree->FindLeaf("POT_NoCut")){
     tree->SetBranchAddress("SoftwareVersion",         tmp_SoftwareVersion,          &b_tmp_SoftwareVersion);
     tree->SetBranchAddress("POT_NoCut",               &tmp_POT_NoCut,               &b_tmp_POT_NoCut);
     tree->SetBranchAddress("POT_BadBeam",             &tmp_POT_BadBeam,             &b_tmp_POT_BadBeam);
@@ -93,19 +93,19 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT){
       _Spill_NoCut += tmp_Spill_NoCut;
       _Spill_BadBeam += tmp_Spill_BadBeam;
       _Spill_BadND280 += tmp_Spill_BadND280;
-      _Spill_GoodBeamGoodND280 += tmp_Spill_GoodBeamGoodND280;      
+      _Spill_GoodBeamGoodND280 += tmp_Spill_GoodBeamGoodND280;
     }
   }
   else{
     Header *header=0;
     TBranch* b_header = tree->GetBranch("POTInfo");
     b_header->SetAddress(&header);
-    
+
     // There can be multiple entries in the "header" tree if the analyser has
     // used hadd to merge multiple output trees. We sum the total POT in all
     // entries.
     for (int i = 0; i < tree->GetEntries(); i++) {
-      tree->GetEntry(i);      
+      tree->GetEntry(i);
 
       _POT_CountedPerFile      += header->GetPOTCountedPerFile();
       if (!bySpillPOT){
@@ -123,7 +123,7 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT){
         _Spill_BadND280          += header->GetSpillBadND280();
         _Spill_GoodBeamGoodND280 += header->GetSpillGoodBeamGoodND280();
       }
-    }   
+    }
   }
 
   return true;
@@ -132,7 +132,7 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT){
 //********************************************************************
 void Header::ReadHeader(TTree* tree){
 //********************************************************************
-  
+
   if (!tree) return;
   Reset();
   AddHeader(tree);

@@ -1,15 +1,14 @@
 #ifndef TN80POT_HXX
 #define TN80POT_HXX
 
-#include"Rtypes.h"
-#include"TObject.h"
+#include "TObject.h"
 
 //The POT used in TN-80
-class TN80POT: public TObject 
+class TN80POT: public TObject
 {
 
 public:
-    TN80POT(){SetPOT();};
+    TN80POT() {SetPOT();};
     virtual ~TN80POT(){}
     Double_t GetPOTRun1WaterData() const {return _POTRun1WaterData;}
     Double_t GetPOTRun2WaterData() const {return _POTRun2WaterData;}
@@ -36,7 +35,8 @@ protected:
     Double_t _POTAirData;
 
 public:
-ClassDef(TN80POT,1)
+
+    ClassDef(TN80POT,2)
 
 };
 

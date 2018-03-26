@@ -39,8 +39,8 @@ class ROOTChain(object):
                 self.add_from_file(file_name)
 
 
-def get_chain_from_files(chain_name, file_names, first_num=1, last_num=100):
-    """"""
+def get(chain_name, file_names, first_num=1, last_num=100):
+    """a dirty method to get a TChain from many numbered files"""
     chain = ROOTChain(chain_name)
     chain.add_from_files(file_names, first_num, last_num)
     return chain.get()

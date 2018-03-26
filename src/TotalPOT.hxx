@@ -114,6 +114,8 @@ private:
     Double_t _POTperFile;
     Double_t _POTperFile_Run6;
 
+public:
+
     ClassDef(TotalPOT,2)
 };
 

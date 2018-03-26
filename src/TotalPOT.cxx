@@ -19,10 +19,10 @@ void TotalPOT::SetPOT(){
     //while https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
     // says that there are 4197N files, only 4164 are non-zero in size
     _POTRun5cWaterMC = 2.1E21; //4164 * _POTperFile;
-    _POTRun6bAirMC = 14309 * _POTperFile_Run6; 
-    _POTRun6cAirMC =  5325 * _POTperFile_Run6; 
+    _POTRun6bAirMC = 14309 * _POTperFile_Run6;
+    _POTRun6cAirMC =  5325 * _POTperFile_Run6;
     _POTRun6dAirMC =  6948 * _POTperFile_Run6; // Run 6 Air TOTAL = 3.5E21
-    _POTRun6eAirMC =  8680 * _POTperFile_Run6; 
+    _POTRun6eAirMC =  8680 * _POTperFile_Run6;
     _POTRun7bWaterMC = 6742 * _POTperFile; // 3.36E21
 
     _POTFHCWaterMC = _POTRun2WaterMC + _POTRun4WaterMC;
@@ -31,7 +31,7 @@ void TotalPOT::SetPOT(){
     _POTRHCAirMC = _POTRun6bAirMC + _POTRun6cAirMC + _POTRun6dAirMC + _POTRun6eAirMC;
 
     //taken from https://www.t2k.org/nd280/physics/pot_for_analyses
-    _POTRun1WaterData = 1.6494E+19; 
+    _POTRun1WaterData = 1.6494E+19;
     const Double_t data_POT = 1E20;
     _POTRun2AirData =  0.35934 * data_POT;
     _POTRun2WaterData = 0.43329 * data_POT;
@@ -42,8 +42,8 @@ void TotalPOT::SetPOT(){
 
     //taken from https://www.t2k.org/nd280/runco/data/quality/inforuns
     _POTRun5cWaterData = 0.44013 * data_POT;
-    _POTRun6bAirData = 1.274120 * data_POT; 
-    //used POT/spills delivered * ND280+DQ = 5.260082e+19 * 95.443% 
+    _POTRun6bAirData = 1.274120 * data_POT;
+    //used POT/spills delivered * ND280+DQ = 5.260082e+19 * 95.443%
     _POTRun6cAirData = 0.50203 * data_POT;
     _POTRun6dAirData = 0.7666215 * data_POT;
     _POTRun6eAirData = 0.8397245 * data_POT;
@@ -120,7 +120,7 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
 
     }
     else{
-        std::cout  << "Could not determine if data or MC" << std::endl; 
+        std::cout  << "Could not determine if data or MC" << std::endl;
     }
     return 0;
 

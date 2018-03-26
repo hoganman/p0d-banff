@@ -128,7 +128,7 @@ public :
 #endif
 
 #ifdef MakeClSampleSummary_cxx
-MakeClSampleSummary::MakeClSampleSummary(TTree *tree) : fChain(0) 
+MakeClSampleSummary::MakeClSampleSummary(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
