@@ -3,12 +3,39 @@
 # Prelim / P0D-BANFF Project independent #
 #######################
 OLD_PATH=$PATH
-OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 #######################
-SOFTWARE=/physics/software
-export PYTHONPATH=./:/physics/INSTALLATION/bin
-export SCRIPTS=/physics/scripts
-source ${SCRIPTS}/setup_cluster.sh
+
+export ND280_CPP_COMPILER=$(which g++)
+export ND280_CC_COMPILER=$(which gcc)
+export ND280_FORTRAN_COMPILER=$(which gfortran)
+export ND280VERSION=v11r31
+export ROOTVERSION=v5r34p09n04
+alias gmake="make"
+
+if [ $HOSTNAME == "S50-A" ]; then
+    export SOFTWARE=/home/mhogan/software
+    export ND280=$SOFTWARE/p0d-banff
+    export PYTHONPATH=.:$HOME:$HOME/bin
+fi
+
+if [ $HOSTNAME == "ens-hpc" ] || [ $HOSTNAME == "node7" ]; then
+    export SOFTWARE=/physics/software
+    export ND280=$SOFTWARE/t2k/ND280/v11r31
+    export PYTHONPATH=.:/physics/INSTALLATION/bin:/physics/home/mhogan/bin:/physics/home/mhogan:$HOME:$HOME/bin
+fi
+
+if [ $HOSTNAME == "hep" ]; then
+    export SOFTWARE=/Raid/software/t2k
+    export ND280=$SOFTWARE/t2k/nd280
+    export PYTHONPATH=.:$HOME:$HOME/bin
+fi
+
+if [ $HOSTNAME == "bkup" ]; then
+    export SOFTWARE=/Raid/software/t2k
+    export ND280=$SOFTWARE/t2k/nd280
+    export PYTHONPATH=.:$HOME:$HOME/bin
+fi
+
 
 # CERNLIB and NEUT
 export CERN_LEVEL=2005
@@ -16,34 +43,24 @@ export CERN=${SOFTWARE}/cernlib-${CERN_LEVEL}
 export NEUT=/physics/software/neut
 export NEUT_VERSION=v1r27p1_5.3.3
 export NEUT_ROOT=${NEUT}/${NEUT_VERSION}
-export NIWG=/physics/home/mhogan/software/v11r31/GlobalAnalysisTools/NIWGReWeight
 
 #source cmt
 export CMTROOT=${SOFTWARE}/CMT/v1r20p20081118
 source ${CMTROOT}/mgr/setup.sh
-export CVSROOT=:ext:anoncvs@repo.nd280.org:/home/trt2kmgr/ND280Repository
+export ND280REPO=:ext:anoncvs@repo.nd280.org:/home/trt2kmgr/ND280Repository
 #use this for GlobalAnalysisTools/NIWGReWeight
-#export CVSROOT=:ext:anoncvs@repo.t2k.org:/home/trt2kmgr/T2KRepository
+export T2KREPO=:ext:anoncvs@repo.t2k.org:/home/trt2kmgr/T2KRepository
+export CVSROOT=$ND280REPO
 export CVS_RSH=ssh
 unset CVS_SERVER
-
-
-#source cmt packages
-export ND280=/physics/software/t2k/ND280/v11r31
 export CMTPATH=$ND280
-export CMTPROJECTPATH=${ND280}/../
-source ${ND280}/nd280/*/cmt/setup.sh
-source ${ND280}/nd280AnalysisTools/*/cmt/setup.sh
-#for SUBSTRINGCMTPATH in $(echo $CMTPATH | tr ":" "\n"); do
-#    if [ -f ${SUBSTRINGCMTPATH}/nd280/*/cmt/setup.sh ]; then
-#	source ${SUBSTRINGCMTPATH}/nd280/*/cmt/setup.sh
-#	source ${SUBSTRINGCMTPATH}/nd280AnalysisTools/*/cmt/setup.sh
-#	break
-#    fi
+export CMTPROJECTPATH=$(dirname ${ND280})
+source ${ND280}/nd280/$ND280VERSION/cmt/setup.sh
+# source ${ND280}/nd280AnalysisTools/*/cmt/setup.sh
+
 #done
-source ${ND280}/ROOT/v5r34p09n04/Linux-x86_64/root/bin/thisroot.sh
+source $ND280/ROOT/$ROOTVERSION/Linux-x86_64/root/bin/thisroot.sh
 
 #######################
 PATH=$OLD_PATH:$PATH
-LD_LIBRARY_PATH=$OLD_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
 #######################

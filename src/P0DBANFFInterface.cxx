@@ -255,6 +255,7 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName) const
 void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
 //**************************************************
 {
+    std::cout << "...Loading color palette with nColors = " << nColors << "...";
     const Int_t nColorBins = 999;
     if(nColors==5)
     {
@@ -268,7 +269,7 @@ void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
       gStyle->SetPalette(nColorBins,fiveColorPalette);
       gStyle->SetNumberContours(nColorBins);
     }
-    if(nColors==4)
+    else if(nColors==4)
     {
       const Double_t length4[]    = {0.00,0.3333,0.6667,1.00} ;
       const Double_t fourColorR[] = {0.00,0.80,0.80,0.95};
@@ -280,6 +281,11 @@ void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
       gStyle->SetPalette(nColorBins,fourColorPalette);
       gStyle->SetNumberContours(nColorBins);
     }
+    else {
+        std::cout << "...Cannot load nColors = " << nColors << "...FAILED!" << std::endl;
+        return;
+    }
+    std::cout << "DONE!" << std::endl;
 }
 
 //**************************************************
@@ -288,32 +294,30 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
     Char_t delimiter) const
 //**************************************************
 {
-  if(!canvas)
-    return;
-  std::vector<TString> fileOutputs = SplitString(formats,delimiter);
-  for(UInt_t outputI = 0;outputI<fileOutputs.size();++outputI)
-  {
-    Char_t buffer[1000];
-    const TString outputFormat = fileOutputs.at(outputI);
-    sprintf(buffer,"%s.%s",outputNamePrefix.Data(),outputFormat.Data());
-    if(outputFormat.Contains("png") || outputFormat.Contains("jpg"))
+    std::cout << "...Saving canvas as " << std::endl;
+    if(!canvas)
+        return;
+    std::vector<TString> fileOutputs = SplitString(formats,delimiter);
+    for(UInt_t outputI = 0;outputI<fileOutputs.size();++outputI)
     {
-        TImage* img =  TImage::Create();
-        canvas->Draw();
-        canvas->cd();
-        img->FromPad(canvas);
-        img->WriteImage(buffer);
-        delete img;
+        Char_t buffer[1000];
+        const TString outputFormat = fileOutputs.at(outputI);
+        sprintf(buffer,"%s.%s",outputNamePrefix.Data(),outputFormat.Data());
+        std::cout << "                    " << buffer << std::endl;
+        if(outputFormat.Contains("png") || outputFormat.Contains("jpg"))
+        {
+            TImage* img =  TImage::Create();
+            canvas->Draw();
+            canvas->cd();
+            img->FromPad(canvas);
+            img->WriteImage(buffer);
+            delete img;
+        }
+        else{
+            canvas->SaveAs(buffer);
+        }
     }
-    //else if(outputFormat.Contains("root"))
-    //{
-    //    if(!CheckFile(buffer))
-    //        canvas->SaveAs(buffer);
-    //}
-    else{
-        canvas->SaveAs(buffer);
-    }
-  }
+    std::cout << "...DONE!" << std::endl;
 }
 
 

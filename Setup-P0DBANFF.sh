@@ -1,30 +1,51 @@
 #!/bin/sh
 #################################################
 #### Update P0DBANFFROOT for every checkout #####
-#export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
 #################################################
 
+export HOSTNAME=$(hostname)
+
 if [ -z ${P0DBANFFROOT+x} ]; then
-    echo "P0DBANFFROOT was not declared. Setting it to /physics/home/mhogan/software/p0d-banff/p0d-banff"
-    export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
+    if [ $HOSTNAME == "S50-A" ]; then
+        export P0DBANFFROOT=/home/mhogan/software/p0d-banff
+        export GOPATH=/home/mhogan/go:$P0DBANFFROOT/go
+    fi
+    if [ $HOSTNAME == "ens-hpc" ] || [ $HOSTNAME == "node7" ]; then
+        export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
+        export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go:$P0DBANFFROOT/go
+    fi
+    if [ $HOSTNAME == "hep" ] || [ $HOSTNAME == "bkup" ]; then
+        export P0DBANFFROOT=/home/mhogan/software/p0d-banff
+        export GOPATH=/home/mhogan/go:$P0DBANFFROOT/go
+    fi
+    echo "P0DBANFFROOT was not declared. Setting it to ${P0DBANFFROOT}"
 fi
 
-if [ -z ${ROOTSYS+x} ]; then 
-#   echo "ROOTSYS is unset"; 
+#################################################
+#################################################
+#################################################
+
+
+if [ -z ${ROOTSYS+x} ]; then
+#   echo "ROOTSYS is unset";
     source $P0DBANFFROOT/SetupBase.sh
 fi
 
-LD_LIBRARY_PATH=${P0DBANFFROOT}/lib:${P0DBANFFROOT}/dict:${P0DBANFFROOT}:${LD_LIBRARY_PATH}
-APP=${P0DBANFFROOT}/app
-PYTHONPATH=$APP:$APP/include:${PYTHONPATH}
-PATH=$P0DBANFFROOT/bin:$PATH
+export HIGHLAND2VERSION=v2r22
+export BANFFVERSION=v3r16
+export PSYCHESTEERINGVERSION=v3r24
 
 CMTPATH=${P0DBANFFROOT}:${CMTPATH}
 CMTPROJECTPATH=${P0DBANFFROOT}/../:${CMTPROJECTPATH}
 
-source ${P0DBANFFROOT}/nd280Highland2/*/cmt/setup.sh
-# source ${P0DBANFFROOT}/nd280Psyche/v3r32/cmt/setup.sh
-#source ${P0DBANFFROOT}/BANFF/v3r16/cmt/setup.sh
+PATH=$P0DBANFFROOT/bin:$PATH
+LD_LIBRARY_PATH=${P0DBANFFROOT}/lib:${P0DBANFFROOT}/dict:${P0DBANFFROOT}:${LD_LIBRARY_PATH}
+
+APP=${P0DBANFFROOT}/app
+PYTHONPATH=$APP:$APP/include:${PYTHONPATH}
+
+source ${P0DBANFFROOT}/nd280Highland2/$HIGHLAND2VERSION/cmt/setup.sh
+source ${P0DBANFFROOT}/BANFF/$BANFFVERSION/cmt/setup.sh
 
 export T2KREWEIGHT=${P0DBANFFROOT}/T2KReWeight
 PATH=${T2KREWEIGHT}/bin:${T2KREWEIGHT}/app:${PATH}
@@ -55,17 +76,12 @@ export LD_LIBRARY_PATH=$OAANALYSISLIBS:$LD_LIBRARY_PATH
 
 #NEUT and CERNLIB
 # Only needed with ./configure --enable-neut
-############ Update this yourself 
-#export CERN=/physics/software/cernlib-2005
-#export CERN_LEVEL=2005
+############ Update this yourself
 export CERN_ROOT=${CERN}/${CERN_LEVEL}
 export CERNLIB=$CERN_ROOT/lib
 export LD_LIBRARY_PATH=$CERNLIB:$LD_LIBRARY_PATH
 export PATH=$CERN_ROOT/bin:$PATH
 
-#export NEUT=/physics/software/neut
-#export NEUT_VERSION=v1r27p1_5.3.3
-#export NEUT_ROOT=${NEUT}/${NEUT_VERSION}
 export PATH=$NEUT_ROOT/bin:$PATH
 export LD_LIBRARY_PATH=$NEUT_ROOT/src/reweight:$LD_LIBRARY_PATH
 
@@ -76,7 +92,7 @@ export LD_LIBRARY_PATH=$NEUT_ROOT/src/reweight:$LD_LIBRARY_PATH
 
 # NIWG
 # Only needed with ./configure --enable-niwg
-#export NIWG=/physics/home/mhogan/software/v11r31/GlobalAnalysisTools/NIWGReWeight
+export NIWG=/physics/home/mhogan/software/v11r31/GlobalAnalysisTools/NIWGReWeight
 LD_LIBRARY_PATH=${NIWG}:$LD_LIBRARY_PATH;
 export NIWGREWEIGHT_INPUTS=${NIWG}/inputs
 
@@ -101,8 +117,7 @@ export NIWGREWEIGHT_INPUTS=${NIWG}/inputs
 #before you try to run any program.
 #This can be accomplished by sourcing the normal script used to setup CMT
 #followed by the setup script in the cmt directory of psycheSteering.
-source ${P0DBANFFROOT}/psyche/psycheSteering/v3r24/cmt/setup.sh
+source ${P0DBANFFROOT}/psyche/psycheSteering/$PSYCHESTEERINGVERSION/cmt/setup.sh
 LD_LIBRARY_PATH=${PSYCHECOREROOT}/Linux-x86_64:$LD_LIBRARY_PATH
 ###################
 
-export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go:$P0DBANFFROOT/go

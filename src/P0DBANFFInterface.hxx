@@ -106,7 +106,7 @@ public:
     TStyle* GetThisStyle() const {return P0DBANFFStyle;}
 
     ///Set Batch mode
-    void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(mode);}
+    void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
 
     ClassDef(P0DBANFFInterface,1)
 

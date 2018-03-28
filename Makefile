@@ -93,5 +93,5 @@ libP0DBANFF.so: $(ALLOBJS)
 clean: 
 	$(RM) $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
 
-cleandist: 
+distclean: 
 	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
