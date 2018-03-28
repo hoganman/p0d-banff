@@ -4,7 +4,8 @@
 import os
 import sys
 from Directory import Directory
-from Command import ShellCommand
+from ShellCommand import ShellCommand
+import RunName
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 QUEUE = '\"physics.q|short.q\"'
@@ -22,26 +23,7 @@ QSUBRUNSYSTNEW = 'python qsubmitter_RunSyst_New.py'
 
 def main(argv):
     """submits all the qsub python scripts"""
-    # source_highland = ShellCommand(
-    #         'source %s/nd280Highland2/v2r22/cmt/setup.sh' % (P0DBANFF))
-    # submit(source_highland)
     submit_runsyst_new_jobs()
-
-
-class RunName(object):
-    """store upper and lower case spellings of runs"""
-
-    def __init__(self, lowercase, uppercase):
-        self.lower = lowercase
-        self.upper = uppercase
-
-    def upper_case(self):
-        """get upper case seplling"""
-        return self.upper
-
-    def low(self):
-        """get lower case seplling"""
-        return self.lower
 
 
 def submit_runsyst_new_jobs():
@@ -49,8 +31,9 @@ def submit_runsyst_new_jobs():
     submit_runsyst_new()
 
 
-def make_qsub_runsyst_new(run_name, production):
-    """makes a MC qsubmitter.py command for a particular RunName class input"""
+def make_qsub_runsyst_new(run_name, production, is_mc=True):
+    """makes a MC qsubmitter.py command class
+    for a particular RunName class input"""
     flattree_dir = Directory('%s/%s/%s' % (FLATTREEBASE,
                                            production, run_name.low()))
     if not flattree_dir.exists():
@@ -70,6 +53,10 @@ def make_qsub_runsyst_new(run_name, production):
     output_path = '-p %s' % (output_path_name.get())
     output_name = '-o %s' % (run_name.upper_case())
 
+    run_type = '-r "MC"'
+    if not is_mc:
+        run_type = '-r "Data"'
+
     this_run = ShellCommand('nohup %s' % (QSUBRUNSYSTNEW))
     this_run.add(flattree_dir_list)
     this_run.add(memory)
@@ -77,49 +64,24 @@ def make_qsub_runsyst_new(run_name, production):
     this_run.add(minutes)
     this_run.add(output_path)
     this_run.add(output_name)
+    this_run.add(run_type)
     return this_run
-
-
-def submit(command, background=False):
-    """sumits a command to shell"""
-    if command is None:
-        print 'ERROR: There is no command to be run'
-        return
-    print command
-    if background:
-        os.system('%s &' % (command.get()))
-    else:
-        os.system(command.get())
-
-
-RUN2W = RunName('run2-water', 'Run2_Water')
-RUN2A = RunName('run2-air', 'Run2_Air')
-RUN3B = RunName('run3b-air', 'Run3b_Air')
-RUN3C = RunName('run3c-air', 'Run3c_Air')
-RUN4W = RunName('run4-water', 'Run4_Water')
-RUN4A = RunName('run4-air', 'Run4_Air')
-RUN5C = RunName('run5c-water', 'Run5c_Water')
-RUN6B = RunName('run6b-air', 'Run6b_Air')
-RUN6C = RunName('run6c-air', 'Run6c_Air')
-RUN6D = RunName('run6d-air', 'Run6d_Air')
-RUN6E = RunName('run6e-air', 'Run6e_Air')
-RUN7B = RunName('run7b-water', 'Run7b_Water')
 
 
 def submit_runsyst_new():
     """submits MC RunSyst_New.exe jobs"""
-    run2w_ft_mc = make_qsub_runsyst_new(RUN2W, NEUTMC_6B)
-    run2a_ft_mc = make_qsub_runsyst_new(RUN2A, NEUTMC_6B)
-    run3b_ft_mc = make_qsub_runsyst_new(RUN3B, NEUTMC_6B)
-    run3c_ft_mc = make_qsub_runsyst_new(RUN3C, NEUTMC_6B)
-    run4w_ft_mc = make_qsub_runsyst_new(RUN4W, NEUTMC_6B)
-    run4a_ft_mc = make_qsub_runsyst_new(RUN4A, NEUTMC_6B)
-    run5c_ft_mc = make_qsub_runsyst_new(RUN5C, NEUTMC_6B)
-    run6b_ft_mc = make_qsub_runsyst_new(RUN6B, NEUTMC_6B)
-    run6c_ft_mc = make_qsub_runsyst_new(RUN6C, NEUTMC_6B)
-    run6d_ft_mc = make_qsub_runsyst_new(RUN6D, NEUTMC_6B)
-    run6e_ft_mc = make_qsub_runsyst_new(RUN6E, NEUTMC_6B)
-    run7b_ft_mc = make_qsub_runsyst_new(RUN7B, NEUTMC_6L)
+    run2w_ft_mc = make_qsub_runsyst_new(RunName.RUN2W, NEUTMC_6B)
+    run2a_ft_mc = make_qsub_runsyst_new(RunName.RUN2A, NEUTMC_6B)
+    run3b_ft_mc = make_qsub_runsyst_new(RunName.RUN3B, NEUTMC_6B)
+    run3c_ft_mc = make_qsub_runsyst_new(RunName.RUN3C, NEUTMC_6B)
+    run4w_ft_mc = make_qsub_runsyst_new(RunName.RUN4W, NEUTMC_6B)
+    run4a_ft_mc = make_qsub_runsyst_new(RunName.RUN4A, NEUTMC_6B)
+    run5c_ft_mc = make_qsub_runsyst_new(RunName.RUN5C, NEUTMC_6B)
+    run6b_ft_mc = make_qsub_runsyst_new(RunName.RUN6B, NEUTMC_6B)
+    run6c_ft_mc = make_qsub_runsyst_new(RunName.RUN6C, NEUTMC_6B)
+    run6d_ft_mc = make_qsub_runsyst_new(RunName.RUN6D, NEUTMC_6B)
+    run6e_ft_mc = make_qsub_runsyst_new(RunName.RUN6E, NEUTMC_6B)
+    run7b_ft_mc = make_qsub_runsyst_new(RunName.RUN7B, NEUTMC_6L)
 
     run2w_ft_mc.run(ShellCommand.IN_BKG)
     run2a_ft_mc.run(not ShellCommand.IN_BKG)

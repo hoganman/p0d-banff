@@ -19,7 +19,7 @@ inOptions = {
         'P:':['priority=','job priority'],
         'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run_type=','run number'],
+        'r:':['run_type=','is Data or MC (assumes MC)'],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
