@@ -1,22 +1,30 @@
-#!/bin/sh
-#################################################
-#### Update P0DBANFFROOT for every checkout #####
-#################################################
+#!/usr/bin/env bash
+#######################################################
+#### Update P0DBANFFROOT for every host checkhout #####
+####               also update SetupBase.sh       #####
+#######################################################
+
+export S50A="S50-A"
+export ENSHPC="ens-hpc"
+export ENSSANDBOX="node7"
+export HEP="hep"
+export BKUP="bkup"
 
 export HOSTNAME=$(hostname)
 
 if [ -z ${P0DBANFFROOT+x} ]; then
-    if [ $HOSTNAME == "S50-A" ]; then
+    if [ $HOSTNAME == $S50A ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
-        export GOPATH=/home/mhogan/go:$P0DBANFFROOT/go
     fi
-    if [ $HOSTNAME == "ens-hpc" ] || [ $HOSTNAME == "node7" ]; then
+    if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
         export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
-        export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go:$P0DBANFFROOT/go
     fi
-    if [ $HOSTNAME == "hep" ] || [ $HOSTNAME == "bkup" ]; then
+    if [ $HOSTNAME == $HEP ] || [ $HOSTNAME == $BKUP ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
-        export GOPATH=/home/mhogan/go:$P0DBANFFROOT/go
+    fi
+    if [ -z ${P0DBANFFROOT+x} ]; then
+        echo "ERROR: host $HOSTNAME NOT found. Unable to set P0DBANFFROOT"
+        exit
     fi
     echo "P0DBANFFROOT was not declared. Setting it to ${P0DBANFFROOT}"
 fi
@@ -25,11 +33,7 @@ fi
 #################################################
 #################################################
 
-
-if [ -z ${ROOTSYS+x} ]; then
-#   echo "ROOTSYS is unset";
-    source $P0DBANFFROOT/SetupBase.sh
-fi
+source $P0DBANFFROOT/SetupBase.sh
 
 export HIGHLAND2VERSION=v2r22
 export BANFFVERSION=v3r16
@@ -76,7 +80,6 @@ export LD_LIBRARY_PATH=$OAANALYSISLIBS:$LD_LIBRARY_PATH
 
 #NEUT and CERNLIB
 # Only needed with ./configure --enable-neut
-############ Update this yourself
 export CERN_ROOT=${CERN}/${CERN_LEVEL}
 export CERNLIB=$CERN_ROOT/lib
 export LD_LIBRARY_PATH=$CERNLIB:$LD_LIBRARY_PATH
@@ -84,7 +87,6 @@ export PATH=$CERN_ROOT/bin:$PATH
 
 export PATH=$NEUT_ROOT/bin:$PATH
 export LD_LIBRARY_PATH=$NEUT_ROOT/src/reweight:$LD_LIBRARY_PATH
-
 
 #export JNUBEAM=/JReWeight
 #export LD_LIBRARY_PATH=${JNUBEAM}:$LD_LIBRARY_PATH;
@@ -119,5 +121,13 @@ export NIWGREWEIGHT_INPUTS=${NIWG}/inputs
 #followed by the setup script in the cmt directory of psycheSteering.
 source ${P0DBANFFROOT}/psyche/psycheSteering/$PSYCHESTEERINGVERSION/cmt/setup.sh
 LD_LIBRARY_PATH=${PSYCHECOREROOT}/Linux-x86_64:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=${PSYCHESTEERINGROOT}/Linux-x86_64:$LD_LIBRARY_PATH
 ###################
 
+if [ -z ${IRODSROOT+x} ]; then
+    cd ${IRODSROOT}
+    source addclients.sh
+    cd -
+fi
+
+GOPATH=$P0DBANFFROOT/go:$GOPATH

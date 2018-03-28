@@ -1,8 +1,6 @@
+#!/usr/bin/env gmake
+# Makefile
 #
-# Makefile 
-#
-# Matthew Hogan
-# 
 # – $@ : shortcut for the ‘target’;
 # – $< : shortcut for the first dependency;
 # – $^ : shortcut for all dependencies;
@@ -17,9 +15,9 @@ MACROS  := ${P0DBANFFROOT}/macros
 BIN	:= ${P0DBANFFROOT}/bin
 DIC     := ${P0DBANFFROOT}/dict
 APP     := ${P0DBANFFROOT}/app
-VPATH    = ${PWD}:$(SRC)
+VPATH    = ${PWD}:$(SRC):$(APP):$(DIC)
 
-EMPTYSTRING := 
+EMPTYSTRING :=
 
 # Include machine specific flags and locations (inc. files & libs)
 ifneq ("$(wildcard ${SRC}/make/Make.include)", "")
@@ -27,11 +25,11 @@ include ${SRC}/make/Make.include
 endif
 
 #Your compiler
-CXX	= $(shell which g++) $(CXX_MACHINE_FLAGS)
-LD	= $(shell which g++)
+CXX	= ${ND280_CPP_COMPILER} $(CXX_MACHINE_FLAGS)
+LD	= ${ND280_CPP_COMPILER}
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f
-ROOTCINT = $(shell which rootcint) -f
+ROOTCINT = $(shell which rootcint)
 
 #ROOT provides root-config to automate building of your include path and libs path
 ROOT            := $(shell which root) -l -b -q
@@ -50,9 +48,9 @@ INCLUDES := $(ROOT_INCLUDES)
 
 # compiler and preprocessor flags
 # Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
-CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES) 
+CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
-LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed 
+LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
 
 ALLCLASSES := MakeClSampleSummary MakeClFlatTree P0DBANFFInterface BenchmarkProcess Header TotalPOT TN80POT
 
@@ -66,32 +64,36 @@ ALLOBJS := $(ROOTDICTS) $(OBJS)
 # lib%.so Shared library Objects
 ALLLIBS		:= libP0DBANFF.so
 # Executables
-ALLEXES         := 
+ALLEXES         :=
 ##### Rules #####
 
 TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
 
 .PHONY: all clean
 
-all: $(TGT) 
+all: $(TGT)
 
-##### compile all the objects "ALLOBJS"
+##### compile all the objects "ALLOBJS" #####
 %dict.o: %dict.C
 	$(CXX) $(CXXFLAGS) -c dict/$<
 
 %.o: %.cxx
 	$(CXX) $(CXXFLAGS) -c $<
+#############################################
 
+##### compile ROOTCINT dictionary #####
 %dict.C: %.hxx
-	$(ROOTCINT) dict/$@ -c $<
-#######################
+	$(ROOTCINT) -f dict/$@ -c $<
+#############################################
 
+##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
 	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
+#############################################
 
 #add a rule to clean all generated files from your directory
-clean: 
+clean:
 	$(RM) $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
 
-distclean: 
+distclean:
 	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc

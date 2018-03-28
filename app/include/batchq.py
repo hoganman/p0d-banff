@@ -33,6 +33,18 @@ class batchq(object):
         self.n_users += len(user_names)
 
 
+class qoption(object):
+    """a batch queue set of command options like walltime"""
+
+    def __init__(self, search_tag, cmd_option, cmd_arg='#$'):
+        self.search_tag = search_tag
+        self.cmd_option = cmd_option
+        self.cmd_arg = cmd_arg
+
+    def __str__(self):
+        return '%s %s' % (self.cmd_arg, self.cmd_option)
+
+
 class node(object):
     """a general computer """
 

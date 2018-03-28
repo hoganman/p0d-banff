@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, getopt,os,datetime,math,glob,time,subprocess 
+import sys, getopt,os,datetime,math,glob,time,subprocess
 
 #######################
 inOptions = {
@@ -33,7 +33,7 @@ inOptions = {
 
 csuhpc = -1
 isMC = False
-queueTag = '$' 
+queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
@@ -105,7 +105,7 @@ class queueOptions:
         self.otherRequirementsList  =  otherRequirementsList
         self.emailAddress           =  emailAddress
     def GetQueueTag(self):
-        return self.queueTag 
+        return self.queueTag
 
 nodes = {} # a dictionary with nodes in the range node1 - node43
 
@@ -153,7 +153,7 @@ def InitNodes():
     	queueName = line[0:line.find('@')]
     	index = line.find('@')
     	while line[index] != ' ':
-    		index += 1	
+    		index += 1
     	index -= 1
     	hostName = line[line.find('@')+1:index+2].strip()
     	if hostName not in nodes.keys():
