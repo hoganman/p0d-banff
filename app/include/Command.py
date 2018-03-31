@@ -1,10 +1,12 @@
 """ A way to run simple commands  """
+import p0dbanff
 
 
-class Command(object):
+class Command(p0dbanff.p0dbanff):
     """a command class"""
 
     def __init__(self, command):
+        super(Command, self).__init__()
         self.command = command
 
     def __str__(self):

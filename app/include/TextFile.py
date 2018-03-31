@@ -1,5 +1,4 @@
 """A class to check the read or write text files"""
-
 import File
 
 
@@ -7,65 +6,71 @@ class TextFile(File.File):
     """The object that holds basic text file info """
 
     IS_OPEN = 2
-    IS_CLOSED = 3
+    IS_NOT_OPEN = 3
+    IS_CLOSED = 4
 
-    def __init__(self, input_file_name=''):
+    def __init__(self, input_file_name='', open_option='r'):
         super(TextFile, self).__init__(input_file_name)
         self.file_name = input_file_name
+        self.open_option = open_option
+        self.open_status = self.IS_NOT_OPEN
         self.file = None
+        self.open()
 
     def __str__(self):
         return 'Text file %r' % (self.file_name)
 
-    def open(self, option='r'):
+    def open(self):
         """opens the file"""
-        status = self.INDETERMINATE
-        if not self.exists():
-            print 'ERROR: file %s does not exist' % (self.get_file_name())
-        elif self.file:
+        self.open_status = self.INDETERMINATE
+        if self.file:
             # print 'File already open, nothing happens...'
-            status = self.IS_OPEN
+            self.open_status = self.IS_OPEN
         elif self.file is None:
             try:
-                self.file = open(self.get_file_name(), option)
-                status = self.IS_OPEN
+                self.file = open(self.get_file_name(), self.open_option)
+                self.open_status = self.IS_OPEN
             except IOError:
                 print 'The file could not be openned'
+                self.open_status = self.IS_NOT_OPEN
         else:
             print 'The file could not be openned'
-        return status
+        return self.open_status
 
     def close(self):
         """closes the file"""
-        status = self.INDETERMINATE
+        self.open_status = self.INDETERMINATE
         if self.file is None:
             print 'ERROR: Cannot close file since it is not set'
+            self.open_status = self.INDETERMINATE
         else:
             try:
                 self.file.close()
                 self.file = None
-                status = self.IS_CLOSED
+                self.open_status = self.IS_CLOSED
             except IOError:
                 print 'The file is not open, there is nothing to close'
-        return status
+                self.open_status = self.INDETERMINATE
+        return self.open_status
 
 
 class WriteTextFile(TextFile):
     """The object that writes a text file"""
 
-    def __init__(self, input_file_name, input_option='w'):
-        super(WriteTextFile, self).__init__(input_file_name)
-        self.option = input_option
+    def __init__(self, input_file_name):
+        super(WriteTextFile, self).__init__(input_file_name, 'w')
 
     def __str__(self):
         return 'Writable text file %r with format %r' % (
-            self.file_name, self.option)
+            self.file_name, self.open_option)
 
     def write(self, input_text):
         """writes text to file"""
         if self.file is None:
             print "ERROR: The file not openned yet. Please open it first"
         else:
+            if type(input_text) is list:
+                input_text = '\n'.join(input_text)
             try:
                 self.file.write(input_text)
             except IOError:

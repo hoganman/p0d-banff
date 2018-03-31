@@ -1,8 +1,11 @@
+import p0dbanff
 
-class RunName(object):
+
+class RunName(p0dbanff.p0dbanff):
     """store upper and lower case spellings of runs"""
 
     def __init__(self, lowercase, uppercase):
+        super(RunName, self).__init__()
         self.lower = lowercase
         self.upper = uppercase
 

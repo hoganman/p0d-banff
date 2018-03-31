@@ -32,7 +32,6 @@ inOptions = {
 #       h_vmem    The same as h_data (if both are set the minimum is used).
 
 csuhpc = -1
-isMC = False
 queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
@@ -273,7 +272,7 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     submission.write('source %s/nd280Highland2/v2r22/cmt/setup.sh\n'%(BASE))
-    submission.write('%s \'${P0DBANFFROOT}/app/ROOTRandomSleep.C(60)\'\n' % (ROOT))
+    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -468,7 +467,7 @@ def main(argv):
         print 'Printing help statement'
         print helpstatement
         sys.exit(2)
-    for opt, arg in opts:
+    for opts, arg in opts:
         if opt in ('-h',GetLongOption('-h')):
             print helpstatement
             sys.exit()
@@ -610,4 +609,3 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-

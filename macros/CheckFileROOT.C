@@ -11,7 +11,7 @@
 int CheckFileROOT(TString fileName = ""){
 
   int status = -1;
-  const char* const str = fileName.Data(); 
+  const char* const str = fileName.Data();
   if(!gSystem->FindFile(str,fileName)){
     status = 0;
   }
@@ -31,7 +31,7 @@ int CheckFileROOT(TString fileName = ""){
       status =  0;
     else if(f->TestBit(TFile::kRecovered))
       status =  0;
-    else 
+    else
       status = 1;
     if(f)
       f->Close();

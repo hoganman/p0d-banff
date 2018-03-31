@@ -1,5 +1,4 @@
 """a class to check the status of a ROOT file before trying to open it"""
-
 from File import File
 from ROOT import TFile
 

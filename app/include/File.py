@@ -1,10 +1,10 @@
 """A template abstract different machine files"""
-
+import p0dbanff
 from os.path import isfile
 from os.path import isdir
 
 
-class File(object):
+class File(p0dbanff.p0dbanff):
     """a general class for a file"""
 
     INDETERMINATE = -1
@@ -12,6 +12,7 @@ class File(object):
     IS_GOOD = 1
 
     def __init__(self, input_file_name=''):
+        super(File, self).__init__()
         self.file_name = input_file_name
 
     def __str__(self):

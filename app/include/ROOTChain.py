@@ -1,12 +1,13 @@
-
+import p0dbanff
 from ROOT import TChain
 from ROOTFile import ROOTFile
 
 
-class ROOTChain(object):
+class ROOTChain(p0dbanff.p0dbanff):
     """To add files to a TChain commonly used in this analysis"""
 
     def __init__(self, tree_name):
+        super(ROOTChain, self).__init__()
         self.tree_name = tree_name
         self.chain = TChain(self.tree_name, '')
 

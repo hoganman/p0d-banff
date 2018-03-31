@@ -1,13 +1,14 @@
 """The information associated with a THStack"""
-
+import p0dbanff
 # from ROOT import THStack
 
 
-class ROOTHStack(object):
+class ROOTHStack(p0dbanff.p0dbanff):
     """store the save name, plot var and binning, and axes labels"""
 
     def __init__(self, plot_var='', n_bins=0, low_val=0, high_val=-1,
                  x_title='', y_title=''):
+        super(ROOTHStack, self).__init__()
         self.name = 'ROOTHStack'
         self.plot_var = plot_var
         self.n_bins = n_bins
