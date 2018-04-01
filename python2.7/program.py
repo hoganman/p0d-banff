@@ -174,6 +174,7 @@ class program(p0dbanff.p0dbanff):
             prog_opt = self.get_option(tup_opt)
             # print type(prog_opt)
             # print type(tup_arg)
+            input_successfully_assigned = False
             if type(prog_opt) is option:
                 if len(tup_arg) == 0:
                     assignment = True
@@ -181,6 +182,20 @@ class program(p0dbanff.p0dbanff):
                     assignment = tup_arg.strip()
                 # print assignment
                 self.get_option(tup_opt).usr_input = assignment
+                input_successfully_assigned = True
+            if input_successfully_assigned:
+                continue
+            prog_qopt = self.get_qoption(tup_opt)
+            if type(prog_qopt) is batchq.qoption:
+                if len(tup_arg) == 0:
+                    assignment = True
+                else:
+                    assignment = tup_arg.strip()
+                # print assignment
+                self.get_qoption(tup_opt).usr_input = assignment
+                input_successfully_assigned = True
+            if input_successfully_assigned:
+                continue
             else:
                 print 'ERROR: input ' + tup_opt + ' is NOT found'
                 self.get_help_opt().usr_input = True

@@ -38,8 +38,8 @@ class batchq(p0dbanff.p0dbanff):
 class qoption(p0dbanff.p0dbanff):
     """a batch queue set of command options like walltime"""
 
-    def __init__(self, search_tag, cmd_option, cmd_descript='',
-                 usr_input=None, cmd_arg='#$'):
+    def __init__(self, search_tag, cmd_option, cmd_descript,
+                 usr_input, cmd_arg):
         super(qoption, self).__init__()
         self.search_tag = search_tag
         self.cmd_option = cmd_option

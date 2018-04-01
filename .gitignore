@@ -23,6 +23,7 @@ app/batchSplinesMagnet.sh
 app/batchSplinesSand.sh
 app/batch_files
 app/*pyc
+app/python2.7/*pyc
 dict/*
 run_lists/*pyc
 make/Make.config
