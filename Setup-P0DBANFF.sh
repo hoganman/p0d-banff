@@ -7,8 +7,8 @@
 export S50A="S50-A"
 export ENSHPC="ens-hpc"
 export ENSSANDBOX="node7"
-export HEP="hep"
-export BKUP="bkup"
+export HEP="hep.colostate.edu"
+export BKUP="bkup.hep.colostate.edu"
 
 export HOSTNAME=$(hostname)
 

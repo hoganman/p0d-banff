@@ -34,8 +34,8 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
 fi
 
 if [ $HOSTNAME == $HEP ]; then
-    export SOFTWARE=/Raid/software/t2k
-    export ND280=$SOFTWARE/t2k/nd280
+    export SOFTWARE=/Raid/software/t2k/nd280
+    export ND280=$SOFTWARE
     export PYTHONPATH=.:$HOME:$HOME/bin
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
     export GOPATH=/home/mhogan/go:/Raid/home/mhogan/go
