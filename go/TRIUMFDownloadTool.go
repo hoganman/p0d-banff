@@ -158,23 +158,34 @@ func TRIUMFDownloadTool() {
 	time.Sleep(5 * time.Second)
 
 	status := make(chan string)
-	//Run the first nRoutines routines
-	for j := 0; j < nRoutines; j++ {
-		go Download(inputFiles[j], TRIUMFDir, outputDir, status)
-	}
 
-	//wait for first routine to finish
-	fmt.Println(<-status)
+	if len(inputFiles) > nRoutines {
 
-	//when one routine finishes, submit another
-	for i := nRoutines; i < len(inputFiles); i++ {
-		go Download(inputFiles[i], TRIUMFDir, outputDir, status)
+		//Run the first nRoutines routines
+		for j := 0; j < nRoutines; j++ {
+			go Download(inputFiles[j], TRIUMFDir, outputDir, status)
+		}
+
+		//wait for first routine to finish
 		fmt.Println(<-status)
-	}
 
-	//finish whatever routines are left
-	for j := 1; j < nRoutines; j++ {
-		fmt.Println(<-status)
+		//when one routine finishes, submit another
+		for i := nRoutines; i < len(inputFiles); i++ {
+			go Download(inputFiles[i], TRIUMFDir, outputDir, status)
+			fmt.Println(<-status)
+		}
+
+		//finish whatever routines are left
+		for j := 1; j < nRoutines; j++ {
+			fmt.Println(<-status)
+		}
+
+	} else {
+		//Run all the routines
+		for j := 0; j < len(inputFiles); j++ {
+			go Download(inputFiles[j], TRIUMFDir, outputDir, status)
+			fmt.Println(<-status)
+		}
 	}
 }
 
