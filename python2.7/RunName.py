@@ -1,3 +1,4 @@
+"""set the conventions for using this software"""
 import p0dbanff
 
 

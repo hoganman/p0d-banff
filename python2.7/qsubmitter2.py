@@ -1,3 +1,4 @@
+import os
 import program
 import batchq
 import Directory
@@ -7,109 +8,35 @@ import TextFile
 class qsubmitter(program.program):
     """a general program in $PATH to handle common qsub options"""
 
-    def __init__(self, prog_name, cmd_arg='#$'):
-        super(qsubmitter, self).__init__(prog_name)
+    def __init__(self, prog_name, cmd_arg):
+        super(qsubmitter, self).__init__(prog_name,
+                                         'Submit jobs to a batch queue')
 
         self.cmd_arg = cmd_arg
         self.qoptions = list()
         self._program = None
 
         # help option, no inputs taken
-        self.add_option('h', 'help', 'This help message', False)
-
-        # merge .o and .e, yes or no, default yes, on
-        self.add_option('j', 'merge',
-                        'Combine .o and .e files (default=yes)',
-                        'yes')
-        self.add_qoption('merge', '-j ',
-                         'Combine .o and .e files (default=yes)',
-                         'yes',
-                         self.cmd_arg)
-
-        # set walltime
-        self.add_option('t', 'walltime', 'Job walltime in HH:MM:SS', '')
-        self.add_qoption('walltime', '-l h_cpu=', 'Job walltime in HH:MM:SS',
-                         '', self.cmd_arg)
-
-        # set memory
-        self.add_option('m', 'memory', 'Memory of job (64M = 64 megabytes)')
-        self.add_qoption('memory', '-l h_data=',
-                         'Memory of job (64M = 64 megabytes)',
-                         '', self.cmd_arg)
-
-        # set hostname
-        self.add_option('N', 'hostname', 'Nodes to run on', '')
-        self.add_qoption('hostname', '-l hostname=', 'Nodes to run on',
-                         '', self.cmd_arg)
-
-        # set qname
-        self.add_option('Q', 'qname',
-                        'The queue name to use (default: physics.q)',
-                        '"physics.q"')
-        self.add_qoption('qname', '-l qname=',
-                         'The queue name to use (default: physics.q)',
-                         '"physics.q"', self.cmd_arg)
-
-        # set job priority
-        self.add_option('P', 'priority', 'The job set priority')
-        self.add_qoption('priority', '-p ', 'The job set priority',
-                         '', self.cmd_arg)
+        # self.parser.add_option('-h', '--help', help='This help message',
+        #                        default=False, action='store_true')
+        self.parser.add_option('-t', '--walltime',
+                               help='Job walltime in HH:MM:SS')
+        self.parser.add_option('-m', '--memory',
+                               help='Memory of job (4G = 4 gigabytes)')
 
         # format PROGNAME_OUTPUTNAME_YYYYMMDD_HHMM
         self.qsubDirName = str()
         self.qsubDir = None
 
-    def add_qoption(self, opt_search, batchq_cmdopt, ):
-        """append the list of qoptions"""
-        qopt = batchq.qoption(opt_search, batchq_cmdopt, self.cmd_arg)
-        self.qoptions.append(qopt)
-
-    def get_qoption(self, search_param=str()):
-        """search for all available options using char/str opt"""
-        if type(search_param) is not str or len(search_param) < 1:
-            print "ERROR: must search for a program qoption using a string"
-        search_param = search_param.lstrip('-')
-        search_param = search_param.rstrip('=')
-        for qopt in self.qoptions:
-            if search_param is qopt.stringOpt:
-                return qopt
-        return None
-
-    def check_qsubmitter_qoptions(self):
-        """make sure the set qoptions are not invalid"""
-        for qopt in self.qoptions:
-            if qopt.cmd_arg is not '#':
-                error_msg = '\
-ERROR: %s does not have a proper cmd_arg' % (qopt.search_tag)
-                print error_msg
-                self.set_help_opt(True)
-                return
-        if len(self.get_qoption('walltime').usr_input.split(':')) != 3:
-            error_msg = 'ERROR: walltime must be the format HH:MM:DD'
-            print error_msg
-            self.set_help_opt(True)
-            return
-        test_opt = self.get_option('merge')
-        if not (type(test_opt.usr_input) is str and
-                (test_opt.usr_input is 'yes' or
-                 str(test_opt) is 'no' or len(test_opt.usr_input) == 0)):
-            error_msg = '\
-ERROR: merge .o/.e files must be "yes", "no", or empty string'
-            print error_msg
-            self.set_help_opt(True)
-            return
-
     def check_qsubmitter_options(self):
-        """"""
-        if self.is_help_set():
-            # error_msg = 'Help message set'
-            # print error_msg
+        """checks the qsubmitter options from args_parse"""
+        if self.show_usage:
             return
-        if len(str(self.get_option('walltime')).split(':')) != 3:
-            error_msg = 'error: walltime must be the format hh:mm:ss'
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"check_qsubmitter_options\" first!'
             print error_msg
-            self.set_help_opt(True)
-            return
+            self.show_usage = True
 
     def make_qsubDir(self, qsubDirName):
         """make a directory to store the qsub scripts"""
@@ -160,41 +87,56 @@ class multiqsub(qsubmitter):
         super(multiqsub, self).__init__(prog_name, cmd_arg)
 
         # how many jobs to split the submissions
-        self.add_option('n', 'num-jobs',
-                        'The number of jobs to submit')
+        self.parser.add_option('-n', '--num_jobs',
+                               help='The number of jobs to submit',
+                               default=0)
 
         # set sleep time between qsub commands
-        self.add_option('S', 'sleep',
-                        'The sleep time in seconds between qsubs',
-                        '30')
-
-    def check_multiqsub_qoptions(self):
-        """check input qoptions"""
-        self.check_qsubmitter_qoptions()
+        self.parser.add_option('-S', '--sleep',
+                               help='The sleep time in seconds between qsubs',
+                               default='30')
 
     def check_multiqsub_options(self):
         """makes sure no bad inputs were given, else, tell user"""
+        if self.show_usage:
+            return
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"check_multiqsub_options\" first!'
+            print error_msg
+            self.show_usage = True
+            return
+        if not self.options.num_jobs:
+            error_msg = 'ERROR: Please set postive integer num of jobs'
+            print error_msg
+            self.show_usage = True
+            return
+        try:
+            if int(self.options.num_jobs) <= 0:
+                error_msg = 'ERROR: Please set postive integer num of jobs'
+                print error_msg
+                self.show_usage = True
+                return
+        except Exception as exception:
+            print str(exception)
+            error_msg = 'ERROR: Please set postive integer num of jobs'
+            print error_msg
+            self.show_usage = True
+            return
+        if self.options.sleep:
+            try:
+                if int(self.options.sleep) < 0:
+                    error_msg = 'ERROR: Please set 0+ sleep time'
+                    print error_msg
+                    self.show_usage = True
+                    return
+            except Exception as exception:
+                print str(exception)
+                error_msg = 'ERROR: Please set 0+ sleep time'
+                print error_msg
+                self.show_usage = True
+                return
         self.check_qsubmitter_options()
-        if len(str(self.get_option('num-jobs'))) <= 0:
-            error_msg = 'ERROR: Must set the number of jobs'
-            print error_msg
-            self.set_help_opt(True)
-            return
-        if int(str(self.get_option('num-jobs'))) <= 0:
-            error_msg = 'ERROR: number of jobs must be positive'
-            print error_msg
-            self.set_help_opt(True)
-            return
-        if len(str(self.get_option('sleep'))) <= 0:
-            error_msg = 'ERROR: invalid input for sleep time'
-            print error_msg
-            self.set_help_opt(True)
-            return
-        if int(str(self.get_option('sleep'))) <= 0:
-            error_msg = 'ERROR: sleep time must be positive'
-            print error_msg
-            self.set_help_opt(True)
-            return
 
 
 class filelist_jobs(multiqsub):
@@ -204,34 +146,44 @@ class filelist_jobs(multiqsub):
         super(filelist_jobs, self).__init__(prog_name, cmd_arg)
 
         # a list of files
-        self.add_option('L', 'list',
-                        'The input file directory list or directory')
+        self.parser.add_option('-L', '--list',
+                               help='The input file directory list or directory',
+                               default='')
 
     def check_filelist_jobs_options(self):
         """makes sure no bad inputs were given, else, tell user"""
+        if self.show_usage:
+            return
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"check_filelist_job_options\" first!'
+            print error_msg
+            self.show_usage = True
+            return
+        if not self.options.list:
+            error_msg = 'ERROR: Please set input file list'
+            print error_msg
+            self.show_usage = True
+            return
+        if not os.path.isfile(self.options.list):
+            error_msg = 'ERROR: input file '
+            error_msg += '\"%s\" does NOT exist' % self.options.list
+            print error_msg
+            self.show_usage = True
+            return
         self.check_multiqsub_options()
-        if self.is_help_set():
-            # error_msg = 'Help message set'
-            # print error_msg
-            return
-        if len(str(self.get_option('list'))) <= 0:
-            error_msg = 'error: missing input list!'
-            print error_msg
-            self.set_help_opt(True)
-            return
-        if self.requires_arguments and len(str(self.arguments)) <= 0:
-            error_msg = 'ERROR: There must be arguments'
-            print error_msg
-            self.set_help_opt(True)
-            return
 
     def make_qsub_script(self, script_name, _program):
         """parse the qsub options and user inputs to make a script"""
         # declare the qsub file
         qsub_script = TextFile.WriteTextFile(script_name)
         if not (qsub_script.open_status is qsub_script.IS_OPEN):
-            print 'Cannot write to file %s\
-since it is not open' % str(qsub_script)
+            error_msg = 'Cannot write to file '
+            error_msg += '%s since it is not open' % str(qsub_script)
+            print error_msg
+            self.show_usage = True
+            return
+
         # write the batch options first
         batchq_cmds = self.get_list_of_batchq_cmdoptions_for_qsub_script()
         _program_cmds = _program.get_list_commands_for_qsub_script()
@@ -250,9 +202,69 @@ class CreateFlattree_jobs(filelist_jobs):
         self.requires_arguments = True
 
         # set the flattree exe output directory path
-        self.add_option('p', 'output-path',
-                        'The output directiory for each job')
+        self.parser.add_option('-p', '--output_path',
+                               help='The output directiory for each job',
+                               default='')
 
         # set the flattree output name after directory
-        self.add_option('o', 'output-name',
-                        'Example -o naME produces naME.root')
+        self.parser.add_option('-o', '--output_name',
+                               help='Example -o naME produces naME.root',
+                               default='')
+
+    def check_CreateFlattree_jobs_options(self):
+        """makes sure no bad inputs were given, else, tell user"""
+        if self.show_usage:
+            return
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"check_CreateFlattree_jobs_options\" first!'
+            print error_msg
+            self.show_usage = True
+            return
+        if not self.options.output_path:
+            error_msg = 'ERROR: Please set output path'
+            print error_msg
+            self.show_usage = True
+            return
+        if not os.path.isdir(self.options.output_path):
+            error_msg = 'ERROR: %s is NOT a valid output path' % self.options.output_path
+            print error_msg
+            self.show_usage = True
+            return
+        if not self.options.output_name:
+            error_msg = 'ERROR: Please set output file name prefix'
+            print error_msg
+            self.show_usage = True
+            return
+        self.check_filelist_jobs_options()
+
+    # def check_CreateFlatTree_jobs_qoptions(self):
+    #     """check the qoptions"""
+    #     self.check_filelist_jobs_qoptions()
+
+
+class CreateFlattree_univa_jobs(batchq.univa, CreateFlattree_jobs):
+
+    def __init__(self):
+        super(CreateFlattree_univa_jobs, self).__init__()
+        # merge std.out and std.err
+        self.parser.add_option('-j', '--merge',
+                               help='Combine .o and .e files (default=yes)', default='yes')
+        # designate a hostname
+        self.parser.add_option('-N', '--hostname',
+                               help='Nodes to run on')
+        # designate a specific queue by name
+        self.parser.add_option('-Q', '--qname',
+                               help='The queue name to use (default: physics.q)', default='\"physics.q\"')
+
+    def check_CreateFlattree_univa_jobs_options(self):
+        """"""
+        if self.show_usage:
+            return
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"check_CreateFlattree_univa_jobs_options\" first!'
+            print error_msg
+            self.show_usage = True
+            return
+        self.check_CreateFlattree_jobs_options()
