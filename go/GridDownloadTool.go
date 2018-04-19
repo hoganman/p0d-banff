@@ -1,14 +1,14 @@
 /*
-   For help, type "go run TRIUMFDownloadTool.go --help"
+   For help, type "go run GridDownloadTool.go --help"
 
-   This is a GO implementation of a T2K data download tool for TRIUMF only
+   This is a GO implementation of a Grid data download tool
    TODO: An option can be added to change the remote host or storage element
    You need an initialized voms-proxy/dirac-proxy
    Author: Matthew Hogan
    email: hoganman@gmail.com
 
    Example
-       $ go run TRIUMFDownloadTool.go -i filelist.list -r production006/X/.../ -o path/to/output/dir
+       $ go run GridDownloadTool.go -i filelist.list -r production006/X/.../ -o path/to/output/dir --srm=
 	   Each line in filelist.list is the file located in production006/X/.../
 */
 
@@ -29,22 +29,24 @@ import (
 )
 
 //******************************************************************************
-func TRIUMFDownloadTool() {
-	/* runs nRoutines goroutines to download TRIUMF data */
+func GridDownloadTool() {
+	/* runs nRoutines goroutines to download Grid data */
 
 	//*** Declare the options ***//
 	//usage help flag
-	helpFlag := getopt.BoolLong("help", 'h', "display help")
+	helpOption := getopt.BoolLong("help", 'h', "display help")
 	//input file flag
-	inputFilesFlag := getopt.StringLong("inputfiles", 'i', "", "input file list file")
+	inputFilesOption := getopt.StringLong("inputfiles", 'i', "", "input file list file")
 	//remote directory flag
-	remoteDirectoryFlag := getopt.StringLong("remote", 'r', "", "remote Directory")
+	remoteDirectoryOption := getopt.StringLong("remote", 'r', "", "remote Directory")
 	//local output directory flag
-	outputDirectoryFlag := getopt.StringLong("output", 'o', "", "output Directory")
+	outputDirectoryOption := getopt.StringLong("output", 'o', "", "output Directory")
+	//designate the storage element using srm format
+	storageElementOption := getopt.StringLong("srm", 's', "srm://t2ksrm.nd280.org/nd280data", "SRM storage element")
 
 	//*** Constants ***//
 	var inputFiles []string
-	var outputDir, TRIUMFDir string
+	var outputDir, GridDir, srm_se string
 	//the result of finishing a Download
 	//feel free to change this, but not too high to slow down other routine downloads
 	const nRoutines = 5
@@ -55,16 +57,17 @@ func TRIUMFDownloadTool() {
 	//must div by 2 since it counts everything
 	nArgs := len(args) / 2
 
-	if *helpFlag {
+	if *helpOption {
 		getopt.Usage()
 		os.Exit(1)
 	} else if nArgs == 0 {
-		inputFiles, outputDir, TRIUMFDir = GetInputsFromUser()
-	} else if nArgs == 3 && len(*inputFilesFlag) > 0 &&
-		len(*remoteDirectoryFlag) > 0 && len(*outputDirectoryFlag) > 0 {
-		inputFiles = ReadLines(*inputFilesFlag)
-		TRIUMFDir = *remoteDirectoryFlag
-		outputDir = *outputDirectoryFlag
+		inputFiles, outputDir, GridDir, srm_se = GetInputsFromUser()
+	} else if nArgs == 4 && len(*inputFilesOption) > 0 &&
+		len(*remoteDirectoryOption) > 0 && len(*outputDirectoryOption) > 0 {
+		inputFiles = ReadLines(*inputFilesOption)
+		GridDir = *remoteDirectoryOption
+		outputDir = *outputDirectoryOption
+		srm_se = *storageElementOption
 	} else {
 		getopt.Usage()
 		os.Exit(1)
@@ -84,7 +87,8 @@ func TRIUMFDownloadTool() {
 
 	fmt.Println("The number of files to download are", len(inputFiles))
 	fmt.Println("The output directory is", outputDir)
-	fmt.Println("The remote direcotry is", TRIUMFDir)
+	fmt.Println("The storage element is", srm_se)
+	fmt.Println("The remote direcotry is", GridDir)
 	fmt.Println("Sleeping for 5 seconds before executing")
 
 	time.Sleep(constants.KSleep_Confirm)
@@ -97,7 +101,7 @@ func TRIUMFDownloadTool() {
 
 		//Run the first nRoutines routines
 		for j := 0; j < nRoutines; j++ {
-			go Download(inputFiles[j], TRIUMFDir, outputDir, status)
+			go Download(srm_se, inputFiles[j], GridDir, outputDir, status)
 		}
 
 		//wait for first routine to finish
@@ -105,7 +109,7 @@ func TRIUMFDownloadTool() {
 
 		//when one routine finishes, submit another
 		for i := nRoutines; i < len(inputFiles); i++ {
-			go Download(inputFiles[i], TRIUMFDir, outputDir, status)
+			go Download(srm_se, inputFiles[i], GridDir, outputDir, status)
 			fmt.Println(<-status)
 		}
 
@@ -117,7 +121,7 @@ func TRIUMFDownloadTool() {
 	} else {
 		//There are too few files, so run the routines in sequence
 		for j := 0; j < len(inputFiles); j++ {
-			go Download(inputFiles[j], TRIUMFDir, outputDir, status)
+			go Download(srm_se, inputFiles[j], GridDir, outputDir, status)
 			fmt.Println(<-status)
 		}
 	}
@@ -175,29 +179,35 @@ func ReadLines(path string) (lines []string) {
 }
 
 //******************************************************************************
-func GetInputsFromUser() (inputFiles []string, outputDir, TRIUMFDir string) {
+func GetInputsFromUser() (inputFiles []string, outputDir, GridDir, srm_se string) {
 	/* If no command line inputs are given, get the file list, local outputDir,
-	   and remote TRIUMFDir from user interactively */
+	   and remote GridDir from user interactively */
 
 	inputListName := GetFromInput("Enter input list (/path/to/file/list): ")
 	inputFiles = ReadLines(inputListName)
 	outputDir = GetFromInput("Enter output directory (/path/to/output/directory/): ")
-	TRIUMFDir = GetFromInput("Enter remote directory (production###/X/... or raw/.../): ")
+	GridDir = GetFromInput("Enter remote directory (production###/X/... or raw/.../): ")
+	srm_se = GetFromInput("Enter SRM directory (default=srm://t2ksrm.nd280.org/nd280data)")
+	if len(srm_se) == 0 {
+		srm_se = "srm://t2ksrm.nd280.org/nd280data"
+		fmt.Println("No SRM storage element set. Setting it to", srm_se)
+	}
 	return
 }
 
 //******************************************************************************
-func Download(remoteFile, remoteDirectory, outputDirectory string,
-	/* the download command "lcg-cp" from TRIUMF */
-
+func Download(srm_se, remoteFile, remoteDirectory, outputDirectory string,
 	status chan string) {
-	program := "/usr/bin/lcg-cp"
+	/* the download command "lcg-cp" from srm storage element */
+
+	program := "/usr/bin/lcg-cp -vvv"
 	VOname := "--vo t2k.org"
-	remoteFileFullPath := fmt.Sprintf("-v srm://t2ksrm.nd280.org/nd280data/%s/%s", remoteDirectory, remoteFile)
+	remoteFileFullPath := fmt.Sprintf("%s/%s/%s", srm_se, remoteDirectory, remoteFile)
 	localFileFullPath := fmt.Sprintf("%s/%s", outputDirectory, remoteFile)
 	//join the command and options with a space between each
-	fullcmd := strings.Join([]string{program, VOname, remoteFileFullPath, localFileFullPath}, " ")
-	cmd := exec.Command(program, "--vo", "t2k.org", "-v", fmt.Sprintf("srm://t2ksrm.nd280.org/nd280data/%s/%s", remoteDirectory, remoteFile), localFileFullPath)
+	args := strings.Join([]string{VOname, remoteFileFullPath, localFileFullPath}, " ")
+	fullcmd := strings.Join([]string{program, args}, " ")
+	cmd := exec.Command(program, args)
 	//cmd := exec.Command("/bin/sleep", "5")
 	err := cmd.Run()
 	if !check.Nil(err) {
@@ -211,6 +221,6 @@ func Download(remoteFile, remoteDirectory, outputDirectory string,
 
 //******************************************************************************
 func main() {
-	TRIUMFDownloadTool()
+	GridDownloadTool()
 	os.Exit(0)
 }
