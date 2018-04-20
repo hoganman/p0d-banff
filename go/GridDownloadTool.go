@@ -2,7 +2,6 @@
    For help, type "go run GridDownloadTool.go --help"
 
    This is a GO implementation of a Grid data download tool
-   TODO: An option can be added to change the remote host or storage element
    You need an initialized voms-proxy/dirac-proxy
    Author: Matthew Hogan
    email: hoganman@gmail.com
@@ -24,6 +23,7 @@ import (
 	"github.com/pborman/getopt/v2"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -32,7 +32,7 @@ import (
 func GridDownloadTool() {
 	/* runs nRoutines goroutines to download Grid data */
 
-	//*** Declare the options ***//
+	//*** Declare the manadatory options ***//
 	//usage help flag
 	helpOption := getopt.BoolLong("help", 'h', "display help")
 	//input file flag
@@ -41,15 +41,18 @@ func GridDownloadTool() {
 	remoteDirectoryOption := getopt.StringLong("remote", 'r', "", "remote Directory")
 	//local output directory flag
 	outputDirectoryOption := getopt.StringLong("output", 'o', "", "output Directory")
+
+	/*** Optional parameters ***/
 	//designate the storage element using srm format
 	storageElementOption := getopt.StringLong("srm", 's', "srm://t2ksrm.nd280.org/nd280data", "SRM storage element")
+	getopt.Lookup("s").SetOptional()
 
-	//*** Constants ***//
+	//set the number of go routines to run simultaneously
+	nRoutinesOption := getopt.StringLong("routines", 'n', "5", "number of go rountines to run simultaneously (default=5)")
+	getopt.Lookup("n").SetOptional()
+
 	var inputFiles []string
 	var outputDir, GridDir, srm_se string
-	//the result of finishing a Download
-	//feel free to change this, but not too high to slow down other routine downloads
-	const nRoutines = 5
 
 	// Parse the program arguments
 	getopt.Parse()
@@ -62,17 +65,18 @@ func GridDownloadTool() {
 		os.Exit(1)
 	} else if nArgs == 0 {
 		inputFiles, outputDir, GridDir, srm_se = GetInputsFromUser()
-	} else if nArgs == 4 && len(*inputFilesOption) > 0 &&
-		len(*remoteDirectoryOption) > 0 && len(*outputDirectoryOption) > 0 {
-		inputFiles = ReadLines(*inputFilesOption)
-		GridDir = *remoteDirectoryOption
-		outputDir = *outputDirectoryOption
-		srm_se = *storageElementOption
 	} else {
 		getopt.Usage()
 		os.Exit(1)
 	}
 
+	nRoutines, err = strconv.Atoi(*nRoutinesOption)
+	if !check.Nil(err) {
+		errMsg := fmt.Sprintf("ERROR: \"%s\" is not a valid input", *nRoutinesOption)
+		fmt.Println(errMsg)
+		os.Exit(1)
+		getopt.Usage()
+	}
 	if exists, _ := directory.Exists(outputDir); !exists {
 		errMsg := fmt.Sprintf("ERROR: \"%s\" does NOT exist ", outputDir)
 		fmt.Println(errMsg)
