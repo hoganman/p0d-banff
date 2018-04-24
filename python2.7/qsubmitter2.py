@@ -13,7 +13,7 @@ class qsubmitter(program.program):
                                          'Submit jobs to a batch queue')
 
         self.cmd_arg = cmd_arg
-        self.qoptions = list()
+        self.qoptions = None
         self._program = None
 
         # help option, no inputs taken
@@ -30,6 +30,7 @@ class qsubmitter(program.program):
 
     def check_qsubmitter_options(self):
         """checks the qsubmitter options from args_parse"""
+        self.check_program_options()
         if self.show_usage:
             return
         if not self.options:
@@ -38,11 +39,9 @@ class qsubmitter(program.program):
             print error_msg
             self.show_usage = True
 
-    def make_qsubDir(self, qsubDirName):
+    def make_qsubDir(self):
         """make a directory to store the qsub scripts"""
-        self.qsubDir = Directory.Directory(self.qsubDirName)
-        if not self.qsubDir.exists():
-            self.qsubDir.mkdir()
+        self.qsubDir.mkdir()
 
     def get_list_of_batchq_cmdoptions_for_qsub_script(self):
         """return a list of strings each as the batchq options"""
@@ -51,12 +50,6 @@ class qsubmitter(program.program):
             line = str()
             if qopt.is_set():
                 line = str(qopt)
-            # is the qopt associated with other option
-            else:
-                opt = self.get_option(qopt.search_tag)
-                if opt is None or not opt.is_set():
-                    continue
-                line = str(qopt) + opt.usr_input
             # string must have some length to write to file
             if len(line) > 0:
                 out_list.append(qopt.cmd_descript)
@@ -65,19 +58,16 @@ class qsubmitter(program.program):
 
     def set_qsubDir(self):
         """initialize the directory where jobs are submitted"""
-        if not self.get_option('o').is_set():
-            print 'ERROR: must first set output file name before a directory'
-            print '       can be  made'
-        qsubDirName = self.name.strip('.exe')
-        qsubDirName = '%s_%s' % (qsubDirName,
-                                 str(self.get_option('o')).strip('.root'))
-        qsubDirName = '%s_%s%s%s_%s%s' % \
-                      (qsubDirName, str(self.call_time.year),
-                       str(self.call_time.month).zfill(2),
-                       str(self.call_time.day).zfill(2),
-                       str(self.call_time.hour).zfill(2),
-                       str(self.call_time.minute).zfill(2))
-        self.make_qsubDir(qsubDirName)
+        self.qsubDirName = self.name
+        self.qsubDirName = os.path.join(self.options.output_path, self.qsubDirName)
+        self.qsubDirName += '_%s%s%s_%s%s' % \
+                            (str(self.call_time.year),
+                             str(self.call_time.month).zfill(2),
+                             str(self.call_time.day).zfill(2),
+                             str(self.call_time.hour).zfill(2),
+                             str(self.call_time.minute).zfill(2))
+        self.make_qsubDir()
+        self.qsubDir = Directory.Directory(self.qsubDirName)
 
 
 class multiqsub(qsubmitter):
@@ -98,6 +88,7 @@ class multiqsub(qsubmitter):
 
     def check_multiqsub_options(self):
         """makes sure no bad inputs were given, else, tell user"""
+        self.check_program_options()
         if self.show_usage:
             return
         if not self.options:
@@ -152,6 +143,7 @@ class filelist_jobs(multiqsub):
 
     def check_filelist_jobs_options(self):
         """makes sure no bad inputs were given, else, tell user"""
+        self.check_program_options()
         if self.show_usage:
             return
         if not self.options:
@@ -193,60 +185,11 @@ class filelist_jobs(multiqsub):
         qsub_script.close()
 
 
-class CreateFlattree_jobs(filelist_jobs):
-    """jobs involving a file of oaAnalysis files"""
-
-    def __init__(self, prog_name='RunCreateFlatTree.exe', cmd_arg='#$'):
-        super(CreateFlattree_jobs, self).__init__(prog_name, cmd_arg)
-        self._program = program.RunCreateFlatTree()
-        self.requires_arguments = True
-
-        # set the flattree exe output directory path
-        self.parser.add_option('-p', '--output_path',
-                               help='The output directiory for each job',
-                               default='')
-
-        # set the flattree output name after directory
-        self.parser.add_option('-o', '--output_name',
-                               help='Example -o naME produces naME.root',
-                               default='')
-
-    def check_CreateFlattree_jobs_options(self):
-        """makes sure no bad inputs were given, else, tell user"""
-        if self.show_usage:
-            return
-        if not self.options:
-            error_msg = 'ERROR: You must run arg_parse before '
-            error_msg += '\"check_CreateFlattree_jobs_options\" first!'
-            print error_msg
-            self.show_usage = True
-            return
-        if not self.options.output_path:
-            error_msg = 'ERROR: Please set output path'
-            print error_msg
-            self.show_usage = True
-            return
-        if not os.path.isdir(self.options.output_path):
-            error_msg = 'ERROR: %s is NOT a valid output path' % self.options.output_path
-            print error_msg
-            self.show_usage = True
-            return
-        if not self.options.output_name:
-            error_msg = 'ERROR: Please set output file name prefix'
-            print error_msg
-            self.show_usage = True
-            return
-        self.check_filelist_jobs_options()
-
-    # def check_CreateFlatTree_jobs_qoptions(self):
-    #     """check the qoptions"""
-    #     self.check_filelist_jobs_qoptions()
-
-
-class CreateFlattree_univa_jobs(batchq.univa, CreateFlattree_jobs):
+class RunCreateFlattree_univa_jobs(batchq.univa, program.RunCreateFlattree_jobs):
 
     def __init__(self):
-        super(CreateFlattree_univa_jobs, self).__init__()
+        super(RunCreateFlattree_univa_jobs, self).__init__()
+        self.name = 'RunCreateFlatTree.exe'
         # merge std.out and std.err
         self.parser.add_option('-j', '--merge',
                                help='Combine .o and .e files (default=yes)', default='yes')
@@ -256,14 +199,23 @@ class CreateFlattree_univa_jobs(batchq.univa, CreateFlattree_jobs):
         # designate a specific queue by name
         self.parser.add_option('-Q', '--qname',
                                help='The queue name to use (default: physics.q)', default='\"physics.q\"')
+        # set the flattree exe output directory path
+        self.parser.add_option('-p', '--output_path',
+                               help='The output directiory for each job output',
+                               default='')
 
-    def check_CreateFlattree_univa_jobs_options(self):
+    def check_RunCreateFlattree_univa_jobs_options(self):
         """"""
-        if self.show_usage:
+        self.check_program_options()
+        if self.show_usage():
             return
-        if not self.options:
-            error_msg = 'ERROR: You must run arg_parse before '
-            error_msg += '\"check_CreateFlattree_univa_jobs_options\" first!'
+        if not self.options.output_path:
+            error_msg = 'ERROR: Please set output path'
+            print error_msg
+            self.show_usage = True
+            return
+        if not os.path.isdir(self.options.output_path):
+            error_msg = 'ERROR: %s is NOT a valid output path' % self.options.output_path
             print error_msg
             self.show_usage = True
             return

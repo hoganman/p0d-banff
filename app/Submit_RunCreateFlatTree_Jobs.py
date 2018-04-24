@@ -34,12 +34,12 @@ def main(argv):
         ft_univa_jobs.print_help()
         sys.exit(1)
 
-    # # move to a new directory to make submission scripts
-    # ft_univa_jobs.set_qsubDir()
-    # if ft_univa_jobs.qsubDir.exists():
-    #     ft_univa_jobs.qsubDir.cd()
-    # else:
-    #     sys.exit(1)
+    # move to a new directory to make submission scripts
+    ft_univa_jobs.set_qsubDir()
+    if ft_univa_jobs.qsubDir.exists():
+        ft_univa_jobs.qsubDir.cd()
+    else:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

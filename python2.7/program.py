@@ -42,6 +42,17 @@ class program(p0dbanff.p0dbanff):
         """set program description"""
         self.descpt = descpt
 
+    def check_program_options(self, program_name=''):
+        if len(self.progam_name) == 0:
+            program_name = self.name
+        if not self.options:
+            error_msg = 'ERROR: You must run arg_parse before '
+            error_msg += '\"%s\" first!' % (program_name)
+            print error_msg
+            self.show_usage = True
+            return
+        return self.show_usage
+
     # def check_arguments(self):
     #     """if arguments are required, make sure they are set"""
     #     if self.requires_arguments:
@@ -337,6 +348,17 @@ class RunCreateFlatTree(program):
         self.parser.add_option('-o', '', default='', help='Output file')
         self.requires_arguments = True
 
+    def check_RunCreateFlatTree_options(self):
+        """"""
+        self.check_program_options()
+        if self.show_usage:
+            return
+        if not self.options.o:
+            error_msg = 'ERROR: Please set output file name prefix'
+            print error_msg
+            self.show_usage = True
+            return
+
 
 class ROOTprog(program):
     """The 'root' executibble"""
@@ -350,3 +372,19 @@ class PYTHONprog(program):
 
     def __init__(self):
         super(PYTHONprog, self).__init__('python', 'Run python')
+
+
+class RunCreateFlattree_job(RunCreateFlatTree):
+    """jobs involving a file of oaAnalysis files"""
+
+    def __init__(self, prog_name='RunCreateFlatTree.exe'):
+        super(RunCreateFlattree_job, self).__init__(prog_name)
+        self._program = program.RunCreateFlatTree()
+        self.requires_arguments = True
+
+    def check_CreateFlattree_jobs_options(self):
+        """makes sure no bad inputs were given, else, tell user"""
+        self.check_program_options()
+        if self.show_usage:
+            return
+        self.check_RunCreateFlatTree_options()

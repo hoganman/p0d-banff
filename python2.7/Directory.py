@@ -6,7 +6,7 @@ import os
 class Directory(p0dbanff.p0dbanff):
     """a general class for a directory"""
 
-    def __init__(self, directory_name=''):
+    def __init__(self, directory_name):
         super(Directory, self).__init__()
         self.directory_name = directory_name
 
@@ -17,31 +17,25 @@ class Directory(p0dbanff.p0dbanff):
         """returns the directory path"""
         return self.directory_name
 
-    def exists(self, directory_name=''):
+    def exists(self):
         """checks if the directory in question exists"""
-        if len(directory_name) == 0:
-            return int(os.path.isdir(self.get()))
-        else:
-            return int(os.path.isdir(directory_name))
+        return int(os.path.isdir(self.get()))
 
-    def cd(self, directory_name=''):
+    def cd(self):
         """change to the directory"""
-        if len(directory_name) <= 0:
-            directory_name = self.get()
-        if not self.exists(directory_name):
-            print 'ERROR: unable to cd to ' + directory_name
+        if not self.exists():
+            print 'ERROR: unable to cd to ' + self.get()
         try:
-            os.chdir(directory_name)
+            os.chdir(self.get())
         except os.error as err:
             print 'ERROR: ' + str(err)
         return
 
-    def mkdir(self, directory_name=''):
+    def mkdir(self):
         """make directory"""
-        if len(directory_name) <= 0:
-            directory_name = self.get()
         try:
-            os.makedirs(directory_name)
+            os.mkdir(self.get())
         except os.error as err:
             print 'ERROR: ' + str(err)
+            print 'Could not create directory %s' % self.get()
         return
