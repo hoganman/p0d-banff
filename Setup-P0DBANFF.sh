@@ -5,6 +5,7 @@
 #######################################################
 
 export S50A="S50-A"
+export TA50D="TECRA-A50-D"
 export ENSHPC="ens-hpc"
 export ENSSANDBOX="node7"
 export HEP="hep.colostate.edu"
@@ -13,7 +14,7 @@ export BKUP="bkup.hep.colostate.edu"
 export HOSTNAME=$(hostname)
 
 if [ -z ${P0DBANFFROOT+x} ]; then
-    if [ $HOSTNAME == $S50A ]; then
+    if [ $HOSTNAME == $S50A ] || [ $HOSTNAME == $TA50D ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
     fi
     if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
@@ -24,7 +25,7 @@ if [ -z ${P0DBANFFROOT+x} ]; then
     fi
     if [ -z ${P0DBANFFROOT+x} ]; then
         echo "ERROR: host $HOSTNAME NOT found. Unable to set P0DBANFFROOT"
-        exit
+        return
     fi
     echo "P0DBANFFROOT was not declared. Setting it to ${P0DBANFFROOT}"
 fi

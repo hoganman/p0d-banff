@@ -24,27 +24,26 @@ ifneq ("$(wildcard ${SRC}/make/Make.include)", "")
 include ${SRC}/make/Make.include
 endif
 
+#ROOT provides root-config to automate building of your include path and libs path
+ROOT          := $(shell which root) -l -b -q
+ROOTCONFIG    := $(shell which root-config)
+ROOTCINT      := $(shell which rootcint)
+ROOTLIBSDIR   := $(shell root-config --libdir)
+ROOTGLIBS     := $(shell root-config --glibs)
+ROOTINCDIR    := $(shell root-config --incdir)
+ROOT_INCLUDES := -I$(ROOTINCDIR)
+
 #Your compiler
-CXX	= ${ND280_CPP_COMPILER} $(CXX_MACHINE_FLAGS)
-LD	= ${ND280_CPP_COMPILER}
+CXX	= $(shell root-config --cxx --cflags) $(CXX_MACHINE_FLAGS)
+LD	= $(CXX)
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f
-ROOTCINT = $(shell which rootcint)
-
-#ROOT provides root-config to automate building of your include path and libs path
-ROOT            := $(shell which root) -l -b -q
-ROOTGLIBS    	:= $(shell root-config --glibs)
-ROOT_INCLUDES	:= -I$(shell root-config --incdir)
-ROOTLIBSDIR     := $(shell root-config --libdir)
-
 
 PARSED_C_INCLUDE_PATH	:= -I${C_INCLUDE_PATH} -I$(MACROS)
 PARSED_C_INCLUDE_PATH	:= $(subst :, -I,$(PARSED_C_INCLUDE_PATH))
 
-
 ##### Library path and compiler / linker / rootcint options #####
 INCLUDES := $(ROOT_INCLUDES)
-
 
 # compiler and preprocessor flags
 # Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory

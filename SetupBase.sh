@@ -13,6 +13,20 @@ if [ $HOSTNAME == $S50A ]; then
     export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
     export IRODSROOT=
     export GOPATH=/home/mhogan/go
+    export CMTVERSION=v1r20p20081118
+    export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ROOTVERSION=v5r34p09n04
+fi
+
+if [ $HOSTNAME == $TA50D ]; then
+    export SOFTWARE=/home/mhogan/software
+    export ND280=$SOFTWARE/p0d-banff
+    export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
+    export IRODSROOT=
+    export GOPATH=/home/mhogan/go
+    export CMTVERSION=v1r26p20140131
+    export CMTROOT=${ND280}/CMT/$CMTVERSION
+    export ROOTVERSION=v5r34p34n00
 fi
 
 if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
@@ -21,6 +35,9 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
     export PYTHONPATH=.:/physics/INSTALLATION/bin:/physics/home/mhogan/bin:/physics/home/mhogan:$HOME:$HOME/bin:$PYTHONPATH:
     export IRODSROOT=/physics/software/irods-legacy/iRODS
     export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go
+    export CMTVERSION=v1r20p20081118
+    export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ROOTVERSION=v5r34p09n04
 fi
 
 if [ $HOSTNAME == $HEP ]; then
@@ -30,6 +47,9 @@ if [ $HOSTNAME == $HEP ]; then
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
     export GOPATH=/home/mhogan/go:/Raid/home/mhogan/go
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
+    export CMTVERSION=v1r20p20081118
+    export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ROOTVERSION=v5r34p09n04
 fi
 
 if [ $HOSTNAME == $BKUP ]; then
@@ -38,6 +58,9 @@ if [ $HOSTNAME == $BKUP ]; then
     export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
     export IRODSROOT=
     export GOPATH=/home/mhogan/go
+    export CMTVERSION=v1r20p20081118
+    export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ROOTVERSION=v5r34p09n04
 fi
 
 #if [ ! -z ${IRODSROOT+x} ] ; then
@@ -55,7 +78,6 @@ export NEUT_VERSION=v1r27p1_5.3.3
 export NEUT_ROOT=${NEUT}/${NEUT_VERSION}
 
 #source cmt
-export CMTROOT=${SOFTWARE}/CMT/v1r20p20081118
 source ${CMTROOT}/mgr/setup.sh
 export ND280REPO=:ext:anoncvs@repo.nd280.org:/home/trt2kmgr/ND280Repository
 #use this for GlobalAnalysisTools/NIWGReWeight
