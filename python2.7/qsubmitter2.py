@@ -8,8 +8,8 @@ import TextFile
 class qsubmitter(program.program):
     """a general program in $PATH to handle common qsub options"""
 
-    def __init__(self, prog_name=''):
-        super(qsubmitter, self).__init__(prog_name)
+    def __init__(self):
+        super(qsubmitter, self).__init__()
 
         self.qoptions = None
         self._program = None
@@ -64,15 +64,14 @@ class qsubmitter(program.program):
                              str(self.call_time.day).zfill(2),
                              str(self.call_time.hour).zfill(2),
                              str(self.call_time.minute).zfill(2))
-        self.make_qsubDir()
         self.qsubDir = Directory.Directory(self.qsubDirName)
 
 
 class multiqsub(qsubmitter):
     """A batch queue program that submits multiple jobs"""
 
-    def __init__(self, prog_name=''):
-        super(multiqsub, self).__init__(prog_name)
+    def __init__(self):
+        super(multiqsub, self).__init__()
 
         # how many jobs to split the submissions
         self.parser.add_option('-n', '--num_jobs',
@@ -131,13 +130,17 @@ class multiqsub(qsubmitter):
 class filelist_jobs(multiqsub):
     """Batch queue jobs involving many files listed in a file/directory"""
 
-    def __init__(self, prog_name=''):
-        super(filelist_jobs, self).__init__(prog_name)
+    def __init__(self):
+        super(filelist_jobs, self).__init__()
 
         # a list of files
         self.parser.add_option('-L', '--list',
                                help='The input file directory list or directory',
                                default='')
+
+        # a dictionary with key = filename and value = bool. If used in job,
+        # value = true
+        self.fileDict = dict()
 
     def check_filelist_jobs_options(self):
         """makes sure no bad inputs were given, else, tell user"""
@@ -178,9 +181,16 @@ class filelist_jobs(multiqsub):
         batchq_cmds = self.get_list_of_batchq_cmdoptions_for_qsub_script()
         _program_cmds = _program.get_list_commands_for_qsub_script()
         # now write the program lines
-        qsub_script(batchq_cmds)
-        qsub_script(_program_cmds)
+        qsub_script.write(batchq_cmds)
+        qsub_script.write(_program_cmds)
         qsub_script.close()
+
+    def set_fileDict(self):
+        """set the file list and sort by key"""
+        listFile = TextFile.ReadTextFile(self.options.list)
+        oaAnalysisFiles = listFile.get_file_as_list()
+        for oafile in oaAnalysisFiles:
+            self.fileDict[oafile] = False
 
 
 class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
@@ -209,7 +219,7 @@ class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
     def check_RunCreateFlattree_univa_jobs_options(self):
         """"""
         self.check_program_options()
-        if self.show_usage():
+        if self.show_usage:
             return
         if not self.options.output_path:
             error_msg = 'ERROR: Please set output path'

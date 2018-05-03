@@ -1,6 +1,7 @@
 {
     if(!gSystem->Getenv("P0DBANFFROOT") || !gSystem->FindFile(gSystem->Getenv("LD_LIBRARY_PATH"),"libP0DBANFF.so"))
     {
+        printf("Unable to load libP0DBANFF\n");
         return;
     }
     TGaxis::SetMaxDigits(3);

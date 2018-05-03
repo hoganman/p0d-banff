@@ -25,7 +25,7 @@ def main(argv):
         sys.exit(1)
 
     # assign options and arguments to jobs
-    ft_univa_jobs.check_CreateFlattree_univa_jobs_options()
+    ft_univa_jobs.check_RunCreateFlattree_univa_jobs_options()
 
     # discontinue if something was not accepted
     if ft_univa_jobs.show_usage:
@@ -34,8 +34,12 @@ def main(argv):
         ft_univa_jobs.print_help()
         sys.exit(1)
 
+    ft_univa_jobs.set_fileDict()
+    print str(ft_univa_jobs.options)
+
     # move to a new directory to make submission scripts
     ft_univa_jobs.set_qsubDir()
+    ft_univa_jobs.make_qsubDir()
     if ft_univa_jobs.qsubDir.exists():
         ft_univa_jobs.qsubDir.cd()
     else:

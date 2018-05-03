@@ -20,6 +20,10 @@ class TextFile(File.File):
     def __str__(self):
         return 'Text file %r' % (self.file_name)
 
+    def __del__(self):
+        if self.open_status == self.IS_OPEN:
+            self.close()
+
     def open(self):
         """opens the file"""
         self.open_status = self.INDETERMINATE
@@ -74,7 +78,7 @@ class WriteTextFile(TextFile):
             try:
                 self.file.write(input_text)
             except IOError:
-                print 'ERROR: The file is not writtable'
+                print 'IOError: The file is not writtable'
 
 
 class ReadTextFile(TextFile):
