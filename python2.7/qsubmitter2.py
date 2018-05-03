@@ -8,11 +8,9 @@ import TextFile
 class qsubmitter(program.program):
     """a general program in $PATH to handle common qsub options"""
 
-    def __init__(self, prog_name, cmd_arg):
-        super(qsubmitter, self).__init__(prog_name,
-                                         'Submit jobs to a batch queue')
+    def __init__(self, prog_name=''):
+        super(qsubmitter, self).__init__(prog_name)
 
-        self.cmd_arg = cmd_arg
         self.qoptions = None
         self._program = None
 
@@ -71,10 +69,10 @@ class qsubmitter(program.program):
 
 
 class multiqsub(qsubmitter):
-    """"""
+    """A batch queue program that submits multiple jobs"""
 
-    def __init__(self, prog_name, cmd_arg='#$'):
-        super(multiqsub, self).__init__(prog_name, cmd_arg)
+    def __init__(self, prog_name=''):
+        super(multiqsub, self).__init__(prog_name)
 
         # how many jobs to split the submissions
         self.parser.add_option('-n', '--num_jobs',
@@ -131,10 +129,10 @@ class multiqsub(qsubmitter):
 
 
 class filelist_jobs(multiqsub):
-    """jobs involving many files listed in a file/directory"""
+    """Batch queue jobs involving many files listed in a file/directory"""
 
-    def __init__(self, prog_name, cmd_arg='#$'):
-        super(filelist_jobs, self).__init__(prog_name, cmd_arg)
+    def __init__(self, prog_name=''):
+        super(filelist_jobs, self).__init__(prog_name)
 
         # a list of files
         self.parser.add_option('-L', '--list',
@@ -185,20 +183,24 @@ class filelist_jobs(multiqsub):
         qsub_script.close()
 
 
-class RunCreateFlattree_univa_jobs(batchq.univa, program.RunCreateFlattree_jobs):
+class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
+                                   program.RunCreateFlattree_job):
+    """A Univa Grid Engine based RunCreateFlatTree.exe batch queue submitter"""
 
     def __init__(self):
         super(RunCreateFlattree_univa_jobs, self).__init__()
         self.name = 'RunCreateFlatTree.exe'
         # merge std.out and std.err
         self.parser.add_option('-j', '--merge',
-                               help='Combine .o and .e files (default=yes)', default='yes')
+                               help='Combine .o and .e files (default=yes)',
+                               default='yes')
         # designate a hostname
         self.parser.add_option('-N', '--hostname',
                                help='Nodes to run on')
         # designate a specific queue by name
         self.parser.add_option('-Q', '--qname',
-                               help='The queue name to use (default: physics.q)', default='\"physics.q\"')
+                               help='The queue name to use (default: physics.q)',
+                               default='\"physics.q\"')
         # set the flattree exe output directory path
         self.parser.add_option('-p', '--output_path',
                                help='The output directiory for each job output',
