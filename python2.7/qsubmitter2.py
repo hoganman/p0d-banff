@@ -166,11 +166,11 @@ class filelist_jobs(multiqsub):
             return
         self.check_multiqsub_options()
 
-    def make_qsub_script(self, script_name, _program):
+    def make_qsub_script(self, script_name):
         """parse the qsub options and user inputs to make a script"""
         # declare the qsub file
         qsub_script = TextFile.WriteTextFile(script_name)
-        if not (qsub_script.open_status is qsub_script.IS_OPEN):
+        if qsub_script.open_status is not qsub_script.IS_OPEN:
             error_msg = 'Cannot write to file '
             error_msg += '%s since it is not open' % str(qsub_script)
             print error_msg
@@ -179,10 +179,9 @@ class filelist_jobs(multiqsub):
 
         # write the batch options first
         batchq_cmds = self.get_list_of_batchq_cmdoptions_for_qsub_script()
-        _program_cmds = _program.get_list_commands_for_qsub_script()
         # now write the program lines
         qsub_script.write(batchq_cmds)
-        qsub_script.write(_program_cmds)
+        qsub_script.write(self._program.command)
         qsub_script.close()
 
     def set_fileDict(self):
@@ -231,4 +230,4 @@ class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
             print error_msg
             self.show_usage = True
             return
-        self.check_CreateFlattree_jobs_options()
+        self.check_RunCreateFlattree_job_options()

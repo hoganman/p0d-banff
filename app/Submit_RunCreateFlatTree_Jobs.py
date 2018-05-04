@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import sys
 import qsubmitter2
 
@@ -44,6 +44,13 @@ def main(argv):
         ft_univa_jobs.qsubDir.cd()
     else:
         sys.exit(1)
+
+    # ft_univa_jobs.create_job_scripts()
+    # ft_univa_jobs.submit_jobs()
+    # for each job
+        # create file list
+        # create job file
+        # submit
 
 
 if __name__ == "__main__":

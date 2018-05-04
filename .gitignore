@@ -1,4 +1,3 @@
-#*#
 *.a
 *.d
 *.exe
@@ -8,6 +7,13 @@
 *.swp
 *plots
 *~
+CMAKE
+CMT
+EXTERN
+GSL
+MYSQL
+ROOT
+nd280Policy
 ./*/*/v*/Linux-x86_64
 ./*/*/v*/cmt/*sh
 ./*/*/v*/cmt/Make*

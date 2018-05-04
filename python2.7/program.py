@@ -1,11 +1,16 @@
 import datetime
 import p0dbanff
 import optparse
+import os
 # import batchq
 
 
 class program(p0dbanff.p0dbanff):
-    """A generic program class from terminal"""
+    """
+    A generic program class from terminal.
+    Not intended to be used directly.
+    Instead, define class that inherits from it
+    """
 
     def __init__(self, descpt='This is the description string'):
         super(program, self).__init__()
@@ -16,6 +21,7 @@ class program(p0dbanff.p0dbanff):
         self.requires_arguments = False
         self.call_time = datetime.datetime.now()
         self.show_usage = False
+        self.command = None
 
     def __str__(self):
         return self.name
@@ -25,11 +31,17 @@ class program(p0dbanff.p0dbanff):
         self.descpt = descpt
 
     def check_program_options(self):
+        """runs the rudamentary checks"""
         if not self.options:
             error_msg = 'ERROR: You must run arg_parse first'
             print error_msg
             self.show_usage = True
             return
+        if self.requires_arguments:
+            if not (type(self.args) is str and len(self.args) > 0):
+                error_msg = 'ERROR: This program requires arguments!'
+                self.show_usage = True
+                return
         return self.show_usage
 
     def parse_args(self):
@@ -52,6 +64,10 @@ class program(p0dbanff.p0dbanff):
         """a simple get'er for the arguments member"""
         return self.args
 
+    def run(self):
+        """a virtual function"""
+        return
+
 
 class RunCreateFlatTree(program):
     """Create the flattree program"""
@@ -67,7 +83,7 @@ class RunCreateFlatTree(program):
         self.requires_arguments = True
 
     def check_RunCreateFlatTree_options(self):
-        """"""
+        """checks if the options are correct"""
         self.check_program_options()
         if self.show_usage:
             return
@@ -76,6 +92,15 @@ class RunCreateFlatTree(program):
             print error_msg
             self.show_usage = True
             return
+        self.command = 'RunCreateFlatTree.exe'
+        if self.options.v:
+            self.command += ' -v'
+        self.command += ' -o %s' % (self.options.o)
+        self.command += ' %s' % (self.arguments)
+
+    def run(self):
+        """runs the program"""
+        os.system(self.command)
 
 
 class ROOTprog(program):
@@ -97,10 +122,8 @@ class RunCreateFlattree_job(RunCreateFlatTree):
 
     def __init__(self):
         super(RunCreateFlattree_job, self).__init__()
-        self._program = RunCreateFlatTree()
-        self.requires_arguments = True
 
-    def check_CreateFlattree_jobs_options(self):
+    def check_RunCreateFlattree_job_options(self):
         """makes sure no bad inputs were given, else, tell user"""
         self.check_program_options()
         if self.show_usage:

@@ -129,6 +129,10 @@ class univa(batchq):
         # set job priority
         self.add_qoption('priority', '-p ')
 
+        # export environment variables
+        self.add_qoption('export', '-v ')
+        self.get_qoption('export').usr_input = 'PATH,LD_LIBRARY_PATH,PYTHONPATH,P0DBANFFROOT'
+
     def check_univa_batchq_qoptions(self):
         """runs all checks on batchq options, including inherited ones"""
         if self.show_usage:
