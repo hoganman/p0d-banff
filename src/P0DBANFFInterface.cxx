@@ -172,34 +172,34 @@ void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
     UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
-  if(!inHist)
-  {
-    std::cerr << "ERROR: Invalid input TH1*"
-              << std::endl;
-    return;
-  }
-  inHist->SetTitle("");
-  if(!xAxisTitle.Contains("none"))
-  {
-      inHist->GetXaxis()->SetTitle(xAxisTitle.Data());
-      inHist->GetXaxis()->SetTitleOffset(0.85);
-  }
-  if(!yAxisTitle.Contains("none"))
-  {
-      inHist->GetYaxis()->SetTitle(yAxisTitle.Data());
-      inHist->GetYaxis()->SetTitleOffset(0.85);
-  }
-  if(textSizeChange > 0)
-  {
-      inHist->GetXaxis()->SetTitleSize(inHist->GetXaxis()->GetTitleSize()*(1+textSizeChange));
-      inHist->GetYaxis()->SetTitleSize(inHist->GetYaxis()->GetTitleSize()*(1+textSizeChange));
-  }
-  if(lineWidth > 0)
-      inHist->SetLineWidth(lineWidth);
-  if(lineColor > 0)
-      inHist->SetLineColor(lineColor);
-  if(fillColor > 0)
-      inHist->SetFillColor(fillColor);
+    if(!inHist)
+    {
+      std::cerr << "ERROR: Invalid input TH1*"
+                << std::endl;
+      return;
+    }
+    inHist->SetTitle("");
+    inHist->GetXaxis()->SetTitleOffset(0.85);
+    inHist->GetYaxis()->SetTitleOffset(0.85);
+    if(!xAxisTitle.Contains("none"))
+    {
+        inHist->GetXaxis()->SetTitle(xAxisTitle.Data());
+    }
+    if(!yAxisTitle.Contains("none"))
+    {
+        inHist->GetYaxis()->SetTitle(yAxisTitle.Data());
+    }
+    if(textSizeChange > 0)
+    {
+        inHist->GetXaxis()->SetTitleSize(inHist->GetXaxis()->GetTitleSize()*(1+textSizeChange));
+        inHist->GetYaxis()->SetTitleSize(inHist->GetYaxis()->GetTitleSize()*(1+textSizeChange));
+    }
+    if(lineWidth > 0)
+        inHist->SetLineWidth(lineWidth);
+    if(lineColor > 0)
+        inHist->SetLineColor(lineColor);
+    if(fillColor > 0)
+        inHist->SetFillColor(fillColor);
 
 }
 

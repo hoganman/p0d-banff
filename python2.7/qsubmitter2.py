@@ -187,10 +187,10 @@ class filelist_jobs(multiqsub):
 
     def set_fileDict(self):
         """set the file list and sort by key"""
-        listFile = TextFile.ReadTextFile(self.options.list)
-        oaAnalysisFiles = listFile.get_file_as_list()
-        for oafile in oaAnalysisFiles:
-            self.fileDict[oafile] = False
+        listTextFile = TextFile.ReadTextFile(self.options.list)
+        list_of_files = sorted(listTextFile.get_file_as_list())
+        for afile in list_of_files:
+            self.fileDict[afile] = False
 
 
 class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
