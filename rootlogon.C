@@ -5,9 +5,11 @@
         return;
     }
     TGaxis::SetMaxDigits(3);
+    gSystem->Load("libGraf");
+    gSystem->Load("libGraf3d");
     gSystem->Load("libTree");
     gSystem->Load("libP0DBANFF");
     P0DBANFFInterface interface;
-    printf("Loaded P0DBANFFInterface as \"interface\"\n");
     interface.LoadColorBlindPalette();
+    printf("Loaded P0DBANFFInterface as \"interface\"\n");
 }

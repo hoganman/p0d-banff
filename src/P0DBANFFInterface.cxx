@@ -41,7 +41,6 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetCanvasBorderMode(0);
     P0DBANFFStyle->SetOptTitle(kFALSE);
     P0DBANFFStyle->SetEndErrorSize(4);
-    P0DBANFFStyle->SetFillColor(0);
     gROOT->SetStyle("P0DBANFFStyle");
 
 }
@@ -64,8 +63,8 @@ P0DBANFFInterface::~P0DBANFFInterface()
 //**************************************************
 void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
         TString canvasName, TString histName, TString xAxisTitle,
-	TString yAxisTitle, UInt_t lineColor, UInt_t fillColor,
-    UInt_t lineWidth, Double_t textSizeChange) const
+	TString yAxisTitle, TString saveAsFormats, Char_t delimiter, UInt_t lineColor,
+	UInt_t fillColor, UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
     TCanvas* canvas = NULL;
@@ -107,16 +106,16 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
 
     if(outputName.Contains("."))
     {
-        SaveCanvasAs(canvas,outputName.Remove(outputName.Last('.')),"png");
+        SaveCanvasAs(canvas,outputName.Remove(outputName.Last('.')), saveAsFormats.Data());
     }
     else
     {
-        SaveCanvasAs(canvas,outputName,"png");
+        SaveCanvasAs(canvas,outputName, saveAsFormats.Data());
     }
 
     inputFile->Close();
     if (canvas) delete canvas;
-    if (htemp_1Dclone) delete htemp_1Dclone;
+    //if (htemp_1Dclone) delete htemp_1Dclone;
 
 }
 

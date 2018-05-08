@@ -37,21 +37,21 @@ public:
     ///Convert a ROOT file with a canvas to various other file formats
     ///To specify different file formats, separate them by a char delimiter
     void SaveCanvasAs(TString inputFileName, TString canvasName = "c1",
-        TString outputNamePrefix = "", TString formats = "eps,png,pdf,root",
+        TString outputNamePrefix = "", TString formats = "root,png",
         Char_t delimiter = ',') const;
 
     ///Save a canvas to various file formats. Default is eps, png, pdf, and root
     ///To specify different file formats, separate them by a char delimiter
     void SaveCanvasAs(TCanvas* const canvas, TString outputNamePrefix,
-        TString formats = "eps,png,pdf,root", Char_t delimiter = ',') const;
+        TString formats = "root,png", Char_t delimiter = ',') const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
     void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
-        TString yAxisTitle = "none",
-        UInt_t lineColor = P0DBANFFInterface::kcbBlue, UInt_t fillColor = 0,
-        UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        TString yAxisTitle = "none", TString saveAsFormats = "root,png",
+	Char_t delimiter = ',', UInt_t lineColor = P0DBANFFInterface::kcbBlue,
+	UInt_t fillColor = 0, UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
