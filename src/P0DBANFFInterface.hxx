@@ -65,10 +65,15 @@ public:
     void PrettyUpTHStack(THStack* stack, TString xAxisTitle = "none",
         TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
 
+    ///For a given TCanvas, get the TH1
+    TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName) const;
+
+    ///For a given TFile, get the TCanvas
+    TCanvas* GetTCanvasFromFile(TFile* inFile, TString canvasName) const;
 
 protected:
 
-    TObject* FindObjectInFileByName(const TList* inList, const TString name_search) const;
+    TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search) const;
 
 public:
 

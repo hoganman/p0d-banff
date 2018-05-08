@@ -68,6 +68,9 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     UInt_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
+    TCanvas* canvas = NULL;
+    TH1* htemp = NULL;
+    TH1* htemp_1Dclone = NULL;
     if(!CheckFile(inFileName))
     {
       std::cerr << "ERROR: Invalid input file: " << inFileName.Data()
@@ -75,100 +78,45 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
       return;
     }
     TFile* const inputFile = TFile::Open(inFileName.Data());
-    TCanvas* canvas = NULL;
-    //find the canvas using user's canvas name using standard Get method
-    if(canvasName.Length() > 0)
-        canvas = static_cast<TCanvas*>(inputFile->Get(canvasName.Data()));
-    TH1* htemp = NULL;
-    TH1* htemp_1Dclone = NULL;
-
-    //try to find canvas using non-standard methods
-    if(!canvas && canvasName.Length() > 0)
+    canvas = GetTCanvasFromFile(inputFile, canvasName);
+    if(canvas)
     {
-      std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data()
-            << std::endl;
-      const TList* keys = inputFile->GetListOfKeys();
-      canvas = static_cast<TCanvas*>(FindObjectInFileByName(keys, "c1"));
-      if(!canvas)
-        canvas = static_cast<TCanvas*>(FindObjectInFileByName(keys, "canvas"));
+        htemp = GetTH1FromCanvas(canvas, histName);
+    }
+    else
+    {
+        std::cout << " Trying to find \"" << histName.Data() << "\" in TFile..." << std::endl;
+	htemp = static_cast<TH1*>(FindObjectInFileByName(inputFile, histName));
+	if(htemp)
+	{
+	    canvas = new TCanvas("canvas", "", 800, 800);
+	    htemp_1Dclone = static_cast<TH1*>(htemp->Clone(Form("%s_clone", htemp->GetName())));
+	    htemp = htemp_1Dclone;
+	}
     }
 
-    if(!canvas && canvasName.Length() > 0)
+    if(!htemp)
     {
-        std::cerr << "ERROR: No canvas found using standard names: \"c1\" and \
-\"canvas\" and " << canvasName.Data() << std::endl;
-      return;
-
-    }
-    else {
-      if(canvas->GetListOfPrimitives()->GetSize() != 2 && histName.Length() == 0)
-      {
-         std::cerr << "ERROR: Canvas has more than 2 primitives with no hitogram name input"
-                   << std::endl;
+        std::cerr << "No valid TH1* pointer found!" << std::endl;
         return;
-      }
-      else if(histName.Length() > 0)
-      {
-        htemp = static_cast<TH1*>(canvas->GetPrimitive(histName.Data()));
-      }
-      else
-      {
-        TIter iter(canvas->GetListOfPrimitives());
-        TKey* key = static_cast<TKey*>(iter.Next());
-        while(key){
-          TString name = key->GetName();
-          if(name.Contains("TFrame"))
-          {
-            key = static_cast<TKey*>(iter.Next());
-            continue;
-          }
-          htemp = static_cast<TH1*>(canvas->GetPrimitive(name.Data()));
-          break;
-        }
-      }
     }
 
-  if(!htemp)
-    {
-      std::cout << " Trying to find \"" << histName.Data() << "\" in TFile..." << std::endl;
-      htemp = static_cast<TH1*>(inputFile->Get(histName.Data()));
-      if(htemp)
-      {
-          canvas = new TCanvas("canvas", "", 800, 800);
-          if(htemp->GetDimension() == 1)
-          {
-              htemp_1Dclone = static_cast<TH1*>(htemp->Clone(Form("%s_clone", htemp->GetName())));
-              htemp = static_cast<TH1*>(htemp_1Dclone);
-          }
-      }
-  }
-
-  if(!htemp)
-  {
-      std::cerr << "No valid TH1* pointer found!" << std::endl;
-      return;
-  }
-  PrettyUpTH1(htemp, xAxisTitle, yAxisTitle, lineColor, fillColor, lineWidth, textSizeChange);
-  canvas->cd();
-  if(htemp->GetDimension() == 1)
-  {
+    PrettyUpTH1(htemp, xAxisTitle, yAxisTitle, lineColor, fillColor, lineWidth, textSizeChange);
+    canvas->cd();
     htemp->Draw();
-  }
-  if(htemp->GetDimension() == 2)
-  {
-    htemp->Draw("COLZ");
-  }
-  if(outputName.Contains("."))
-  {
-    SaveCanvasAs(canvas,outputName.Remove(outputName.Last('.')),"png");
-  }
-  else
-  {
-    SaveCanvasAs(canvas,outputName,"png");
-  }
-  inputFile->Close();
-  if (canvas) delete canvas;
-  if (htemp_1Dclone) delete htemp_1Dclone;
+
+    if(outputName.Contains("."))
+    {
+        SaveCanvasAs(canvas,outputName.Remove(outputName.Last('.')),"png");
+    }
+    else
+    {
+        SaveCanvasAs(canvas,outputName,"png");
+    }
+
+    inputFile->Close();
+    if (canvas) delete canvas;
+    if (htemp_1Dclone) delete htemp_1Dclone;
 
 }
 
@@ -248,11 +196,11 @@ void P0DBANFFInterface::RandomSleep(Int_t nSeconds, Int_t seed) const
 //**************************************************
 {
     if(nSeconds <= 0){
-      return;
+        return;
     }
     if(seed==0){
-      const TDatime time;
-      seed = time.Get();
+        const TDatime time;
+        seed = time.Get();
     }
     TRandom3 ran(seed);
     const UInt_t sleepTime = TMath::Nint(ran.Integer(nSeconds+1)*1e3);//seconds
@@ -284,24 +232,24 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName) const
     }
     else
     {
-      TFile* const f = TFile::Open(copy);
-      if(!f)
-        status = kFALSE;
-      else if(!f->IsOpen())
-        status = false;
-      else if(f->IsRaw())
-        status  = false;
-      else if(!f->IsBinary())
-        status =  false;
-      else if(!f->GetListOfKeys()->GetSize())
-        status =  false;
-      else if(f->IsZombie())
-        status =  false;
-      else if(f->TestBit(TFile::kRecovered))
-        status =  false;
-      else
-        status = kTRUE;
-      f->Close();
+        TFile* const f = TFile::Open(copy);
+        if(!f)
+            status = kFALSE;
+        else if(!f->IsOpen())
+            status = false;
+        else if(f->IsRaw())
+            status  = false;
+        else if(!f->IsBinary())
+            status =  false;
+        else if(!f->GetListOfKeys()->GetSize())
+            status =  false;
+        else if(f->IsZombie())
+            status =  false;
+        else if(f->TestBit(TFile::kRecovered))
+            status =  false;
+        else
+            status = kTRUE;
+        f->Close();
     }
     return status;
 }
@@ -382,39 +330,27 @@ void P0DBANFFInterface::SaveCanvasAs(TString inputFileName,
         TString formats, Char_t delimiter) const
 //**************************************************
 {
+  TCanvas* canvas = NULL;
   if(!CheckFile(inputFileName)){
-    std::cerr << "ERROR: Invalid input file: " << inputFileName.Data()
-              << std::endl;
-    return;
+      std::cerr << "ERROR: Invalid input file: " << inputFileName.Data()
+                << std::endl;
+      return;
   }
 
   TFile* const inputFile = TFile::Open(inputFileName.Data());
-  TCanvas* canvas = NULL;
-  if(canvasName.Length() > 0)
-      canvas = static_cast<TCanvas*>(inputFile->Get(canvasName.Data()));
-  else
-  {
-    TIter iter(inputFile->GetListOfKeys());
-    TKey* key = static_cast<TKey*>(iter.Next());
-    while(key){
-      TString name = key->GetName();
-      if(!name.Contains(canvasName) && !name.Contains("c1") && !name.Contains("canvas"))
-        continue;
-      canvas = static_cast<TCanvas*>(key->ReadObj());
-      break;
-    }
-  }
+  canvas = GetTCanvasFromFile(inputFile, canvasName);
   if(!canvas)
   {
-    std::cerr << "ERROR: No canvas found using standard names: \"c1\" and \"canvas\" and"
-              << canvasName.Data() << std::endl;
-    return;
+      std::cerr << "ERROR: No canvas found with name \"" << canvasName.Data() << "\"" << std::endl;
+      return;
   }
+
   if(outputNamePrefix.Length() == 0)
   {
-    outputNamePrefix = inputFileName;
-    outputNamePrefix.Remove(outputNamePrefix.Last('.'));
+      outputNamePrefix = inputFileName;
+      outputNamePrefix.Remove(outputNamePrefix.Last('.'));
   }
+
   SaveCanvasAs(canvas, outputNamePrefix, formats, delimiter);
   inputFile->Close();
 
@@ -448,12 +384,16 @@ std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
 
 
 //**************************************************
-TObject* P0DBANFFInterface::FindObjectInFileByName(const TList* inList,
-    const TString name_search) const
+TObject* P0DBANFFInterface::FindObjectInFileByName(TFile* inFile,
+    const TString& name_search) const
 //**************************************************
 {
-    TObject* result = NULL;
-    TIter iter(inList);
+    TObject* result = inFile->Get(name_search.Data());
+    if(result)
+	return result;
+
+    const TList* keys = inFile->GetListOfKeys();
+    TIter iter(keys);
     TKey* key = static_cast<TKey*>(iter.Next());
     while(key){
       TString name = key->GetName();
@@ -466,4 +406,59 @@ TObject* P0DBANFFInterface::FindObjectInFileByName(const TList* inList,
       break;
     }
     return result;
+}
+
+
+//**************************************************
+TCanvas* P0DBANFFInterface::GetTCanvasFromFile(TFile* inFile,
+	TString canvasName) const
+//**************************************************
+{
+    TCanvas* canvas = NULL;
+    canvas = static_cast<TCanvas*>(inFile->Get(canvasName.Data()));
+
+    //try to find canvas using non-standard methods
+    if(!canvas)
+    {
+        std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data()
+            << std::endl;
+        const Int_t nNames = 3;
+        const TString canvasNames[nNames] = {"c1", "canvas", "canvas1"};
+        for(Int_t iName = 0; iName < nNames; ++iName)
+        {
+	  canvas = static_cast<TCanvas*>(FindObjectInFileByName(inFile, canvasNames[iName]));
+	  if(canvas)
+	    break;
+        }
+    }
+    return canvas;
+
+}
+
+//**************************************************
+TH1* P0DBANFFInterface::GetTH1FromCanvas(TCanvas* inCanvas,
+	TString histName) const
+//**************************************************
+{
+    TH1* htemp = NULL;
+    if(histName.Length() > 0)
+    {
+        htemp = static_cast<TH1*>(inCanvas->GetPrimitive(histName.Data()));
+    }
+    else
+    {
+        TIter iter(inCanvas->GetListOfPrimitives());
+        TKey* key = static_cast<TKey*>(iter.Next());
+        while(key){
+          TString name = key->GetName();
+          if(name.Contains("TFrame"))
+          {
+            key = static_cast<TKey*>(iter.Next());
+            continue;
+          }
+          htemp = static_cast<TH1*>(inCanvas->GetPrimitive(name.Data()));
+          break;
+	}
+    }
+    return htemp;
 }
