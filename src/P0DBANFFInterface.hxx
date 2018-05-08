@@ -47,7 +47,7 @@ public:
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTH1(TString inFileName, TString canvasName = "c1",
+    void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
         TString yAxisTitle = "none",
         UInt_t lineColor = P0DBANFFInterface::kcbBlue, UInt_t fillColor = 0,
