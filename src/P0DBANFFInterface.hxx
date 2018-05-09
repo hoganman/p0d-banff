@@ -8,6 +8,7 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "THStack.h"
 #include "TROOT.h"
 
@@ -34,6 +35,15 @@ public:
     ///Split a TString into its components by a separator
     std::vector<TString> SplitString(TString theOpt, Char_t separator) const;
 
+    ///For a given TCanvas, get the TH1
+    TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName) const;
+
+    ///For a given TCanvas, get the TH2
+    TH2* GetTH2FromCanvas(TCanvas* inCanvas, TString histName) const;
+
+    ///For a given TFile, get the TCanvas
+    TCanvas* GetTCanvasFromFile(TFile* inFile, TString canvasName) const;
+
     ///Convert a ROOT file with a canvas to various other file formats
     ///To specify different file formats, separate them by a char delimiter
     void SaveCanvasAs(TString inputFileName, TString canvasName = "c1",
@@ -50,8 +60,8 @@ public:
     void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
         TString yAxisTitle = "none", TString saveAsFormats = "root,png",
-	Char_t delimiter = ',', UInt_t lineColor = P0DBANFFInterface::kcbBlue,
-	UInt_t fillColor = 0, UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        Char_t delimiter = ',', UInt_t lineColor = P0DBANFFInterface::kcbBlue,
+        UInt_t fillColor = 0, UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
@@ -65,11 +75,17 @@ public:
     void PrettyUpTHStack(THStack* stack, TString xAxisTitle = "none",
         TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
 
-    ///For a given TCanvas, get the TH1
-    TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName) const;
+    ///Applies a set of styles and font size to make
+    ///canvases easier to see in presentations
+    void PrettyUpTH2(TString inFileName, TString outputName, TString canvasName = "c1",
+        TString histName = "", TString xAxisTitle = "none",
+        TString yAxisTitle = "none", TString saveAsFormats = "root,png",
+        Char_t delimiter = ',', Double_t textSizeChange = 0.0) const;
 
-    ///For a given TFile, get the TCanvas
-    TCanvas* GetTCanvasFromFile(TFile* inFile, TString canvasName) const;
+    ///Applies a set of styles and font size to make
+    ///canvases easier to see in presentations
+    void PrettyUpTH2(TH2* inHist, TString xAxisTitle = "none",
+        TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
 
 protected:
 
