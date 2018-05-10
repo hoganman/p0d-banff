@@ -191,7 +191,7 @@ func Download(remoteFile, remoteDirectory, outputDirectory string,
 	/* the download command "lcg-cp" from TRIUMF */
 
 	status chan string) {
-	program := "/usr/bin/lcg-cp"
+	program := "lcg-cp"
 	VOname := "--vo t2k.org"
 	remoteFileFullPath := fmt.Sprintf("-v srm://t2ksrm.nd280.org/nd280data/%s/%s", remoteDirectory, remoteFile)
 	localFileFullPath := fmt.Sprintf("%s/%s", outputDirectory, remoteFile)

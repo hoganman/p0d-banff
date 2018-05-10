@@ -15,6 +15,7 @@ if [ $HOSTNAME == $S50A ]; then
     export GOPATH=/home/mhogan/go
     export CMTVERSION=v1r20p20081118
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p09n04
 fi
 
@@ -26,6 +27,7 @@ if [ $HOSTNAME == $TA50D ]; then
     export GOPATH=/home/mhogan/go
     export CMTVERSION=v1r26p20140131
     export CMTROOT=${ND280}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p34n00
 fi
 
@@ -37,18 +39,21 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
     export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go
     export CMTVERSION=v1r20p20081118
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p09n04
 fi
 
 if [ $HOSTNAME == $HEP ]; then
-    export SOFTWARE=/Raid/software/t2k/nd280
+    export SOFTWARE=/home/mhogan/software/nd280_v11r31p15
     export ND280=$SOFTWARE
     export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
     export GOPATH=/home/mhogan/go:/Raid/home/mhogan/go
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
-    export CMTVERSION=v1r20p20081118
+    # export CMTVERSION=v1r20p20081118
+    export CMTVERSION=v1r26p20140131
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31p15
     export ROOTVERSION=v5r34p09n04
 fi
 
@@ -60,6 +65,7 @@ if [ $HOSTNAME == $BKUP ]; then
     export GOPATH=/home/mhogan/go
     export CMTVERSION=v1r20p20081118
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p09n04
 fi
 
@@ -88,7 +94,6 @@ unset CVS_SERVER
 export CMTPATH=$ND280
 export CMTPROJECTPATH=$(dirname ${ND280})
 
-export ND280VERSION=v11r31
 source $ND280/ROOT/$ROOTVERSION/Linux-x86_64/root/bin/thisroot.sh
 export ND280_CPP_COMPILER=$(which $(eval root-config --cxx))
 export ND280_CC_COMPILER=$(which $(eval root-config --cc))
