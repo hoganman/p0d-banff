@@ -16,6 +16,7 @@
 """
 
 import optparse
+from os import system
 from os.path import isfile
 import sys
 
@@ -28,7 +29,7 @@ def add_options():
 [default=5]')
     parser.add_option('-l', '--fileList',
                       help='The list of P0D sand muon oaEvent files')
-    parser.add_option('-o', '--ouput',
+    parser.add_option('-o', '--output',
                       help='The name of the output ROOT file with \"_iterN\" \
 added after each iteration')
     return parser
@@ -37,7 +38,7 @@ added after each iteration')
 def run(command):
     """run the command by printing it as well"""
     print command
-    # os.system(command)
+    system(command)
 
 
 def main(argv):
@@ -52,10 +53,15 @@ def main(argv):
 
     # for each P0D sand muon file, iterate the process (nIterations+1) times
     for p0dSandMuFile in iter(inputFile.readline, ''):
+        # Remove the full path and .root extension
+        startIndex = p0dSandMuFile.rfind('/')+1
+        endIndex = p0dSandMuFile.rfind('.')
+        p0dSandMuFile_name = p0dSandMuFile[startIndex:endIndex]
         for iteration in range(0, nIterations+1):
-            this_iter_output = '%s_iter%d.root' % (output_prefix, iteration)
+            this_iter_output = '%s_%s' % (output_prefix, p0dSandMuFile_name)
+            this_iter_output += '_iter%d.root' % (iteration)
             command = '%s -O iter=%d' % (program, iteration)
-            command += '-o %s %s' % (this_iter_output, p0dSandMuFile)
+            command += ' -o %s %s' % (this_iter_output, p0dSandMuFile)
             run(command)
 
 

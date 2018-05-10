@@ -7,8 +7,8 @@
    email: hoganman@gmail.com
 
    Example
-       $ go run GridDownloadTool.go -i filelist.list -r production006/X/.../ -o path/to/output/dir --srm=
-	   Each line in filelist.list is the file located in production006/X/.../
+       $ go run GridDownloadTool.go -i filelist.list -o path/to/output/dir
+	   Each line in filelist.list is the logical file name (LFN) lfn:/grid/t2k.org/...
 */
 
 package main
@@ -19,6 +19,7 @@ import (
 	"P0DBANFF/directory"
 	"P0DBANFF/file"
 	"bufio"
+	"bytes"
 	"fmt"
 	"github.com/pborman/getopt/v2"
 	"os"
@@ -37,22 +38,16 @@ func GridDownloadTool() {
 	helpOption := getopt.BoolLong("help", 'h', "display help")
 	//input file flag
 	inputFilesOption := getopt.StringLong("inputfiles", 'i', "", "input file list file")
-	//remote directory flag
-	remoteDirectoryOption := getopt.StringLong("remote", 'r', "", "remote Directory")
 	//local output directory flag
 	outputDirectoryOption := getopt.StringLong("output", 'o', "", "output Directory")
 
 	/*** Optional parameters ***/
-	//designate the storage element using srm format
-	storageElementOption := getopt.StringLong("srm", 's', "srm://t2ksrm.nd280.org/nd280data", "SRM storage element")
-	getopt.Lookup("s").SetOptional()
-
 	//set the number of go routines to run simultaneously
 	nRoutinesOption := getopt.StringLong("routines", 'n', "5", "number of go rountines to run simultaneously (default=5)")
-	getopt.Lookup("n").SetOptional()
+	getopt.Lookup("routines").SetOptional()
 
 	var inputFiles []string
-	var outputDir, GridDir, srm_se string
+	var outputDir string
 
 	// Parse the program arguments
 	getopt.Parse()
@@ -63,36 +58,42 @@ func GridDownloadTool() {
 	if *helpOption {
 		getopt.Usage()
 		os.Exit(1)
-	} else if nArgs == 0 {
-		inputFiles, outputDir, GridDir, srm_se = GetInputsFromUser()
-	} else {
-		getopt.Usage()
-		os.Exit(1)
+	}
+	if nArgs == 0 {
+		inputFiles, outputDir = GetInputsFromUser()
+	}
+	if len(inputFiles) == 0 {
+		inputFiles = ReadLines(*inputFilesOption)
+	}
+	if len(outputDir) == 0 {
+		outputDir = *outputDirectoryOption
 	}
 
-	nRoutines, err = strconv.Atoi(*nRoutinesOption)
+	nRoutines, err := strconv.Atoi(*nRoutinesOption)
 	if !check.Nil(err) {
 		errMsg := fmt.Sprintf("ERROR: \"%s\" is not a valid input", *nRoutinesOption)
 		fmt.Println(errMsg)
 		os.Exit(1)
 		getopt.Usage()
 	}
+
 	if exists, _ := directory.Exists(outputDir); !exists {
-		errMsg := fmt.Sprintf("ERROR: \"%s\" does NOT exist ", outputDir)
+		errMsg := fmt.Sprintf("ERROR: \"%s\" directory does NOT exist ", outputDir)
 		fmt.Println(errMsg)
 		os.Exit(1)
 		getopt.Usage()
 	}
+
 	if len(inputFiles) < 1 {
 		fmt.Println("ERROR: no files to download")
 		os.Exit(1)
 		getopt.Usage()
 	}
 
+	outputDir = strings.TrimRight(outputDir, "/")
+
 	fmt.Println("The number of files to download are", len(inputFiles))
 	fmt.Println("The output directory is", outputDir)
-	fmt.Println("The storage element is", srm_se)
-	fmt.Println("The remote direcotry is", GridDir)
 	fmt.Println("Sleeping for 5 seconds before executing")
 
 	time.Sleep(constants.KSleep_Confirm)
@@ -105,7 +106,7 @@ func GridDownloadTool() {
 
 		//Run the first nRoutines routines
 		for j := 0; j < nRoutines; j++ {
-			go Download(srm_se, inputFiles[j], GridDir, outputDir, status)
+			go Download(inputFiles[j], outputDir, status)
 		}
 
 		//wait for first routine to finish
@@ -113,7 +114,7 @@ func GridDownloadTool() {
 
 		//when one routine finishes, submit another
 		for i := nRoutines; i < len(inputFiles); i++ {
-			go Download(srm_se, inputFiles[i], GridDir, outputDir, status)
+			go Download(inputFiles[i], outputDir, status)
 			fmt.Println(<-status)
 		}
 
@@ -125,7 +126,7 @@ func GridDownloadTool() {
 	} else {
 		//There are too few files, so run the routines in sequence
 		for j := 0; j < len(inputFiles); j++ {
-			go Download(srm_se, inputFiles[j], GridDir, outputDir, status)
+			go Download(inputFiles[j], outputDir, status)
 			fmt.Println(<-status)
 		}
 	}
@@ -183,44 +184,73 @@ func ReadLines(path string) (lines []string) {
 }
 
 //******************************************************************************
-func GetInputsFromUser() (inputFiles []string, outputDir, GridDir, srm_se string) {
+func GetInputsFromUser() (inputFiles []string, outputDir string) {
 	/* If no command line inputs are given, get the file list, local outputDir,
 	   and remote GridDir from user interactively */
 
 	inputListName := GetFromInput("Enter input list (/path/to/file/list): ")
 	inputFiles = ReadLines(inputListName)
 	outputDir = GetFromInput("Enter output directory (/path/to/output/directory/): ")
-	GridDir = GetFromInput("Enter remote directory (production###/X/... or raw/.../): ")
-	srm_se = GetFromInput("Enter SRM directory (default=srm://t2ksrm.nd280.org/nd280data)")
-	if len(srm_se) == 0 {
-		srm_se = "srm://t2ksrm.nd280.org/nd280data"
-		fmt.Println("No SRM storage element set. Setting it to", srm_se)
+	return
+}
+
+//******************************************************************************
+func GetListOfReplicas(logicalFileName string) (replicas []string) {
+	/* the list the replicas locations of a LFN using "lcg-lr" */
+	cmd := exec.Command("lcg-lr", "-V t2k.org", logicalFileName)
+	stdoutStderr, err := cmd.CombinedOutput()
+	if !check.Nil(err) {
+		fmt.Println("A problem occured with task", cmd)
+		fmt.Printf("%s\n", stdoutStderr)
+		panic(err)
+	}
+	tmpReplicas := bytes.Split(stdoutStderr, []byte("\n"))
+	//replicas = make([]string, len(tmpReplicas))
+	for _, byteStr := range tmpReplicas {
+		str := string(byteStr)
+		if !strings.Contains(str, "srm") {
+			continue
+		}
+		replicas = append(replicas, str)
 	}
 	return
 }
 
 //******************************************************************************
-func Download(srm_se, remoteFile, remoteDirectory, outputDirectory string,
-	status chan string) {
+func Download(logicalFileName, outputDirectory string, status chan string) {
 	/* the download command "lcg-cp" from srm storage element */
 
-	program := "/usr/bin/lcg-cp -vvv"
-	VOname := "--vo t2k.org"
-	remoteFileFullPath := fmt.Sprintf("%s/%s/%s", srm_se, remoteDirectory, remoteFile)
+	program := "lcg-cp"
+	VOname := "-V t2k.org"
+	verbose := "-vvv"
+	//replicas := GetListOfReplicas(logicalFileName)
+	//if len(replicas) == 0 {
+	//	fmt.Println("Unable to get list of replicas for file", logicalFileName)
+	//	return
+	//}
+	//remoteFileFullPath := replicas[0]
+	remoteFileFullPath := logicalFileName
+	remoteFile := remoteFileFullPath[strings.LastIndexAny(remoteFileFullPath, "/")+1:]
 	localFileFullPath := fmt.Sprintf("%s/%s", outputDirectory, remoteFile)
+
 	//join the command and options with a space between each
-	args := strings.Join([]string{VOname, remoteFileFullPath, localFileFullPath}, " ")
+	args := strings.Join([]string{verbose, VOname, remoteFileFullPath, localFileFullPath}, " ")
 	fullcmd := strings.Join([]string{program, args}, " ")
-	cmd := exec.Command(program, args)
-	//cmd := exec.Command("/bin/sleep", "5")
-	err := cmd.Run()
-	if !check.Nil(err) {
-		fmt.Println("A problem occured with job", fullcmd)
-		fmt.Println(err)
-		panic(err)
-		//confirmContinue := GetFromInput("Would you like to continue (y/N)?")
+	if exists, _ := file.Exists(localFileFullPath); !exists {
+		cmd := exec.Command(program, VOname, verbose, remoteFileFullPath, localFileFullPath)
+		//cmd := exec.Command("echo", "5")
+		stdoutStderr, err := cmd.CombinedOutput()
+		if !check.Nil(err) {
+			fmt.Println("A problem occured with job", fullcmd)
+			fmt.Printf("%s\n", stdoutStderr)
+			//panic(err)
+			//confirmContinue := GetFromInput("Would you like to continue (y/N)?")
+		}
+	} else {
+		fullcmd = fmt.Sprintf("File %s already downloaded, skipping", localFileFullPath)
 	}
 	status <- fullcmd
+	return
 }
 
 //******************************************************************************
