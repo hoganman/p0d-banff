@@ -18,27 +18,29 @@ class ROOTFile(File):
         """Checks if the file is bad (0) or good (1)"""
         if not self.exists():
             return self.IS_BAD
+        if not self.is_root_file():
+            return self.IS_BAD
         infile = None
-        status = self.INDETERMINATE
+        tmp_status = self.INDETERMINATE
         try:
             infile = TFile.Open(self.get_file_name())
         except IOError:
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
             infile = None
         if not infile or not infile.IsOpen():
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         elif infile.IsRaw():
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         elif not infile.IsBinary():
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         elif not infile.GetListOfKeys().GetSize():
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         elif infile.IsZombie():
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         elif infile.TestBit(TFile.kRecovered):
-            status = self.IS_BAD
+            tmp_status = self.IS_BAD
         else:
-            status = self.IS_GOOD
+            tmp_status = self.IS_GOOD
         if infile:
             infile.Close()
-        return status
+        return tmp_status

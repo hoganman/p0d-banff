@@ -3,8 +3,8 @@
    RunSyst_New.exe """
 
 import ROOT
-from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem
-import ROOTChain
+from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem, TChain
+# import ROOTChain
 import ROOTHStack
 import sys
 from os.path import join
@@ -188,7 +188,8 @@ def main(argv):
 
     mc_name = 'all'
     # data_name = 'nominal'
-    file_path = '/Raid/home/mhogan/systematics'
+    # file_path = '/Raid/home/mhogan/systematics'
+    file_path = '/physics/home/mhogan/systematics'
     Run2Air = 'Run2_Air_hadd.root'
     Run2Wtr = 'Run2_Water_hadd.root'
     Run3bAir = 'Run3b_Air_hadd.root'
@@ -202,43 +203,31 @@ def main(argv):
     Run6eAir = 'Run6e_Air_hadd.root'
     Run7bWtr = 'Run7b_Water_hadd.root'
 
-    # chn_MCRun2Air = ROOT.TChain(mc_name)
-    # chn_MCRun2Air.Add(join(file_path, Run2Air))
-    # chn_MCRun2Wtr = ROOT.TChain(mc_name)
-    # chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
-    # chn_MCRun3bAir = ROOT.TChain(mc_name)
-    # chn_MCRun3bAir.Add(join(file_path, Run3bAir))
-    # chn_MCRun3cAir = ROOT.TChain(mc_name)
-    # chn_MCRun3cAir.Add(join(file_path, Run3cAir))
-    # chn_MCRun4Air = ROOT.TChain(mc_name)
-    # chn_MCRun4Air.Add(join(file_path, Run4Air))
-    # chn_MCRun4Wtr = ROOT.TChain(mc_name)
-    # chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
-    # chn_MCRun5cWtr = ROOT.TChain(mc_name)
-    # chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
-    # chn_MCRun6bAir = ROOT.TChain(mc_name)
-    # chn_MCRun6bAir.Add(join(file_path, Run6bAir))
-    # chn_MCRun6cAir = ROOT.TChain(mc_name)
-    # chn_MCRun6cAir.Add(join(file_path, Run6cAir))
-    # chn_MCRun6dAir = ROOT.TChain(mc_name)
-    # chn_MCRun6dAir.Add(join(file_path, Run6dAir))
-    # chn_MCRun6eAir = ROOT.TChain(mc_name)
-    # chn_MCRun6eAir.Add(join(file_path, Run6eAir))
-    # chn_MCRun7bWtr = ROOT.TChain(mc_name)
-    # chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
+    chn_MCRun2Air = TChain(mc_name).Add(join(file_path, Run2Air))
+    chn_MCRun2Wtr = TChain(mc_name).Add(join(file_path, Run2Wtr))
+    chn_MCRun3bAir = TChain(mc_name).Add(join(file_path, Run3bAir))
+    chn_MCRun3cAir = TChain(mc_name).Add(join(file_path, Run3cAir))
+    chn_MCRun4Air = TChain(mc_name).Add(join(file_path, Run4Air))
+    chn_MCRun4Wtr = TChain(mc_name).Add(join(file_path, Run4Wtr))
+    chn_MCRun5cWtr = TChain(mc_name).Add(join(file_path, Run5cWtr))
+    chn_MCRun6bAir = TChain(mc_name).Add(join(file_path, Run6bAir))
+    chn_MCRun6cAir = TChain(mc_name).Add(join(file_path, Run6cAir))
+    chn_MCRun6dAir = TChain(mc_name).Add(join(file_path, Run6dAir))
+    chn_MCRun6eAir = TChain(mc_name).Add(join(file_path, Run6eAir))
+    chn_MCRun7bWtr = TChain(mc_name).Add(join(file_path, Run7bWtr))
 
-    chn_MCRun2Air = ROOTChain.get(mc_name, join(file_path, Run2Air))
-    chn_MCRun2Wtr = ROOTChain.get(mc_name, join(file_path, Run2Wtr))
-    chn_MCRun3bAir = ROOTChain.get(mc_name, join(file_path, Run3bAir))
-    chn_MCRun3cAir = ROOTChain.get(mc_name, join(file_path, Run3cAir))
-    chn_MCRun4Air = ROOTChain.get(mc_name, join(file_path, Run4Air))
-    chn_MCRun4Wtr = ROOTChain.get(mc_name, join(file_path, Run4Wtr))
-    chn_MCRun5cWtr = ROOTChain.get(mc_name, join(file_path, Run5cWtr))
-    chn_MCRun6bAir = ROOTChain.get(mc_name, join(file_path, Run6bAir))
-    chn_MCRun6cAir = ROOTChain.get(mc_name, join(file_path, Run6cAir))
-    chn_MCRun6dAir = ROOTChain.get(mc_name, join(file_path, Run6dAir))
-    chn_MCRun6eAir = ROOTChain.get(mc_name, join(file_path, Run6eAir))
-    chn_MCRun7bWtr = ROOTChain.get(mc_name, join(file_path, Run7bWtr))
+    # chn_MCRun2Air = ROOTChain.get(mc_name, join(file_path, Run2Air))
+    # chn_MCRun2Wtr = ROOTChain.get(mc_name, join(file_path, Run2Wtr))
+    # chn_MCRun3bAir = ROOTChain.get(mc_name, join(file_path, Run3bAir))
+    # chn_MCRun3cAir = ROOTChain.get(mc_name, join(file_path, Run3cAir))
+    # chn_MCRun4Air = ROOTChain.get(mc_name, join(file_path, Run4Air))
+    # chn_MCRun4Wtr = ROOTChain.get(mc_name, join(file_path, Run4Wtr))
+    # chn_MCRun5cWtr = ROOTChain.get(mc_name, join(file_path, Run5cWtr))
+    # chn_MCRun6bAir = ROOTChain.get(mc_name, join(file_path, Run6bAir))
+    # chn_MCRun6cAir = ROOTChain.get(mc_name, join(file_path, Run6cAir))
+    # chn_MCRun6dAir = ROOTChain.get(mc_name, join(file_path, Run6dAir))
+    # chn_MCRun6eAir = ROOTChain.get(mc_name, join(file_path, Run6eAir))
+    # chn_MCRun7bWtr = ROOTChain.get(mc_name, join(file_path, Run7bWtr))
 
     chn_FHC_Wtr = chn_MCRun2Wtr
     chn_FHC_Wtr.Add(chn_MCRun4Wtr)

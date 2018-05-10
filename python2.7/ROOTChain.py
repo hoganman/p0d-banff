@@ -14,7 +14,7 @@ class ROOTChain(p0dbanff.p0dbanff):
     def __str__(self):
         return self.tree_name
 
-    def get(self):
+    def get_chain(self):
         """return the TChain itself"""
         return self.chain
 
