@@ -31,7 +31,7 @@ if [ $HOSTNAME == $TA50D ]; then
     export ROOTVERSION=v5r34p34n00
 fi
 
-if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
+if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ] || [ $ISENSHPCQUEUENODE == 1 ]; then
     export SOFTWARE=/physics/software
     export ND280=$SOFTWARE/t2k/ND280/v11r31
     export PYTHONPATH=.:/physics/INSTALLATION/bin:/physics/home/mhogan/bin:/physics/home/mhogan:$HOME:$HOME/bin:$PYTHONPATH:

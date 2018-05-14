@@ -5,18 +5,18 @@
 import ROOT
 from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem, TChain
 # import ROOTChain
-import ROOTHStack
+from ROOTHStack import ROOTHStack
 import sys
 from os.path import join
 
 # Which selection to run
 P0DNUMUCCSELECTION = 88
 P0DNUMUBARCCSELECTION = 89
-SELECTION = P0DNUMUCCSELECTION
+SELECTION = P0DNUMUBARCCSELECTION
 
 # P0DBANFFInterface class to make plots pretty
 INTFACE = None
-STACK_COLORS = []
+STACK_COLORS = list()
 BLACK = 1
 
 # Classes from P0DBANFF library for POT numbers
@@ -167,7 +167,7 @@ def main(argv):
     helpstatement = "plotRunSyst_NewResults.py (no args)"
     if len(argv) > 0:
         print helpstatement
-    gSystem.Load("P0DBANFF")
+    gSystem.Load("libP0DBANFF")
     global INTFACE, T2K, TN80
     try:
         INTFACE = ROOT.P0DBANFFInterface()
@@ -203,18 +203,31 @@ def main(argv):
     Run6eAir = 'Run6e_Air_hadd.root'
     Run7bWtr = 'Run7b_Water_hadd.root'
 
-    chn_MCRun2Air = TChain(mc_name).Add(join(file_path, Run2Air))
-    chn_MCRun2Wtr = TChain(mc_name).Add(join(file_path, Run2Wtr))
-    chn_MCRun3bAir = TChain(mc_name).Add(join(file_path, Run3bAir))
-    chn_MCRun3cAir = TChain(mc_name).Add(join(file_path, Run3cAir))
-    chn_MCRun4Air = TChain(mc_name).Add(join(file_path, Run4Air))
-    chn_MCRun4Wtr = TChain(mc_name).Add(join(file_path, Run4Wtr))
-    chn_MCRun5cWtr = TChain(mc_name).Add(join(file_path, Run5cWtr))
-    chn_MCRun6bAir = TChain(mc_name).Add(join(file_path, Run6bAir))
-    chn_MCRun6cAir = TChain(mc_name).Add(join(file_path, Run6cAir))
-    chn_MCRun6dAir = TChain(mc_name).Add(join(file_path, Run6dAir))
-    chn_MCRun6eAir = TChain(mc_name).Add(join(file_path, Run6eAir))
-    chn_MCRun7bWtr = TChain(mc_name).Add(join(file_path, Run7bWtr))
+    chn_MCRun2Air = TChain(mc_name)
+    chn_MCRun2Wtr = TChain(mc_name)
+    chn_MCRun3bAir = TChain(mc_name)
+    chn_MCRun3cAir = TChain(mc_name)
+    chn_MCRun4Air = TChain(mc_name)
+    chn_MCRun4Wtr = TChain(mc_name)
+    chn_MCRun5cWtr = TChain(mc_name)
+    chn_MCRun6bAir = TChain(mc_name)
+    chn_MCRun6cAir = TChain(mc_name)
+    chn_MCRun6dAir = TChain(mc_name)
+    chn_MCRun6eAir = TChain(mc_name)
+    chn_MCRun7bWtr = TChain(mc_name)
+
+    chn_MCRun2Air.Add(join(file_path, Run2Air))
+    chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
+    chn_MCRun3bAir.Add(join(file_path, Run3bAir))
+    chn_MCRun3cAir.Add(join(file_path, Run3cAir))
+    chn_MCRun4Air.Add(join(file_path, Run4Air))
+    chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
+    chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
+    chn_MCRun6bAir.Add(join(file_path, Run6bAir))
+    chn_MCRun6dAir.Add(join(file_path, Run6dAir))
+    chn_MCRun6cAir.Add(join(file_path, Run6cAir))
+    chn_MCRun6eAir.Add(join(file_path, Run6eAir))
+    chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
 
     # chn_MCRun2Air = ROOTChain.get(mc_name, join(file_path, Run2Air))
     # chn_MCRun2Wtr = ROOTChain.get(mc_name, join(file_path, Run2Wtr))
@@ -250,8 +263,8 @@ def main(argv):
     FHC_Air = sample(chn_FHC_Air, 'FHC Air', 'fhc_air')
     RHC_Air = sample(chn_RHC_Air, 'RHC Air', 'rhc_air')
 
-    FHC_Wtr.scale = TN80.GetPOTWaterData()/T2K.GetPOTWaterMC()
-    FHC_Air.scale = TN80.GetPOTAirData()/T2K.GetFHCAirMC()
+    FHC_Wtr.scale = TN80.GetPOTWaterData()/T2K.GetPOTFHCWaterMC()
+    FHC_Air.scale = TN80.GetPOTAirData()/T2K.GetPOTFHCAirMC()
     RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
     RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
 
@@ -294,7 +307,7 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
     for smpl in all_samples:
         evts_p_bin_p_pot = '%s / %s PoT' % (evts_p_bin, smpl.pot_scale)
 
-        # # neutrino energy
+        # neutrino energy
         hist_Enu = ROOTHStack('TrueEnuNom*1e-3', 50, 0., 5.0,
                               'True Neutrino Energy [GeV]',
                               evts_p_bin_p_pot)

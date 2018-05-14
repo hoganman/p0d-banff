@@ -20,7 +20,8 @@ class ROOTChain(p0dbanff.p0dbanff):
 
     def add_from_file(self, file_name):
         """Add one file to the TChain"""
-        if ROOTFile.exists(file_name):
+        root_file = ROOTFile(file_name)
+        if root_file.valid():
             self.chain.Add(file_name)
         else:
             print 'Unable to add file named "%s"' % (file_name)

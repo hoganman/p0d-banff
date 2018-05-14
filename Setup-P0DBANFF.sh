@@ -10,19 +10,45 @@ export ENSHPC="ens-hpc"
 export ENSSANDBOX="node7"
 export HEP="hep.colostate.edu"
 export BKUP="bkup.hep.colostate.edu"
+export ISENSHPCQUEUENODE=0
+ENSHPCNODES=( "node1" "node2" "node3")
+for i in `seq 4 45`;
+do
+    ENSHPCNODES+=("node${i}")
+done
 
 export HOSTNAME=$(hostname)
 
 if [ -z ${P0DBANFFROOT+x} ]; then
+
+    # is it one of your laptops?
     if [ $HOSTNAME == $S50A ] || [ $HOSTNAME == $TA50D ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
     fi
+
+    # is it one of the ENS login nodes?
     if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ]; then
         export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
     fi
+
+    # is it one of your HEPPA maintained servers?
     if [ $HOSTNAME == $HEP ] || [ $HOSTNAME == $BKUP ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
     fi
+
+    # is it one of the ENS queue nodes?
+    for nodename in "${ENSHPCNODES[@]}"
+    do
+        if [ $nodename == $HOSTNAME ]; then
+	    ISENSHPCQUEUENODE=1
+	fi
+    done
+
+    if [ $ISENSHPCQUEUENODE == 1 ]; then
+	echo "Running on ENS-HPC compute node"
+        export P0DBANFFROOT=/physics/home/mhogan/software/p0d-banff/p0d-banff
+    fi
+
     if [ -z ${P0DBANFFROOT+x} ]; then
         echo "ERROR: host $HOSTNAME NOT found. Unable to set P0DBANFFROOT"
         return
@@ -43,11 +69,11 @@ export PSYCHESTEERINGVERSION=v3r24
 CMTPATH=${P0DBANFFROOT}:${CMTPATH}
 CMTPROJECTPATH=${P0DBANFFROOT}/../:${CMTPROJECTPATH}
 
-PATH=$P0DBANFFROOT/bin:$PATH
-LD_LIBRARY_PATH=${P0DBANFFROOT}/lib:${P0DBANFFROOT}/dict:${P0DBANFFROOT}:${LD_LIBRARY_PATH}
+export PATH=$P0DBANFFROOT/bin:$PATH
+export LD_LIBRARY_PATH=${P0DBANFFROOT}/lib:${P0DBANFFROOT}/dict:${P0DBANFFROOT}:${LD_LIBRARY_PATH}
 
 APP=${P0DBANFFROOT}/app
-PYTHONPATH=$APP:$P0DBANFFROOT/python2.7:${PYTHONPATH}
+export PYTHONPATH=$APP:$P0DBANFFROOT/python2.7:${PYTHONPATH}
 
 source ${P0DBANFFROOT}/nd280Highland2/$HIGHLAND2VERSION/cmt/setup.sh
 source ${P0DBANFFROOT}/BANFF/$BANFFVERSION/cmt/setup.sh

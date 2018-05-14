@@ -67,9 +67,9 @@ int main(int argc, char *argv[]){
         inputFileName = optarg;
         break;
       }
-      case 'd': 
+      case 'd':
       {
-	isData = true;		
+	isData = true;
 	break;
       }
       default: {
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
   }
 
   std::cout << "is Data: " << isData << std::endl;
-    
+
   preload=0;
 #ifndef MULTITHREAD
   if (preload==1){
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
     return 0;
   }
 #endif
-  
+
   // Read the parameters files following the package hierarchy
   // first the top level package. Set the parameters as fixed
   ND::params().LoadParametersFiles(anaUtils::GetPackageHierarchy(), true);
@@ -118,23 +118,23 @@ int main(int argc, char *argv[]){
     RunAllSyst                 = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunAllSyst");
     RunOnInidividualSyst       = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.RunOnInidividualSyst");
     ThrowToys                  = (bool)ND::params().GetParameterI("psycheSteering.RunSyst.ThrowToys");
-    if(!applyFluxWeightSystematics && !applyVariationSystematics && !applyWeightSystematics) { 
+    if(!applyFluxWeightSystematics && !applyVariationSystematics && !applyWeightSystematics) {
       std::cout<<" no systematics is set to be applied "<<std::endl;
       throw;
     }
   }
 
-  
+
   TFile* inputFile = TFile::Open(inputFileName.c_str());
   if(!inputFile)
   {
-      std::cerr << "No input file, exiting..." << std::cerr; 
+      std::cerr << "No input file, exiting..." << std::cerr;
       throw;
   }
   TTree* RTV       = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
   if(!RTV && !isData)
-  { 
-      std::cerr << "No NRooTrackerVtx in the file, exiting..." << std::cerr; 
+  {
+      std::cerr << "No NRooTrackerVtx in the file, exiting..." << std::cerr;
       throw;
   }
   inputFile->Close();
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
   std::vector<SystematicBase*>     allSyst = _man.syst().GetSystematics();
   isAntiNu = IsAntiNu(inputFileName);
   _man.sel().DumpSelections();
-  
+
   ToyMaker* toyMaker = NULL;
   ToyMaker* ZeroVarToyMaker = NULL;
   ToyExperiment* ZeroVarToy = NULL;
@@ -164,14 +164,14 @@ int main(int argc, char *argv[]){
   if(!isData)
   {
     // Create a ToyMaker to configure the toy experiment. Initialize it with a random seed
-    toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), 
+    toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"),
     (bool)  ND::params().GetParameterI("psycheSteering.Systematics.ZeroVariation"));
     // Create and fill the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
     std::cout << "Creating " <<  nToys << " toy experiments" << std::endl;
-    toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics()); 
+    toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics());
 
     ZeroVarToyMaker = new ToyMakerExample(1, true);
-    ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics()); 
+    ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics());
     ZeroVarToy = ZeroVarToyMaker->GetToyExperiment(0);
 
     // Print the steps for the different selections
@@ -228,6 +228,9 @@ int main(int argc, char *argv[]){
   Double_t LeptonCosNom    = -999;
   Double_t WeightNom       = -999;
   Double_t FluxWeightNom   = -999;
+  Int_t tLeptonPDG;
+  Int_t tLeptonParentPDG;
+  Int_t tLeptonGParentPDG;
   Double_t tVtxX = -999;
   Double_t tVtxY = -999;
   Double_t tVtxZ = -999;
@@ -259,11 +262,11 @@ int main(int argc, char *argv[]){
     if(!(ewb->IsEnabled())) continue;
     std::cout << ewb->GetName() << std::endl;
   }
-  
-  
+
+
   Double_t WeightIndToy [nWeights][nToys];
   Double_t FluxWeightToy[nToys];
-  
+
   for (int iToy = 0; iToy < nToys; ++iToy) {
     Toy            [iToy] = -999;
     TrueVertexIDToy[iToy] = -999;
@@ -275,7 +278,7 @@ int main(int argc, char *argv[]){
     WeightToy      [iToy] = -999;
     for (int iSyst = 0; iSyst < nWeights; ++iSyst) {
       WeightIndToy[iSyst][iToy] = -999;
-    }    
+    }
   }
 
   TTree *tree = NULL;
@@ -287,7 +290,7 @@ int main(int argc, char *argv[]){
     if(RunOnInidividualSyst)
       systnametree.push_back(std::string((*it)->GetName()));
   }
- 
+
   if(RunOnInidividualSyst)
     systnametree.push_back("weight");
   if(RunAllSyst)
@@ -297,13 +300,13 @@ int main(int argc, char *argv[]){
     systnametree.push_back("nominal");
   }
   std::vector<int> npassed(SampleId::kNSamples, 0);
-    
+
   for (std::vector<std::string>::iterator it = systnametree.begin(); it != systnametree.end(); ++it){
     std::string syst_name = (*it);
     std::cout << "Running over " << syst_name << std::endl;
     bool WeightSyst = (syst_name == "weight");
     bool AllSyst    = (syst_name == "all");
-    
+
     outfile->cd();
     tree = new TTree(syst_name.c_str(),syst_name.c_str());
     tree->Branch("Run",             &Run,             "Run/I"        );
@@ -327,6 +330,9 @@ int main(int argc, char *argv[]){
     tree->Branch("WeightNom",       &WeightNom,       "WeightNom/D"      );
     tree->Branch("FluxWeightNom",   &FluxWeightNom,   "FluxWeightNom/D"  );
 
+    tree->Branch("tLeptonPDG", &tLeptonPDG, "tLeptonPDG/I");
+    tree->Branch("tLeptonParentPDG", &tLeptonParentPDG, "tLeptonParentPDG/I");
+    tree->Branch("tLeptonGParentPDG", &tLeptonGParentPDG, "tLeptonGParentPDG/I");
     tree->Branch("vtxX" ,&vtxX ,"vtxX/D");
     tree->Branch("vtxY" ,&vtxY ,"vtxY/D");
     tree->Branch("vtxZ" ,&vtxZ ,"vtxZ/D");
@@ -334,7 +340,7 @@ int main(int argc, char *argv[]){
     tree->Branch("tVtxY",&tVtxY,"tVtxY/D");
     tree->Branch("tVtxZ",&tVtxZ,"tVtxZ/D");
     tree->Branch("onWaterTarget",&onWaterTarget,"onWaterTarget/I");
-    
+
     int nt = nToys;
     if(ThrowToys){
       tree->Branch("nToys",          &nt,              "nToys/I");
@@ -351,7 +357,7 @@ int main(int argc, char *argv[]){
         tree->Branch("nSyst",        &nWeightSyst,      "nSyst/I");
         tree->Branch("WeightIndToy",  WeightIndToy,     Form("WeightIndToy[%d][%d]/D", nWeightSyst, nToys));
       }
-    
+
       tree->Branch("FluxWeightToy",   FluxWeightToy,    Form("FluxWeightToy[%d]/D",nToys));
     }
     std::vector<float> weights;
@@ -360,7 +366,7 @@ int main(int argc, char *argv[]){
     int rtvi = 0;
     int prevTruthID = -1;
     int prevRTV = -1;
-    
+
     //  ProfilerStart("prof.out");
     //--------- Loop over entries in the tree ----------------------------------
     // Get the number of entries in the tree
@@ -370,10 +376,10 @@ int main(int argc, char *argv[]){
 	std::cout << "Found ND280Geometry" << std::endl;
 
     std::cout << "RunSyst: loop over " << nmax << " entries" << std::endl;
-  
+
     Long64_t entry = 0;
     while (entry < nmax) {
-      
+
       if(!geoManager && !isData)
 	  geoManager = static_cast<TGeoManager*>(gDirectory->FindObjectAny("ND280Geometry"));
 
@@ -393,34 +399,34 @@ int main(int argc, char *argv[]){
       }
 
 std::cout << "got event" << std::endl;
-      
+
       // Fill the EventBox
       if (!preload)
       {
         _man.sel().InitializeEvent(*event);
         std::cout << "initialized" << std::endl;
       }
-      
+
       if(!isData)
       {
-      
+
         // Run the  nominal selection
         // Create the SystBox array (only the first time it is called for each systematic)
         if (_man.evar().HasEventVariations()){
           // Create the SystBox array (only the first time it is called for each EventVariation)
           _man.evar().Initialize(nmax);
-    
+
           // Initialize The SystBox for EventVariations
           _man.evar().InitializeEvent(_man.sel(),*event);
-        }    
+        }
 
         if (_man.eweight().HasEventWeights()){
           // Create the SystBox array (only the first time it is called for each EventWeight)
           _man.eweight().Initialize(_man.sel(),nmax);
-    
+
           // Initialize The SystBox for variation systematics
           _man.eweight().InitializeEvent(_man.sel(),*event);
-        }    
+        }
       }
       // Initialize The SystBox for variation systematics
       //if (!preload)
@@ -434,7 +440,10 @@ std::cout << "got event" << std::endl;
       WeightNom       = -999;
       TrueVertexIDNom = -999;
       SelectionNom    = -999;
-      tVtxX = -999; 
+      tLeptonPDG = -999;
+      tLeptonParentPDG = -999;
+      tLeptonGParentPDG = -999;
+      tVtxX = -999;
       tVtxY = -999;
       tVtxZ = -999;
       vtxX =  -999;
@@ -448,7 +457,7 @@ std::cout << "got event" << std::endl;
       isOOF = -999;
       isNoTrueVtx = -999;
       isOther = -999;
- 
+
       //_man.syst().InitializeEventSystematics(_man.sel(),*event);
       bool passednom = false;
 
@@ -456,7 +465,7 @@ std::cout << "got event" << std::endl;
 	passednom = _man.ProcessEvent(*ZeroVarToy, *event, totalweight, fluxWeightSyst);
       else
         passednom = _man.ProcessEvent(*event);
-       
+
       if(passednom){
         FillTree=true;
 	//AnaVertexB** Vertices = event->Vertices;
@@ -469,6 +478,12 @@ std::cout << "got event" << std::endl;
         npassed[summary->EventSample]++;
 	AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
 	AnaTrueVertexB* trVtx = static_cast<AnaTrueVertexB*>(summary->TrueVertex[summary->EventSample]);
+
+	AnaTrueParticleB *trueParticle = lepCand->GetTrueParticle();
+
+	Int_t tLeptonPDG = trueParticle->PDG;
+	Int_t tLeptonParentPDG = trueParticle->ParentPDG;
+	Int_t tLeptonGParentPDG = trueParticle->GParentPDG;
 
 	vtxX = summary->VertexPosition[summary->EventSample][0];
 	vtxY = summary->VertexPosition[summary->EventSample][1];
@@ -488,7 +503,7 @@ std::cout << "got event" << std::endl;
 	  tVtxX = trVtx->Position[0];
 	  tVtxY = trVtx->Position[1];
 	  tVtxZ = trVtx->Position[2];
-          TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID; 
+          TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID;
           TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
           TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
           if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
@@ -500,7 +515,7 @@ std::cout << "got event" << std::endl;
           }
         }
       }
-            
+
       /// 2. ====================================================================
       /// Loop over toy experiments
       for (Int_t iToy = 0; iToy < nToys && ThrowToys; iToy++){
@@ -508,7 +523,7 @@ std::cout << "got event" << std::endl;
         ToyExperiment* reducedtoy = new ToyExperiment(*toy);
         // Enable the appropriate systematics
         if(event->GetIsMC()){
-  
+
           for (std::vector<SystematicBase*>::iterator it = allSyst.begin(); it != allSyst.end(); ++it) {
             SystematicBase* ZeroVarSyst = *it;
 
@@ -535,11 +550,11 @@ std::cout << "got event" << std::endl;
         LeptonMomToy   [iToy] = -999;
         LeptonCosToy   [iToy] = -999;
         WeightToy      [iToy] = -999;
-        
+
         for (int iSyst = 0; iSyst < nWeights; ++iSyst) {
           WeightIndToy[iSyst][iToy] = -999;
         }
-          
+
         FluxWeightToy  [iToy] = -999;
         TrueVertexIDToy[iToy] = -999;
 
@@ -548,7 +563,7 @@ std::cout << "got event" << std::endl;
         bool passed = false;
         Weight_h* weights = new Weight_h[NMAXSYSTEMATICS];
         // std::cout << "entry " << entry << std::endl;
-        
+
         if(!WeightSyst){
           passed = _man.ProcessEvent(*reducedtoy, *event, totalweight, fluxWeightSyst);
         }else{
@@ -565,7 +580,7 @@ std::cout << "got event" << std::endl;
             if(!WeightSyst)
               WeightToy[iToy]   = (Double_t)(totalweight.Systematic);
             else{
-              
+
               int ind=0;
               for(UInt_t i = 0; i < NMAXSYSTEMATICS; ++i){
                 if(weights[i].Systematic != -999){
@@ -576,7 +591,7 @@ std::cout << "got event" << std::endl;
               }
               if(ind!=nWeights){
                 std::cerr << "something wrong is happening" << std::endl;
-                throw; 
+                throw;
               }
             }
             if(summary->TrueVertex[summary->EventSample]){
@@ -587,9 +602,9 @@ std::cout << "got event" << std::endl;
           }
         }
         delete reducedtoy;
-      } 
-      
-      
+      }
+
+
       // Delete the SystBox for the current event
       if (event->GetIsMC() && _man.evar().GetNEnabledEventVariations()>0)
         _man.evar().FinalizeEvent(*event);
@@ -601,7 +616,7 @@ std::cout << "got event" << std::endl;
 
       if(FillTree)
         tree->Fill();
-      
+
     }
     outfile->cd();
     tree->Write();
@@ -619,11 +634,11 @@ std::cout << "got event" << std::endl;
   inputFile->Close();
   gettimeofday(&tim, NULL);
   double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
-  
+
   std::cout << "time: " << t1-t0 << std::endl;
-  
+
   //_man.sel().PrintStatistics();
-  
+
   //  ProfilerStop();
   for (unsigned int i = 0; i < SampleId::kNSamples; ++i){
     std::cout << "# events passing selection, Selection "<< SampleId::ConvertSample((SampleId::SampleEnum)i) << ": " << npassed[i] << std::endl;
@@ -793,7 +808,7 @@ Bool_t IsAntiNu(const TString& fileName){
     if(fileName.Contains("5c") || fileName.Contains("7b")
 	    || fileName.Contains("6b") || fileName.Contains("6c")
 	    || fileName.Contains("6c") || fileName.Contains("6d")){
-	isantinu = true; 
+	isantinu = true;
     }
     return isantinu;
 }

@@ -1,6 +1,13 @@
 {
-    if(!gSystem->Getenv("P0DBANFFROOT") || !gSystem->FindFile(gSystem->Getenv("LD_LIBRARY_PATH"),"libP0DBANFF.so"))
+    if(!gSystem->Getenv("P0DBANFFROOT"))
     {
+        printf("ERROR: P0DBANFFROOT NOT set\n");
+        printf("Unable to load libP0DBANFF\n");
+        return;
+    }
+    if(!gSystem->FindFile(gSystem->Getenv("LD_LIBRARY_PATH"),"libP0DBANFF.so"))
+    {
+        printf("ERROR: libP0DBANFF NOT found in LD_LIBRARY_PATH\n.");
         printf("Unable to load libP0DBANFF\n");
         return;
     }
