@@ -266,7 +266,7 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
+    submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(600)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -372,8 +372,8 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        print "sleeping for 90 seconds till next job sub"
-        time.sleep(90) #seconds
+        print "sleeping for 2 seconds till next job sub"
+        time.sleep(2) #seconds
 
         #restart list
         del subFileList[0:]

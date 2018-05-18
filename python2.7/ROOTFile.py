@@ -1,6 +1,7 @@
 """a class to check the status of a ROOT file before trying to open it"""
 from File import File
 from ROOT import TFile
+import os
 
 
 class ROOTFile(File):
@@ -44,3 +45,28 @@ class ROOTFile(File):
         if infile:
             infile.Close()
         return tmp_status
+
+
+def CheckAllInDirectory(indirectory):
+    """For a given directory, check each ROOT TFile"""
+    if not os.path.isdir(indirectory):
+        print 'ERROR: ', indirectory, 'is NOT a valid directory!'
+        return False
+    list_dir = os.listdir(indirectory)
+    ret_status = True
+    bad_files = list()
+    for a_file_name in list_dir:
+        if '.root' not in a_file_name:
+            continue
+        full_name = os.path.join(indirectory, a_file_name)
+        test_File = ROOTFile(full_name)
+        if not test_File.valid():
+            if ret_status:
+                print 'ALERT: a file is NOT valid!'
+            ret_status = False
+            bad_files.append(a_file_name)
+    if len(bad_files) > 0:
+        print 'The following files are BAD:'
+        for bad_file in sorted(bad_files):
+            print '....', bad_file
+    return ret_status

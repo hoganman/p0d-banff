@@ -50,7 +50,7 @@ class batchq(p0dbanff.p0dbanff):
         super(batchq, self).__init__()
         self.name = name
         self.queues = dict()  # a dict of nodes with associated names
-        self.qoptions = list()
+        self.qoptions = list()  # a list of qoption objects
         self.cmd_arg = cmd_arg
         # self.users = {}  # a dict of users
         # self.n_nodes = 0
@@ -73,7 +73,7 @@ class batchq(p0dbanff.p0dbanff):
 
     def get_qoption(self, search_param):
         """search for all available options using str opt"""
-        if type(search_param) is not str or len(search_param) < 1:
+        if type(search_param) is not str:
             print "ERROR: must search for a program qoption using a string"
         search_param = search_param.strip('-')
         search_param = search_param.rstrip('=')

@@ -75,11 +75,12 @@ class RunCreateFlatTree(program):
     def __init__(self):
         super(RunCreateFlatTree, self).__init__()
 
-        self.parser.add_option('-v', '', default=False,
-                               help='Do not check oaAnalysis version',
+        self.parser.add_option('-v', '--skip_version_check', default=False,
+                               dest='v', help='Do not check oaAnalysis version',
                                action='store_true')
 
-        self.parser.add_option('-o', '', default='', help='Output file')
+        self.parser.add_option('-o', '--output_name', dest='output_name',
+                               help='Output file name')
         self.requires_arguments = True
 
     def check_RunCreateFlatTree_options(self):
@@ -95,7 +96,8 @@ class RunCreateFlatTree(program):
         self.command = 'RunCreateFlatTree.exe'
         if self.options.v:
             self.command += ' -v'
-        self.command += ' -o %s' % (self.options.o)
+        full_output = os.path.join(self.options.output_path, self.options.output_name)
+        self.command += ' -o %s' % (full_output)
         self.command += ' %s' % (self.arguments)
 
     def run(self):

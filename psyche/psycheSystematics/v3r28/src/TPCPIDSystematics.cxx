@@ -10,7 +10,7 @@
 TPCPIDSystematics::TPCPIDSystematics(): TPCPIDVariation(), EventVariationBase(6){
   //********************************************************************
 #ifdef DEBUG
-  std::cout << "TPCPIDSystematics::TPCPIDSystematics() " << std::endl;  
+  std::cout << "TPCPIDSystematics::TPCPIDSystematics() " << std::endl;
 #endif
   // Read the systematic source parameters from the data files
   _sigma[TPCPIDVariation::kMuon]     = new BinnedParams("TPCPIDMuonSigRatio",   BinnedParams::k2D_SYMMETRIC, versionUtils::Extension());
@@ -52,7 +52,7 @@ void TPCPIDSystematics::Apply(const ToyExperiment& toy, AnaEventC& event){
   SystBoxB* box = GetSystBox(event);
 
 #ifdef DEBUG
-  std::cout << "TPCPIDSystematics::ApplyVariation(): tracks size " << box->nRelevantRecObjects << std::endl;  
+  std::cout << "TPCPIDSystematics::ApplyVariation(): tracks size " << box->nRelevantRecObjects << std::endl;
 #endif
 
   // Loop over tracks and save the relevent ones for this systematic (all for the moment)
@@ -60,7 +60,7 @@ void TPCPIDSystematics::Apply(const ToyExperiment& toy, AnaEventC& event){
 
     AnaTrackB* track = static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk]);
 
-    ApplyVariation(track, toy);  
+    ApplyVariation(track, toy);
   }
 }
 
@@ -68,21 +68,52 @@ void TPCPIDSystematics::Apply(const ToyExperiment& toy, AnaEventC& event){
 bool TPCPIDSystematics::UndoSystematic(AnaEventC& event){
   //********************************************************************
 #ifdef DEBUG
-  std::cout << "TPCPIDSystematics::UndoSystematic() " << std::endl;  
+  std::cout << "TPCPIDSystematics::UndoSystematic() " << std::endl;
 #endif
   // Get the SystBox for this event
   SystBoxB* box = GetSystBox(event);
+  if(!box) return false;
 
   for (Int_t itrk=0;itrk<box->nRelevantRecObjects;itrk++){
-    for (Int_t k = 0; k < static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk])->nTPCSegments; k++) {
-      // The new TPC track
-      AnaTPCParticleB* tpcTrack = static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk])->TPCSegments[k];
-      // The corrected TPC track
-      const AnaTPCParticleB* original = static_cast<const AnaTPCParticleB*>(tpcTrack->Original);
-      if (!original)   continue;
-      if (original->dEdxMeas == -99999) continue;
+    // The new TPC track
+    AnaTrackB* recoTrack = static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk]);
+    if(!recoTrack) continue;
+    if(!IsRelevantRecObject(event, *box->RelevantRecObjects[itrk]))
+	continue;
+    if (
+        !SubDetId::GetDetectorUsed(recoTrack->Detector, SubDetId::kTPC1) &&
+        !SubDetId::GetDetectorUsed(recoTrack->Detector, SubDetId::kTPC2) &&
+        !SubDetId::GetDetectorUsed(recoTrack->Detector, SubDetId::kTPC3)
+        )
+       continue;
+    if(sizeof(recoTrack->TPCSegments)/sizeof(AnaTPCParticleB*) != recoTrack->nTPCSegments)
+	continue;
 
-      tpcTrack->dEdxMeas = original->dEdxMeas;
+    for (Int_t k = 0; k < recoTrack->nTPCSegments; k++) {
+      AnaTPCParticleB* tpcTrack = recoTrack->TPCSegments[k];
+      if(!tpcTrack) continue;
+      if(!IsRelevantRecObject(event, static_cast<AnaRecObjectC&>(*recoTrack->TPCSegments[k])))
+	continue;
+      if (
+   	  !SubDetId::GetDetectorUsed(tpcTrack->Detector, SubDetId::kTPC1) &&
+   	  !SubDetId::GetDetectorUsed(tpcTrack->Detector, SubDetId::kTPC2) &&
+   	  !SubDetId::GetDetectorUsed(tpcTrack->Detector, SubDetId::kTPC3)
+          )
+   	continue;
+
+      const AnaParticleB* original = tpcTrack->Original;
+      if (!original)   continue;
+      if (
+   	  !SubDetId::GetDetectorUsed(original->Detector, SubDetId::kTPC1) &&
+   	  !SubDetId::GetDetectorUsed(original->Detector, SubDetId::kTPC2) &&
+   	  !SubDetId::GetDetectorUsed(original->Detector, SubDetId::kTPC3)
+          )
+   	continue;
+
+      const AnaTPCParticleB* original_tpc = static_cast<const AnaTPCParticleB*>(original);
+      if (original_tpc->dEdxMeas == -99999) continue;
+
+      tpcTrack->dEdxMeas = original_tpc->dEdxMeas;
     }
   }
 
@@ -91,20 +122,20 @@ bool TPCPIDSystematics::UndoSystematic(AnaEventC& event){
 }
 
 //********************************************************************
-bool TPCPIDSystematics::GetVariation(const AnaTPCParticleB& tpcTrack, 
-    Float_t& mean_var, Float_t& sigma_var, 
+bool TPCPIDSystematics::GetVariation(const AnaTPCParticleB& tpcTrack,
+    Float_t& mean_var, Float_t& sigma_var,
     const AnaTrackB& track, const ToyExperiment& toy){
-  //******************************************************************** 
+  //********************************************************************
 #ifdef DEBUG
-  std::cout << "TPCPIDSystematics::GetVariation() " << std::endl;  
+  std::cout << "TPCPIDSystematics::GetVariation() " << std::endl;
 #endif
-  // Get the TPC 
+  // Get the TPC
   int tpc = SubDetId::GetTPC(tpcTrack.Detector);
 
   // Need true particle
-  if (!track.GetTrueParticle()) return false; 
+  if (!track.GetTrueParticle()) return false;
 
-  // Get the expected dEdx and error on the dEdx depending on the true particle of the 
+  // Get the expected dEdx and error on the dEdx depending on the true particle of the
   // (global) track
 
   Int_t mean_index;
@@ -112,7 +143,7 @@ bool TPCPIDSystematics::GetVariation(const AnaTPCParticleB& tpcTrack,
 
   Int_t PDG = abs(track.GetTrueParticle()->PDG);
 
-  TPCPIDVariation::HypEnum part; 
+  TPCPIDVariation::HypEnum part;
 
   switch (PDG){
     case 13: // Muon
@@ -176,7 +207,7 @@ bool TPCPIDSystematics::GetVariation(const AnaTPCParticleB& tpcTrack,
 bool TPCPIDSystematics::IsRelevantRecObject(const AnaEventC& event, const AnaRecObjectC& track) const{
   //**************************************************
 #ifdef DEBUG
-  std::cout << "TPCPIDSystematics::IsRelevantRecObject() " << std::endl;  
+  std::cout << "TPCPIDSystematics::IsRelevantRecObject() " << std::endl;
 #endif
   (void)event;
 
@@ -186,7 +217,7 @@ bool TPCPIDSystematics::IsRelevantRecObject(const AnaEventC& event, const AnaRec
   AnaTrueParticleB* truePart = static_cast<AnaTrueParticleB*>(track.TrueObject);
 
   // only consider true protons, pions, muons and electrons
-  if      (abs(truePart->PDG) == 211 ) return true;      
+  if      (abs(truePart->PDG) == 211 ) return true;
   else if (abs(truePart->PDG) == 2212) return true;
   else if (abs(truePart->PDG) == 13)   return true;
   else if (abs(truePart->PDG) == 11)   return true;

@@ -6,10 +6,10 @@ import optparse
 import os
 
 # globals
-NNODES = 43
+NNODES = 46
 FREEUSENODES = range(1, 20) + range(27, 31)
-PHYSICSNODES = range(40, 44)
-ALLNODES = range(1, 44)
+PHYSICSNODES = range(40, 46)
+ALLNODES = range(1, 46)
 FREEUSEQUEUENAMES = ['defaultfaculty', 'physics', 'short']
 """
 A dictionary with NODES in the range node1 - node43 excluding those NOT listed
@@ -131,7 +131,8 @@ def InitNodes():
 def GetJobsFromUser(username, qstatOutput=[]):
     if len(qstatOutput) == 0:
         qstatOutput = GetOutputFromCommand('qstat -u %s' % (username), '\n')
-    userJobs = {'queued': 0, 'slots': 0, 'errors': 0,  'suspended': 0}
+    userJobs = {'queued': 0, 'slots': 0, 'errors': 0,  'suspended': 0,
+                'transferring': 0}
     for line in qstatOutput:
         if line.find(username) == -1:
             continue
@@ -156,6 +157,8 @@ def GetJobsFromUser(username, qstatOutput=[]):
         if ' Eqw ' in line or ' Er ' in line or ' E ' in line:
             userJobs['errors'] += 1
             continue
+        if ' t ' in line:
+            userJobs['transferring'] += 1
         splitLine = None
         line = line.strip()
         if not (' r ' in line or ' S ' in line or ' s ' in line):
@@ -244,22 +247,26 @@ def main(argv):
         groups_users_dict = GetUsersFromHome()
 
         qstatOutput = GetOutputFromCommand('qstat -u \"*\"', '\n')
-        print '====================================================='
-        print '| Username  |  Slots  | Queued | Errors | Suspended |'
-        print '====================================================='
+        print '================================================================='
+        print '| Username  |  Slots  | Transfers | Queued | Errors | Suspended |'
+        print '================================================================='
         for group in groups_users_dict:
             # print group
             for user in groups_users_dict[group]:
                 userJobs = GetJobsFromUser(user, qstatOutput)
                 if userJobs['slots'] == 0 \
                         and userJobs['queued'] == 0 \
+                        and userJobs['transferring'] == 0 \
                         and userJobs['errors'] == 0 \
                         and userJobs['suspended'] == 0:
                     continue
                 # print 'user=', user
-                template = '| %9s | %7d | %6d | %6d | %9d |'
+                # print group
+                # print user
+                template = '| %9s | %7d | %9d | %6d | %6d | %9d |'
                 print template % (user, userJobs['slots'], userJobs['queued'],
-                                  userJobs['errors'], userJobs['suspended'])
+                                  userJobs['transferring'], userJobs['errors'],
+                                  userJobs['suspended'])
 
     if options.quiet:
         print availableSlots
@@ -281,9 +288,13 @@ def GetUsersFromHome():
         full_directory = os.path.join('/home', user_group)
         if not os.path.isdir(full_directory):
             continue
+        is_banned_dir = False
         for banned_dir in NON_BATCHQ_USERS_DIR:
             if banned_dir in full_directory:
-                continue
+                is_banned_dir = True
+                break
+        if is_banned_dir:
+            continue
         users = os.listdir(full_directory)
         for test_user in users:
             if not os.path.isdir(os.path.join(full_directory, test_user)):

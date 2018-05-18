@@ -45,12 +45,8 @@ def main(argv):
     else:
         sys.exit(1)
 
-    # ft_univa_jobs.create_job_scripts()
+    # ft_univa_jobs.make_jobs()
     # ft_univa_jobs.submit_jobs()
-    # for each job
-        # create file list
-        # create job file
-        # submit
 
 
 if __name__ == "__main__":

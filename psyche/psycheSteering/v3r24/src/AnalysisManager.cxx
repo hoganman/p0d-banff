@@ -262,15 +262,15 @@ void AnalysisManager::DefineSelections(){
   sel().AddSelection("kTrackerAntiNuECCFGD2", "AntiNuECC inclusive selection in FGD2", new antiNueCCFGD2Selection());
   sel().AddSelection("kTrackerGammaFGD2",     "GammaBkg selection in FGD2",            new gammaFGD2Selection    ());
 
-  // P0D+TPC1 numu CCInc
-  sel().AddSelection("kP0DNuMuCC"       ,     "P0D+TPC1 NuMuCC inclusive" , new p0dNumuCCSelection());
+  // P0D+TPC1 numu    CCInc
+  sel().AddSelection("kP0DNuMuCC",    "P0D+TPC1 NuMuCC    inclusive",new p0dNumuCCSelection());
   // P0D+TPC1 numubar CCInc
-  sel().AddSelection("kP0DNuMuBarCC"       ,     "P0D+TPC1 NuMuBarCC inclusive" , new p0dNumubarCCSelection());
+  sel().AddSelection("kP0DNuMuBarCC", "P0D+TPC1 NuMuBarCC inclusive",new p0dNumubarCCSelection());
 
   // Set which run range the selections are valid for using the parameters file
   // If this is not called the selections are applied to all run periods
   // Numu FGD1
-  sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods")); 
+  sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCCMultiPi",    ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCCMultiPi.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCC4pi",        ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4pi.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCC4piMultiPi", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4piMultiPi.ValidRunPeriods"));
@@ -313,16 +313,17 @@ void AnalysisManager::DefineSelections(){
   sel().SetValidRunPeriods("kTrackerAntiNuECCFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerGammaFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerGamma.ValidRunPeriods"));
 
-  // P0D+TPC1 Numu CCInc
+  // P0D+TPC1 numu    CCInc
   sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
-  sel().SetValidRunPeriods("kP0DNuMuBarCC",         ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
+  // P0D+TPC1 numubar CCInc
+  sel().SetValidRunPeriods("kP0DNuMuBarCC",         ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods"));
 
   // Numu FGD1
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))
     sel().DisableSelection("kTrackerNumuCC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))
-    sel().DisableSelection("kTrackerNumuCCMultiPi");   
+    sel().DisableSelection("kTrackerNumuCCMultiPi");
 
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4pi"))
     sel().DisableSelection("kTrackerNumuCC4pi");
@@ -348,7 +349,7 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiTrack");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi"))
-    sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi"); 
+    sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi");
 
 
   // Numu FGD2
@@ -373,7 +374,7 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kTrackerAntiNumuCCMultiTrackFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2"))
-    sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2"); 
+    sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2");
 
   // Numu Bkg in anti-numu, FGD2
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCFGD2"))
@@ -387,23 +388,23 @@ void AnalysisManager::DefineSelections(){
 
   // FGD1 nue
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC"))
-    sel().DisableSelection("kTrackerNuECC");     
+    sel().DisableSelection("kTrackerNuECC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC"))
-    sel().DisableSelection("kTrackerAntiNuECC"); 
+    sel().DisableSelection("kTrackerAntiNuECC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma"))
-    sel().DisableSelection("kTrackerGamma");        
+    sel().DisableSelection("kTrackerGamma");
 
   // FGD2 nue
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2"))
-    sel().DisableSelection("kTrackerNuECCFGD2");     
+    sel().DisableSelection("kTrackerNuECCFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2"))
-    sel().DisableSelection("kTrackerAntiNuECCFGD2"); 
+    sel().DisableSelection("kTrackerAntiNuECCFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2"))
-    sel().DisableSelection("kTrackerGammaFGD2");     
+    sel().DisableSelection("kTrackerGammaFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuCC"))
     sel().DisableSelection("kP0DNuMuCC");
@@ -493,7 +494,7 @@ void AnalysisManager::DefineSystematics(){
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcECalMatchEff"))   eweight().EnableEventWeight(SystId::kTpcECalMatchEff);
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableECalEmHipPID"))      eweight().EnableEventWeight(SystId::kECalEmHipPID);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"))        eweight().EnableEventWeight(SystId::kFGD2Shower); 
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"))        eweight().EnableEventWeight(SystId::kFGD2Shower);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"))      eweight().EnableEventWeight(SystId::kNuETPCPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"))      eweight().EnableEventWeight(SystId::kNuEP0DPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp"))     eweight().EnableEventWeight(SystId::kNuEECalPileUp);
@@ -1024,7 +1025,7 @@ bool AnalysisManager::ReadEvents(const std::string& inputFile, Int_t nmax_events
 
     // Dump info about number of entries run
     if (entry%10000==0 || entry == nentries)
-      std::cout << "entry: " <<  entry  << " of " << nentries << " (" << (100*entry/nentries) << "%)" << std::endl;        
+      std::cout << "entry: " <<  entry  << " of " << nentries << " (" << (100*entry/nentries) << "%)" << std::endl;
 
     // Get the SuperEvent and save it into the array
     AnaSuperEventB* event = &_input.GetSuperEvent();
@@ -1231,7 +1232,7 @@ bool AnalysisManager::PreloadMCEvents(std::vector<std::string> inputFiles, std::
 
       // Dump info about number of entries run
       if (entry%10000==0 || entry == nmax_entries)
-        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;        
+        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;
 
       // Get the SuperEvent and save it into the array
       AnaSuperEventB* event = &_input.GetSuperEvent();
@@ -1301,7 +1302,7 @@ bool AnalysisManager::PreloadDataEvents(std::vector<std::string> inputFiles){
 
       // Dump info about number of entries run
       if (entry%10000==0 || entry == nmax_entries)
-        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;        
+        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;
 
 
       // Get the SuperEvent and save it into the array

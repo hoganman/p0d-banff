@@ -398,13 +398,13 @@ int main(int argc, char *argv[]){
         event = static_cast<AnaEventB*>((_man.LoadSuperEvent(entry))->Event);
       }
 
-std::cout << "got event" << std::endl;
+//std::cout << "got event" << std::endl;
 
       // Fill the EventBox
       if (!preload)
       {
         _man.sel().InitializeEvent(*event);
-        std::cout << "initialized" << std::endl;
+//std::cout << "initialized" << std::endl;
       }
 
       if(!isData)
@@ -470,7 +470,7 @@ std::cout << "got event" << std::endl;
         FillTree=true;
 	//AnaVertexB** Vertices = event->Vertices;
 	const Int_t nParticles = event->nParticles;
-	std::cout << "There are " << nParticles  << " particles in this event" <<std::endl;
+	//std::cout << "There are " << nParticles  << " particles in this event" <<std::endl;
         AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
         if(!summary || !summary->EventSample)
 	    continue;

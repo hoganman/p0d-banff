@@ -15,11 +15,9 @@ class qsubmitter(program.program):
         self._program = None
 
         # help option, no inputs taken
-        # self.parser.add_option('-h', '--help', help='This help message',
-        #                        default=False, action='store_true')
-        self.parser.add_option('-t', '--walltime',
+        self.parser.add_option('-t', '--walltime', dest='walltime',
                                help='Job walltime in HH:MM:SS')
-        self.parser.add_option('-m', '--memory',
+        self.parser.add_option('-m', '--memory', dest='memory',
                                help='Memory of job (4G = 4 gigabytes)')
 
         # format PROGNAME_OUTPUTNAME_YYYYMMDD_HHMM
@@ -74,14 +72,14 @@ class multiqsub(qsubmitter):
         super(multiqsub, self).__init__()
 
         # how many jobs to split the submissions
-        self.parser.add_option('-n', '--num_jobs',
+        self.parser.add_option('-n', '--num_jobs', dest="num_jobs",
                                help='The number of jobs to submit',
                                default=0)
 
         # set sleep time between qsub commands
-        self.parser.add_option('-S', '--sleep',
+        self.parser.add_option('-S', '--sleep', dest='sleep',
                                help='The sleep time in seconds between qsubs',
-                               default='30')
+                               default='1')
 
     def check_multiqsub_options(self):
         """makes sure no bad inputs were given, else, tell user"""
@@ -134,7 +132,7 @@ class filelist_jobs(multiqsub):
         super(filelist_jobs, self).__init__()
 
         # a list of files
-        self.parser.add_option('-L', '--list',
+        self.parser.add_option('-L', '--list', dest='list',
                                help='The input file directory list or directory',
                                default='')
 
@@ -200,18 +198,18 @@ class RunCreateFlattree_univa_jobs(batchq.univa, filelist_jobs,
         super(RunCreateFlattree_univa_jobs, self).__init__()
         self.name = 'RunCreateFlatTree.exe'
         # merge std.out and std.err
-        self.parser.add_option('-j', '--merge',
+        self.parser.add_option('-j', '--merge', dest='merge',
                                help='Combine .o and .e files (default=yes)',
                                default='yes')
         # designate a hostname
-        self.parser.add_option('-N', '--hostname',
+        self.parser.add_option('-N', '--hostname', dest='hostname',
                                help='Nodes to run on')
         # designate a specific queue by name
-        self.parser.add_option('-Q', '--qname',
+        self.parser.add_option('-Q', '--qname', dest='qname',
                                help='The queue name to use (default: physics.q)',
                                default='\"physics.q\"')
         # set the flattree exe output directory path
-        self.parser.add_option('-p', '--output_path',
+        self.parser.add_option('-p', '--output_path', dest='output_path',
                                help='The output directiory for each job output',
                                default='')
 

@@ -26,15 +26,15 @@ Int_t anaUtils::GetOneSegmentPerTPC(AnaTPCParticleB* in[], Int_t nseg_in, AnaTPC
       if (in[iseg]->NNodes > nnodes_max[tpc]){
         nnodes_max[tpc] = in[iseg]->NNodes;
         itrack_nnodes_max[tpc]=iseg;
-      }      
+      }
     }
 
-    int nseg_out = 0;    
+    int nseg_out = 0;
     for(Int_t i=0;i< 3;i++){
       if (itrack_nnodes_max[i]!=-1)
         out[nseg_out++]=in[itrack_nnodes_max[i]];
     }
-    
+
     return nseg_out;
 }
 
@@ -43,7 +43,7 @@ SubDetId::SubDetEnum anaUtils::GetClosestTPC(const AnaTrackB& track){
 //**************************************************
 
     // returns the TPC closest to the track start point
-    // simply use the linear distance for now 
+    // simply use the linear distance for now
 
   /*
     SubDetId::SubDetEnum tpc_closest = SubDetId::kInvalid;
@@ -58,11 +58,11 @@ SubDetId::SubDetEnum anaUtils::GetClosestTPC(const AnaTrackB& track){
             tpc_closest = SubDetId::GetSubdetectorEnum(tpc_track->Detector);
         }
     }
-    return tpc_closest;  
+    return tpc_closest;
   */
 
   AnaParticleB* TPCSegment = anaUtils::GetSegmentWithMostNodesInClosestTpc(track);
-  
+
   if (TPCSegment) return SubDetId::GetSubdetectorEnum(TPCSegment->Detector);
   else return SubDetId::kInvalid;
 }
@@ -158,6 +158,7 @@ AnaParticleB* anaUtils::GetSegmentWithMostNodesInClosestTpc(const AnaTrackB& tra
 AnaParticleB* anaUtils::GetSegmentWithMostNodesInClosestTpc(const AnaTrackB& track, const Float_t* pos, bool quality_cut){
 //**************************************************
 
+    if(!pos) return NULL;
     int tpc_closest = SubDetId::kInvalid;
     int tpc = SubDetId::kInvalid;
 
@@ -166,20 +167,23 @@ AnaParticleB* anaUtils::GetSegmentWithMostNodesInClosestTpc(const AnaTrackB& tra
     Float_t dist = 99999999.;
     int nNodes[3] = {0,0,0};
 
+    if(sizeof(track.TPCSegments)/sizeof(AnaTPCParticleB*) != track.nTPCSegments)
+	return NULL;
+
     for(int i = 0; i < track.nTPCSegments; ++i){
         AnaTPCParticleB* tpc_track = track.TPCSegments[i];
-        
+
         if (!tpc_track) continue;
-        
+
         if (quality_cut && !cutUtils::TPCTrackQualityCut(*tpc_track))
           continue;
-        
-        Float_t dist_tmp = std::min(
-            GetSeparationSquared(pos, tpc_track->PositionStart), 
+
+	Float_t dist_tmp = std::min(
+            GetSeparationSquared(pos, tpc_track->PositionStart),
             GetSeparationSquared(pos, tpc_track->PositionEnd)
             );
         tpc = SubDetId::GetTPC(tpc_track->Detector);
-       
+
         if(dist_tmp < dist){
             dist = dist_tmp;
             tpc_closest = tpc;
@@ -286,7 +290,7 @@ AnaParticleB* anaUtils::GetSegmentWithMostNodesInDet(const AnaTrackB& track, Sub
                 }
                 return subtrack;
             }
-            
+
             else if(SubDetId::IsP0DDetector(det)){
                 for(int i = 0; i < track.nP0DSegments; ++i){
                     AnaP0DParticleB* p0d_track = track.P0DSegments[i];
@@ -339,7 +343,7 @@ AnaParticleB* anaUtils::GetSegmentInDet(const AnaTrackB& track, SubDetId::SubDet
             }
         }
     }
-   
+
     if(SubDetId::IsFGDDetector(det)){
         for(int i = 0; i < track.nFGDSegments; ++i){
             AnaFGDParticleB* fgd_track = track.FGDSegments[i];
@@ -348,7 +352,7 @@ AnaParticleB* anaUtils::GetSegmentInDet(const AnaTrackB& track, SubDetId::SubDet
             }
         }
     }
-    
+
     if(SubDetId::IsP0DDetector(det)){
         for(int i = 0; i < track.nP0DSegments; ++i){
             AnaP0DParticleB* p0d_track = track.P0DSegments[i];
@@ -357,7 +361,7 @@ AnaParticleB* anaUtils::GetSegmentInDet(const AnaTrackB& track, SubDetId::SubDet
             }
         }
     }
-    
+
     if(SubDetId::IsECALDetector(det)){
         for(int i = 0; i < track.nECALSegments; ++i){
             AnaECALParticleB* ecal_track = track.ECALSegments[i];
@@ -366,7 +370,7 @@ AnaParticleB* anaUtils::GetSegmentInDet(const AnaTrackB& track, SubDetId::SubDet
             }
         }
     }
-    
+
     if(SubDetId::IsSMRDDetector(det)){
         for(int i = 0; i < track.nSMRDSegments; ++i){
             AnaSMRDParticleB* smrd_track = track.SMRDSegments[i];
@@ -380,7 +384,7 @@ AnaParticleB* anaUtils::GetSegmentInDet(const AnaTrackB& track, SubDetId::SubDet
 
 //**************************************************
 SubDetId::SubDetEnum anaUtils::GetDetector(const Float_t* pos){
-//**************************************************  
+//**************************************************
     for(Int_t it = 0; it != static_cast<Int_t>(SubDetId::kInvalidSubdetector); it++) {
         SubDetId::SubDetEnum det = static_cast<SubDetId::SubDetEnum>(it);
         if (anaUtils::InDetVolume(det, pos))
@@ -394,7 +398,7 @@ bool anaUtils::InDetVolume(SubDetId::SubDetEnum det, const Float_t* pos){
 //**************************************************
 
     Float_t null[3] = {0.,0.,0.};
- 
+
     //account for a case when a "general" volume is provided
     switch(det){
         case SubDetId::kFGD:
@@ -410,7 +414,7 @@ bool anaUtils::InDetVolume(SubDetId::SubDetEnum det, const Float_t* pos){
             return (
                 InFiducialVolume(SubDetId::kTPC1, pos, null, null) ||
                 InFiducialVolume(SubDetId::kTPC2, pos, null, null) ||
-                InFiducialVolume(SubDetId::kTPC3, pos, null, null) 
+                InFiducialVolume(SubDetId::kTPC3, pos, null, null)
                 );
             break;
         case SubDetId::kTPC1:
@@ -514,7 +518,7 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos){
 //**************************************************
 
 
-    
+
 
 
     Float_t null[3] = {0.,0.,0.};
@@ -532,7 +536,7 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos){
             return (
                 InFiducialVolume(SubDetId::kTPC1, pos, null, null) ||
                 InFiducialVolume(SubDetId::kTPC2, pos, null, null) ||
-                InFiducialVolume(SubDetId::kTPC3, pos, null, null) 
+                InFiducialVolume(SubDetId::kTPC3, pos, null, null)
                 );
             break;
         case SubDetId::kTPC1:
@@ -787,7 +791,7 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos, co
                     pos[2] > DetDef::pecalTRmin[2]+FVdefmin[2] &&
                     pos[2] < DetDef::pecalTRmax[2]-FVdefmax[2])
                 return true;
-            break;    
+            break;
 
         case SubDetId::kBottomPECAL:
            if (pos[0] > DetDef::pecalBLmin[0]+FVdefmin[0] &&
@@ -805,7 +809,7 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos, co
                     pos[2] > DetDef::pecalBRmin[2]+FVdefmin[2] &&
                     pos[2] < DetDef::pecalBRmax[2]-FVdefmax[2])
                 return true;
-            break;        
+            break;
         //SMRD
         case SubDetId::kLeftSMRD:
             if (pos[1] > DetDef::smrd15Lmin[1]+FVdefmin[1] &&
@@ -919,7 +923,7 @@ int anaUtils::GetAllChargedTrajInTPCInBunch(const AnaEventB& event, AnaTrueParti
             }
         }
         // 30* 30 originally
-        if((dist)>900 && event.TrueParticles[i]->Momentum>5){//bigger than 3 TPC hits (30*30 is faster that sqrt(dist)), and momentum > 5 MeV 
+        if((dist)>900 && event.TrueParticles[i]->Momentum>5){//bigger than 3 TPC hits (30*30 is faster that sqrt(dist)), and momentum > 5 MeV
 	  chargedtrajInBunch[count] = event.TrueParticles[i];
 	  ++count;
         }
@@ -930,7 +934,7 @@ int anaUtils::GetAllChargedTrajInTPCInBunch(const AnaEventB& event, AnaTrueParti
 //**************************************************
 int anaUtils::GetAllChargedTrajInFGDInBunch(const AnaEventB& event, AnaTrueParticleB* chargedtrajInBunch[],SubDetId::SubDetEnum det){
 //**************************************************
-    /* 
+    /*
      * we need here to select in-FGD tracks that potentially should have been reconstruced
      * by FGD iso recon (the function name is confusing);
      * this involves putting some min requirements for the true tracks:
@@ -971,7 +975,7 @@ int anaUtils::GetAllChargedTrajInFGDInBunch(const AnaEventB& event, AnaTrueParti
 
 //**************************************************
 int anaUtils::GetAllChargedTrajInFGDAndNoTPCInBunch(const AnaEventB& event, AnaTrueParticleB* chargedtrajInBunch[],SubDetId::SubDetEnum det){
-//**************************************************  
+//**************************************************
     AnaTrueParticleB* trajInBunchInFgdx[NMAXTRUEPARTICLES];
     Int_t ntrajInBunchInFgdx = anaUtils::GetAllChargedTrajInFGDInBunch(event, trajInBunchInFgdx,det);
 
@@ -982,22 +986,22 @@ int anaUtils::GetAllChargedTrajInFGDAndNoTPCInBunch(const AnaEventB& event, AnaT
         //i.e crossing the active part of the tpc
         if(SubDetId::GetDetectorUsed(trajInBunchInFgdx[i]->DetCrossings[idet]->Detector, SubDetId::kTPC) && trajInBunchInFgdx[i]->DetCrossings[idet]->InActive) {
           Float_t sep = GetSeparationSquared(trajInBunchInFgdx[i]->DetCrossings[idet]->EntrancePosition, trajInBunchInFgdx[i]->DetCrossings[idet]->ExitPosition);
-          
+
           if(sep>dist) dist=sep;
         }
       }
-      
+
       bool cross_tpc = false;
       // 250*250 originally
       if(dist>62500)//bigger than the ~1/4 of the width of the TPC
         cross_tpc = true;
-      
+
       if (!cross_tpc){
         chargedtrajInBunch[count] = trajInBunchInFgdx[i];
         ++count;
       }
     }
-    
+
     return count;
 }
 
@@ -1018,10 +1022,10 @@ int anaUtils::GetAllChargedTrajInTPCFGDInBunch(const AnaEventB& event, AnaTruePa
           if(SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet]->Detector, SubDetId::kFGD)){
             for(Int_t idet1=0;idet1<event.TrueParticles[i]->nDetCrossings;idet1++){
               //look for TPC1-FGD1, FGD1-TPC2, TPC2-FGD2, FGD2-TPC3 trajectories
-              if((SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet]->Detector, SubDetId::kFGD1) && 
-                  (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC1) || SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC2))) || 
-                 (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet]->Detector, SubDetId::kFGD2) && 
-                  (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC2) || SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC3)))) 
+              if((SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet]->Detector, SubDetId::kFGD1) &&
+                  (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC1) || SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC2))) ||
+                 (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet]->Detector, SubDetId::kFGD2) &&
+                  (SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC2) || SubDetId::GetDetectorUsed(event.TrueParticles[i]->DetCrossings[idet1]->Detector, SubDetId::kTPC3))))
                 {
                   Float_t sep = GetSeparationSquared(event.TrueParticles[i]->DetCrossings[idet1]->EntrancePosition, event.TrueParticles[i]->DetCrossings[idet1]->ExitPosition);
                   if(sep>dist) dist=sep;
@@ -1029,7 +1033,7 @@ int anaUtils::GetAllChargedTrajInTPCFGDInBunch(const AnaEventB& event, AnaTruePa
             }
           }
         }
-        
+
         // 10*10 originally, now 100
         if(dist>100){
             chargedtrajInBunch[count] = event.TrueParticles[i];
@@ -1060,7 +1064,7 @@ int anaUtils::GetAllBigEnoughChargedTrajInTPCInBunch(const AnaEventB& event, Ana
                 if(sep>dist) dist=sep;
             }
         }
-        //250*250 originally 
+        //250*250 originally
         if(dist>62500){//bigger than the ~1/4 of the width of the TPC
             chargedtrajInBunch[count] = event.TrueParticles[i];
             ++count;
@@ -1236,14 +1240,14 @@ int anaUtils::GetAllIsoTracksInECAL(const AnaEventB& event, AnaTrackB* selTracks
 //**************************************************
    SubDetId::SubDetEnum det[5];
    // Do it explicitely
-   det[0] = SubDetId::kDSECAL; 
-   det[1] = SubDetId::kTopTECAL; 
-   det[2] = SubDetId::kBottomTECAL; 
+   det[0] = SubDetId::kDSECAL;
+   det[1] = SubDetId::kTopTECAL;
+   det[2] = SubDetId::kBottomTECAL;
    det[3] = SubDetId::kLeftTECAL;
    det[4] = SubDetId::kRightTECAL;
-   
+
    return anaUtils::GetAllTracksUsingOnlyDetFromList(event, selTracks, det, 5);
-    
+
 }
 
 
@@ -1309,7 +1313,7 @@ AnaECALParticleB* anaUtils::GetMostUpstreamECalSegment(AnaTrackB* track) {
             if(!ecal) continue;
             if (ecal->PositionStart[2] < pos_z) {
                 upstream = ecal;
-                pos_z = ecal->PositionStart[2]; 
+                pos_z = ecal->PositionStart[2];
             }
             if (ecal->PositionEnd[2] < pos_z) {
                 upstream = ecal;
