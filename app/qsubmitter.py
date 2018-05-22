@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, getopt,os,datetime,math,glob,time,subprocess
+import random
 
 #######################
 inOptions = {
@@ -18,7 +19,7 @@ inOptions = {
         'O:':['opportunistic-nodes=','Use opportunistic nodes (default=0)'],
         'p:':['output-path=','path for output files'],
         'P:':['priority=','job priority'],
-        'q:':['qname=','sets which queue (default=\"physics.q\")'],
+        'q:':['qname=','sets which queue (default=\"physics.q|short.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
         'r:':['run=','run number'],
         's:':['soft=','soft resource requirments for each job'],
@@ -31,6 +32,8 @@ inOptions = {
 #       h_data    The per-job maximum memory limit in bytes.
 #       h_vmem    The same as h_data (if both are set the minimum is used).
 
+SECONDS_BTN_QSUB = 2
+SECONDS_BTN_RUN = 30
 csuhpc = -1
 queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
@@ -205,7 +208,7 @@ def CreateExportedPathsScript(submissionFileName):
 
 
 
-def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
+def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
 
     CWD = os.getcwd()
     #create the submission script
@@ -271,8 +274,11 @@ def CreateFlatTreeSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('source %s/nd280Highland2/v2r22/cmt/setup.sh\n'%(BASE))
-    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(1200)\'\n' % (ROOT))
+    submission.write('source %s/nd280Highland2/%s/cmt/setup.sh\n'%(BASE, os.getenv('HIGHLAND2VERSION')))
+    ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
+                                    datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
+                                   ).total_seconds()))
+    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d, %d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs, ROOTrandomSeed))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -361,7 +367,7 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
         if len(subFileList) == 0:
             break
         #create submit script
-        CreateFlatTreeSubmissionScript(jobNum+1,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
+        CreateFlatTreeSubmissionScript(jobNum+1,numJobs,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
 
         #create job script
         FlatTrees.append(outputFile)
@@ -371,8 +377,8 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
         if jobNum+1 != numJobs:
-            print "sleeping for 1 seconds till next job sub"
-            time.sleep(1)  # seconds
+            print "sleeping for", SECONDS_BTN_QSUB, "seconds till next job sub"
+            time.sleep(SECONDS_BTN_QSUB)  # seconds
 
         #restart list
         del subFileList[0:]
@@ -574,8 +580,8 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(useQueueName) == 0 and len(useHostName) == 0:
-	print 'Assuming the parameter qname=\"physics.q\"'
-	useQueueName = 'physics.q'
+	print 'Assuming the parameter qname=\"physics.q|short.q\"'
+	useQueueName = 'physics.q|short.q'
     if len(useHostName) > 1:
         if len(useQueueName) > 1:
             print 'WARNING: Be careful about specifying the hostname and qname together'

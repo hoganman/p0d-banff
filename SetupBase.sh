@@ -39,6 +39,10 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ] || [ $ISENSHPCQUEUEN
     export GOPATH=/home/other/mhogan/go:/physics/home/mhogan/go
     export CMTVERSION=v1r20p20081118
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    # export CMTVERSION=v1r24
+    # export CMTVERSION=v1r25
+    # export CMTVERSION=v1r26p20140131
+    # export CMTROOT=/physics/home/mhogan/p0d-banff/p0d-banff/CMT/$CMTVERSION
     export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p09n04
 fi

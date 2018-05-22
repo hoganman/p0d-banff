@@ -16,7 +16,7 @@ MCMIN = '60'
 DATAMIN = '12'
 OUTPUTBASE = '/physics/home/mhogan'
 FLATTREEBASE = OUTPUTBASE+'/flattrees'
-RUNSYSTNEWOUTPUT = join(OUTPUTBASE, 'systematics')
+RUNSYSTNEWOUTPUTBASE = join(OUTPUTBASE, 'systematics')
 NEUT_6B = 'mcp6_Spin_B/neut'
 NEUT_6L = 'mcp6_Spin_L/neut'
 DATA_6M = 'rdp6_Spin_M'
@@ -27,7 +27,7 @@ QSUBRUNSYSTNEW = 'python qsubmitter_RunSyst_New.py'
 def main(argv):
     """submits all the qsub python scripts"""
     submit_runsyst_new_mc()
-    submit_runsyst_new_data()
+    # submit_runsyst_new_data()
 
 
 def make_qsub(run_name, production, is_mc=True):
@@ -43,7 +43,8 @@ def make_qsub(run_name, production, is_mc=True):
     queue = '-q %s' % (QUEUE)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
-    output_path_name = Directory(RUNSYSTNEWOUTPUT)
+    output_path_name = Directory('%s/%s/%s' % (RUNSYSTNEWOUTPUTBASE,
+                                               production, run_name.low()))
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -72,30 +73,30 @@ def submit_runsyst_new_mc():
 
     is_mc = True
     run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
-    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
-    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
-    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
-    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, is_mc)
-    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, is_mc)
-    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, is_mc)
-    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, is_mc)
-    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, is_mc)
-    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, is_mc)
-    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
-    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
+    # run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
+    # run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
+    # run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
+    # run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, is_mc)
+    # run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, is_mc)
+    # run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, is_mc)
+    # run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, is_mc)
+    # run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, is_mc)
+    # run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, is_mc)
+    # run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
+    # run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
 
     run2w_mc.run(ShellCommand.IN_BKG)
-    run2a_mc.run(not ShellCommand.IN_BKG)
-    run3b_mc.run(not ShellCommand.IN_BKG)
-    run3c_mc.run(not ShellCommand.IN_BKG)
-    run4w_mc.run(not ShellCommand.IN_BKG)
-    run4a_mc.run(not ShellCommand.IN_BKG)
-    run5c_mc.run(not ShellCommand.IN_BKG)
-    run6b_mc.run(not ShellCommand.IN_BKG)
-    run6c_mc.run(not ShellCommand.IN_BKG)
-    run6d_mc.run(not ShellCommand.IN_BKG)
-    run6e_mc.run(not ShellCommand.IN_BKG)
-    run7b_mc.run(not ShellCommand.IN_BKG)
+    # run2a_mc.run(not ShellCommand.IN_BKG)
+    # run3b_mc.run(not ShellCommand.IN_BKG)
+    # run3c_mc.run(not ShellCommand.IN_BKG)
+    # run4w_mc.run(not ShellCommand.IN_BKG)
+    # run4a_mc.run(not ShellCommand.IN_BKG)
+    # run5c_mc.run(not ShellCommand.IN_BKG)
+    # run6b_mc.run(not ShellCommand.IN_BKG)
+    # run6c_mc.run(not ShellCommand.IN_BKG)
+    # run6d_mc.run(not ShellCommand.IN_BKG)
+    # run6e_mc.run(not ShellCommand.IN_BKG)
+    # run7b_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():

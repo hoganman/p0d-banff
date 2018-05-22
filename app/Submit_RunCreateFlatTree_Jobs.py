@@ -29,7 +29,7 @@ def main(argv):
 
     # discontinue if something was not accepted
     if ft_univa_jobs.show_usage:
-        error_msg = 'Printing help message'
+        error_msg = 'Something not accepted\nPrinting help message'
         print error_msg
         ft_univa_jobs.print_help()
         sys.exit(1)
