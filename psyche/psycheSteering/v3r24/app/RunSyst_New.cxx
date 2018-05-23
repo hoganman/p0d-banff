@@ -18,7 +18,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-const Int_t nWeights = 21;
+const Int_t nWeights = 20;//21;
 const Int_t nToys = 0;//1000;
 const Int_t debug = 0;
 
@@ -481,9 +481,9 @@ int main(int argc, char *argv[]){
 
 	AnaTrueParticleB *trueParticle = lepCand->GetTrueParticle();
 
-	Int_t tLeptonPDG = trueParticle->PDG;
-	Int_t tLeptonParentPDG = trueParticle->ParentPDG;
-	Int_t tLeptonGParentPDG = trueParticle->GParentPDG;
+	tLeptonPDG = trueParticle->PDG;
+	tLeptonParentPDG = trueParticle->ParentPDG;
+	tLeptonGParentPDG = trueParticle->GParentPDG;
 
 	vtxX = summary->VertexPosition[summary->EventSample][0];
 	vtxY = summary->VertexPosition[summary->EventSample][1];

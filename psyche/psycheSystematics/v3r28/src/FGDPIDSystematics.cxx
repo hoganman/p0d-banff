@@ -160,31 +160,13 @@ bool FGDPIDSystematics::UndoSystematic(AnaEventC& event){
 
   // Get the SystBox for this event
   SystBoxB* box = GetSystBox(event);
-  if(!box) return false;
-  if(sizeof(box->RelevantRecObjects)/sizeof(AnaRecObjectC*) != box->nRelevantRecObjects)
-      return false;
+
   for (int itrk=0;itrk<box->nRelevantRecObjects;itrk++){
-    AnaTrackB* track = static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk]);
-    if(!track) continue;
-    if(!IsRelevantRecObject(event,*box->RelevantRecObjects[itrk]))
-	continue;
-    if(sizeof(track->FGDSegments)/sizeof(AnaFGDParticleB*) != track->nFGDSegments)
-	continue;
-    for (int k = 0; k < track->nFGDSegments; k++) {
+    for (int k = 0; k < static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk])->nFGDSegments; k++) {
       // The new FGD track
-      AnaFGDParticleB* fgdTrack = track->FGDSegments[k];
-      if(!fgdTrack) continue;
-
-      if(!IsRelevantRecObject(event, static_cast<const AnaRecObjectC&>(*fgdTrack)))
-          continue;
-
-      if(!fgdTrack->Original) continue;
-
+      AnaFGDParticleB* fgdTrack = static_cast<AnaTrackB*>(box->RelevantRecObjects[itrk])->FGDSegments[k];
       // The original (corrected) fgd track
       const AnaFGDParticleB* original = static_cast<const AnaFGDParticleB*>(fgdTrack->Original);
-
-      if(!IsRelevantRecObject(event, static_cast<const AnaRecObjectC&>(*original)))
-          continue;
 
       // revert to initial pulls
       fgdTrack->Pullpi = original->Pullpi;
@@ -208,12 +190,10 @@ bool FGDPIDSystematics::IsRelevantRecObject(const AnaEventC& event, const AnaRec
   if (!recObj.TrueObject) return false;
 
   const AnaTrueParticleB* truePart = static_cast<const AnaTrueParticleB*>(recObj.TrueObject);
-  if(!truePart)
-      return false;
 
   bool ok = false;
   // only consider true protons, pions, muons and electrons
-  if      (abs(truePart->PDG) == 211 ) ok = true;
+  if      (abs(truePart->PDG) == 211 ) ok = true;      
   else if (abs(truePart->PDG) == 2212) ok = true;
   else if (abs(truePart->PDG) == 13)   ok = true;
 
