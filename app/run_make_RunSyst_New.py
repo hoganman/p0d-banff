@@ -9,7 +9,8 @@ from ShellCommand import ShellCommand
 import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-QUEUE = '\"physics.q|short.q\"'
+# QUEUE = '\"physics.q|short.q\"'
+QUEUE = '\"defaultfaculty.q\"'
 MEM = '1024'
 NEUT = 'NEUT'
 MCMIN = '60'

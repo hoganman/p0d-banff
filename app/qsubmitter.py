@@ -274,7 +274,7 @@ def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltim
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('source %s/nd280Highland2/%s/cmt/setup.sh\n'%(BASE, os.getenv('HIGHLAND2VERSION')))
+    #submission.write('source %s/nd280Highland2/%s/cmt/setup.sh\n'%(BASE, os.getenv('HIGHLAND2VERSION')))
     ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
                                     datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
                                    ).total_seconds()))
