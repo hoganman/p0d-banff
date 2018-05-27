@@ -11,6 +11,14 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
 QUEUE = '\"physics.q|short.q\"'
+EXCLUDEHOSTS = [7, 11, 19, 29, 45]
+HOSTS = '\"'
+for x in range(20) + range(27, 31) + range(40, 46):
+    if x in EXCLUDEHOSTS:
+        continue
+    HOSTS += 'node{}|'.format(x)
+HOSTS = HOSTS.rstrip("|")
+HOSTS += '\"'
 MEM = '1024'
 NEUT = 'NEUT'
 MCNJOBS = '100'
@@ -37,7 +45,7 @@ def main(argv):
 
 def submit_flattree_jobs():
     """submits the MC and data flat tree jobs"""
-    # submit_ft_data()
+    submit_ft_data()
     submit_ft_mc()
 
 
@@ -59,7 +67,8 @@ def make_qsub_flattree_mc(run_name, production):
         return None
 
     run_list = '-L %s' % (run_list_file.get_file_name())
-    queue = '-q %s' % (QUEUE)
+    # queue = '-q %s' % (QUEUE)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
@@ -77,7 +86,8 @@ def make_qsub_flattree_mc(run_name, production):
     this_run = ShellCommand('nohup %s' % (QSUBFLAT))
     this_run.add(run_list)
     this_run.add(memory)
-    this_run.add(queue)
+    # this_run.add(queue)
+    this_run.add(hosts)
     this_run.add(minutes)
     this_run.add(output_path)
     this_run.add(n_jobs)
@@ -94,7 +104,8 @@ def make_qsub_spline_mc(run_name, production):
         print '\"%s\"' % (flattree_dir.get())
         return None
     flatttree_dir_list = '-L %s' % (flattree_dir.get())
-    queue = '-q %s' % (QUEUE)
+    # queue = '-q %s' % (QUEUE)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
@@ -110,7 +121,8 @@ def make_qsub_spline_mc(run_name, production):
 
     this_run = ShellCommand('nohup %s' % (QSUBSPLINE))
     this_run.add(flatttree_dir_list)
-    this_run.add(queue)
+    # this_run.add(queue)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(run_type)
@@ -129,7 +141,8 @@ def make_qsub_spline_data(run_name, production):
         print '\"%s\"' % (flattree_dir.get())
         return None
     flatttree_dir_list = '-L %s' % (flattree_dir.get())
-    queue = '-q %s' % (QUEUE)
+    # queue = '-q %s' % (QUEUE)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
@@ -146,7 +159,8 @@ def make_qsub_spline_data(run_name, production):
 
     this_run = ShellCommand('nohup %s' % (QSUBSPLINE))
     this_run.add(flatttree_dir_list)
-    this_run.add(queue)
+    # this_run.add(queue)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(run_type)
@@ -168,7 +182,8 @@ def make_qsub_flattree_data(run_name, production):
         return None
 
     run_list = '-L %s' % (run_list_file.get_file_name())
-    queue = '-q %s' % (QUEUE)
+    # queue = '-q %s' % (QUEUE)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
@@ -185,7 +200,8 @@ def make_qsub_flattree_data(run_name, production):
 
     this_run = ShellCommand('nohup %s' % (QSUBFLAT))
     this_run.add(run_list)
-    this_run.add(queue)
+    # this_run.add(queue)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(output_path)
@@ -196,31 +212,31 @@ def make_qsub_flattree_data(run_name, production):
 
 def submit_ft_mc():
     """submits MC flattree jobs"""
-    run2w_ft_mc = make_qsub_flattree_mc(RN.RUN2W, NEUT_6B)
-    # run2a_ft_mc = make_qsub_flattree_mc(RN.RUN2A, NEUT_6B)
-    # run3b_ft_mc = make_qsub_flattree_mc(RN.RUN3B, NEUT_6B)
-    # run3c_ft_mc = make_qsub_flattree_mc(RN.RUN3C, NEUT_6B)
-    # run4w_ft_mc = make_qsub_flattree_mc(RN.RUN4W, NEUT_6B)
-    # run4a_ft_mc = make_qsub_flattree_mc(RN.RUN4A, NEUT_6B)
-    # run5c_ft_mc = make_qsub_flattree_mc(RN.RUN5C, NEUT_6B)
-    # run6b_ft_mc = make_qsub_flattree_mc(RN.RUN6B, NEUT_6B)
-    # run6c_ft_mc = make_qsub_flattree_mc(RN.RUN6C, NEUT_6B)
-    # run6d_ft_mc = make_qsub_flattree_mc(RN.RUN6D, NEUT_6B)
-    # run6e_ft_mc = make_qsub_flattree_mc(RN.RUN6E, NEUT_6B)
-    # run7b_ft_mc = make_qsub_flattree_mc(RN.RUN7B, NEUT_6L)
+    # run2w_ft_mc = make_qsub_flattree_mc(RN.RUN2W, NEUT_6B)
+    run2a_ft_mc = make_qsub_flattree_mc(RN.RUN2A, NEUT_6B)
+    run3b_ft_mc = make_qsub_flattree_mc(RN.RUN3B, NEUT_6B)
+    run3c_ft_mc = make_qsub_flattree_mc(RN.RUN3C, NEUT_6B)
+    run4w_ft_mc = make_qsub_flattree_mc(RN.RUN4W, NEUT_6B)
+    run4a_ft_mc = make_qsub_flattree_mc(RN.RUN4A, NEUT_6B)
+    run5c_ft_mc = make_qsub_flattree_mc(RN.RUN5C, NEUT_6B)
+    run6b_ft_mc = make_qsub_flattree_mc(RN.RUN6B, NEUT_6B)
+    run6c_ft_mc = make_qsub_flattree_mc(RN.RUN6C, NEUT_6B)
+    run6d_ft_mc = make_qsub_flattree_mc(RN.RUN6D, NEUT_6B)
+    run6e_ft_mc = make_qsub_flattree_mc(RN.RUN6E, NEUT_6B)
+    run7b_ft_mc = make_qsub_flattree_mc(RN.RUN7B, NEUT_6L)
 
-    run2w_ft_mc.run(ShellCommand.IN_BKG)
-    # run2a_ft_mc.run(not ShellCommand.IN_BKG)
-    # run3b_ft_mc.run(not ShellCommand.IN_BKG)
-    # run3c_ft_mc.run(not ShellCommand.IN_BKG)
-    # run4w_ft_mc.run(not ShellCommand.IN_BKG)
-    # run4a_ft_mc.run(not ShellCommand.IN_BKG)
-    # run5c_ft_mc.run(not ShellCommand.IN_BKG)
-    # run6b_ft_mc.run(not ShellCommand.IN_BKG)
-    # run6c_ft_mc.run(not ShellCommand.IN_BKG)
-    # run6d_ft_mc.run(not ShellCommand.IN_BKG)
-    # run6e_ft_mc.run(not ShellCommand.IN_BKG)
-    # run7b_ft_mc.run(not ShellCommand.IN_BKG)
+    # run2w_ft_mc.run(ShellCommand.IN_BKG)
+    run2a_ft_mc.run(not ShellCommand.IN_BKG)
+    run3b_ft_mc.run(not ShellCommand.IN_BKG)
+    run3c_ft_mc.run(not ShellCommand.IN_BKG)
+    run4w_ft_mc.run(not ShellCommand.IN_BKG)
+    run4a_ft_mc.run(not ShellCommand.IN_BKG)
+    run5c_ft_mc.run(not ShellCommand.IN_BKG)
+    run6b_ft_mc.run(not ShellCommand.IN_BKG)
+    run6c_ft_mc.run(not ShellCommand.IN_BKG)
+    run6d_ft_mc.run(not ShellCommand.IN_BKG)
+    run6e_ft_mc.run(not ShellCommand.IN_BKG)
+    run7b_ft_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_spline_mc():

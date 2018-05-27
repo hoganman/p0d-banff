@@ -104,6 +104,8 @@
 
 // numu CC Inc P0D -> TPC1
 #include "p0dNumuCCSelection.hxx"
+// numubar CC Inc P0D -> TPC1
+#include "p0dNumubarCCSelection.hxx"
 
 //******************************************************************
 AnalysisManager::AnalysisManager(){
@@ -262,12 +264,14 @@ void AnalysisManager::DefineSelections(){
   sel().AddSelection("kTrackerGammaFGD2",     "GammaBkg selection in FGD2",            new gammaFGD2Selection    ());
 
   // P0D+TPC1 numu CCInc
-  sel().AddSelection("kP0DNuMuCC"       ,     "P0D+TPC1 NuMuCC inclusive" , new p0dNumuCCSelection());
+  sel().AddSelection("kP0DNuMuCC"   ,     "P0D+TPC1 NuMu CC Inclusive" , new p0dNumuCCSelection());
+  // P0D+TPC1 numubar CCInc
+  sel().AddSelection("kP0DNuMuBarCC",     "P0D+TPC1 NuMuBar CC Inclusive" , new p0dNumubarCCSelection());
 
   // Set which run range the selections are valid for using the parameters file
   // If this is not called the selections are applied to all run periods
   // Numu FGD1
-  sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods")); 
+  sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCCMultiPi",    ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCCMultiPi.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCC4pi",        ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4pi.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerNumuCC4piMultiPi", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4piMultiPi.ValidRunPeriods"));
@@ -312,13 +316,15 @@ void AnalysisManager::DefineSelections(){
 
   // P0D+TPC1 Numu CCInc
   sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
+  // P0D+TPC1 Numu CCInc
+  sel().SetValidRunPeriods("kP0DNuMuBarCC",         ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods"));
 
   // Numu FGD1
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))
     sel().DisableSelection("kTrackerNumuCC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))
-    sel().DisableSelection("kTrackerNumuCCMultiPi");   
+    sel().DisableSelection("kTrackerNumuCCMultiPi");
 
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4pi"))
     sel().DisableSelection("kTrackerNumuCC4pi");
@@ -344,7 +350,7 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiTrack");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi"))
-    sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi"); 
+    sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi");
 
 
   // Numu FGD2
@@ -369,7 +375,7 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kTrackerAntiNumuCCMultiTrackFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2"))
-    sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2"); 
+    sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2");
 
   // Numu Bkg in anti-numu, FGD2
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCFGD2"))
@@ -383,25 +389,27 @@ void AnalysisManager::DefineSelections(){
 
   // FGD1 nue
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC"))
-    sel().DisableSelection("kTrackerNuECC");     
+    sel().DisableSelection("kTrackerNuECC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC"))
-    sel().DisableSelection("kTrackerAntiNuECC"); 
+    sel().DisableSelection("kTrackerAntiNuECC");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma"))
-    sel().DisableSelection("kTrackerGamma");        
+    sel().DisableSelection("kTrackerGamma");
 
   // FGD2 nue
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2"))
-    sel().DisableSelection("kTrackerNuECCFGD2");     
+    sel().DisableSelection("kTrackerNuECCFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2"))
-    sel().DisableSelection("kTrackerAntiNuECCFGD2"); 
+    sel().DisableSelection("kTrackerAntiNuECCFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2"))
-    sel().DisableSelection("kTrackerGammaFGD2");     
+    sel().DisableSelection("kTrackerGammaFGD2");
 
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuCC"))
+    sel().DisableSelection("kP0DNuMuCC");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuBarCC"))
     sel().DisableSelection("kP0DNuMuCC");
 
 
@@ -411,28 +419,28 @@ void AnalysisManager::DefineSelections(){
     sel().AddSelection("kTrackerNumuCCMultiPi",    "numuCC MultiPi selection",       new numuCCMultiPiSelection());
     //sel().AddSelection("kTrackerNumuCC4pi",        "inclusive 4pi numuCC selection", new numuCC4piSelection());
     //sel().AddSelection("kTrackerNumuCC4piMultiPi", "numuCC 4pi MultiPi selection",   new numuCC4piMultiPiSelection());
-    
+
     // Anti-numu FGD1
     sel().AddSelection("kTrackerAntiNumuCC",           "antiNumuCC selection",            new antiNumuCCSelection());
     sel().AddSelection("kTrackerAntiNumuCCMultiTrack", "antiNumuCC MultiTrack selection", new antiNumuCCMultiTrackSelection());
     sel().AddSelection("kTrackerAntiNumuCCMultiPi",    "antiNumuCC MultiPi selection",    new antiNumuCCMultiPiSelection());
-    
+
     // Numu Bkg in anti-numu, FGD1
     sel().AddSelection("kTrackerNumuInAntiNuModeCC",           "numuBkg In AntiNuMode CC selection",           new numuBkgInAntiNuModeCCSelection());
     sel().AddSelection("kTrackerNumuInAntiNuModeCCMultiTrack", "numuBkg In AntiNuMode CCMultiTrack selection", new numuBkgInAntiNuModeCCMultiTrackSelection());
     sel().AddSelection("kTrackerNumuInAntiNuModeCCMultiPi",    "numuBkg In AntiNuMode CCMultiPi selection",    new numuBkgInAntiNuModeCCMultiPiSelection());
-    
+
     // Numu FGD2
     sel().AddSelection("kTrackerNumuCCFGD2",           "inclusive numuCC selection in FGD2",     new numuCCFGD2Selection());
     sel().AddSelection("kTrackerNumuCCMultiPiFGD2",    "numuCC MultiPi selection in FGD2",       new numuCCMultiPiFGD2Selection());
     //sel().AddSelection("kTrackerNumuCC4piFGD2",        "inclusive 4pi numuCC selection in FGD2", new numuCC4piFGD2Selection());
    // sel().AddSelection("kTrackerNumuCC4piMultiPiFGD2", "numuCC 4pi MultiPi selection in FGD2",   new numuCC4piMultiPiFGD2Selection());
-    
+
     // Anti-numu FGD2
     sel().AddSelection("kTrackerAntiNumuCCFGD2",           "antiNumuCC selection in FGD2",            new antiNumuCCFGD2Selection());
     sel().AddSelection("kTrackerAntiNumuCCMultiTrackFGD2", "antiNumuCC MultiTrack selection in FGD2", new antiNumuCCMultiTrackFGD2Selection());
     sel().AddSelection("kTrackerAntiNumuCCMultiPiFGD2",    "antiNumuCC MultiPi selection in FGD2",    new antiNumuCCMultiPiFGD2Selection());
-    
+
     // Numu Bkg in anti-numu, FGD2
     sel().AddSelection("kTrackerNumuInAntiNuModeCCFGD2",           "numuBkg In AntiNuMode CC selection in FGD2",           new numuBkgInAntiNuModeCCFGD2Selection());
     sel().AddSelection("kTrackerNumuInAntiNuModeCCMultiTrackFGD2", "numuBkg In AntiNuMode CCMultiTrack selection in FGD2", new numuBkgInAntiNuModeCCMultiTrackFGD2Selection());
@@ -457,34 +465,34 @@ void AnalysisManager::DefineSelections(){
     // Set which run range the selections are valid for using the parameters file
     // If this is not called the selections are applied to all run periods
     // Numu FGD1
-    sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods")); 
+    sel().SetValidRunPeriods("kTrackerNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCCMultiPi",    ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCCMultiPi.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCC4pi",        ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4pi.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCC4piMultiPi", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4piMultiPi.ValidRunPeriods"));
-    
+
     // Anti-numu FGD1
     sel().SetValidRunPeriods("kTrackerAntiNumuCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNumuCCMultiTrack", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCCMultiTrack.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNumuCCMultiPi",    ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCCMultiPi.ValidRunPeriods"));
-    
+
     // Numu Bkg in anti-numu, FGD1
     sel().SetValidRunPeriods("kTrackerNumuInAntiNuModeCC",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuInAntiNuModeCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuInAntiNuModeCCMultiTrack", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuInAntiNuModeCCMultiTrack.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuInAntiNuModeCCMultiPi",    ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuInAntiNuModeCCMultiPi.ValidRunPeriods"));
-    
-    
+
+
     // Same periods as for FGD1
     // Numu FGD2
     sel().SetValidRunPeriods("kTrackerNumuCCFGD2",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCCMultiPiFGD2",    ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCCMultiPi.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCC4piFGD2",        ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4pi.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuCC4piMultiPiFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuCC4piMultiPi.ValidRunPeriods"));
-    
+
     // Anti-numu FGD2
     sel().SetValidRunPeriods("kTrackerAntiNumuCCFGD2",           ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNumuCCMultiTrackFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCCMultiTrack.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNumuCCMultiPiFGD2",    ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNumuCCMultiPi.ValidRunPeriods"));
-    
+
     // Numu Bkg in anti-numu, FGD2
     sel().SetValidRunPeriods("kTrackerNumuInAntiNuModeCCFGD2",           ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuInAntiNuModeCC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerNumuInAntiNuModeCCMultiTrackFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerNumuInAntiNuModeCCMultiTrack.ValidRunPeriods"));
@@ -494,7 +502,7 @@ void AnalysisManager::DefineSelections(){
     sel().SetValidRunPeriods("kTrackerNuECC",     ND::params().GetParameterS("psycheSteering.Selections.TrackerNuECC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNuECC", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerGamma",     ND::params().GetParameterS("psycheSteering.Selections.TrackerGamma.ValidRunPeriods"));
-    
+
     // FGD2 nue
     sel().SetValidRunPeriods("kTrackerNuECCFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerNuECC.ValidRunPeriods"));
     sel().SetValidRunPeriods("kTrackerAntiNuECCFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods"));
@@ -502,69 +510,69 @@ void AnalysisManager::DefineSelections(){
 
     // P0D+TPC1 Numu CCInc
     sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
-    
+
     // Numu FGD1
     if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))
         sel().DisableSelection("kTrackerNumuCC");
- 
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))
-        sel().DisableSelection("kTrackerNumuCCMultiPi");   
-    
+        sel().DisableSelection("kTrackerNumuCCMultiPi");
+
     if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4pi"))
         sel().DisableSelection("kTrackerNumuCC4pi");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi"))
         sel().DisableSelection("kTrackerNumuCC4piMultiPi");
-    
+
     // Anti-numu FGD1
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCC"))
         sel().DisableSelection("kTrackerAntiNumuCC");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack"))
         sel().DisableSelection("kTrackerAntiNumuCCMultiTrack");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi"))
         sel().DisableSelection("kTrackerAntiNumuCCMultiPi");
-    
+
     // Numu Bkg in anti-numu, FGD1
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCC"))
         sel().DisableSelection("kTrackerNumuInAntiNuModeCC");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack"))
         sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiTrack");
-   
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi"))
-        sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi"); 
-    
-    
+        sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiPi");
+
+
     // Numu FGD2
     if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCFGD2"))
         sel().DisableSelection("kTrackerNumuCCFGD2");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2"))
         sel().DisableSelection("kTrackerNumuCCMultiPiFGD2");
-  
+
     if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piFGD2"))
         sel().DisableSelection("kTrackerNumuCC4piFGD2");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2"))
         sel().DisableSelection("kTrackerNumuCC4piMultiPiFGD2");
-	
-    
+
+
     // Anti-numu FGD2
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCFGD2"))
         sel().DisableSelection("kTrackerAntiNumuCCFGD2");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2"))
         sel().DisableSelection("kTrackerAntiNumuCCMultiTrackFGD2");
-  
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2"))
-        sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2"); 
-    
+        sel().DisableSelection("kTrackerAntiNumuCCMultiPiFGD2");
+
     // Numu Bkg in anti-numu, FGD2
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCFGD2"))
         sel().DisableSelection("kTrackerNumuInAntiNuModeCCFGD2");
-    
+
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2"))
         sel().DisableSelection("kTrackerNumuInAntiNuModeCCMultiTrackFGD2");
 
@@ -573,26 +581,26 @@ void AnalysisManager::DefineSelections(){
 
     // FGD1 nue
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC"))
-      sel().DisableSelection("kTrackerNuECC");     
+      sel().DisableSelection("kTrackerNuECC");
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC"))
-      sel().DisableSelection("kTrackerAntiNuECC"); 
+      sel().DisableSelection("kTrackerAntiNuECC");
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma"))
-      sel().DisableSelection("kTrackerGamma");        
-    
+      sel().DisableSelection("kTrackerGamma");
+
     // FGD2 nue
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2"))
-      sel().DisableSelection("kTrackerNuECCFGD2");     
+      sel().DisableSelection("kTrackerNuECCFGD2");
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2"))
-      sel().DisableSelection("kTrackerAntiNuECCFGD2"); 
+      sel().DisableSelection("kTrackerAntiNuECCFGD2");
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2"))
-      sel().DisableSelection("kTrackerGammaFGD2");     
+      sel().DisableSelection("kTrackerGammaFGD2");
 
     if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuCC"))
-      sel().DisableSelection("kP0DNuMuCC");     
+      sel().DisableSelection("kP0DNuMuCC");
     */
 }
 
@@ -635,6 +643,7 @@ void AnalysisManager::DefineSystematics(){
   eweight().AddEventWeight(SystId::kNuEECalPileUp,     "NuEECalPileUp",     new nueECalPileUpSystematics());
   eweight().AddEventWeight(SystId::kNuEOOFV,           "NuEOOFV",           new nueOOFVSystematics());
 
+  //P0D+TPC!!!
   eweight().AddEventWeight(SystId::kTpcP0dMatchEff,    "TpcP0dMatchEff",    new TPCP0DMatchEffSystematics());
 
   syst().AddFluxSystematic(SystId::kFluxWeight,        "FluxWeight",        new FluxWeightSystematics());
@@ -676,7 +685,7 @@ void AnalysisManager::DefineSystematics(){
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcECalMatchEff"))   eweight().EnableEventWeight(SystId::kTpcECalMatchEff);
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableECalEmHipPID"))      eweight().EnableEventWeight(SystId::kECalEmHipPID);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"))        eweight().EnableEventWeight(SystId::kFGD2Shower); 
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"))        eweight().EnableEventWeight(SystId::kFGD2Shower);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"))      eweight().EnableEventWeight(SystId::kNuETPCPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"))      eweight().EnableEventWeight(SystId::kNuEP0DPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp"))     eweight().EnableEventWeight(SystId::kNuEECalPileUp);
@@ -1207,7 +1216,7 @@ bool AnalysisManager::ReadEvents(const std::string& inputFile, Int_t nmax_events
 
     // Dump info about number of entries run
     if (entry%10000==0 || entry == nentries)
-      std::cout << "entry: " <<  entry  << " of " << nentries << " (" << (100*entry/nentries) << "%)" << std::endl;        
+      std::cout << "entry: " <<  entry  << " of " << nentries << " (" << (100*entry/nentries) << "%)" << std::endl;
 
     // Get the SuperEvent and save it into the array
     AnaSuperEventB* event = &_input.GetSuperEvent();
@@ -1414,7 +1423,7 @@ bool AnalysisManager::PreloadMCEvents(std::vector<std::string> inputFiles, std::
 
       // Dump info about number of entries run
       if (entry%10000==0 || entry == nmax_entries)
-        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;        
+        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;
 
       // Get the SuperEvent and save it into the array
       AnaSuperEventB* event = &_input.GetSuperEvent();
@@ -1484,7 +1493,7 @@ bool AnalysisManager::PreloadDataEvents(std::vector<std::string> inputFiles){
 
       // Dump info about number of entries run
       if (entry%10000==0 || entry == nmax_entries)
-        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;        
+        std::cout << "entry: " <<  entry  << " of " << nmax_entries << " (" << (100*entry/nmax_entries) << "%)" << std::endl;
 
 
       // Get the SuperEvent and save it into the array

@@ -7,7 +7,7 @@ import os
 
 # globals
 NNODES = 46
-FREEUSENODES = range(1, 20) + range(27, 31)
+FREEUSENODES = range(1, 7) + range(8, 20) + range(27, 31)
 PHYSICSNODES = range(40, 46)
 ALLNODES = range(1, 46)
 FREEUSEQUEUENAMES = ['defaultfaculty', 'physics', 'short']
@@ -132,33 +132,38 @@ def GetJobsFromUser(username, qstatOutput=[]):
     if len(qstatOutput) == 0:
         qstatOutput = GetOutputFromCommand('qstat -u %s' % (username), '\n')
     userJobs = {'queued': 0, 'slots': 0, 'errors': 0,  'suspended': 0,
-                'transferring': 0}
+                'transferring': 0, 'deleted': 0}
     for line in qstatOutput:
         if line.find(username) == -1:
             continue
         processLine = False
+        if ' qw ' in line or ' hwq ' in line:
+            userJobs['queued'] += 1
+            continue
         # exclude non-accepted queues
         for free_use_queue in FREEUSEQUEUENAMES:
             if free_use_queue in line:
                 processLine = True
         if not processLine:
             continue
+        # find a node in the line
         skipJob = True
         for node_num in ALLNODES:
             nodeName = 'node%d ' % (node_num)
             if nodeName in line:
                 skipJob = False
                 break
+        # if a node was found in the line
         if skipJob:
-            continue
-        if ' qw ' in line:
-            userJobs['queued'] += 1
             continue
         if ' Eqw ' in line or ' Er ' in line or ' E ' in line:
             userJobs['errors'] += 1
             continue
         if ' t ' in line:
             userJobs['transferring'] += 1
+        if ' dr ' in line or ' d ' in line:
+            userJobs['deleted'] += 1
+            continue
         splitLine = None
         line = line.strip()
         if not (' r ' in line or ' S ' in line or ' s ' in line):
@@ -247,9 +252,9 @@ def main(argv):
         groups_users_dict = GetUsersFromHome()
 
         qstatOutput = GetOutputFromCommand('qstat -u \"*\"', '\n')
-        print '================================================================='
-        print '| Username  |  Slots  | Transfers | Queued | Errors | Suspended |'
-        print '================================================================='
+        print '==============================================================='
+        print '| Username | Slots | Transfers | Queued | Err | Del | Suspend |'
+        print '==============================================================='
         for group in groups_users_dict:
             # print group
             for user in groups_users_dict[group]:
@@ -258,14 +263,18 @@ def main(argv):
                         and userJobs['queued'] == 0 \
                         and userJobs['transferring'] == 0 \
                         and userJobs['errors'] == 0 \
+                        and userJobs['deleted'] == 0 \
                         and userJobs['suspended'] == 0:
                     continue
                 # print 'user=', user
                 # print group
                 # print user
-                template = '| %9s | %7d | %9d | %6d | %6d | %9d |'
-                print template % (user, userJobs['slots'], userJobs['queued'],
-                                  userJobs['transferring'], userJobs['errors'],
+                template = '| %8s | %5d | %9d | %6d | %3d | %3d | %7d |'
+                print template % (user, userJobs['slots'],
+                                  userJobs['transferring'],
+                                  userJobs['queued'],
+                                  userJobs['errors'],
+                                  userJobs['deleted'],
                                   userJobs['suspended'])
 
     if options.quiet:

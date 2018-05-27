@@ -6,7 +6,7 @@ import qsubmitter2
 def main(argv):
 
     # the job management class
-    ft_univa_jobs = qsubmitter2.RunCreateFlattree_univa_jobs()
+    ft_univa_jobs = qsubmitter2.RunCreateFlatTree_univa_jobs()
 
     # no inputs given
     if len(argv) == 0:
@@ -25,7 +25,7 @@ def main(argv):
         sys.exit(1)
 
     # assign options and arguments to jobs
-    ft_univa_jobs.check_RunCreateFlattree_univa_jobs_options()
+    ft_univa_jobs.check_RunCreateFlatTree_univa_jobs_options()
 
     # discontinue if something was not accepted
     if ft_univa_jobs.show_usage:
@@ -45,7 +45,7 @@ def main(argv):
     else:
         sys.exit(1)
 
-    # ft_univa_jobs.make_jobs()
+    # ft_univa_jobs.make_job_scripts()
     # ft_univa_jobs.submit_jobs()
 
 

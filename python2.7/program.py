@@ -23,6 +23,10 @@ class program(p0dbanff.p0dbanff):
         self.show_usage = False
         self.command = None
 
+        self.parser.add_option('-d', '--DEBUG', default=False,
+                               dest='DEBUG', help='enable debugging',
+                               action='store_true')
+
     def __str__(self):
         return self.name
 
@@ -30,8 +34,17 @@ class program(p0dbanff.p0dbanff):
         """set program description"""
         self.descpt = descpt
 
+    def DEBUG(self):
+        """checks the debug status"""
+        if self.options:
+            if self.options.DEBUG:
+                return True
+        return False
+
     def check_program_options(self):
         """runs the rudamentary checks"""
+        if self.DEBUG():
+            print 'class program fcn: check_program_options'
         if not self.options:
             error_msg = 'ERROR: You must run arg_parse first'
             print error_msg
@@ -40,6 +53,7 @@ class program(p0dbanff.p0dbanff):
         if self.requires_arguments:
             if not (type(self.args) is str and len(self.args) > 0):
                 error_msg = 'ERROR: This program requires arguments!'
+                print error_msg
                 self.show_usage = True
                 return
         return self.show_usage
@@ -85,20 +99,22 @@ class RunCreateFlatTree(program):
 
     def check_RunCreateFlatTree_options(self):
         """checks if the options are correct"""
+        if self.DEBUG():
+            print 'class RunCreateFlatTree fcn: check_RunCreateFlatTree_options'
         self.check_program_options()
         if self.show_usage:
             return
-        if not self.options.o:
+        if not self.options.output_path:
             error_msg = 'ERROR: Please set output file name prefix'
             print error_msg
             self.show_usage = True
             return
-        self.command = 'RunCreateFlatTree.exe'
-        if self.options.v:
-            self.command += ' -v'
-        full_output = os.path.join(self.options.output_path, self.options.output_name)
-        self.command += ' -o %s' % (full_output)
-        self.command += ' %s' % (self.arguments)
+        # self.command = 'RunCreateFlatTree.exe'
+        # if self.options.v:
+        #     self.command += ' -v'
+        # full_output = os.path.join(self.options.output_path, self.options.output_name)
+        # self.command += ' -o %s' % (full_output)
+        # self.command += ' %s' % (self.arguments)
 
     def run(self):
         """runs the program"""
@@ -110,6 +126,7 @@ class ROOTprog(program):
 
     def __init__(self):
         super(ROOTprog, self).__init__()
+        self.command = '{}/bin/root -l'.format(os.getenv('ROOTSYS'))
 
 
 class PYTHONprog(program):
@@ -117,20 +134,25 @@ class PYTHONprog(program):
 
     def __init__(self):
         super(PYTHONprog, self).__init__()
+        self.command = 'python'
 
 
-class RunCreateFlattree_job(RunCreateFlatTree):
+class RunCreateFlatTree_job(RunCreateFlatTree):
     """jobs involving a file of oaAnalysis files"""
 
     def __init__(self):
-        super(RunCreateFlattree_job, self).__init__()
+        super(RunCreateFlatTree_job, self).__init__()
+        # let another job manager handle arguments
+        self.requires_arguments = False
 
-    def check_RunCreateFlattree_job_options(self):
+    def check_RunCreateFlatTree_job_options(self):
         """makes sure no bad inputs were given, else, tell user"""
+        if self.DEBUG():
+            print 'class RunCreateFlatTree_job fcn: check_RunCreateFlatTree_job_options'
         self.check_program_options()
         if self.show_usage:
             return
-        self.check_RunCreateFlatTree_options()
+        # self.check_RunCreateFlatTree_options()
 
 
 def which(program_name):

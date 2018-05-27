@@ -10,7 +10,7 @@
 /// Event sample - whether it passes the NuMu-CCQE selection, or CC1Pi selection for example
 namespace SampleId{
 
-  
+
   enum SampleEnum {
     kUnassigned,
     // FGD1
@@ -124,12 +124,13 @@ namespace SampleId{
     kFGD2GammaInAntiNuMode,
     // P0D
     kP0DNuMuCC,
+    kP0DNuMuBarCC,
     kNSamples
   };
 
   std::string ConvertSample(SampleEnum sample);
   std::string ConvertSampleToSelection(SampleEnum sample);
-  
+
 }
 
 #endif

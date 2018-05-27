@@ -59,7 +59,7 @@ class batchq(p0dbanff.p0dbanff):
     def check_batchq_qoptions(self):
         """make sure the set qoptions are not invalid"""
         for qopt in self.qoptions:
-            if qopt.cmd_arg is not '#':
+            if '#' not in qopt.cmd_arg:
                 error_msg = 'ERROR: %s does NOT ' % (qopt.search_tag)
                 error_msg += 'have a proper cmd_arg'
                 print error_msg
@@ -143,9 +143,7 @@ class univa(batchq):
             self.set_help_opt(True)
             return
         test_opt = self.get_option('merge')
-        if not (type(test_opt.usr_input) is str and
-                (test_opt.usr_input is 'yes' or
-                 str(test_opt) is 'no' or len(test_opt.usr_input) == 0)):
+        if test_opt.usr_input != 'yes' and test_opt.usr_input != 'no':
             error_msg = 'ERROR: merge .o/.e files must '
             error_msg += 'be "yes", "no", or empty string'
             print error_msg

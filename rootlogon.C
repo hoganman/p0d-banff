@@ -11,7 +11,6 @@
         printf("Unable to load libP0DBANFF\n");
         return;
     }
-    TGaxis::SetMaxDigits(3);
     gSystem->Load("libGraf");
     gSystem->Load("libGraf3d");
     gSystem->Load("libTree");

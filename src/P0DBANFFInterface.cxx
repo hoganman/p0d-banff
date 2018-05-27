@@ -40,6 +40,7 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetCanvasBorderMode(0);
     P0DBANFFStyle->SetOptTitle(kFALSE);
     P0DBANFFStyle->SetEndErrorSize(4);
+    P0DBANFFStyle->SetFillStyle(static_cast<Style_t>(1001));
     gROOT->SetStyle("P0DBANFFStyle");
 
 }

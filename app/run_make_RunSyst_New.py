@@ -10,7 +10,15 @@ import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 # QUEUE = '\"physics.q|short.q\"'
-QUEUE = '\"defaultfaculty.q\"'
+# QUEUE = '\"defaultfaculty.q\"'
+EXCLUDEHOSTS = [7, 11, 19, 29, 45]
+HOSTS = '\"'
+for x in range(1, 20) + range(27, 31) + range(40, 46):
+    if x in EXCLUDEHOSTS:
+        continue
+    HOSTS += 'node{}|'.format(x)
+HOSTS = HOSTS.rstrip("|")
+HOSTS += '\"'
 MEM = '1024'
 NEUT = 'NEUT'
 MCMIN = '60'
@@ -41,7 +49,8 @@ def make_qsub(run_name, production, is_mc=True):
         print '\"%s\"' % (flattree_dir.get())
         return None
     flattree_dir_list = '-L %s' % (flattree_dir.get())
-    queue = '-q %s' % (QUEUE)
+    # queue = '-q %s' % (QUEUE)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (RUNSYSTNEWOUTPUTBASE,
@@ -61,7 +70,8 @@ def make_qsub(run_name, production, is_mc=True):
     this_run = ShellCommand('nohup %s' % (QSUBRUNSYSTNEW))
     this_run.add(flattree_dir_list)
     this_run.add(memory)
-    this_run.add(queue)
+    # this_run.add(queue)
+    this_run.add(hosts)
     this_run.add(minutes)
     this_run.add(output_path)
     this_run.add(output_name)
@@ -73,31 +83,31 @@ def submit_runsyst_new_mc():
     """submits MC RunSyst_New.exe jobs"""
 
     is_mc = True
-    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
-    # run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
-    # run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
-    # run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
-    # run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, is_mc)
-    # run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, is_mc)
-    # run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, is_mc)
-    # run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, is_mc)
-    # run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, is_mc)
-    # run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, is_mc)
-    # run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
-    # run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
+    # run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
+    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
+    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
+    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
+    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, is_mc)
+    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, is_mc)
+    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, is_mc)
+    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, is_mc)
+    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, is_mc)
+    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, is_mc)
+    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
+    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
 
-    run2w_mc.run(ShellCommand.IN_BKG)
-    # run2a_mc.run(not ShellCommand.IN_BKG)
-    # run3b_mc.run(not ShellCommand.IN_BKG)
-    # run3c_mc.run(not ShellCommand.IN_BKG)
-    # run4w_mc.run(not ShellCommand.IN_BKG)
-    # run4a_mc.run(not ShellCommand.IN_BKG)
-    # run5c_mc.run(not ShellCommand.IN_BKG)
-    # run6b_mc.run(not ShellCommand.IN_BKG)
-    # run6c_mc.run(not ShellCommand.IN_BKG)
-    # run6d_mc.run(not ShellCommand.IN_BKG)
-    # run6e_mc.run(not ShellCommand.IN_BKG)
-    # run7b_mc.run(not ShellCommand.IN_BKG)
+    # run2w_mc.run(ShellCommand.IN_BKG)
+    run2a_mc.run(not ShellCommand.IN_BKG)
+    run3b_mc.run(not ShellCommand.IN_BKG)
+    run3c_mc.run(not ShellCommand.IN_BKG)
+    run4w_mc.run(not ShellCommand.IN_BKG)
+    run4a_mc.run(not ShellCommand.IN_BKG)
+    run5c_mc.run(not ShellCommand.IN_BKG)
+    run6b_mc.run(not ShellCommand.IN_BKG)
+    run6c_mc.run(not ShellCommand.IN_BKG)
+    run6d_mc.run(not ShellCommand.IN_BKG)
+    run6e_mc.run(not ShellCommand.IN_BKG)
+    run7b_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():
