@@ -125,9 +125,10 @@ and last recorded usage')
 
     load = gethpcstorage_usage(options.diff)
     while load >= 1.:
-        print 'The load is too high, waiting for', options.sleep
+        print 'The load is too high, waiting for', options.sleep, 'seconds'
         time.sleep(options.sleep)
         load = gethpcstorage_usage(options.diff)
+    print 'Proceeding...'
     return 0
 
 

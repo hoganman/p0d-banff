@@ -14,6 +14,7 @@
     gSystem->Load("libGraf");
     gSystem->Load("libGraf3d");
     gSystem->Load("libTree");
+    gROOT->ProcessLine("#include \"TXMLEngine.h\"");
     gSystem->Load("libP0DBANFF");
     P0DBANFFInterface interface;
     interface.LoadColorBlindPalette();

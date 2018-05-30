@@ -1,5 +1,6 @@
 """set the conventions for using this software"""
 import p0dbanff
+import os
 
 
 class RunName(p0dbanff.p0dbanff):
@@ -10,13 +11,34 @@ class RunName(p0dbanff.p0dbanff):
         self.lower = lowercase
         self.upper = uppercase
 
-    def upper_case(self):
+    def up(self):
         """get upper case seplling"""
         return self.upper
 
     def low(self):
         """get lower case seplling"""
         return self.lower
+
+    def upper_case(self):
+        """get upper case seplling"""
+        return self.upper
+
+    def lower_case(self):
+        """get lower case seplling"""
+        return self.lower
+
+    def lowupjoin(self, prepend=''):
+        """join the two for path"""
+        return os.path.join(prepend, self.low(), self.up())
+
+    def iter_name(self, prepend=''):
+        """
+        Returns an iteratible string for looping integers
+        like this /path/to/lower/UPPER_%d.root'
+        """
+        out_str = self.lowupjoin(prepend)
+        out_str += '_%d.root'
+        return out_str
 
 
 # MC version

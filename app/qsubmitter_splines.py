@@ -266,7 +266,7 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(600)\'\n' % (ROOT))
+    submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(600)\'\n' % (ROOT))
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')

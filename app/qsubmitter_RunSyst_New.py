@@ -25,7 +25,7 @@ inOptions = {
 }
 
 
-SECONDS_BTN_RUN = 240
+SECONDS_BTN_RUN = 20
 csuhpc = -1
 isMC = True
 queueTag = '$' 
@@ -267,7 +267,8 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('%s \'/physics/home/mhogan/software/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN * 100))
+    submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN * 100))
+    submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -377,7 +378,7 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        sleepTime = 10
+        sleepTime = 1
         print "sleeping for %d seconds till next job sub" % sleepTime
         time.sleep(sleepTime)  # seconds
 

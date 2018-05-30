@@ -42,7 +42,10 @@ class ROOTChain(p0dbanff.p0dbanff):
 
 
 def get(chain_name, file_names, first_num=1, last_num=100):
-    """a dirty method to get a TChain from many numbered files"""
+    """
+    A dirty method to get a TChain from many numbered files
+    Use with RunName.RunName.iter_name()
+    """
     chain = ROOTChain(chain_name)
     chain.add_from_files(file_names, first_num, last_num)
-    return chain.get()
+    return chain.get_chain()

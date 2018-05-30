@@ -1,13 +1,16 @@
-#!/usr/bin/env python
-"""A script that makes histogram of the resulting TTree from
-   RunSyst_New.exe """
+#!/usr/bin/env python2.7
+"""
+A script that makes histogram of the resulting TTree from
+   RunSyst_New.exe
+"""
 
 import ROOT
-from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem, TChain
-# import ROOTChain
+from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem  # , TChain
+import ROOTChain
 from ROOTHStack import ROOTHStack
 import sys
 from os.path import join
+import RunName as RN
 
 # Which selection to run
 P0DNUMUCCSELECTION = 88
@@ -189,58 +192,60 @@ def main(argv):
     mc_name = 'all'
     # data_name = 'nominal'
     # file_path = '/Raid/home/mhogan/systematics'
+    # Run2Air = 'Run2_Air_hadd.root'
+    # Run2Wtr = 'Run2_Water_hadd.root'
+    # Run3bAir = 'Run3b_Air_hadd.root'
+    # Run3cAir = 'Run3c_Air_hadd.root'
+    # Run4Air = 'Run4_Air_hadd.root'
+    # Run4Wtr = 'Run4_Water_hadd.root'
+    # Run5cWtr = 'Run5c_Water_hadd.root'
+    # Run6bAir = 'Run6b_Air_hadd.root'
+    # Run6cAir = 'Run6c_Air_hadd.root'
+    # Run6dAir = 'Run6d_Air_hadd.root'
+    # Run6eAir = 'Run6e_Air_hadd.root'
+    # Run7bWtr = 'Run7b_Water_hadd.root'
+
+    # chn_MCRun2Air = TChain(mc_name)
+    # chn_MCRun2Wtr = TChain(mc_name)
+    # chn_MCRun3bAir = TChain(mc_name)
+    # chn_MCRun3cAir = TChain(mc_name)
+    # chn_MCRun4Air = TChain(mc_name)
+    # chn_MCRun4Wtr = TChain(mc_name)
+    # chn_MCRun5cWtr = TChain(mc_name)
+    # chn_MCRun6bAir = TChain(mc_name)
+    # chn_MCRun6cAir = TChain(mc_name)
+    # chn_MCRun6dAir = TChain(mc_name)
+    # chn_MCRun6eAir = TChain(mc_name)
+    # chn_MCRun7bWtr = TChain(mc_name)
+
+    # chn_MCRun2Air.Add(join(file_path, Run2Air))
+    # chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
+    # chn_MCRun3bAir.Add(join(file_path, Run3bAir))
+    # chn_MCRun3cAir.Add(join(file_path, Run3cAir))
+    # chn_MCRun4Air.Add(join(file_path, Run4Air))
+    # chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
+    # chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
+    # chn_MCRun6bAir.Add(join(file_path, Run6bAir))
+    # chn_MCRun6dAir.Add(join(file_path, Run6dAir))
+    # chn_MCRun6cAir.Add(join(file_path, Run6cAir))
+    # chn_MCRun6eAir.Add(join(file_path, Run6eAir))
+    # chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
+
     file_path = '/physics/home/mhogan/systematics'
-    Run2Air = 'Run2_Air_hadd.root'
-    Run2Wtr = 'Run2_Water_hadd.root'
-    Run3bAir = 'Run3b_Air_hadd.root'
-    Run3cAir = 'Run3c_Air_hadd.root'
-    Run4Air = 'Run4_Air_hadd.root'
-    Run4Wtr = 'Run4_Water_hadd.root'
-    Run5cWtr = 'Run5c_Water_hadd.root'
-    Run6bAir = 'Run6b_Air_hadd.root'
-    Run6cAir = 'Run6c_Air_hadd.root'
-    Run6dAir = 'Run6d_Air_hadd.root'
-    Run6eAir = 'Run6e_Air_hadd.root'
-    Run7bWtr = 'Run7b_Water_hadd.root'
-
-    chn_MCRun2Air = TChain(mc_name)
-    chn_MCRun2Wtr = TChain(mc_name)
-    chn_MCRun3bAir = TChain(mc_name)
-    chn_MCRun3cAir = TChain(mc_name)
-    chn_MCRun4Air = TChain(mc_name)
-    chn_MCRun4Wtr = TChain(mc_name)
-    chn_MCRun5cWtr = TChain(mc_name)
-    chn_MCRun6bAir = TChain(mc_name)
-    chn_MCRun6cAir = TChain(mc_name)
-    chn_MCRun6dAir = TChain(mc_name)
-    chn_MCRun6eAir = TChain(mc_name)
-    chn_MCRun7bWtr = TChain(mc_name)
-
-    chn_MCRun2Air.Add(join(file_path, Run2Air))
-    chn_MCRun2Wtr.Add(join(file_path, Run2Wtr))
-    chn_MCRun3bAir.Add(join(file_path, Run3bAir))
-    chn_MCRun3cAir.Add(join(file_path, Run3cAir))
-    chn_MCRun4Air.Add(join(file_path, Run4Air))
-    chn_MCRun4Wtr.Add(join(file_path, Run4Wtr))
-    chn_MCRun5cWtr.Add(join(file_path, Run5cWtr))
-    chn_MCRun6bAir.Add(join(file_path, Run6bAir))
-    chn_MCRun6dAir.Add(join(file_path, Run6dAir))
-    chn_MCRun6cAir.Add(join(file_path, Run6cAir))
-    chn_MCRun6eAir.Add(join(file_path, Run6eAir))
-    chn_MCRun7bWtr.Add(join(file_path, Run7bWtr))
-
-    # chn_MCRun2Air = ROOTChain.get(mc_name, join(file_path, Run2Air))
-    # chn_MCRun2Wtr = ROOTChain.get(mc_name, join(file_path, Run2Wtr))
-    # chn_MCRun3bAir = ROOTChain.get(mc_name, join(file_path, Run3bAir))
-    # chn_MCRun3cAir = ROOTChain.get(mc_name, join(file_path, Run3cAir))
-    # chn_MCRun4Air = ROOTChain.get(mc_name, join(file_path, Run4Air))
-    # chn_MCRun4Wtr = ROOTChain.get(mc_name, join(file_path, Run4Wtr))
-    # chn_MCRun5cWtr = ROOTChain.get(mc_name, join(file_path, Run5cWtr))
-    # chn_MCRun6bAir = ROOTChain.get(mc_name, join(file_path, Run6bAir))
-    # chn_MCRun6cAir = ROOTChain.get(mc_name, join(file_path, Run6cAir))
-    # chn_MCRun6dAir = ROOTChain.get(mc_name, join(file_path, Run6dAir))
-    # chn_MCRun6eAir = ROOTChain.get(mc_name, join(file_path, Run6eAir))
-    # chn_MCRun7bWtr = ROOTChain.get(mc_name, join(file_path, Run7bWtr))
+    P6B = join(file_path, 'mcp6_Spin_B', 'neut')
+    P6L = join(file_path, 'mcp6_Spin_L', 'neut')
+    chn_MCRun2Air = ROOTChain.get(mc_name, RN.RUN2A.iter_name(P6B))
+    chn_MCRun2Wtr = ROOTChain.get(mc_name, RN.RUN2W.iter_name(P6B))
+    chn_MCRun3bAir = ROOTChain.get(mc_name, RN.RUN3B.iter_name(P6B))
+    chn_MCRun3cAir = ROOTChain.get(mc_name, RN.RUN3C.iter_name(P6B))
+    chn_MCRun4Air = ROOTChain.get(mc_name, RN.RUN4A.iter_name(P6B))
+    chn_MCRun4Wtr = ROOTChain.get(mc_name, RN.RUN4W.iter_name(P6B))
+    chn_MCRun5cWtr = ROOTChain.get(mc_name, RN.RUN5C.iter_name(P6B))
+    chn_MCRun6bAir = ROOTChain.get(mc_name, RN.RUN6B.iter_name(P6B))
+    chn_MCRun6cAir = ROOTChain.get(mc_name, RN.RUN6C.iter_name(P6B))
+    chn_MCRun6dAir = ROOTChain.get(mc_name, RN.RUN6D.iter_name(P6B))
+    chn_MCRun6eAir = ROOTChain.get(mc_name, RN.RUN6E.iter_name(P6B))
+    chn_MCRun7bWtr = ROOTChain.get(mc_name, RN.RUN7B.iter_name(P6L))
 
     chn_FHC_Wtr = chn_MCRun2Wtr
     chn_FHC_Wtr.Add(chn_MCRun4Wtr)

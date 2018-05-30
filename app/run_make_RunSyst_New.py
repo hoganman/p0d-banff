@@ -13,7 +13,7 @@ P0DBANFF = os.getenv('P0DBANFFROOT')
 # QUEUE = '\"defaultfaculty.q\"'
 EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 HOSTS = '\"'
-for x in range(1, 20) + range(27, 31) + range(40, 46):
+for x in range(1, 20) + range(27, 31):  # + range(40, 46):
     if x in EXCLUDEHOSTS:
         continue
     HOSTS += 'node{}|'.format(x)
@@ -83,7 +83,7 @@ def submit_runsyst_new_mc():
     """submits MC RunSyst_New.exe jobs"""
 
     is_mc = True
-    # run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
+    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
     run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
     run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
     run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
@@ -97,17 +97,17 @@ def submit_runsyst_new_mc():
     run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
 
     # run2w_mc.run(ShellCommand.IN_BKG)
-    run2a_mc.run(not ShellCommand.IN_BKG)
-    run3b_mc.run(not ShellCommand.IN_BKG)
-    run3c_mc.run(not ShellCommand.IN_BKG)
-    run4w_mc.run(not ShellCommand.IN_BKG)
-    run4a_mc.run(not ShellCommand.IN_BKG)
-    run5c_mc.run(not ShellCommand.IN_BKG)
-    run6b_mc.run(not ShellCommand.IN_BKG)
-    run6c_mc.run(not ShellCommand.IN_BKG)
-    run6d_mc.run(not ShellCommand.IN_BKG)
-    run6e_mc.run(not ShellCommand.IN_BKG)
-    run7b_mc.run(not ShellCommand.IN_BKG)
+    # run2a_mc.run(ShellCommand.IN_BKG)
+    run3b_mc.run(ShellCommand.IN_BKG)
+    run3c_mc.run(ShellCommand.IN_BKG)
+    run4w_mc.run(ShellCommand.IN_BKG)
+    run4a_mc.run(ShellCommand.IN_BKG)
+    run5c_mc.run(ShellCommand.IN_BKG)
+    run6b_mc.run(ShellCommand.IN_BKG)
+    run6c_mc.run(ShellCommand.IN_BKG)
+    run6d_mc.run(ShellCommand.IN_BKG)
+    run6e_mc.run(ShellCommand.IN_BKG)
+    # run7b_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():
