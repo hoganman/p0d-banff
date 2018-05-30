@@ -33,7 +33,7 @@ public:
     void RandomSleep(Int_t nSeconds, Int_t seed=0) const;
 
     ///Split a TString into its components by a separator
-    std::vector<TString> SplitString(TString theOpt, Char_t separator) const;
+    static std::vector<TString> SplitString(TString theOpt, Char_t separator);
 
     ///For a given TCanvas, get the TH1
     TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName) const;

@@ -3,7 +3,9 @@
 ///This class allows the user to declare a set of bins
 ///and vary the content (or bins themselves if you get
 ///around to it)
-///Also the last bin is used as overflow
+///Also the last bin can be used as overflow using the last
+///bool parameter in the constructor. true means use last bin
+///as overflow
 
 #include "TH1D.h"
 #include "TString.h"

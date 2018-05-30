@@ -357,7 +357,7 @@ void P0DBANFFInterface::SaveCanvasAs(TString inputFileName,
 
 //**************************************************
 std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
-    Char_t separator) const
+    Char_t separator)
 //**************************************************
 {
    // splits the option string at 'separator' and fills the list

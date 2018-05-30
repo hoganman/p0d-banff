@@ -12,10 +12,10 @@ public:
     XMLTools();
 
     ///The destructor
-    virtual ~XMLTools(){delete fxml;};
+    virtual ~XMLTools();
 
     ///Get the engine
-    TXMLEngine* Engine(){return fxml;}
+    TXMLEngine* Engine();
 
     ///Sets the XML file to read
     void SetFile(TString file);
@@ -26,7 +26,7 @@ public:
     ///Recursively searches for a node with "name"
     XMLNodePointer_t GetXMLNode(TString name);
 
-    ///
+    ///Get from a child node the attribute with name "attrName"
     TString GetChildAttributeFromNode(TString motherNodeName, TString attrName);
 
 protected:

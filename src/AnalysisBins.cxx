@@ -28,7 +28,7 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
     nBins = nEntries - 1;
     for( Int_t index = 0; index < nEntries; ++index )
     {
-        std::cout << edges[index] << std::endl;
+        //std::cout << edges[index] << std::endl;
         binEdges[index] = edges[index];
     }
     Char_t buffer[500];
