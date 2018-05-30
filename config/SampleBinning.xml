@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<main>
+    <Samples>
+        <P0DNumuFHC>
+            <comment> P0D numu candidate in FHC </comment>
+            <momentumBinEdges attr="0.,400.,500.,700.,900.,2500.,5000.,5500."/>
+            <momentumNumBinEdges attr="8"/>
+            <cosThetaBinEdges attr="0.000,0.600,0.700,0.800,0.850,0.900,0.925,0.950,0.975,1.000"/>
+            <cosThetaNumBinEdges attr="10"/>
+        </P0DNumuFHC>
+        <P0DNumubarFHC>
+            <comment> P0D numubar candidate in FHC </comment>
+            <momentumBinEdges attr="0.,400.,530.,670.,800.,1000.,1380.,2010.,3410.,5000.,5500."/>
+            <momentumNumBinEdges attr="11"/>
+            <cosThetaBinEdges attr="0.000,0.600,0.700,0.800,0.850,0.900,0.925,0.950,0.975,1.000"/>
+            <cosThetaNumBinEdges attr="10"/>
+        </P0DNumubarFHC>
+        <P0DNumuRHC>
+            <comment> P0D numu candidate in RHC </comment>
+            <momentumBinEdges attr="0.,400.,500.,700.,900.,2500.,5000.,5500."/>
+            <momentumNumBinEdges attr="8"/>
+            <cosThetaBinEdges attr="0.000,0.600,0.700,0.800,0.850,0.900,0.925,0.950,0.975,1.000"/>
+            <cosThetaNumBinEdges attr="10"/>
+        </P0DNumuRHC>
+        <P0DNumubarRHC>
+            <comment> P0D numubar candidate in RHC </comment>
+            <momentumBinEdges attr="0.,400.,530.,670.,800.,1000.,1380.,2010.,3410.,5000.,5500."/>
+            <momentumNumBinEdges attr="11"/>
+            <cosThetaBinEdges attr="0.000,0.600,0.700,0.800,0.850,0.900,0.925,0.950,0.975,1.000"/>
+            <cosThetaNumBinEdges attr="10"/>
+        </P0DNumubarRHC>
+    </Samples>
+</main>
