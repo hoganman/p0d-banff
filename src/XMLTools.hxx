@@ -32,6 +32,7 @@ public:
 
     ///For a binning config file like config/Binning.xml, get a TH1D* with bin edges
     ///specified in the binningName node
+    ///If you want to use the last bin as overflow, see AnalysisBins
     TH1D* GetTH1DWithBinning(TString binningName);
 
 protected:

@@ -2,7 +2,7 @@
 #define SAMPLES_HXX
 
 #include "AnalysisBins.hxx"
-#include "Units.hxx"
+#include "HEPConstants.hxx"
 
 class Samples : public TObject {
 

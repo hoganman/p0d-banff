@@ -26,6 +26,9 @@ public:
     ///The main constructor if using a histogram already constructed
     AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOverflow = kFALSE);
 
+    ///Get the binning from a config XML file
+    AnalysisBins(TString name, TString configFile);
+
     ///The destructor
     ~AnalysisBins();
 
@@ -45,7 +48,7 @@ public:
     Int_t Fill(Double_t val, Double_t weight=1.0);
 
     ///Identical to the TH1::DrawCopy() method 
-    void DrawCopy(TString options) {hist->DrawCopy(options.Data());}
+    void DrawCopy(TString options="") {hist->DrawCopy(options.Data());}
 
     ///Clone the AnalysisBins histogram
     TH1D* GetTH1DClone(TString histName) {return static_cast<TH1D*>(hist->Clone(histName));}

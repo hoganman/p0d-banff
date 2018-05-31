@@ -1,6 +1,7 @@
 #define ANALYSISBINS_CXX
 
 #include"AnalysisBins.hxx"
+#include"XMLTools.hxx"
 #include"TMath.h"
 #include"TF1.h"
 #include<iostream>
@@ -80,6 +81,22 @@ AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOver
     nBins = hist->GetNbinsX();
     binningName = name;
     showOverflow = setShowOverflow;
+}
+
+//**************************************************
+AnalysisBins::AnalysisBins(TString name, TString configFile)
+//**************************************************
+{
+    XMLTools* xml = new XMLTools();
+    xml->SetFile(configFile);
+    hist = xml->GetTH1DWithBinning(name);
+    nBins = hist->GetNbinsX();
+    TString raw_lastBinOverflow = xml->GetChildAttributeFromNode(name, "lastBinOverflow");
+    if(raw_lastBinOverflow.Atoi() == 1)
+    {
+        showOverflow = kTRUE;
+    }
+    delete xml;
 }
 
 //**************************************************

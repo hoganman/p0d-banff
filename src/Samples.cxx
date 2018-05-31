@@ -30,9 +30,9 @@ Samples::Samples(TString name, TString configFile)
     }
 
     //get the raw strings
-    TString raw_momentumBinEdges    = xml->GetChildAttributeFromNode(name, "momentumBinEdgesGeV");
+    TString raw_momentumBinEdges    = xml->GetChildAttributeFromNode(name, "momentumBinEdges");
     TString raw_momentumNumBinEdges = xml->GetChildAttributeFromNode(name, "momentumNumBinEdges");
-    TString raw_cosThetaBinEdges    = xml->GetChildAttributeFromNode(name, "cosThetaBinEdgesGeV");
+    TString raw_cosThetaBinEdges    = xml->GetChildAttributeFromNode(name, "cosThetaBinEdges");
     TString raw_cosThetaNumBinEdges = xml->GetChildAttributeFromNode(name, "cosThetaNumBinEdges");
 
     //convert the strings into their approrprite type
@@ -45,15 +45,15 @@ Samples::Samples(TString name, TString configFile)
     if(static_cast<Int_t>(momentumBinEdges_vect.size()) != nMomentumBinEdges)
     {
         std::cout << "ERROR in " << name.Data() << std::endl;
-        std::cout << "    The number of stated bin entries for momentum does" << std::endl;
-        std::cout << "    match the number of found entries" << std::endl;
+        std::cout << "    The number of stated bin entries (" << momentumBinEdges_vect.size() << ") for momentum does" << std::endl;
+        std::cout << "    match the number of found entries (" << nMomentumBinEdges << ")" <<  std::endl;
         return;
     }
     if(static_cast<Int_t>(cosThetaBinEdges_vect.size()) != nCosThetaBinEdges)
     {
         std::cout << "ERROR in " << name.Data() << std::endl;
-        std::cout << "    The number of stated bin entries for cosTheta does" << std::endl;
-        std::cout << "    match the number of found entries" << std::endl;
+        std::cout << "    The number of stated bin entries (" << cosThetaBinEdges_vect.size() << ") for cosTheta does" << std::endl;
+        std::cout << "    match the number of found entries (" << nMomentumBinEdges << ")" <<  std::endl;
         return;
     }
     for(UInt_t index = 0; index < momentumBinEdges_vect.size(); ++index)
@@ -64,8 +64,12 @@ Samples::Samples(TString name, TString configFile)
     {
         cosThetaBinsEdges[index] = cosThetaBinEdges_vect[index].Atof();
     }
-    momentumBins = new AnalysisBins("momentumBins", momentumBinsEdges, nMomentumBinEdges, kTRUE);
-    cosThetaBins = new AnalysisBins("cosThetaBins", cosThetaBinsEdges, nCosThetaBinEdges);
+    Char_t buffer1[500];
+    Char_t buffer2[500];
+    sprintf(buffer1, "%s_momentumBins", name.Data());
+    sprintf(buffer2, "%s_cosThetaBins", name.Data());
+    momentumBins = new AnalysisBins(buffer1, momentumBinsEdges, nMomentumBinEdges, kTRUE);
+    cosThetaBins = new AnalysisBins(buffer2, cosThetaBinsEdges, nCosThetaBinEdges);
 }
 
 //**************************************************
