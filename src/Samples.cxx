@@ -28,10 +28,11 @@ Samples::Samples(TString name, TString configFile)
         std::cout << "ERROR: Unable to get " << name.Data() << " from " << configFile.Data() << std::endl;
         return;
     }
+
     //get the raw strings
-    TString raw_momentumBinEdges    = xml->GetChildAttributeFromNode(name, "momentumBinEdges");
+    TString raw_momentumBinEdges    = xml->GetChildAttributeFromNode(name, "momentumBinEdgesGeV");
     TString raw_momentumNumBinEdges = xml->GetChildAttributeFromNode(name, "momentumNumBinEdges");
-    TString raw_cosThetaBinEdges    = xml->GetChildAttributeFromNode(name, "cosThetaBinEdges");
+    TString raw_cosThetaBinEdges    = xml->GetChildAttributeFromNode(name, "cosThetaBinEdgesGeV");
     TString raw_cosThetaNumBinEdges = xml->GetChildAttributeFromNode(name, "cosThetaNumBinEdges");
 
     //convert the strings into their approrprite type
@@ -46,12 +47,14 @@ Samples::Samples(TString name, TString configFile)
         std::cout << "ERROR in " << name.Data() << std::endl;
         std::cout << "    The number of stated bin entries for momentum does" << std::endl;
         std::cout << "    match the number of found entries" << std::endl;
+        return;
     }
     if(static_cast<Int_t>(cosThetaBinEdges_vect.size()) != nCosThetaBinEdges)
     {
         std::cout << "ERROR in " << name.Data() << std::endl;
         std::cout << "    The number of stated bin entries for cosTheta does" << std::endl;
         std::cout << "    match the number of found entries" << std::endl;
+        return;
     }
     for(UInt_t index = 0; index < momentumBinEdges_vect.size(); ++index)
     {

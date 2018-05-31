@@ -42,7 +42,10 @@ public:
     void SetShowOverflow(Bool_t setShowOverflow = kTRUE) {showOverflow = setShowOverflow;}
 
     ///Fills the histogram taking into account overflow
-    void Fill(Double_t val, Double_t weight=1.0);
+    Int_t Fill(Double_t val, Double_t weight=1.0);
+
+    ///Identical to the TH1::DrawCopy() method 
+    void DrawCopy(TString options) {hist->DrawCopy(options.Data());}
 
     ///Clone the AnalysisBins histogram
     TH1D* GetTH1DClone(TString histName) {return static_cast<TH1D*>(hist->Clone(histName));}

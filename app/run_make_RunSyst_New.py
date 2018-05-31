@@ -11,7 +11,7 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 # QUEUE = '\"physics.q|short.q\"'
 # QUEUE = '\"defaultfaculty.q\"'
-EXCLUDEHOSTS = [7, 11, 19, 29, 45]
+EXCLUDEHOSTS = [7, 19, 29, 45]
 HOSTS = '\"'
 for x in range(1, 20) + range(27, 31):  # + range(40, 46):
     if x in EXCLUDEHOSTS:
@@ -36,7 +36,7 @@ QSUBRUNSYSTNEW = 'python qsubmitter_RunSyst_New.py'
 def main(argv):
     """submits all the qsub python scripts"""
     submit_runsyst_new_mc()
-    # submit_runsyst_new_data()
+    submit_runsyst_new_data()
 
 
 def make_qsub(run_name, production, is_mc=True):
@@ -96,8 +96,8 @@ def submit_runsyst_new_mc():
     run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
     run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
 
-    # run2w_mc.run(ShellCommand.IN_BKG)
-    # run2a_mc.run(ShellCommand.IN_BKG)
+    run2w_mc.run(ShellCommand.IN_BKG)
+    run2a_mc.run(ShellCommand.IN_BKG)
     run3b_mc.run(ShellCommand.IN_BKG)
     run3c_mc.run(ShellCommand.IN_BKG)
     run4w_mc.run(ShellCommand.IN_BKG)
@@ -107,38 +107,38 @@ def submit_runsyst_new_mc():
     run6c_mc.run(ShellCommand.IN_BKG)
     run6d_mc.run(ShellCommand.IN_BKG)
     run6e_mc.run(ShellCommand.IN_BKG)
-    # run7b_mc.run(not ShellCommand.IN_BKG)
+    run7b_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():
     """submits data RunSyst_New.exe jobs"""
 
-    is_data = False
-    run2w_data = make_qsub(RN.RUN2WDATA, DATA_6M, is_data)
-    run2a_data = make_qsub(RN.RUN2ADATA, DATA_6M, is_data)
-    run3b_data = make_qsub(RN.RUN3BDATA, DATA_6M, is_data)
-    run3c_data = make_qsub(RN.RUN3CDATA, DATA_6M, is_data)
-    run4w_data = make_qsub(RN.RUN4WDATA, DATA_6M, is_data)
-    run4a_data = make_qsub(RN.RUN4ADATA, DATA_6M, is_data)
-    run5c_data = make_qsub(RN.RUN5CDATA, DATA_6M, is_data)
-    run6b_data = make_qsub(RN.RUN6BDATA, DATA_6M, is_data)
-    run6c_data = make_qsub(RN.RUN6CDATA, DATA_6M, is_data)
-    run6d_data = make_qsub(RN.RUN6DDATA, DATA_6M, is_data)
-    run6e_data = make_qsub(RN.RUN6EDATA, DATA_6M, is_data)
-    run7b_data = make_qsub(RN.RUN7BDATA, DATA_6N, is_data)
+    is_mc = False
+    run2w_data = make_qsub(RN.RUN2WDATA, DATA_6M, is_mc)
+    run2a_data = make_qsub(RN.RUN2ADATA, DATA_6M, is_mc)
+    run3b_data = make_qsub(RN.RUN3BDATA, DATA_6M, is_mc)
+    run3c_data = make_qsub(RN.RUN3CDATA, DATA_6M, is_mc)
+    run4w_data = make_qsub(RN.RUN4WDATA, DATA_6M, is_mc)
+    run4a_data = make_qsub(RN.RUN4ADATA, DATA_6M, is_mc)
+    run5c_data = make_qsub(RN.RUN5CDATA, DATA_6M, is_mc)
+    run6b_data = make_qsub(RN.RUN6BDATA, DATA_6M, is_mc)
+    run6c_data = make_qsub(RN.RUN6CDATA, DATA_6M, is_mc)
+    run6d_data = make_qsub(RN.RUN6DDATA, DATA_6M, is_mc)
+    run6e_data = make_qsub(RN.RUN6EDATA, DATA_6M, is_mc)
+    run7b_data = make_qsub(RN.RUN7BDATA, DATA_6N, is_mc)
 
     run2w_data.run(ShellCommand.IN_BKG)
-    run2a_data.run(not ShellCommand.IN_BKG)
-    run3b_data.run(not ShellCommand.IN_BKG)
-    run3c_data.run(not ShellCommand.IN_BKG)
-    run4w_data.run(not ShellCommand.IN_BKG)
-    run4a_data.run(not ShellCommand.IN_BKG)
-    run5c_data.run(not ShellCommand.IN_BKG)
-    run6b_data.run(not ShellCommand.IN_BKG)
-    run6c_data.run(not ShellCommand.IN_BKG)
-    run6d_data.run(not ShellCommand.IN_BKG)
-    run6e_data.run(not ShellCommand.IN_BKG)
-    run7b_data.run(not ShellCommand.IN_BKG)
+    run2a_data.run(ShellCommand.IN_BKG)
+    run3b_data.run(ShellCommand.IN_BKG)
+    run3c_data.run(ShellCommand.IN_BKG)
+    run4w_data.run(ShellCommand.IN_BKG)
+    run4a_data.run(ShellCommand.IN_BKG)
+    run5c_data.run(ShellCommand.IN_BKG)
+    run6b_data.run(ShellCommand.IN_BKG)
+    run6c_data.run(ShellCommand.IN_BKG)
+    run6d_data.run(ShellCommand.IN_BKG)
+    run6e_data.run(ShellCommand.IN_BKG)
+    run7b_data.run(ShellCommand.IN_BKG)
 
 
 if __name__ == "__main__":

@@ -16,8 +16,7 @@ void ROOTRandomSleep(Double_t scale = 0, Int_t seed=0){
     seed = time.Get();
   }
   const TRandom2 ran2(seed);
-  const TRandom3 ran3(TMath::Nint(seed/(ran2.Rndm()+0.001)));
-  const UInt_t sleepTime = TMath::Nint(ran3.Rndm()*1e3*scale);//seconds
+  const UInt_t sleepTime = ran2.Integer(1000*scale+1);
   cout << "Sleeping for " << 1e-3*sleepTime << " seconds " << endl;
   gSystem->Sleep(sleepTime);
 

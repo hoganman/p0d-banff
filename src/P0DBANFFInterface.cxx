@@ -43,6 +43,11 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetFillStyle(static_cast<Style_t>(1001));
     gROOT->SetStyle("P0DBANFFStyle");
 
+    std::cout << "WARNING: If you are going to use the XMLTools class" << std::endl;
+    std::cout << "         (or other classes relying on it)" << std::endl;
+    std::cout << "         make sure you load an external TXMLEngine instance before" << std::endl;
+    std::cout << "         the first XMLEngine instance" << std::endl;
+
 }
 
 //**************************************************

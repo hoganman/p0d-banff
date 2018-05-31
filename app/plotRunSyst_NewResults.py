@@ -5,7 +5,7 @@ A script that makes histogram of the resulting TTree from
 """
 
 import ROOT
-from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem  # , TChain
+from ROOT import TXMLEngine, TH1D, TH2D, THStack, TCanvas, TLegend, gSystem  # , TChain
 import ROOTChain
 from ROOTHStack import ROOTHStack
 import sys
@@ -170,6 +170,7 @@ def main(argv):
     helpstatement = "plotRunSyst_NewResults.py (no args)"
     if len(argv) > 0:
         print helpstatement
+    engine = TXMLEngine()
     gSystem.Load("libP0DBANFF")
     global INTFACE, T2K, TN80
     try:
@@ -182,6 +183,14 @@ def main(argv):
         sys.exit(1)
 
     INTFACE.SetBatch(True)
+
+    xmltools = ROOT.XMLTools()
+    xmltools.SetFile('%s/config/SampleConfig.xml')
+    P0DNumuFHC = ROOT.Samples('P0DNumuFHC', '$P0DBANFFROOT/config/SampleConfig.xml')
+    P0DNumuRHC = ROOT.Samples('P0DNumuRHC', '$P0DBANFFROOT/config/SampleConfig.xml')
+    P0DNumubarFHC = ROOT.Samples('P0DNumubarFHC', '$P0DBANFFROOT/config/SampleConfig.xml')
+    P0DNumubarRHC = ROOT.Samples('P0DNumubarRHC', '$P0DBANFFROOT/config/SampleConfig.xml')
+
     global STACK_COLORS, BLACK
     BLACK = INTFACE.kcbBlack
     STACK_COLORS.append(INTFACE.kcbBlack)
@@ -383,6 +392,8 @@ abs(TrueNuPDGNom)!=14' % (nom_sel), 'other')
                                 evts_p_bin_p_pot)
         hist_recoY.set_log_y(True)
         make_stack(smpl, all_selections, hist_recoY, 'recoVtxY')
+
+    del engine
 
 
 if __name__ == "__main__":

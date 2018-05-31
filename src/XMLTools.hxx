@@ -3,6 +3,7 @@
 ///A wrapper class for the TXMLEngine
 
 #include "TXMLEngine.h"
+#include "TH1D.h"
 #include "TString.h"
 
 class XMLTools : public TObject {
@@ -28,6 +29,10 @@ public:
 
     ///Get from a child node the attribute with name "attrName"
     TString GetChildAttributeFromNode(TString motherNodeName, TString attrName);
+
+    ///For a binning config file like config/Binning.xml, get a TH1D* with bin edges
+    ///specified in the binningName node
+    TH1D* GetTH1DWithBinning(TString binningName);
 
 protected:
 

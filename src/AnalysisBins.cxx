@@ -110,7 +110,7 @@ TH1D* AnalysisBins::VaryPoisson()
 }
 
 //**************************************************
-void AnalysisBins::Fill(Double_t val, Double_t weight)
+Int_t AnalysisBins::Fill(Double_t val, Double_t weight)
 //**************************************************
 {
     if(showOverflow)
@@ -120,14 +120,17 @@ void AnalysisBins::Fill(Double_t val, Double_t weight)
             const Double_t old_content = hist->GetBinContent(nBins);
             const Double_t new_content = old_content + weight;
             hist->SetBinContent(nBins, new_content);
+            return nBins;
         }
         else
         {
-            hist->Fill(val, weight);
+            return hist->Fill(val, weight);
         }
     }
     else
     {
-        hist->Fill(val, weight);
+        return hist->Fill(val, weight);
     }
+    std::cout << "NEVER GET HERE!" << std::endl;
+    return 0;
 }
