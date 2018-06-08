@@ -214,6 +214,7 @@ int main(int argc, char *argv[]){
   Int_t SubRun      = -999;
   Int_t EventNumber = -999;
   Int_t isBKG        = -999;
+  UInt_t RooVertexIndex = 0;
   Int_t isOOF        = -999;
   Int_t isNoTrueVtx = -999;
   Int_t isCCzeroPi  = -999;
@@ -313,6 +314,7 @@ int main(int argc, char *argv[]){
     tree->Branch("Run",             &Run,             "Run/I"        );
     tree->Branch("SubRun",          &SubRun,          "SubRun/I"     );
     tree->Branch("EventNumber",     &EventNumber,     "EventNumber/I");
+    tree->Branch("RooVertexIndex",  &RooVertexIndex,  "RooVertexIndex/i");
 
     tree->Branch("SelectionNom",    &SelectionNom,    "SelectionNom/I"   );
     tree->Branch("isBKG",       &isBKG,      "isBKG/I");
@@ -446,6 +448,7 @@ std::cout << "Done with !isData" << std::endl;
       // Initialize The SystBox for variation systematics
       //if (!preload)
 
+      RooVertexIndex = 0;
       TrueEnuNom      = -999;
       TrueNuPDGNom    = -999;
       LeptonMomNom    = -999;
@@ -505,6 +508,7 @@ std::cout << "There are " << nParticles  << " particles in this event" <<std::en
 if(debug)
 DEBUG(summary->EventSample)
 
+          RooVertexIndex = summary->RooVertexIndex[summary->EventSample];
           npassed[summary->EventSample]++;
 	      AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
 	      AnaTrueVertexB* trVtx = NULL;
@@ -663,13 +667,23 @@ DEBUG(trueParticle->PDG)
     tree->Write();
   }
 
+  inputFile = new TFile(inputFileName.c_str(), "READ");
   if((bool)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx")){
     std::cout << "Copying the NRooTrackerVtx Tree" << std::endl;
-    inputFile = new TFile(inputFileName.c_str(), "READ");
     RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
     outfile->cd();
     RTV->CloneTree()->Write();
   }
+
+  TTree* header;
+  if(inputFile->Get("header")){
+    std::cout << "Copying the header Tree" << std::endl;
+    header = static_cast<TTree*>(inputFile->Get("header"));
+    outfile->cd();
+    header->CloneTree()->Write();
+  }
+
+
 
   outfile->Close();
   inputFile->Close();
