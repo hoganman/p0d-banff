@@ -1,7 +1,6 @@
 #define ANALYSISBINS_CXX
 
 #include"AnalysisBins.hxx"
-#include"XMLTools.hxx"
 #include"TMath.h"
 #include"TF1.h"
 #include<iostream>
@@ -25,7 +24,7 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
 	return;
     }
     binningName = name;
-    binEdges = new Double_t[nEntries];
+    binEdges.resize(nEntries);
     nBins = nEntries - 1;
     for( Int_t index = 0; index < nEntries; ++index )
     {
@@ -34,7 +33,7 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
     }
     Char_t buffer[500];
     sprintf(buffer, "AnalysisBins_%s", binningName.Data());
-    hist = new TH1D(buffer, "", nBins, binEdges);
+    hist = new TH1D(buffer, "", nBins, GetBinEdges());
     showOverflow = setShowOverflow;
 }
 
@@ -55,7 +54,7 @@ AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t 
 	return;
     }
     binningName = name;
-    binEdges = new Double_t[nEntries];
+    binEdges.resize(nEntries);
     nBins = nEntries - 1;
     for(Int_t index = 0; index < nEntries; ++index )
     {
@@ -63,7 +62,7 @@ AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t 
     }
     Char_t buffer[500];
     sprintf(buffer, "AnalysisBins__%s", binningName.Data());
-    hist = new TH1D(buffer, "", nBins, binEdges);
+    hist = new TH1D(buffer, "", nBins, GetBinEdges());
     showOverflow = setShowOverflow;
 }
 
@@ -79,32 +78,50 @@ AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOver
     }
     hist = new TH1D(*template_hist);
     nBins = hist->GetNbinsX();
+    for( Int_t bin = 1; bin<=hist->GetNbinsX(); ++bin)
+    {
+        binEdges.push_back(hist->GetXaxis()->GetBinLowEdge(bin));
+    }
     binningName = name;
     showOverflow = setShowOverflow;
 }
 
 //**************************************************
-AnalysisBins::AnalysisBins(TString name, TString configFile)
+AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
 //**************************************************
 {
-    XMLTools* xml = new XMLTools();
+    XMLTools* new_inst = NULL;
+    if(!xml)
+    {
+        std::cout << "WARNING: Creating new XMLTools instance" << std::endl;
+        xml = new XMLTools();
+        new_inst = xml;
+    }
     xml->SetFile(configFile);
     hist = xml->GetTH1DWithBinning(name);
     nBins = hist->GetNbinsX();
+    for( Int_t bin = 1; bin<=hist->GetNbinsX(); ++bin)
+    {
+        binEdges.push_back(hist->GetXaxis()->GetBinLowEdge(bin));
+    }
     TString raw_lastBinOverflow = xml->GetChildAttributeFromNode(name, "lastBinOverflow");
+//std::cout << "raw_lastBinOverflow = " << raw_lastBinOverflow.Data() << std::endl;
+    showOverflow = kFALSE;
     if(raw_lastBinOverflow.Atoi() == 1)
     {
         showOverflow = kTRUE;
     }
-    delete xml;
+    if(new_inst)
+    {
+        delete new_inst;
+    }
 }
 
 //**************************************************
 AnalysisBins::~AnalysisBins()
 //**************************************************
 {
-    if(binEdges) delete binEdges;
-    if(hist) delete hist;
+    if(hist) hist->Delete();
 }
 
 //**************************************************
@@ -134,9 +151,8 @@ Int_t AnalysisBins::Fill(Double_t val, Double_t weight)
     {
         if(val >= hist->GetXaxis()->GetBinLowEdge(nBins))
         {
-            const Double_t old_content = hist->GetBinContent(nBins);
-            const Double_t new_content = old_content + weight;
-            hist->SetBinContent(nBins, new_content);
+            const Double_t fillValue = hist->GetXaxis()->GetBinLowEdge(nBins);
+            hist->Fill(fillValue, weight);
             return nBins;
         }
         else

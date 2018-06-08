@@ -13,5 +13,6 @@ void TN80POT::SetPOT()
     _POTRun4WaterData = 16.24e+19;
     _POTRun4AirData = 15.86e+19;
     _POTWaterData = 23.47e+19;
+    _POTWaterDataWithoutRun1 = _POTWaterData - _POTRun1WaterData;
     _POTAirData = 32.89e+19;
 }

@@ -17,6 +17,7 @@ public:
     Double_t GetPOTRun4WaterData() const {return _POTRun4WaterData;}
     Double_t GetPOTRun4AirData() const {return _POTRun4AirData;}
     Double_t GetPOTWaterData() const {return _POTWaterData;}
+    Double_t GetPOTWaterDataWitouthRun1() const {return _POTWaterDataWithoutRun1;}
     Double_t GetPOTAirData() const {return _POTAirData;}
 
 protected:
@@ -32,6 +33,7 @@ protected:
     Double_t _POTRun4AirData;
 
     Double_t _POTWaterData;
+    Double_t _POTWaterDataWithoutRun1;
     Double_t _POTAirData;
 
 public:

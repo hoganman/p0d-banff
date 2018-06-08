@@ -14,10 +14,23 @@ XMLTools::XMLTools()
     fRootNode = NULL;
 }
 
+
+//**************************************************
+XMLTools::XMLTools(TString fileName)
+//**************************************************
+{
+    fxml = new TXMLEngine();
+    fDoc = NULL;
+    fRootNode = NULL;
+    SetXMLDocAndRootNode();
+}
+
+
 //**************************************************
 XMLTools::~XMLTools()
 //**************************************************
 {
+//std::cout << "XMLTools destructor" << std::endl;
     if(fDoc)
     {
         fxml->FreeDoc(fDoc);

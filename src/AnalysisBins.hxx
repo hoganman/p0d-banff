@@ -6,9 +6,10 @@
 ///Also the last bin can be used as overflow using the last
 ///bool parameter in the constructor. true means use last bin
 ///as overflow
-
+#include <vector>
 #include "TH1D.h"
 #include "TString.h"
+#include "XMLTools.hxx"
 
 class AnalysisBins : public TObject {
 
@@ -27,16 +28,16 @@ public:
     AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOverflow = kFALSE);
 
     ///Get the binning from a config XML file
-    AnalysisBins(TString name, TString configFile);
+    AnalysisBins(TString name, TString configFile, XMLTools* xml=NULL);
 
     ///The destructor
-    ~AnalysisBins();
+    virtual ~AnalysisBins();
 
     ///Returns the name of this object assigned
     TString GetBinningName() const {return binningName;}
 
     ///Get the bin edges array
-    Double_t* GetBinEdges() const {return binEdges;}
+    const Double_t* GetBinEdges() const {return &binEdges[0];}
 
     ///Returns the number of bins
     Int_t GetNbins() const {return nBins;}
@@ -44,10 +45,19 @@ public:
     ///Indicates to use the last bin as overflow
     void SetShowOverflow(Bool_t setShowOverflow = kTRUE) {showOverflow = setShowOverflow;}
 
+    ///Indicates to use the last bin as overflow
+    Bool_t GetShowOverflow() const {return showOverflow;}
+
     ///Fills the histogram taking into account overflow
     Int_t Fill(Double_t val, Double_t weight=1.0);
 
-    ///Identical to the TH1::DrawCopy() method 
+    ///Reset TH1D
+    void Reset() {hist->Reset();}
+
+    ///Set to show errors
+    void Sumw2(Bool_t flag = kTRUE) {hist->Sumw2(flag);}
+
+    ///Identical to the TH1::DrawCopy() method
     void DrawCopy(TString options="") {hist->DrawCopy(options.Data());}
 
     ///Clone the AnalysisBins histogram
@@ -61,7 +71,7 @@ protected:
 
     TString binningName;
     Int_t nBins;
-    Double_t* binEdges; //[nBins]
+    std::vector<Double_t> binEdges;
     Bool_t showOverflow;
     TH1D* hist;
 

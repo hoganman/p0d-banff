@@ -79,11 +79,12 @@ public:
         kLambdaZeroPDG    = 3122;
         kNeutronMass       = 939.565379;
         kProtonMass        = 938.272046;
+        kLambdaZeroMass    = 1115.683;
         kDeltaMinusMass    = 1232;
         kDeltaZeroMass     = 1232;
         kDeltaPlusMass     = 1232;
         kDeltaPlusPlusMass = 1232;
-        kLambdaZeroMass    = 1115.683;
+
     }
 
     virtual ~HEPConstants(){}

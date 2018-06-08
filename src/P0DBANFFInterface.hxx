@@ -2,6 +2,7 @@
 #define P0DBANFFInterface_hxx
 
 #include <vector>
+#include <map>
 
 #include "TString.h"
 #include "TColor.h"
@@ -60,15 +61,15 @@ public:
     void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
         TString yAxisTitle = "none", TString saveAsFormats = "root,png",
-        Char_t delimiter = ',', UInt_t lineColor = P0DBANFFInterface::kcbBlue,
-        UInt_t fillColor = 0, UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        Char_t delimiter = ',', Int_t lineColor = P0DBANFFInterface::kcbBlue,
+        Int_t fillColor = 0, Int_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
     void PrettyUpTH1(TH1* inHist, TString xAxisTitle = "none",
         TString yAxisTitle = "none",
-        UInt_t lineColor = P0DBANFFInterface::kcbBlue, UInt_t fillColor = 0,
-        UInt_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        Int_t lineColor = P0DBANFFInterface::kcbBlue, Int_t fillColor = 0,
+        Int_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
@@ -87,9 +88,22 @@ public:
     void PrettyUpTH2(TH2* inHist, TString xAxisTitle = "none",
         TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
 
+    Int_t GetColorCodeForPDG(Int_t pdg);
+
+    ///Get the TStyle pointer
+    TStyle* GetThisStyle() const {return P0DBANFFStyle;}
+
+    ///Set Batch mode
+    void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
+
+    ///To convert sci notation for stringification
+    Int_t GetExponentBase10(Double_t arg) const;
+    Double_t GetMantissaBase10(Double_t arg, Int_t exp=9999) const;
+
 protected:
 
     TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search) const;
+    void SetPDGColorCodes();
 
 public:
 
@@ -109,8 +123,39 @@ public:
     static const Int_t kcbPurple = 107;
     static const Int_t kcbYellow = 108;
 
+    //taken from https://personal.sron.nl/~pault/
+    static const Int_t kcbBrightBlue = 109;
+    static const Int_t kcbBrightCyan = 110;
+    static const Int_t kcbBrightGreen = 111;
+    static const Int_t kcbBrightYellow = 112;
+    static const Int_t kcbBrightPink = 113; //called red
+    static const Int_t kcbBrightPurple = 114;
+    static const Int_t kcbBrightGrey = 115;
+
+    //taken from https://personal.sron.nl/~pault/
+    static const Int_t kcbVibrantBlue = 116;
+    static const Int_t kcbVibrantCyan = 117;
+    static const Int_t kcbVibrantGreen = 118; //called teal
+    static const Int_t kcbVibrantOrange = 119;
+    static const Int_t kcbVibrantRed = 120;
+    static const Int_t kcbVibrantMagenta = 121;
+    //static const Int_t kcbVibrantGrey = 122;
+
+    //taken from https://personal.sron.nl/~pault/
+    static const Int_t kcbMutedBlue = 123;
+    static const Int_t kcbMutedCyan = 124;
+    static const Int_t kcbMutedTeal = 125;
+    static const Int_t kcbMutedGreen = 126;
+    static const Int_t kcbMutedOlive = 127;
+    static const Int_t kcbMutedYellow = 128; //called sand
+    static const Int_t kcbMutedPink = 129; //called rose
+    static const Int_t kcbMutedWine = 130;
+    static const Int_t kcbMutedPurple = 131;
+    static const Int_t kcbMutedGrey = 132;
+
 protected:
 
+    //taken from http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
     TColor* cbBlack ;
     TColor* cbOrange;
     TColor* cbSky   ;
@@ -119,15 +164,40 @@ protected:
     TColor* cbRed   ;
     TColor* cbPurple;
     TColor* cbYellow;
+
+    //taken from https://personal.sron.nl/~pault/
+    TColor* cbBrightBlue;
+    TColor* cbBrightCyan;
+    TColor* cbBrightGreen;
+    TColor* cbBrightYellow;
+    TColor* cbBrightPink; //called red
+    TColor* cbBrightPurple;
+    TColor* cbBrightGrey;
+
+    //taken from https://personal.sron.nl/~pault/
+    TColor* cbVibrantBlue;
+    TColor* cbVibrantCyan;
+    TColor* cbVibrantGreen; //called teal
+    TColor* cbVibrantOrange;
+    TColor* cbVibrantRed;
+    TColor* cbVibrantMagenta;
+
+    //taken from https://personal.sron.nl/~pault/
+    TColor* cbMutedBlue;
+    TColor* cbMutedCyan;
+    TColor* cbMutedTeal;
+    TColor* cbMutedGreen;
+    TColor* cbMutedOlive;
+    TColor* cbMutedYellow; //called sand
+    TColor* cbMutedPink; //called rose
+    TColor* cbMutedWine;
+    TColor* cbMutedPurple;
+    TColor* cbMutedGrey;
+
     TStyle* P0DBANFFStyle;
+    std::map<Int_t, Int_t> pdgColorCodes;
 
 public:
-
-    ///Get the TStyle pointer
-    TStyle* GetThisStyle() const {return P0DBANFFStyle;}
-
-    ///Set Batch mode
-    void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
 
     ClassDef(P0DBANFFInterface,1)
 

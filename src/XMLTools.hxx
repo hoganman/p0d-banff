@@ -12,6 +12,9 @@ public:
     ///The constructor
     XMLTools();
 
+    ///The constructor
+    XMLTools(TString fileName);
+
     ///The destructor
     virtual ~XMLTools();
 

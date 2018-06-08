@@ -1,4 +1,5 @@
 #include "Header.hxx"
+#include "TFile.h"
 #include <stdio.h>
 #include <iostream>
 ClassImp(Header)
@@ -37,7 +38,11 @@ void Header::Reset() {
 bool Header::AddHeader(TTree* tree, bool bySpillPOT){
 //********************************************************************
 
-  if (!tree) return false;
+  if (!tree)
+  {
+    std::cout << "TTree in Header class does NOT exist!" << std::endl;
+    return false;
+  }
 
   double tmp_POT_NoCut, tmp_POT_BadBeam, tmp_POT_BadND280;
   int tmp_Spill_NoCut, tmp_Spill_BadBeam, tmp_Spill_BadND280;
@@ -142,6 +147,14 @@ void Header::ReadHeader(TTree* tree){
 bool Header::AddHeader(const std::string& file, bool bySpillPOT){
 //********************************************************************
 
+  TFile* inFile = TFile::Open(file.c_str());
+  if(!inFile->Get("header"))
+  {
+    std::cout << "ERROR: Unable to get TTree header from " << file.c_str() << std::endl;
+    inFile->Close();
+    return false;
+  }
+  inFile->Close();
   TChain chain("header");
   chain.AddFile(file.c_str());
   return AddHeader(&chain, bySpillPOT);
@@ -151,6 +164,13 @@ bool Header::AddHeader(const std::string& file, bool bySpillPOT){
 void Header::ReadHeader(const std::string& file){
 //********************************************************************
 
+  TFile* inFile = TFile::Open(file.c_str());
+  if(!inFile->Get("header"))
+  {
+    std::cout << "ERROR: Unable to get TTree header from " << file.c_str() << std::endl;
+    inFile->Close();
+    return;
+  }
   TChain chain("header");
   chain.AddFile(file.c_str());
   ReadHeader(&chain);

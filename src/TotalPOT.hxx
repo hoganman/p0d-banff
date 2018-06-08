@@ -104,6 +104,7 @@ private:
     Double_t _POTRun7bWaterData;
 
     Double_t _POTFHCWaterData;
+    Double_t _POTFHCWaterDataWithRun1;
     Double_t _POTFHCAirData;
     Double_t _POTRHCWaterData;
     Double_t _POTRHCAirData;

@@ -2,7 +2,9 @@
 
 #include"P0DBANFFInterface.hxx"
 ClassImp(P0DBANFFInterface)
+#include"HEPConstants.hxx"
 #include<iostream>
+#include<algorithm>
 
 #include"TDatime.h"
 #include"TFile.h"
@@ -21,14 +23,42 @@ P0DBANFFInterface::P0DBANFFInterface()
 {
     // CB pallate taken from Brian Connelly
     // http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
-    cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");
-    cbOrange = new TColor(kcbOrange, 0.90, 0.60, 0.00, "cbOrange");
-    cbSky    = new TColor(kcbSky   , 0.35, 0.70, 0.90, "cbSky");
-    cbGreen  = new TColor(kcbGreen , 0.00, 0.60, 0.50, "cbGreen");
-    cbBlue   = new TColor(kcbBlue  , 0.00, 0.45, 0.70, "cbBlue");
-    cbRed    = new TColor(kcbRed   , 0.80, 0.40, 0.00, "cbRed");
-    cbPurple = new TColor(kcbPurple, 0.80, 0.60, 0.70, "cbPurple");
-    cbYellow = new TColor(kcbYellow, 0.95, 0.90, 0.25, "cbYellow");
+    cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");  // 0
+    cbOrange = new TColor(kcbOrange, 0.90, 0.60, 0.00, "cbOrange"); // 1
+    cbSky    = new TColor(kcbSky   , 0.35, 0.70, 0.90, "cbSky");    // 2
+    cbGreen  = new TColor(kcbGreen , 0.00, 0.60, 0.50, "cbGreen");  // 3
+    cbBlue   = new TColor(kcbBlue  , 0.00, 0.45, 0.70, "cbBlue");   // 4
+    cbRed    = new TColor(kcbRed   , 0.80, 0.40, 0.00, "cbRed");    // 5
+    cbPurple = new TColor(kcbPurple, 0.80, 0.60, 0.70, "cbPurple"); // 6
+    cbYellow = new TColor(kcbYellow, 0.95, 0.90, 0.25, "cbYellow"); // 7
+
+    //taken from https://personal.sron.nl/~pault/
+    cbBrightBlue = new TColor(kcbBrightBlue, 0.27, 0.47, 0.67);
+    cbBrightCyan = new TColor(kcbBrightCyan, 0.40, 0.80, 0.93);
+    cbBrightGreen = new TColor(kcbBrightGreen, 0.13, 0.53, 0.20); // 8 :USE THIS with above B Connelly set
+    cbBrightYellow = new TColor(kcbBrightYellow, 0.80, 0.73, 0.27);
+    cbBrightPink = new TColor(kcbBrightPink, 0.93, 0.40, 0.47); //called red
+    cbBrightPurple = new TColor(kcbBrightPurple, 0.67, 0.20, 0.47); // 9 :USE THIS with above B Connelly set
+    cbBrightGrey = new TColor(kcbBrightGrey, 0.73, 0.73, 0.73); // 10 :USE THIS with above B Connelly set
+
+    //taken from https://personal.sron.nl/~pault/
+    cbVibrantBlue = new TColor(kcbVibrantBlue, 0., 0.47, 0.73);
+    cbVibrantCyan = new TColor(kcbVibrantCyan, 0.20, 0.73, 0.93);
+    cbVibrantGreen = new TColor(kcbVibrantGreen, 0., 0.60, 0.53); //called teal
+    cbVibrantOrange = new TColor(kcbVibrantOrange, 0.93, 0.47, 0.20);
+    cbVibrantRed = new TColor(kcbVibrantRed, 0.80, 0.20, 0.07);
+    cbVibrantMagenta = new TColor(kcbVibrantMagenta, 0.83, 0.20, 0.47);
+
+    //taken from https://personal.sron.nl/~pault/
+    cbMutedBlue = new TColor(kcbMutedBlue, 0.20, 0.13, 0.53);
+    cbMutedCyan = new TColor(kcbMutedCyan, 0.53, 0.80, 0.93);
+    cbMutedTeal = new TColor(kcbMutedTeal, 0.27, 0.67, 0.60);
+    cbMutedGreen = new TColor(kcbMutedGreen, 0.07, 0.47, 0.20);
+    cbMutedOlive = new TColor(kcbMutedOlive, 0.60, 0.60, 0.20);
+    cbMutedYellow = new TColor(kcbMutedYellow, 0.87, 0.80, 0.47); //called sand
+    cbMutedPink = new TColor(kcbMutedPink, 0.80, 0.40, 0.47); //called rose
+    cbMutedWine = new TColor(kcbMutedWine, 0.53, 0.13, 0.33);
+    cbMutedPurple = new TColor(kcbMutedPurple, 0.67, 0.27, 0.60);
 
     P0DBANFFStyle = new TStyle("P0DBANFFStyle","Color style + colorblind frendly palletes");
     TGaxis::SetMaxDigits(3);
@@ -46,7 +76,7 @@ P0DBANFFInterface::P0DBANFFInterface()
     std::cout << "WARNING: If you are going to use the XMLTools class" << std::endl;
     std::cout << "         (or other classes relying on it)" << std::endl;
     std::cout << "         make sure you load an external TXMLEngine instance before" << std::endl;
-    std::cout << "         the first XMLEngine instance" << std::endl;
+    std::cout << "         the first XMLTools instance" << std::endl;
 
 }
 
@@ -54,22 +84,48 @@ P0DBANFFInterface::P0DBANFFInterface()
 P0DBANFFInterface::~P0DBANFFInterface()
 //**************************************************
 {
-    delete cbBlack ;
-    delete cbOrange;
-    delete cbSky   ;
-    delete cbGreen ;
-    delete cbBlue  ;
-    delete cbRed   ;
-    delete cbPurple;
-    delete cbYellow;
-    delete P0DBANFFStyle;
+    if(cbBlack) delete cbBlack ;
+    if(cbOrange) delete cbOrange;
+    if(cbSky) delete cbSky   ;
+    if(cbGreen) delete cbGreen ;
+    if(cbBlue) delete cbBlue  ;
+    if(cbRed) delete cbRed   ;
+    if(cbPurple) delete cbPurple;
+    if(cbYellow) delete cbYellow;
+
+    if(cbBrightBlue) delete cbBrightBlue;
+    if(cbBrightCyan) delete cbBrightCyan;
+    if(cbBrightGreen) delete cbBrightGreen; //! USE THIS
+    if(cbBrightYellow) delete cbBrightYellow;
+    if(cbBrightPink) delete cbBrightPink; //called red
+    if(cbBrightPurple) delete cbBrightPurple; //! USE THIS
+    if(cbBrightGrey) delete cbBrightGrey; //! USE THIS
+
+    if(cbVibrantBlue) delete cbVibrantBlue;
+    if(cbVibrantCyan) delete cbVibrantCyan;
+    if(cbVibrantGreen) delete cbVibrantGreen; //called teal
+    if(cbVibrantOrange) delete cbVibrantOrange;
+    if(cbVibrantRed) delete cbVibrantRed;
+    if(cbVibrantMagenta) delete cbVibrantMagenta;
+
+    if(cbMutedBlue) delete cbMutedBlue;
+    if(cbMutedCyan) delete cbMutedCyan;
+    if(cbMutedTeal) delete cbMutedTeal;
+    if(cbMutedGreen) delete cbMutedGreen;
+    if(cbMutedOlive) delete cbMutedOlive;
+    if(cbMutedYellow) delete cbMutedYellow; //called sand
+    if(cbMutedPink) delete cbMutedPink; //called rose
+    if(cbMutedWine) delete cbMutedWine;
+    if(cbMutedPurple) delete cbMutedPurple;
+
+    if(P0DBANFFStyle) delete P0DBANFFStyle;
 }
 
 //**************************************************
 void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
         TString canvasName, TString histName, TString xAxisTitle,
-        TString yAxisTitle, TString saveAsFormats, Char_t delimiter, UInt_t lineColor,
-        UInt_t fillColor, UInt_t lineWidth, Double_t textSizeChange) const
+        TString yAxisTitle, TString saveAsFormats, Char_t delimiter, Int_t lineColor,
+        Int_t fillColor, Int_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
 
@@ -158,8 +214,8 @@ void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
 //**************************************************
 void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
         TString xAxisTitle, TString yAxisTitle,
-        UInt_t lineColor, UInt_t fillColor,
-    UInt_t lineWidth, Double_t textSizeChange) const
+        Int_t lineColor, Int_t fillColor,
+    Int_t lineWidth, Double_t textSizeChange) const
 //**************************************************
 {
     if(!inHist)
@@ -305,6 +361,8 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
     std::cout << "...Saving canvas as " << std::endl;
     if(!canvas)
         return;
+    canvas->cd();
+    //TFrame* frame = static_cast<TFrame*>(gPad->GetPrimitive("TFrame"));
     std::vector<TString> fileOutputs = SplitString(formats,delimiter);
     for(UInt_t outputI = 0;outputI<fileOutputs.size();++outputI)
     {
@@ -316,7 +374,6 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
         {
             TImage* img =  TImage::Create();
             canvas->Draw();
-            canvas->cd();
             img->FromPad(canvas);
             img->WriteImage(buffer);
             delete img;
@@ -548,4 +605,49 @@ void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
 	    dummy, dummy, dummy, textSizeChange);
 }
 
+//**************************************************
+Int_t P0DBANFFInterface::GetColorCodeForPDG(Int_t pdg)
+//**************************************************
+{
+    if(pdgColorCodes.size() == 0)
+        SetPDGColorCodes();
+    std::map<Int_t, Int_t>::iterator it = pdgColorCodes.find(pdg);
+    if( it == pdgColorCodes.end() )
+        return pdgColorCodes[0];
+    return it->second;
+}
 
+//**************************************************
+void P0DBANFFInterface::SetPDGColorCodes()
+//**************************************************
+{
+    HEPConstants hepconsts;
+    pdgColorCodes[0] = kcbBlack;
+    pdgColorCodes[hepconsts.kElectronPDG] = kcbOrange;
+    pdgColorCodes[hepconsts.kPositronPDG] = kcbOrange;
+    pdgColorCodes[hepconsts.kNuEPDG]    = kcbSky;
+    pdgColorCodes[hepconsts.kNuEBarPDG] = kcbSky;
+    pdgColorCodes[hepconsts.kMuMinusPDG] = kcbPurple;
+    pdgColorCodes[hepconsts.kNuMuPDG] = kcbBlack;
+    pdgColorCodes[hepconsts.kMuPlusPDG] = kcbRed;
+    pdgColorCodes[hepconsts.kNuMuBarPDG] = kcbGreen;
+    pdgColorCodes[hepconsts.kPiPlusPDG] = kcbYellow;
+    pdgColorCodes[hepconsts.kPiMinusPDG] = kcbBlue;
+    //pdgColorCodes[hepconsts.kKaPlusPDG] 
+}
+
+//**************************************************
+Int_t P0DBANFFInterface::GetExponentBase10(Double_t arg) const
+//**************************************************
+{
+   return (arg == 0) ? 0 : static_cast<Int_t>(std::floor(std::log10(std::fabs(arg))));
+}
+
+//**************************************************
+Double_t P0DBANFFInterface::GetMantissaBase10(Double_t arg, Int_t exp) const
+//**************************************************
+{
+    if(exp == 9999)
+        exp = GetExponentBase10(arg);
+    return arg * std::pow(10 , -(exp));
+}

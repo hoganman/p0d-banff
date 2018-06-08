@@ -18,12 +18,13 @@ void TotalPOT::SetPOT(){
 
     //while https://www.t2k.org/nd280/datacomp/production006/mcp/mcProdSummary
     // says that there are 4197N files, only 4164 are non-zero in size
-    _POTRun5cWaterMC = 2.1E21; //4164 * _POTperFile;
+    _POTRun5cWaterMC = 4164 * _POTperFile; //2.082E21;
     _POTRun6bAirMC = 14309 * _POTperFile_Run6;
     _POTRun6cAirMC =  5325 * _POTperFile_Run6;
-    _POTRun6dAirMC =  6948 * _POTperFile_Run6; // Run 6 Air TOTAL = 3.5E21
-    _POTRun6eAirMC =  8680 * _POTperFile_Run6;
+    _POTRun6dAirMC =  6948 * _POTperFile_Run6;
+    _POTRun6eAirMC =  8680 * _POTperFile_Run6; // Run 6 Air TOTAL = 3.5E21
     _POTRun7bWaterMC = 6742 * _POTperFile; // 3.36E21
+    //_POTRun7bWaterMC = 6742 * _POTperFile_Run6;
 
     _POTFHCWaterMC = _POTRun2WaterMC + _POTRun4WaterMC;
     _POTFHCAirMC = _POTRun2AirMC + _POTRun3bAirMC + _POTRun3cAirMC + _POTRun4AirMC;
@@ -49,10 +50,14 @@ void TotalPOT::SetPOT(){
     _POTRun6eAirData = 0.8397245 * data_POT;
     _POTRun7bWaterData = 2.412207 * data_POT;
 
-    _POTFHCWaterData = 2.241E+20; // includes run1
-    _POTFHCAirData = 3.723E+20;
-    _POTRHCWaterData = 2.852E+20;
-    _POTRHCAirData = 3.382E+20;
+    //Special
+    _POTFHCWaterDataWithRun1 = _POTRun1WaterData + _POTRun2WaterData + _POTRun4WaterData; //2.241E+20;
+
+    //Regular
+    _POTFHCWaterData = _POTRun2WaterData + _POTRun4WaterData; // 2.0761E+20
+    _POTFHCAirData = _POTRun2AirData + _POTRun3bAirData + _POTRun3cAirData + _POTRun4AirData; //3.723E+20;
+    _POTRHCWaterData = _POTRun5cWaterData + _POTRun7bWaterData; //2.852E+20;
+    _POTRHCAirData = _POTRun6bAirData + _POTRun6cAirData + _POTRun6dAirData + _POTRun6eAirData; //3.382E+20;
 
     //taken from ND280AnalysisUtils.cxx v3r22
     _Run3bAnd3cDataRatio = 0.13542;
