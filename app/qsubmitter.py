@@ -32,8 +32,8 @@ inOptions = {
 #       h_data    The per-job maximum memory limit in bytes.
 #       h_vmem    The same as h_data (if both are set the minimum is used).
 
-SECONDS_BTN_QSUB = 10
-SECONDS_BTN_RUN = 240
+SECONDS_BTN_QSUB = 1
+SECONDS_BTN_RUN = 60
 csuhpc = -1
 queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
@@ -275,10 +275,11 @@ def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltim
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
     #submission.write('source %s/nd280Highland2/%s/cmt/setup.sh\n'%(BASE, os.getenv('HIGHLAND2VERSION')))
-    ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
-                                    datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
-                                   ).total_seconds()))
-    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d, %d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs, ROOTrandomSeed))
+    # ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
+    #                                 datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
+    #                                ).total_seconds()))
+    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs))
+    submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
