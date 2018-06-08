@@ -9,15 +9,16 @@ class ROOTFile(File):
 
     def __init__(self, input_file_name=''):
         super(ROOTFile, self).__init__(input_file_name)
-        self.status = self.checkfile()
+        # self.status = self.checkfile()
 
-    def valid(self):
+    def valid(self, verbose=True):
         """A bool equivalent of checkfile"""
+        self.status = self.checkfile(verbose)
         return self.status == self.IS_GOOD
 
-    def checkfile(self):
+    def checkfile(self, verbose=True):
         """Checks if the file is bad (0) or good (1)"""
-        if not self.exists():
+        if not self.exists(verbose):
             return self.IS_BAD
         if not self.is_root_file():
             return self.IS_BAD

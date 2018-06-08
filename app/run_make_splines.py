@@ -45,7 +45,7 @@ def main(argv):
 
 def submit_flattree_jobs():
     """submits the MC and data flat tree jobs"""
-    submit_ft_data()
+    # submit_ft_data()
     submit_ft_mc()
 
 
@@ -212,7 +212,7 @@ def make_qsub_flattree_data(run_name, production):
 
 def submit_ft_mc():
     """submits MC flattree jobs"""
-    # run2w_ft_mc = make_qsub_flattree_mc(RN.RUN2W, NEUT_6B)
+    run2w_ft_mc = make_qsub_flattree_mc(RN.RUN2W, NEUT_6B)
     run2a_ft_mc = make_qsub_flattree_mc(RN.RUN2A, NEUT_6B)
     run3b_ft_mc = make_qsub_flattree_mc(RN.RUN3B, NEUT_6B)
     run3c_ft_mc = make_qsub_flattree_mc(RN.RUN3C, NEUT_6B)
@@ -226,17 +226,17 @@ def submit_ft_mc():
     run7b_ft_mc = make_qsub_flattree_mc(RN.RUN7B, NEUT_6L)
 
     # run2w_ft_mc.run(ShellCommand.IN_BKG)
-    run2a_ft_mc.run(not ShellCommand.IN_BKG)
-    run3b_ft_mc.run(not ShellCommand.IN_BKG)
-    run3c_ft_mc.run(not ShellCommand.IN_BKG)
-    run4w_ft_mc.run(not ShellCommand.IN_BKG)
-    run4a_ft_mc.run(not ShellCommand.IN_BKG)
-    run5c_ft_mc.run(not ShellCommand.IN_BKG)
-    run6b_ft_mc.run(not ShellCommand.IN_BKG)
-    run6c_ft_mc.run(not ShellCommand.IN_BKG)
-    run6d_ft_mc.run(not ShellCommand.IN_BKG)
-    run6e_ft_mc.run(not ShellCommand.IN_BKG)
-    run7b_ft_mc.run(not ShellCommand.IN_BKG)
+    run2a_ft_mc.run(ShellCommand.IN_BKG)
+    # run3b_ft_mc.run(ShellCommand.IN_BKG)
+    run3c_ft_mc.run(ShellCommand.IN_BKG)
+    run4w_ft_mc.run(ShellCommand.IN_BKG)
+    run4a_ft_mc.run(ShellCommand.IN_BKG)
+    run5c_ft_mc.run(ShellCommand.IN_BKG)
+    # run6b_ft_mc.run(ShellCommand.IN_BKG)
+    # run6c_ft_mc.run(ShellCommand.IN_BKG)
+    # run6d_ft_mc.run(ShellCommand.IN_BKG)
+    # run6e_ft_mc.run(ShellCommand.IN_BKG)
+    # run7b_ft_mc.run(ShellCommand.IN_BKG)
 
 
 def submit_spline_mc():

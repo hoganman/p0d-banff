@@ -36,7 +36,12 @@ def get_file_header(directory, file_name):
         index = 1
         root_file = '%s_%d.root' % (file_name, index)
         while root_file in file_list:
-            header.AddHeader(join(directory, root_file))
+            test_file = ROOT.TFile(join(directory, root_file))
+            if test_file.Get('header'):
+                header.AddHeader(join(directory, root_file))
+            else:
+                print 'ERROR: Unable to get header from file', join(directory, root_file)
+            test_file.Close()
             index += 1
             root_file = '%s_%d.root' % (file_name, index)
     elif '%s_data_1.root' % (file_name) in file_list:
@@ -69,33 +74,33 @@ def main(argv):
     print 'Running %s' % (argv[0])
 
     mc_directories = [
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run2-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run2-water',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run3b-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run3c-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run4-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run4-water',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run5c-water',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run6b-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run6c-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run6d-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_B/neut/run6e-air',
-            '/physics/home/mhogan/splines/tracker_only/mcp6_Spin_L/neut/run7b-water'
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run2-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run2-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3b-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run3c-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run4-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run5c-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6b-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6c-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6d-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6e-air',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run7b-water'
     ]
 
     data_directories = [
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run2-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run2-water',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run3b-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run3c-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run4-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run4-water',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run5c-water',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run6b-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run6c-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run6d-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_M/run6e-air',
-            '/physics/home/mhogan/splines/tracker_only/rdp6_Spin_N/run7b-water'
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run2-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3b-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run3c-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run4-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run5c-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6b-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6c-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6d-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6e-air',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_N/run7b-water'
     ]
 
     files = [
@@ -113,34 +118,34 @@ def main(argv):
             'Run7b_Water'
     ]
 
-    mode = [ 
-           'nu', # 2 air
-           'nu', # 2 water
-           'nu', # 3b air
-           'nu', # 3c air
-           'nu', # 4 air
-           'nu', # 4 water
-           'antinu', # 5c water
-           'antinu', # 6b air
-           'antinu', # 6c air
-           'antinu', # 6d air
-           'antinu', # 6e air
-           'antinu', # 7b water 
+    mode = [
+           'nu',  # 2 air
+           'nu',  # 2 water
+           'nu',  # 3b air
+           'nu',  # 3c air
+           'nu',  # 4 air
+           'nu',  # 4 water
+           'antinu',  # 5c water
+           'antinu',  # 6b air
+           'antinu',  # 6c air
+           'antinu',  # 6d air
+           'antinu',  # 6e air
+           'antinu',  # 7b water
     ]
-    for index in range(0, len(files)):
+    for index in range(len(files)):
         header = get_file_header(mc_directories[index], files[index])
         check_pot(header, '%s MC' % (files[index]))
 
     counted_nu_pot = 0.
     counted_antinu_pot = 0.
-    for index in range(0, len(files)):
+    for index in range(len(files)):
         header = get_file_header(data_directories[index], files[index])
         if mode[index].find('anti') != -1:
-          counted_antinu_pot += check_pot(header, '%s data' % (files[index]))
+            counted_antinu_pot += check_pot(header, '%s data' % (files[index]))
         else:
-          counted_nu_pot += check_pot(header, '%s data' % (files[index]))
+            counted_nu_pot += check_pot(header, '%s data' % (files[index]))
 
-    #compare run3b and run3c MC
+    # compare run3b and run3c MC
     run3b_header = get_file_header(data_directories[2], files[2])
     run3c_header = get_file_header(data_directories[3], files[3])
     run3b_pot = run3b_header.GetPOTGoodBeamGoodND280()
@@ -154,6 +159,7 @@ def main(argv):
 
     print 'TOTAL NU POT = %e' % (counted_nu_pot)
     print 'TOTAL ANTI-NU POT = %e' % (counted_antinu_pot)
+
 
 if __name__ == '__main__':
     main(sys.argv)

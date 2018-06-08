@@ -11,7 +11,7 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 # QUEUE = '\"physics.q|short.q\"'
 # QUEUE = '\"defaultfaculty.q\"'
-EXCLUDEHOSTS = [7, 19, 29, 45]
+EXCLUDEHOSTS = [6, 7, 10, 19, 45]
 HOSTS = '\"'
 for x in range(1, 20) + range(27, 31):  # + range(40, 46):
     if x in EXCLUDEHOSTS:
@@ -107,7 +107,7 @@ def submit_runsyst_new_mc():
     run6c_mc.run(ShellCommand.IN_BKG)
     run6d_mc.run(ShellCommand.IN_BKG)
     run6e_mc.run(ShellCommand.IN_BKG)
-    run7b_mc.run(not ShellCommand.IN_BKG)
+    run7b_mc.run(ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():

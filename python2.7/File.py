@@ -22,10 +22,10 @@ class File(p0dbanff.p0dbanff):
         """returns the file name"""
         return self.file_name
 
-    def exists(self):
+    def exists(self, verbose=True):
         """checks if the file in question exists"""
         result = isfile(self.file_name)
-        if not result:
+        if not result and verbose:
             print 'ERROR! File "%s" does not exist!' % (self.file_name)
         return result
 

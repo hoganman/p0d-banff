@@ -19,7 +19,24 @@ class ROOTHStack(p0dbanff.p0dbanff):
         self.minimum = -1
         self.maximum = -1
         self.log_y = False
+        self.th1d = None
+        self.use_TH1D = False
         self.HStack = None
+
+    def init_from_TH1D(self, plot_var, th1d_obj,
+                       x_title, y_title):
+        """a similar method to the constructor, uses the TH1D instead"""
+        self.plot_var = plot_var
+        self.n_bins = th1d_obj.GetNbinsX()
+        self.low_X = th1d_obj.GetXaxis().GetBinLowEdge(1)
+        self.high_X = th1d_obj.GetXaxis().GetBinLowEdge(self.n_bins)
+        self.x_title = str(x_title)
+        self.y_title = str(y_title)
+        self.minimum = -1
+        self.maximum = -1
+        self.HStack = None
+        self.th1d = th1d_obj
+        self.use_TH1D = bool(self.th1d)
 
     def __str__(self):
         return self.name
