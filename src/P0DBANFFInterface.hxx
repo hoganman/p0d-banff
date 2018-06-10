@@ -125,7 +125,7 @@ public:
 
     //taken from https://personal.sron.nl/~pault/
     static const Int_t kcbBrightBlue = 109;
-    static const Int_t kcbBrightCyan = 110;
+    static const Int_t kcbBrightCyan = 2110;
     static const Int_t kcbBrightGreen = 111;
     static const Int_t kcbBrightYellow = 112;
     static const Int_t kcbBrightPink = 113; //called red
