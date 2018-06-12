@@ -11,7 +11,7 @@
 class DefineCuts : public TObject {
 
 public:
-    DefineCuts();
+    DefineCuts(){SetCuts();}
     virtual ~DefineCuts(){}
 
     ///Passes the mu- selection
@@ -22,6 +22,8 @@ public:
     TCut FV;
     ///In the true P0D fiducial volume
     TCut tFV;
+    ///True out of FV
+    TCut tOOFV;
     ///Is lepton candidate true mu-
     TCut tLepMuMinus;
     ///Is lepton candidate true mu+
@@ -54,6 +56,11 @@ public:
     TVector3 minFVcoords;
     TVector3 maxFVcoords;
 
+
+protected:
+    void SetCuts();
+
+public:
     ClassDef(DefineCuts, 1)
 };
 
