@@ -41,6 +41,9 @@ public:
     Double_t GetPOTRHCWaterMC() const{ return _POTRHCWaterMC; }
     Double_t GetPOTRHCAirMC() const{ return _POTRHCAirMC; }
 
+    Double_t GetPOTFHCAirSandMC() const {return _POTFHCAirSandMC;}
+    Double_t GetPOTRHCAirSandMC() const {return _POTRHCAirSandMC;}
+
     Double_t GetPOTRun1WaterData() const{ return _POTRun1WaterData; }
     Double_t GetPOTRun2AirData() const{ return _POTRun2AirData;}
     Double_t GetPOTRun2WaterData() const{ return _POTRun2WaterData;}
@@ -88,6 +91,9 @@ private:
     Double_t _POTFHCAirMC;
     Double_t _POTRHCWaterMC;
     Double_t _POTRHCAirMC;
+
+    Double_t _POTFHCAirSandMC;
+    Double_t _POTRHCAirSandMC;
 
     Double_t _POTRun1WaterData;
     Double_t _POTRun2AirData;

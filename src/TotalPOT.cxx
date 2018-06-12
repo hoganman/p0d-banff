@@ -31,6 +31,9 @@ void TotalPOT::SetPOT(){
     _POTRHCWaterMC = _POTRun5cWaterMC + _POTRun7bWaterMC;
     _POTRHCAirMC = _POTRun6bAirMC + _POTRun6cAirMC + _POTRun6dAirMC + _POTRun6eAirMC;
 
+    _POTFHCAirSandMC = 1.119879e+21;
+    _POTRHCAirSandMC = 1.408190e+21;
+
     //taken from https://www.t2k.org/nd280/physics/pot_for_analyses
     _POTRun1WaterData = 1.6494E+19;
     const Double_t data_POT = 1E20;
@@ -82,7 +85,7 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run6eAir"))   return _POTRun6eAirMC;
         if(runName.Contains("Run7bWater")) return _POTRun7bWaterMC;
 
-	if(runName.Contains("Run2_Air"))   return _POTRun2AirMC;
+	    if(runName.Contains("Run2_Air"))   return _POTRun2AirMC;
         if(runName.Contains("Run2_Water")) return _POTRun2WaterMC;
         if(runName.Contains("Run3b_Air"))  return _POTRun3bAirMC;
         if(runName.Contains("Run3c_Air"))  return _POTRun3cAirMC;
@@ -94,6 +97,9 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
         if(runName.Contains("Run6d_Air"))   return _POTRun6dAirMC;
         if(runName.Contains("Run6e_Air"))   return _POTRun6eAirMC;
         if(runName.Contains("Run7b_Water")) return _POTRun7bWaterMC;
+
+        if(runName.Contains("Run3_Air_FHC")) return _POTFHCAirSandMC;
+        if(runName.Contains("Run3_Air_RHC")) return _POTRHCAirSandMC;
 
     }
     else if(runName.Contains("Data") || runName.Contains("data")){
