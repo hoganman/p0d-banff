@@ -65,7 +65,9 @@ def main(argv):
         P0DNUMUBARCCSELECTION = sampleIds.GetP0DNuMuBarCC()
     if SELECTION == -1:
         # SELECTION = P0DNUMUBARCCSELECTION
+        # print 'WARNING: USING P0DNUMUBARCCSELECTION'
         SELECTION = P0DNUMUCCSELECTION
+        print 'WARNING: USING P0DNUMUCCSELECTION'
     SELECTIONSTR = 'numubarCCInc' if (SELECTION == P0DNUMUBARCCSELECTION) else 'numuCCInc'
     SELECTIONDICT = {
             P0DNUMUCCSELECTION: '#mu^{-} Selection,',
@@ -83,21 +85,16 @@ def main(argv):
     # # A ROOT.AnalysisBins class
     # Pmu_AnaBins = P0D_SAMPLE_BINS.GetAnalysisMomentumBins()
     # CosTheta_AnaBins = P0D_SAMPLE_BINS.GetAnalysisCosThetaBins()
-    Pmu_AnaBins = ROOT.AnalysisBins('Momentum',
-                                    '%s/config/Binning.xml' % p0dbanffroot,
-                                    xml)
-    CosTheta_AnaBins = ROOT.AnalysisBins('CosTheta',
-                                         '%s/config/Binning.xml' % p0dbanffroot,
-                                         xml)
-    Theta_AnaBins = ROOT.AnalysisBins('Theta',
-                                      '%s/config/Binning.xml' % p0dbanffroot,
-                                      xml)
-    Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy',
-                                    '%s/config/Binning.xml' % p0dbanffroot,
-                                    xml)
-    p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ',
-                                     '%s/config/Binning.xml' % p0dbanffroot,
-                                     xml)
+    binningLocation = '%s/config/Binning.xml' % p0dbanffroot
+
+    Pmu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, xml)
+    CosTheta_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, xml)
+    Theta_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, xml)
+    Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, xml)
+    p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, xml)
+    p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, xml)
+    p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, xml)
+
     global STACK_COLORS, BLACK
     BLACK = INTERFACE.kcbBlack
     STACK_COLORS.append(INTERFACE.kcbBlack)  # 0
@@ -118,11 +115,11 @@ def main(argv):
     mc_data_sample_dict = dict()
     mc_data_sample_dict_MC_key = 'MC'
     mc_data_sample_dict_DATA_key = 'DATA'
-    for key in mc_samples_dict.keys():
-        mc_data_sample_dict[key] =\
+    for sample_name in mc_samples_dict.keys():
+        mc_data_sample_dict[sample_name] =\
             {
-            mc_data_sample_dict_MC_key: mc_samples_dict[key],
-            mc_data_sample_dict_DATA_key: data_samples_dict[key]
+            mc_data_sample_dict_MC_key: mc_samples_dict[sample_name],
+            mc_data_sample_dict_DATA_key: data_samples_dict[sample_name]
             }
 
     # these store how to break down the samples by particles or other grouping
@@ -132,7 +129,7 @@ def main(argv):
 
     # loop over sample classes
     for smpls in mc_data_sample_dict.values():
-        mc_sample = smpls[mc_data_sample_dict_MC_key]
+        mc_sample = smpls[mc_data_sample_dict_MC_key]['Magnet']
         data_pot_exponent = INTERFACE.GetExponentBase10(mc_sample.data_pot)
         data_pot_mantissa = INTERFACE.GetMantissaBase10(mc_sample.data_pot,
                                                         data_pot_exponent)
@@ -140,14 +137,14 @@ def main(argv):
                                                              data_pot_mantissa,
                                                              data_pot_exponent)
 
-        # neutrino energy
-        histstack_Enu = ROOTHStack()
-        histstack_Enu.plot_var = 'TrueEnuNom*1e-3'
-        histstack_Enu.x_title = 'True Neutrino Energy [GeV]'
-        histstack_Enu.y_title = evts_p_bin_p_pot
-        make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
-                      histstack_Enu, 'trueE_nu')
-        Enu_AnaBins.Reset()
+        # # neutrino energy
+        # histstack_Enu = ROOTHStack()
+        # histstack_Enu.plot_var = 'TrueEnuNom*1e-3'
+        # histstack_Enu.x_title = 'True Neutrino Energy [GeV]'
+        # histstack_Enu.y_title = evts_p_bin_p_pot
+        # make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+        #               histstack_Enu, 'trueE_nu')
+        # Enu_AnaBins.Reset()
 
         # lepton candidate momentum
         histstack_Pmu = ROOTHStack()
@@ -159,34 +156,52 @@ def main(argv):
                    histstack_Pmu, 'recoP_mu_uniform')
         Pmu_AnaBins.Reset()
 
-        # lepton candidate cos(theta)
-        histstack_cosTheta = ROOTHStack()
-        histstack_cosTheta.plot_var = 'LeptonCosNom'
-        histstack_cosTheta.x_title = 'Lepton Candidate cos(#theta)'
-        histstack_cosTheta.y_title = evts_p_bin_p_pot
-        # hist_cosq.set_log_y(True)
-        make_stack(smpls, particle_selections, CosTheta_AnaBins,
-                   histstack_cosTheta, 'recocosq_mu_uniform')
-        CosTheta_AnaBins.Reset()
+        # # lepton candidate cos(theta)
+        # histstack_cosTheta = ROOTHStack()
+        # histstack_cosTheta.plot_var = 'LeptonCosNom'
+        # histstack_cosTheta.x_title = 'Lepton Candidate cos(#theta)'
+        # histstack_cosTheta.y_title = evts_p_bin_p_pot
+        # # hist_cosq.set_log_y(True)
+        # make_stack(smpls, particle_selections, CosTheta_AnaBins,
+        #            histstack_cosTheta, 'recocosq_mu_uniform')
+        # CosTheta_AnaBins.Reset()
 
-        # lepton candidate theta
-        histstack_theta = ROOTHStack()
-        histstack_theta.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
-        histstack_theta.x_title = 'Lepton Candidate #theta_{ND280}'
-        histstack_theta.y_title = evts_p_bin_p_pot
-        # hist_cosq.set_log_y(True)
-        make_stack(smpls, particle_selections, Theta_AnaBins,
-                   histstack_theta, 'recotheta_mu_uniform')
-        CosTheta_AnaBins.Reset()
+        # # lepton candidate theta
+        # histstack_theta = ROOTHStack()
+        # histstack_theta.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
+        # histstack_theta.x_title = 'Lepton Candidate #theta_{ND280}'
+        # histstack_theta.y_title = evts_p_bin_p_pot
+        # # hist_cosq.set_log_y(True)
+        # make_stack(smpls, particle_selections, Theta_AnaBins,
+        #            histstack_theta, 'recotheta_mu_uniform')
+        # CosTheta_AnaBins.Reset()
 
-        # lepton p0d position
-        histstack_p0dZ = ROOTHStack()
-        histstack_p0dZ.plot_var = 'vtxZ'
-        histstack_p0dZ.x_title = 'Track Start Z (mm)'
-        histstack_p0dZ.y_title = evts_p_bin_p_pot
-        make_stack(smpls, particle_selections, p0dZ_AnaBins,
-                   histstack_p0dZ, 'recoZ_mu')
-        p0dZ_AnaBins.Reset()
+        # # lepton p0d position Z
+        # histstack_p0dZ = ROOTHStack()
+        # histstack_p0dZ.plot_var = 'vtxZ'
+        # histstack_p0dZ.x_title = 'Track Start Z (mm)'
+        # histstack_p0dZ.y_title = evts_p_bin_p_pot
+        # make_stack(smpls, particle_selections, p0dZ_AnaBins,
+        #            histstack_p0dZ, 'recoZ_mu')
+        # p0dZ_AnaBins.Reset()
+
+        # # lepton p0d position X
+        # histstack_p0dX = ROOTHStack()
+        # histstack_p0dX.plot_var = 'vtxX'
+        # histstack_p0dX.x_title = 'Track Start X (mm)'
+        # histstack_p0dX.y_title = evts_p_bin_p_pot
+        # make_stack(smpls, particle_selections, p0dX_AnaBins,
+        #            histstack_p0dX, 'recoX_mu')
+        # p0dX_AnaBins.Reset()
+
+        # # lepton p0d position Y
+        # histstack_p0dY = ROOTHStack()
+        # histstack_p0dY.plot_var = 'vtxY'
+        # histstack_p0dY.x_title = 'Track Start Y (mm)'
+        # histstack_p0dY.y_title = evts_p_bin_p_pot
+        # make_stack(smpls, particle_selections, p0dY_AnaBins,
+        #            histstack_p0dY, 'recoY_mu')
+        # p0dY_AnaBins.Reset()
     del engine
 
 
@@ -253,7 +268,8 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     Saved as "save_title".root  and .png (str)
     """
 
-    mc_sample = evt_sample['MC']
+    mc_sample = evt_sample['MC']['Magnet']
+    sand_sample = evt_sample['MC']['Sand']
     data_sample = evt_sample['DATA']
 
     save_as = '%s_%s_%s' % (SELECTIONSTR, save_title, mc_sample.save_title)
@@ -295,17 +311,29 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
-        nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
-        v1 = mc_sample.chain.GetV1()
-        for entry_in_draw in range(nEntries):
-            anaBins.Fill(v1[entry_in_draw])
-        a_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name,
-                                                     mc_sample.save_title))
-        a_hist.Scale(mc_sample.scale)
-        INTERFACE.PrettyUpTH1(a_hist, hstack.x_title, hstack.y_title, BLACK,
+
+        mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+        mc_v1 = mc_sample.chain.GetV1()
+        for entry_in_draw in range(mc_nEntries):
+            anaBins.Fill(mc_v1[entry_in_draw])
+        mc_hist = anaBins.GetTH1DClone('mc_h1d_%s_%s' % (tmp_save_name,
+                                                         mc_sample.save_title))
+        mc_hist.Scale(mc_sample.scale)
+
+        anaBins.Reset()
+        sand_nEntries = sand_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+        sand_v1 = sand_sample.chain.GetV1()
+        for entry_in_draw in range(sand_nEntries):
+            anaBins.Fill(sand_v1[entry_in_draw])
+        sand_hist = anaBins.GetTH1DClone('sand_h1d_%s_%s' % (tmp_save_name,
+                                                             sand_sample.save_title))
+        sand_hist.Scale(sand_sample.scale)
+
+        mc_hist.Add(sand_hist)
+        INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
                               STACK_COLORS[index])
-        legend.AddEntry(a_hist, a_selection.legend_label, 'f')
-        mc_hists.append(a_hist)
+        legend.AddEntry(mc_hist, a_selection.legend_label, 'f')
+        mc_hists.append(mc_hist)
         anaBins.Reset()
 
     mc_hists.reverse()
@@ -379,7 +407,7 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
 
 
 def make_mc_stack(mc_sample, true_selections, anaBins, hstack, save_title):
-    """Take sample (mc_sample) and separate it by
+    """Take samples dictionary (mc_sand_sample) and separate it by
     selection (true_selections). The histogram is stored in
     anaBins (AnaysisBins) with the histogram labels in hstack (ROOTHStack)
     Saved as save_title.root
@@ -476,16 +504,18 @@ def GetMonteCarloSamples():
 
     OUTPUT: a dictionary
     all_samples = {
-                 'FHC_Wtr': FHC_Wtr,
-                 'RHC_Wtr': RHC_Wtr,
-                 'FHC_Air': FHC_Air,
-                 'RHC_Air': RHC_Air
+            'FHC_Wtr': {'Magnet': FHC_Wtr, 'Sand': FHC_Wtr_Snd},
+            'FHC_Air': {'Magnet': FHC_Air, 'Sand': FHC_Air_Snd},
+            'RHC_Wtr': {'Magnet': RHC_Wtr, 'Sand': RHC_Wtr_Snd},
+            'RHC_Air': {'Magnet': RHC_Air, 'Sand': RHC_Air_Snd}
     }
+
     """
     RunSyst_New_NEUT_TTREE_name = 'all'
     file_path = getenv('SYSTEMATICSROOT')
     NEUTP6B = join(file_path, 'mcp6_Spin_B', 'neut')
     NEUTP6L = join(file_path, 'mcp6_Spin_L', 'neut')
+    SAND = join(file_path, 'mcp6_Spin_B', 'sand')
     # chn_NEUTRun2Air = TChain(RunSyst_New_NEUT_TTREE_name)
     # chn_NEUTRun2Wtr = TChain(RunSyst_New_NEUT_TTREE_name)
     # chn_NEUTRun3bAir = TChain(RunSyst_New_NEUT_TTREE_name)
@@ -535,6 +565,9 @@ def GetMonteCarloSamples():
     chn_NEUTRun6eAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN6E.iter_name(NEUTP6B))
     chn_NEUTRun7bWtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN7B.iter_name(NEUTP6L))
 
+    chn_SANDRun3AirFHC = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.SANDFHC.iter_name(SAND))
+    chn_SANDRun3AirRHC = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.SANDRHC.iter_name(SAND))
+
     # FHC, P0D water-in
     chn_FHC_Wtr = chn_NEUTRun2Wtr
     chn_FHC_Wtr.Add(chn_NEUTRun4Wtr)
@@ -559,6 +592,10 @@ def GetMonteCarloSamples():
     FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC, Water-Out', 'fhc_air')
     RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC, Water-In', 'rhc_water')
     RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC, Water-Out', 'rhc_air')
+    FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-In, Sand', 'fhc_water_sand')
+    FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-Out, Sand', 'fhc_air_sand')
+    RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-In, Sand', 'rhc_water_sand')
+    RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-Out, Sand', 'rhc_air_sand')
 
     # FHC_Wtr.scale = TN80.GetPOTWaterDataWitouthRun1()/T2K.GetPOTFHCWaterMC()
     # FHC_Air.scale = TN80.GetPOTAirData()/T2K.GetPOTFHCAirMC()
@@ -566,6 +603,11 @@ def GetMonteCarloSamples():
     FHC_Air.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirMC()
     RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
     RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
+
+    FHC_Wtr_Snd.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCAirSandMC()
+    FHC_Air_Snd.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirSandMC()
+    RHC_Wtr_Snd.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCAirSandMC()
+    RHC_Air_Snd.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirSandMC()
 
     # FHC_Wtr.data_pot = TN80.GetPOTWaterData()
     # FHC_Air.data_pot = TN80.GetPOTAirData()
@@ -575,10 +617,10 @@ def GetMonteCarloSamples():
     RHC_Air.data_pot = T2K.GetPOTRHCAirData()
 
     all_samples = {
-            'FHC_Wtr': FHC_Wtr,
-            'FHC_Air': FHC_Air,
-            'RHC_Wtr': RHC_Wtr,
-            'RHC_Air': RHC_Air
+            'FHC_Wtr': {'Magnet': FHC_Wtr, 'Sand': FHC_Wtr_Snd},
+            'FHC_Air': {'Magnet': FHC_Air, 'Sand': FHC_Air_Snd},
+            'RHC_Wtr': {'Magnet': RHC_Wtr, 'Sand': RHC_Wtr_Snd},
+            'RHC_Air': {'Magnet': RHC_Air, 'Sand': RHC_Air_Snd}
     }
     return all_samples
 
@@ -666,8 +708,8 @@ def GetDATAsamples():
     chn_RHC_Air.Add(chn_DATARun6eAir)
 
     FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC Water', 'fhc_water')
-    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC Water', 'rhc_water')
     FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC Air', 'fhc_air')
+    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC Water', 'rhc_water')
     RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC Air', 'rhc_air')
 
     # FHC_Wtr.data_pot = TN80.GetPOTWaterDataWitouthRun1()
@@ -724,63 +766,51 @@ def GetNeutrinoSelectionList():
 
 def GetLeptonCandidateSelectionList():
     """"""
-    hepconstants = ROOT.HEPConstants()
+    cut = ROOT.DefineCuts()
 
     # all selection events
-    all_nom_sel_cut = 'SelectionNom==%d' % (SELECTION)
+    all_nom_sel_cut = ROOT.TCut('SelectionNom==%d' % (SELECTION))
     all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
                                  'P0D numuCC-inclusive')
     # mu minuses
-    muMinus_sel_cut = '%s && tLeptonPDG==%d' % (all_nom_sel_cut,
-                                                hepconstants.kMuMinusPDG)
+    muMinus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepMuMinus))
     muMinus_sel = selection_info('muMinus_sel', muMinus_sel_cut, '#mu^{-}')
 
     # mu plus
-    muPlus_sel_cut = '%s && tLeptonPDG==%d' % (all_nom_sel_cut,
-                                               hepconstants.kMuPlusPDG)
+    muPlus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepMuPlus))
     muPlus_sel = selection_info('muPlus_sel', muPlus_sel_cut, '#mu^{+}')
 
     # pi minus
-    piMinus_sel_cut = '%s && tLeptonPDG==%d' % (all_nom_sel_cut,
-                                                hepconstants.kPiMinusPDG)
+    piMinus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepPiMinus))
     piMinus_sel = selection_info('piMinus_sel', piMinus_sel_cut, '#pi^{-}')
 
     # pi plus
-    piPlus_sel_cut = '%s && tLeptonPDG==%d' % (all_nom_sel_cut,
-                                               hepconstants.kPiPlusPDG)
+    piPlus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepPiPlus))
     piPlus_sel = selection_info('piPlus_sel', piPlus_sel_cut, '#pi^{+}')
 
     # pi plus
-    proton_sel_cut = '%s && tLeptonPDG==%d' % (all_nom_sel_cut,
-                                               hepconstants.kProtonPDG)
+    proton_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepProton))
     proton_sel = selection_info('proton_sel', proton_sel_cut, 'p')
 
     # EM particles
-    em_sel_cut = all_nom_sel_cut
-    em_sel_cut += ' && (tLeptonPDG==%d' % hepconstants.kGammaPDG
-    em_sel_cut += ' || abs(tLeptonPDG)==%d)' % hepconstants.kElectronPDG
+    em_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepEMParticle))
     em_sel = selection_info('em_sel', em_sel_cut, 'e^{#pm}/#gamma')
 
-    # Ka Plus
-    kaon_sel_cut = '%s && abs(tLeptonPDG)==abs(%d)' % (all_nom_sel_cut,
-                                                       hepconstants.kKaPlusPDG)
+    # Kaons
+    kaon_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepKaon))
     kaon_sel = selection_info('kaon_sel', kaon_sel_cut, '#kappa^{#pm}')
 
     # other particles
-    other_sel_cut = all_nom_sel_cut
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kMuMinusPDG
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kMuPlusPDG
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kPiMinusPDG
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kPiPlusPDG
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kProtonPDG
-    other_sel_cut += ' && tLeptonPDG!=%s' % hepconstants.kGammaPDG
-    other_sel_cut += ' && abs(tLeptonPDG)!=%s' % hepconstants.kElectronPDG
-    other_sel_cut += ' && abs(tLeptonPDG)!=abs(%s)' % hepconstants.kKaPlusPDG
+    other_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepOther))
     other_sel = selection_info('other_sel', other_sel_cut, 'other')
+
+    # OOFV
+    oofv_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tOOFV))
+    oofv_sel = selection_info('oofv_sel', oofv_sel_cut, 'OOFV')
 
     particle_selections = [all_nom_sel, muMinus_sel, muPlus_sel,
                            piMinus_sel, piPlus_sel, proton_sel,
-                           em_sel, kaon_sel, other_sel]
+                           em_sel, kaon_sel, other_sel, oofv_sel]
     return particle_selections
 
 
