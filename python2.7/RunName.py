@@ -54,6 +54,8 @@ RUN6C = RunName('run6c-air', 'Run6c_Air')
 RUN6D = RunName('run6d-air', 'Run6d_Air')
 RUN6E = RunName('run6e-air', 'Run6e_Air')
 RUN7B = RunName('run7b-water', 'Run7b_Water')
+SANDFHC = RunName('run3-air_FHC', 'Run3_Air_FHC')
+SANDRHC = RunName('run3-air_RHC', 'Run3_Air_RHC')
 
 # Data version
 RUN2WDATA = RunName('run2-water', 'Run2_Water_data')
