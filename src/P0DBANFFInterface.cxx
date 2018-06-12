@@ -67,10 +67,17 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetTitleXSize(0.055);
     P0DBANFFStyle->SetTitleYSize(0.055);
     P0DBANFFStyle->SetStripDecimals(kFALSE);
-    P0DBANFFStyle->SetCanvasBorderMode(0);
     P0DBANFFStyle->SetOptTitle(kFALSE);
     P0DBANFFStyle->SetEndErrorSize(4);
     P0DBANFFStyle->SetFillStyle(static_cast<Style_t>(1001));
+    //<plain>
+    P0DBANFFStyle->SetCanvasBorderMode(0);
+    P0DBANFFStyle->SetPadBorderMode(0);
+    P0DBANFFStyle->SetPadColor(0);
+    P0DBANFFStyle->SetCanvasColor(0);
+    //P0DBANFFStyle->SetTitleColor(0);
+    P0DBANFFStyle->SetStatColor(0);
+    //</plain>
     gROOT->SetStyle("P0DBANFFStyle");
 
     std::cout << "WARNING: If you are going to use the XMLTools class" << std::endl;
