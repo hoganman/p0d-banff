@@ -85,7 +85,9 @@ def main(argv):
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6c-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6d-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6e-air',
-            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run7b-water'
+            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run7b-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/sand/run3-air_FHC',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_B/sand/run3-air_RHC'
     ]
 
     data_directories = [
@@ -100,7 +102,9 @@ def main(argv):
             '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6c-air',
             '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6d-air',
             '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6e-air',
-            '/physics/home/mhogan/flattrees/rdp6_Spin_N/run7b-water'
+            '/physics/home/mhogan/flattrees/rdp6_Spin_N/run7b-water',
+            '',
+            ''
     ]
 
     files = [
@@ -115,7 +119,9 @@ def main(argv):
             'Run6c_Air',
             'Run6d_Air',
             'Run6e_Air',
-            'Run7b_Water'
+            'Run7b_Water',
+            'Run3_Air_FHC',
+            'Run3_Air_RHC'
     ]
 
     mode = [
@@ -131,6 +137,8 @@ def main(argv):
            'antinu',  # 6d air
            'antinu',  # 6e air
            'antinu',  # 7b water
+           'nu',  # 3 air sand
+           'antinu',  # 3 air sand
     ]
     for index in range(len(files)):
         header = get_file_header(mc_directories[index], files[index])
@@ -139,6 +147,8 @@ def main(argv):
     counted_nu_pot = 0.
     counted_antinu_pot = 0.
     for index in range(len(files)):
+        if len(data_directories[index]) == 0:
+            continue
         header = get_file_header(data_directories[index], files[index])
         if mode[index].find('anti') != -1:
             counted_antinu_pot += check_pot(header, '%s data' % (files[index]))
