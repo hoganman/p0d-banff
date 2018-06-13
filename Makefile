@@ -88,6 +88,7 @@ all: $(TGT)
 ##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
 	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
+	mv *.o *.d $(LIB)
 #############################################
 
 #add a rule to clean all generated files from your directory
