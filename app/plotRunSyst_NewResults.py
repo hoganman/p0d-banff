@@ -64,10 +64,10 @@ def main(argv):
     if P0DNUMUBARCCSELECTION == -1:
         P0DNUMUBARCCSELECTION = sampleIds.GetP0DNuMuBarCC()
     if SELECTION == -1:
-        # SELECTION = P0DNUMUBARCCSELECTION
-        # print 'WARNING: USING P0DNUMUBARCCSELECTION'
-        SELECTION = P0DNUMUCCSELECTION
-        print 'WARNING: USING P0DNUMUCCSELECTION'
+        SELECTION = P0DNUMUBARCCSELECTION
+        print 'WARNING: USING P0DNUMUBARCCSELECTION'
+        # SELECTION = P0DNUMUCCSELECTION
+        # print 'WARNING: USING P0DNUMUCCSELECTION'
     SELECTIONSTR = 'numubarCCInc' if (SELECTION == P0DNUMUBARCCSELECTION) else 'numuCCInc'
     SELECTIONDICT = {
             P0DNUMUCCSELECTION: '#mu^{-} Selection,',
@@ -137,14 +137,14 @@ def main(argv):
                                                              data_pot_mantissa,
                                                              data_pot_exponent)
 
-        # # neutrino energy
-        # histstack_Enu = ROOTHStack()
-        # histstack_Enu.plot_var = 'TrueEnuNom*1e-3'
-        # histstack_Enu.x_title = 'True Neutrino Energy [GeV]'
-        # histstack_Enu.y_title = evts_p_bin_p_pot
-        # make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
-        #               histstack_Enu, 'trueE_nu')
-        # Enu_AnaBins.Reset()
+        # neutrino energy
+        histstack_Enu = ROOTHStack()
+        histstack_Enu.plot_var = 'TrueEnuNom*1e-3'
+        histstack_Enu.x_title = 'True Neutrino Energy [GeV]'
+        histstack_Enu.y_title = evts_p_bin_p_pot
+        make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+                      histstack_Enu, 'trueE_nu')
+        Enu_AnaBins.Reset()
 
         # lepton candidate momentum
         histstack_Pmu = ROOTHStack()
@@ -156,52 +156,52 @@ def main(argv):
                    histstack_Pmu, 'recoP_mu_uniform')
         Pmu_AnaBins.Reset()
 
-        # # lepton candidate cos(theta)
-        # histstack_cosTheta = ROOTHStack()
-        # histstack_cosTheta.plot_var = 'LeptonCosNom'
-        # histstack_cosTheta.x_title = 'Lepton Candidate cos(#theta)'
-        # histstack_cosTheta.y_title = evts_p_bin_p_pot
-        # # hist_cosq.set_log_y(True)
-        # make_stack(smpls, particle_selections, CosTheta_AnaBins,
-        #            histstack_cosTheta, 'recocosq_mu_uniform')
-        # CosTheta_AnaBins.Reset()
+        # lepton candidate cos(theta)
+        histstack_cosTheta = ROOTHStack()
+        histstack_cosTheta.plot_var = 'LeptonCosNom'
+        histstack_cosTheta.x_title = 'Lepton Candidate cos(#theta)'
+        histstack_cosTheta.y_title = evts_p_bin_p_pot
+        # hist_cosq.set_log_y(True)
+        make_stack(smpls, particle_selections, CosTheta_AnaBins,
+                   histstack_cosTheta, 'recocosq_mu_uniform')
+        CosTheta_AnaBins.Reset()
 
-        # # lepton candidate theta
-        # histstack_theta = ROOTHStack()
-        # histstack_theta.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
-        # histstack_theta.x_title = 'Lepton Candidate #theta_{ND280}'
-        # histstack_theta.y_title = evts_p_bin_p_pot
-        # # hist_cosq.set_log_y(True)
-        # make_stack(smpls, particle_selections, Theta_AnaBins,
-        #            histstack_theta, 'recotheta_mu_uniform')
-        # CosTheta_AnaBins.Reset()
+        # lepton candidate theta
+        histstack_theta = ROOTHStack()
+        histstack_theta.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
+        histstack_theta.x_title = 'Lepton Candidate #theta_{ND280}'
+        histstack_theta.y_title = evts_p_bin_p_pot
+        # hist_cosq.set_log_y(True)
+        make_stack(smpls, particle_selections, Theta_AnaBins,
+                   histstack_theta, 'recotheta_mu_uniform')
+        CosTheta_AnaBins.Reset()
 
-        # # lepton p0d position Z
-        # histstack_p0dZ = ROOTHStack()
-        # histstack_p0dZ.plot_var = 'vtxZ'
-        # histstack_p0dZ.x_title = 'Track Start Z (mm)'
-        # histstack_p0dZ.y_title = evts_p_bin_p_pot
-        # make_stack(smpls, particle_selections, p0dZ_AnaBins,
-        #            histstack_p0dZ, 'recoZ_mu')
-        # p0dZ_AnaBins.Reset()
+        # lepton p0d position Z
+        histstack_p0dZ = ROOTHStack()
+        histstack_p0dZ.plot_var = 'vtxZ'
+        histstack_p0dZ.x_title = 'Track Start Z (mm)'
+        histstack_p0dZ.y_title = evts_p_bin_p_pot
+        make_stack(smpls, particle_selections, p0dZ_AnaBins,
+                   histstack_p0dZ, 'recoZ_mu')
+        p0dZ_AnaBins.Reset()
 
-        # # lepton p0d position X
-        # histstack_p0dX = ROOTHStack()
-        # histstack_p0dX.plot_var = 'vtxX'
-        # histstack_p0dX.x_title = 'Track Start X (mm)'
-        # histstack_p0dX.y_title = evts_p_bin_p_pot
-        # make_stack(smpls, particle_selections, p0dX_AnaBins,
-        #            histstack_p0dX, 'recoX_mu')
-        # p0dX_AnaBins.Reset()
+        # lepton p0d position X
+        histstack_p0dX = ROOTHStack()
+        histstack_p0dX.plot_var = 'vtxX'
+        histstack_p0dX.x_title = 'Track Start X (mm)'
+        histstack_p0dX.y_title = evts_p_bin_p_pot
+        make_stack(smpls, particle_selections, p0dX_AnaBins,
+                   histstack_p0dX, 'recoX_mu')
+        p0dX_AnaBins.Reset()
 
-        # # lepton p0d position Y
-        # histstack_p0dY = ROOTHStack()
-        # histstack_p0dY.plot_var = 'vtxY'
-        # histstack_p0dY.x_title = 'Track Start Y (mm)'
-        # histstack_p0dY.y_title = evts_p_bin_p_pot
-        # make_stack(smpls, particle_selections, p0dY_AnaBins,
-        #            histstack_p0dY, 'recoY_mu')
-        # p0dY_AnaBins.Reset()
+        # lepton p0d position Y
+        histstack_p0dY = ROOTHStack()
+        histstack_p0dY.plot_var = 'vtxY'
+        histstack_p0dY.x_title = 'Track Start Y (mm)'
+        histstack_p0dY.y_title = evts_p_bin_p_pot
+        make_stack(smpls, particle_selections, p0dY_AnaBins,
+                   histstack_p0dY, 'recoY_mu')
+        p0dY_AnaBins.Reset()
     del engine
 
 
