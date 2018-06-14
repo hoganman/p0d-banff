@@ -77,6 +77,9 @@ export PYTHONPATH=$APP:$P0DBANFFROOT/python2.7:${PYTHONPATH}
 
 #source ${P0DBANFFROOT}/nd280Highland2/$HIGHLAND2VERSION/cmt/setup.sh
 source ${P0DBANFFROOT}/highland2/highlandIO/v2r22/cmt/setup.sh
+source ${P0DBANFFROOT}/highland2/highlandTools/v2r18/cmt/setup.sh
+source ${P0DBANFFROOT}/highland2/highlandTools/v2r18/cmt/rootmap_setup.sh
+source ${P0DBANFFROOT}/highland2/p0dNumuCCAnalysis/v2r14/cmt/setup.sh
 source ${P0DBANFFROOT}/BANFF/$BANFFVERSION/cmt/setup.sh
 
 export T2KREWEIGHT=${P0DBANFFROOT}/T2KReWeight
