@@ -7,7 +7,7 @@
 class ToyExperiment;
 
 
-/// This variation that smears that the measured dEdXMeas (CT) for the TPC segments of the track
+/// The variation that smears the measured dEdXMeas (CT) for the TPC segments of the track
 /// The smearing is done assuming the variation based on pull parameters
 class TPCPIDVariation{
 public:

@@ -15,7 +15,7 @@ void TPCPIDVariation::ApplyVariation(AnaTrackB* track, const ToyExperiment& exp)
   // Check track validity
   if (!track) return;
 
-  // Do not do anything if a track does use a TPC
+  // Do not do anything if a track does not use a TPC
   if (track->nTPCSegments == 0) return;
 
   // Loop over TPC segments
@@ -31,7 +31,7 @@ void TPCPIDVariation::ApplyVariation(AnaTrackB* track, const ToyExperiment& exp)
     tpcTrack->Print();
 #endif
 
-    // The un-corrected TPC track t 
+    // The un-corrected TPC track  
     const AnaTPCParticleB* original = static_cast<const AnaTPCParticleB*>(tpcTrack->Original);
 
     if (!track->TrueObject)           continue; //?
@@ -58,7 +58,7 @@ void TPCPIDVariation::ApplyVariation(AnaTrackB* track, const ToyExperiment& exp)
     std::cout << " TPCPIDVariation::ApplyVariation(): dEdX params -- dEdxExp " << dEdxExp 
       << " dEdxSigma " << dEdxSigma << " dEdxMeas_0 " << tpcTrack->dEdxMeas <<std::endl; 
 #endif      
-    // Apply the systematic variation for the sigma
+    // Apply the variation for the sigma
     // smear/queeze to match the new resolution
     Float_t dEdXMeasNew = dEdxExp + (tpcTrack->dEdxMeas - dEdxExp) * sigma_var; 
     if (dEdXMeasNew < 0) continue;

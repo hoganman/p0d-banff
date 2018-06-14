@@ -6,7 +6,7 @@
 class ToFSenseCorrector {
 public:  
   /// Various bits to check which ToF relevant topology has to be checked/present etc
-  /// ToF was studied with specific samples and this id why it matters,  more details will
+  /// ToF was studied with specific samples and this is why it matters,  more details will
   /// be provided in the dedicated TNs
   enum ToFTopology{
     kToFTopo_FGD1FGD2 = 0, 
@@ -18,7 +18,18 @@ public:
     kToFTopo_FGD1ECAL_HAStartFgd_Track, 
     kToFTopo_FGD1ECAL_HAStartFgd_Shower, 
     kToFTopo_FGD1ECAL_HAEndFgd_Track, 
-    kToFTopo_FGD1ECAL_HAEndFgd_Shower, 
+    kToFTopo_FGD1ECAL_HAEndFgd_Shower,
+    kToFTopo_FGD2ECAL_LAStartFgd_Track,
+    kToFTopo_FGD2ECAL_LAStartFgd_Shower,
+    kToFTopo_FGD2ECAL_LAEndFgd_Track,
+    kToFTopo_FGD2ECAL_LAEndFgd_Shower,
+    kToFTopo_FGD2ECAL_HAStartFgd_Track,
+    kToFTopo_FGD2ECAL_HAStartFgd_Shower,
+    kToFTopo_FGD2ECAL_HAEndFgd_Track,
+    kToFTopo_FGD2ECAL_HAEndFgd_Shower,
+    kToFTopo_FGD2DSECAL_LAStartFgd_Track,
+    kToFTopo_FGD2DSECAL_LAStartFgd_Shower,
+    kToFTopo_FGD1FGD2_NoStopFGD1, 
     kToFInvalid,  // will use it for array counter...
   };
 
@@ -50,6 +61,9 @@ public:
 
   /// Check whether a given track has ECAL segment, if so only BarrelECAL 
   static bool IsBarrelECAL(const AnaTrackB& track);
+  
+    /// Check whether a given track has ECAL segment, if so only DSEcal
+  static bool IsDSECAL(const AnaTrackB& track);
 
   /// Setters and getters
   Float_t GetCutValue(ToFSenseCorrector::ToFTopology cut) const{

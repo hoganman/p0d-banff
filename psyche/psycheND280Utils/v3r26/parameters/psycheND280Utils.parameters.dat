@@ -37,3 +37,15 @@
  < psycheND280Utils.ToF.FGD1ECAL_HAStartFgd_Shower = 1. >
  < psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Track    = 1. >
  < psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Shower   = 2. >
+ 
+ < psycheND280Utils.ToF.FGD2ECAL_LAStartFgd_Track    = 0. >
+ < psycheND280Utils.ToF.FGD2ECAL_LAStartFgd_Shower   = 0. >
+ < psycheND280Utils.ToF.FGD2ECAL_LAEndFgd_Track      = 2. >
+ < psycheND280Utils.ToF.FGD2ECAL_LAEndFgd_Shower     = 1. >
+ < psycheND280Utils.ToF.FGD2ECAL_HAStartFgd_Track    = 0. >
+ < psycheND280Utils.ToF.FGD2ECAL_HAStartFgd_Shower   = 0. >
+ < psycheND280Utils.ToF.FGD2ECAL_HAEndFgd_Track      = 1. >
+ < psycheND280Utils.ToF.FGD2ECAL_HAEndFgd_Shower     = 2. >
+ < psycheND280Utils.ToF.FGD2DSECAL_LAStartFgd_Track  = 0. >
+ < psycheND280Utils.ToF.FGD2DSECAL_LAStartFgd_Shower = 0. >
+ < psycheND280Utils.ToF.FGD1FGD2_NoStopFGD1          = 2. >

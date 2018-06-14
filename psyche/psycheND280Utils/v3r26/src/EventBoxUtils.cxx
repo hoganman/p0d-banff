@@ -10,20 +10,24 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
   bool processFGD1 = false;
   bool processFGD2 = false;
   bool processTPC  = false;
-
+  
   EventBoxB* EventBox = event.EventBoxes[EventBoxId::kEventBoxTracker];
 
+  
   // Don't fill it when already filled by other selection
+  if (!EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPC]){
+    processTPC = true;
+  }
+  
   if ((det==SubDetId::kFGD1 || det==SubDetId::kFGD) && !EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD1]) processFGD1 = true;
   if ((det==SubDetId::kFGD2 || det==SubDetId::kFGD) && !EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPCAndFGD2]) processFGD2 = true;
 
-  if (!processFGD1 && !processFGD2) return;
+  if (!processFGD1 && !processFGD2 && !processTPC) return;
 
   AnaTrackB* selTracks[NMAXPARTICLES];
   int nTPC = anaUtils::GetAllTracksUsingTPC(event, selTracks);
 
-  if (!EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPC]){
-    processTPC= true;
+  if (processTPC){
     EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPC]=0;
     anaUtils::CreateArray(EventBox->RecObjectsInGroup[EventBoxTracker::kTracksWithTPC], nTPC);
   }
@@ -158,8 +162,7 @@ void boxUtils::FillTracksWithTPC(AnaEventB& event, SubDetId::SubDetEnum det){
       }
     }
        
-  } //end of loop over tpc tracks
-
+  }
   if (processFGD1){
     anaUtils::ResizeArray(EventBox-> RecObjectsInGroup[EventBoxTracker::kTracksWithTPCInFGD1FV],
                        EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithTPCInFGD1FV], nTPC);

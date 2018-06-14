@@ -12,16 +12,30 @@ ToFSenseCorrector::ToFSenseCorrector(){
   //********************************************************************
 
   // Read various parameters
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1FGD2]                   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1FGD2"                   );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1P0D_Track]              = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1P0D_Track"              );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAStartFgd_Track]  = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAStartFgd_Track"  );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAStartFgd_Shower] = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAStartFgd_Shower" );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAEndFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAEndFgd_Track"    );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAEndFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAEndFgd_Shower"   );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAStartFgd_Track]  = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAStartFgd_Track"  );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAStartFgd_Shower] = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAStartFgd_Shower" );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAEndFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Track"    );
-  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAEndFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Shower"   );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1FGD2]                     = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1FGD2"                     );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1P0D_Track]                = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1P0D_Track"                );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAStartFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAStartFgd_Track"    );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAStartFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAStartFgd_Shower"   );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAEndFgd_Track]      = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAEndFgd_Track"      );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_LAEndFgd_Shower]     = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_LAEndFgd_Shower"     );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAStartFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAStartFgd_Track"    );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAStartFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAStartFgd_Shower"   );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAEndFgd_Track]      = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Track"      );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAEndFgd_Shower]     = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1ECAL_HAEndFgd_Shower"     );
+   
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_LAStartFgd_Track"    );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_LAStartFgd_Shower"   );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Track]      = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_LAEndFgd_Track"      );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Shower]     = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_LAEndFgd_Shower"     );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Track]    = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_HAStartFgd_Track"    );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Shower]   = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_HAStartFgd_Shower"   );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Track]      = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_HAEndFgd_Track"      );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Shower]     = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2ECAL_HAEndFgd_Shower"     );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Track]  = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2DSECAL_LAStartFgd_Track"  );
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Shower] = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD2DSECAL_LAStartFgd_Shower" );
+  
+  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1FGD2_NoStopFGD1]          = (Float_t)ND::params().GetParameterD("psycheND280Utils.ToF.FGD1FGD2_NoStopFGD1"          );
+  
 
 }
 
@@ -156,6 +170,60 @@ bool ToFSenseCorrector::CheckNeedApplyToFBasedFlip(const AnaTrackB& track, ToFSe
         (track.ToF.ECal_FGD1 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1ECAL_HAEndFgd_Shower] &&  isForward)) return true;
   }  
 
+
+  // ECal-FGD2 -> We apply the flip for both track&shower like cases
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Track) {
+    if ((track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Track] && !isForward) ||
+        (track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Track] &&  isForward)) return false;
+  }
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Shower) {
+    if ((track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Shower] && !isForward) ||
+        (track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAStartFgd_Shower] &&  isForward)) return false;
+  }
+
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Track) {
+    if ((track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Track] && !isForward) ||
+        (track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Track] &&  isForward)) return false;
+  }
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Shower) {
+    if ((track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Shower] && !isForward) ||
+        (track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_LAEndFgd_Shower] &&  isForward)) return false;
+  }
+
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Track) {
+    if ((track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Track] && !isForward) ||
+        (track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Track] &&  isForward)) return false;
+  }
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Shower) {
+    if ((track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Shower] && !isForward) ||
+        (track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAStartFgd_Shower] &&  isForward)) return false;
+  }
+
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Track) {
+    if ((track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Track] && !isForward) ||
+        (track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Track] &&  isForward)) return false;
+  }
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Shower) {
+    if ((track.ToF.ECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Shower] && !isForward) ||
+        (track.ToF.ECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2ECAL_HAEndFgd_Shower] &&  isForward)) return false;
+  }
+
+  // DSECal-FGD2 -> We apply the flip for both track&shower like cases
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Track) {
+    if ((track.ToF.DSECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Track] && !isForward) ||
+        (track.ToF.DSECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Track] &&  isForward)) return false;
+  }
+  if (topo==ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Shower) {
+    if ((track.ToF.DSECal_FGD2 >  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Shower] && !isForward) ||
+        (track.ToF.DSECal_FGD2 <= ToFCutValues[ToFSenseCorrector::kToFTopo_FGD2DSECAL_LAStartFgd_Shower] &&  isForward)) return false;
+  }
+
+  //FGD1-FGD2
+  if (topo==kToFTopo_FGD1FGD2_NoStopFGD1) {
+    if ((track.ToF.FGD1_FGD2 > ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1FGD2_NoStopFGD1] && !isForward) ||
+        (track.ToF.FGD1_FGD2 <=  ToFCutValues[ToFSenseCorrector::kToFTopo_FGD1FGD2_NoStopFGD1] &&  isForward)) return false;
+  }
+
   // Everything is fine or cannot say that any flipping is needed
   return false;
 
@@ -164,7 +232,7 @@ bool ToFSenseCorrector::CheckNeedApplyToFBasedFlip(const AnaTrackB& track, ToFSe
 //********************************************************************
 Int_t ToFSenseCorrector::GetToFTopologies(const AnaTrackB& track, ToFSenseCorrector::ToFTopology* topo){
   //********************************************************************
-  
+
   // This function returns which type of ToF check/cut (there may be several involved since a 
   // track can cross several sub-detectors and the check/cut can also depend on the type of track, 
   // e.g. track/shower for the same topology)
@@ -172,11 +240,11 @@ Int_t ToFSenseCorrector::GetToFTopologies(const AnaTrackB& track, ToFSenseCorrec
   // The current values (Sept 2016,  details in TN-245) used were retrieved using the track being forced to be forward going in Z 
   // hence the relevant type should be checked based on the position of the upstream/downstream (in Z) ends,  no matter there correspondence 
   // to an actual start/end point
-  
+
   // For the moment (April 2017), only one topology is relevant since this was
   // the way how the numbers were obtained for TN-245
   Int_t count = 0;
-  
+
   const Float_t* pos_upstream;
   const Float_t* pos_downstream;
   bool forward = IsForward(track);
@@ -258,6 +326,53 @@ Int_t ToFSenseCorrector::GetToFTopologies(const AnaTrackB& track, ToFSenseCorrec
       }
     }
   }
+  else if (anaUtils::InDetVolume(SubDetId::kFGD2, pos_upstream)) {
+    if (cutUtils::TrackQualityCut(track)) {
+      if (track.ToF.Flag_ECal_FGD2) {
+        if (ToFSenseCorrector::IsBarrelECAL(track)) {
+          if (track.ECALSegments[0]->NNodes == 1) return kToFTopo_FGD2ECAL_LAStartFgd_Shower;
+          if (track.ECALSegments[0]->NNodes >  1) return kToFTopo_FGD2ECAL_LAStartFgd_Track;
+        }
+      }
+      else if (track.ToF.Flag_DSECal_FGD2) {
+        if (ToFSenseCorrector::IsDSECAL(track)) {
+          if (track.ECALSegments[0]->NNodes == 1) return kToFTopo_FGD2DSECAL_LAStartFgd_Shower;
+          if (track.ECALSegments[0]->NNodes >  1) return kToFTopo_FGD2DSECAL_LAStartFgd_Track;
+        }
+      }
+    }
+    else {
+      if (cutUtils::StoppingBrECALorSMRDCut(pos_downstream)!=-1) {
+        if (track.ToF.Flag_ECal_FGD2) {
+          if (ToFSenseCorrector::IsBarrelECAL(track)) {
+            if (track.ECALSegments[0]->NNodes == 1) return kToFTopo_FGD2ECAL_HAStartFgd_Shower;
+            if (track.ECALSegments[0]->NNodes >  1) return kToFTopo_FGD2ECAL_HAStartFgd_Track;
+          }
+        }
+      }
+    }
+  }
+  else if (anaUtils::InDetVolume(SubDetId::kFGD2, pos_downstream)) {
+    if (cutUtils::TrackQualityCut(track)) {
+      if (track.ToF.Flag_FGD1_FGD2 && !anaUtils::InDetVolume(SubDetId::kFGD1, pos_upstream)) return kToFTopo_FGD1FGD2_NoStopFGD1;
+      else if (track.ToF.Flag_ECal_FGD2) {
+        if (ToFSenseCorrector::IsBarrelECAL(track)) {
+          if (track.ECALSegments[0]->NNodes == 1) return kToFTopo_FGD2ECAL_LAEndFgd_Shower;
+          if (track.ECALSegments[0]->NNodes >  1) return kToFTopo_FGD2ECAL_LAEndFgd_Track;
+        }
+      }
+    }
+    else {
+      if (cutUtils::StoppingBrECALorSMRDCut(pos_upstream)!=-1) {
+        if (track.ToF.Flag_ECal_FGD2) {
+          if (ToFSenseCorrector::IsBarrelECAL(track)) {
+            if (track.ECALSegments[0]->NNodes == 1) return kToFTopo_FGD2ECAL_HAEndFgd_Shower;
+            if (track.ECALSegments[0]->NNodes >  1) return kToFTopo_FGD2ECAL_HAEndFgd_Track;
+          }
+        }
+      }
+    }
+  }
 
   return count;
 
@@ -274,6 +389,18 @@ bool ToFSenseCorrector::IsBarrelECAL(const AnaTrackB& track){
     (int)(anaUtils::TrackUsesDet(track, SubDetId::kLeftTECAL))        + 
     (int)(anaUtils::TrackUsesDet(track, SubDetId::kRightTECAL));
   if (count != 1) return false;
+
+  return track.ECALSegments[0];
+
+}
+
+//********************************************************************
+bool ToFSenseCorrector::IsDSECAL(const AnaTrackB& track){
+  //********************************************************************
+
+  if (track.nECALSegments < 1) return false;
+
+  if (!anaUtils::TrackUsesDet(track, SubDetId::kDSECAL)) return false;
 
   return track.ECALSegments[0];
 

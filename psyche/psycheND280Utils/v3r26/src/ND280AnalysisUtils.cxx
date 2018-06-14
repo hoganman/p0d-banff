@@ -82,12 +82,15 @@ Int_t anaUtils::GetRunPeriod(Int_t run, Int_t subrun){
   else if (run>=91410000 && run<=91419999) return 5;  //run4 water          
   else if (run>=91400000 && run<=91409999) return 6;  //run4 air            
   else if (run>=81510000 && run<=81519999) return 8;  //run5 antinu-water
-  else if (run>=81600000 && run<=81600159) return 9;  //run6b antinu-air
-  else if (run>=81600160 && run<=81600219) return 10; //run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
-  else if (run>=81600220 && run<=81600299) return 11; //run6d antinu-air
-  else if (run>=81600300 && run<=81600490) return 12; //run6e antinu-air
+  else if (run>=81600000 && run<=81600186) return 9;  //run6b antinu-air
+  else if (run>=81600187 && run<=81600260) return 10; //run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
+  else if (run>=81600261 && run<=81600369) return 11; //run6d antinu-air
+  else if (run>=81600370 && run<=81600490) return 12; //run6e antinu-air
   else if (run>=81710000 && run<=81710124) return 15; //run7b antinu-water 
-  else if (run>=81710125 && run<=81719999) return 15; //run7b antinu-water - set this as default, to catch any files that are not currently at TRIUMF 
+  else if (run>=91810000 && run<=91810095) return 17; //run8 water
+  else if (run>=91800000 && run<=91800129) return 18; //run8 air
+  else if (run>=91800130 && run<=91800999) return 18; //run8 air - set this as default, to catch any files that are not currently at TRIUMF
+
   else return -1;
 
 }
