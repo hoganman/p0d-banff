@@ -5,16 +5,16 @@ bool trackerSelUtils::FindLeadingTracksOld(AnaEventC& eventBB, ToyBoxB& boxB, bo
   //********************************************************************
 
   // Get the highest momentum track (HM),
-  // the highest momentum negative track (HMN) and the 
+  // the highest momentum negative track (HMN) and the
   // highest momentum positive track (HMP)
-  // from all tracks passing the quality and fiducial cut. 
+  // from all tracks passing the quality and fiducial cut.
 
   // this function cannot be in anaUtils because it needs the cuts
 
-  AnaEventB& event = *static_cast<AnaEventB*>(&eventBB); 
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventBB);
 
   // Cast the ToyBox to the appropriate type
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
 
 
   AnaTrackB* HM  = NULL;
@@ -98,7 +98,7 @@ bool trackerSelUtils::FindLeadingTracksOld(AnaEventC& eventBB, ToyBoxB& boxB, bo
   }
   box.nPositiveTPCtracks = nPositiveTracks;
 
-  return (HM);  
+  return (HM);
 }
 
 //********************************************************************
@@ -106,34 +106,26 @@ bool trackerSelUtils::FindLeadingTracks(const AnaEventC& event, ToyBoxB& boxB){
   //********************************************************************
 
   // Get the highest momentum track (HM),
-  // the highest momentum negative track (HMN) and the 
+  // the highest momentum negative track (HMN) and the
   // highest momentum positive track (HMP)
-  // from all tracks passing the quality and fiducial cut. 
+  // from all tracks passing the quality and fiducial cut.
 
   // this function cannot be in anaUtils because it needs the cuts
 
   // Cast the ToyBox to the appropriate type
-  //ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
 
-  ToyBoxTracker& box = *dynamic_cast<ToyBoxTracker*>(&boxB); 
-  
   SubDetId::SubDetEnum det = static_cast<SubDetId::SubDetEnum>(box.DetectorFV);
 
-  EventBoxTracker::RecObjectGroupEnum groupID; 
+  EventBoxTracker::RecObjectGroupEnum groupID;
   if   (det == SubDetId::kFGD1)
     groupID = EventBoxTracker::kTracksWithGoodQualityTPCInFGD1FV;
   else if (det == SubDetId::kFGD2)
     groupID = EventBoxTracker::kTracksWithGoodQualityTPCInFGD2FV;
-  else if (det == SubDetId::kP0D){
+  else if (det == SubDetId::kP0D)
     groupID = EventBoxTracker::kTracksWithGoodQualityTPCInP0DFV;
-
-//DEBUG 
-//std::cout << "LeadingTracks kP0D" << std::endl;
-
-  }
-  else{
+  else
     return false;
-  }
 
   // Retrieve the EventBoxTracker
   EventBoxB* EventBox = event.EventBoxes[EventBoxId::kEventBoxTracker];
@@ -216,7 +208,7 @@ bool trackerSelUtils::FindLeadingTracks(const AnaEventC& event, ToyBoxB& boxB){
   anaUtils::ResizeArray(box.NegativeTPCtracks, box.nNegativeTPCtracks, nTPC);
   anaUtils::ResizeArray(box.PositiveTPCtracks, box.nPositiveTPCtracks, nTPC);
 
-  return (box.HMtrack);  
+  return (box.HMtrack);
 }
 
 
@@ -225,14 +217,14 @@ bool trackerSelUtils::FindLeadingTracks(AnaRecObjectC** objects, size_t nObjects
   //********************************************************************
 
   // Get the highest momentum track (HM),
-  // the highest momentum negative track (HMN) and the 
+  // the highest momentum negative track (HMN) and the
   // highest momentum positive track (HMP)
-  // from all tracks passing the quality and fiducial cut. 
+  // from all tracks passing the quality and fiducial cut.
 
   SubDetId::SubDetEnum det = static_cast<SubDetId::SubDetEnum>(boxB.DetectorFV);
 
   // Cast the ToyBox to the appropriate type
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
 
   box.nNegativeTPCtracks=0;
   anaUtils::CreateArray(box.NegativeTPCtracks, nObjects);
@@ -320,6 +312,6 @@ bool trackerSelUtils::FindLeadingTracks(AnaRecObjectC** objects, size_t nObjects
   anaUtils::ResizeArray(box.NegativeTPCtracks, box.nNegativeTPCtracks, nObjects);
   anaUtils::ResizeArray(box.PositiveTPCtracks, box.nPositiveTPCtracks, nObjects);
 
-  return (box.HMtrack);  
+  return (box.HMtrack);
 }
 

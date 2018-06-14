@@ -32,14 +32,14 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
 
   sDQND280Flag = 0;
   for(int i = 0; i < 7; i++) sDQDetFlag[i] = 0;
-  
+
   // AnaTrigger related
   sTriggerFGDCosmic   = 0;
   sTriggerTripTCosmic = 0;
   for (int i = 0; i < 6; i++){
     sTriggerCTMTriggerPattern[i] = 0;
   }
-  
+
 
   sNTrueVertices = 0;
   for (unsigned int i = 0; i < NMAXTRUEVERTICES; i++) {
@@ -65,7 +65,7 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
     for (int j = 0; j < Int_t(ParticleId::kLast)+1; j++) {
       sTrueVertexNPrimaryParticles[i][j]=0;
     }
-    
+
   }
 
   for (unsigned int i = 0; i < NMAXPARTICLES; i++) {
@@ -82,10 +82,10 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
       trTimeNodeTimeStart[i][j] = 0;
         trTimeNodeTimeEnd[i][j] = 0;
     }
-    
+
     for (int j = 0; j < 3; j++) {
       trDirectionAtVertex[i][j]   = 0;
-      trDirectionStartFlip[i][j]  = 0;   //! 
+      trDirectionStartFlip[i][j]  = 0;   //!
       trDirectionEndFlip[i][j]    = 0;   //!
     }
 
@@ -223,12 +223,12 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
   b_sBeamBeamRunNumber = NULL;
   b_sDQND280Flag       = NULL;
   b_sDQDetFlag         = NULL;
- 
+
   // AnaTrigger related
   b_sTriggerFGDCosmic         = NULL;
   b_sTriggerTripTCosmic       = NULL;
   b_sTriggerCTMTriggerPattern = NULL;
-                                                         
+
   b_sTrueVertexLeptonPDG         = NULL;
   b_sTrueVertexLeptonDir         = NULL;
   b_sTrueVertexProtonDir         = NULL;
@@ -242,12 +242,12 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
   b_sTrueVertexPionMom           = NULL;
   b_sTrueVertexTargetDir         = NULL;
   b_sTrueVertexTargetMom         = NULL;
-                                                         
-  b_trReconPDG = NULL;                                         
-  b_trDirectionAtVertex = NULL;                                
-                                                         
-  b_trNTRACKERs = NULL;                                        
-                                                         
+
+  b_trReconPDG = NULL;
+  b_trDirectionAtVertex = NULL;
+
+  b_trNTRACKERs = NULL;
+
   b_trTpcPullmu         = NULL;
   b_trTpcPullele        = NULL;
   b_trTpcPullp          = NULL;
@@ -257,20 +257,20 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
   b_trTimeNodeDetector  = NULL;
   b_trTimeNodeTimeStart = NULL;
   b_trTimeNodeTimeEnd   = NULL;
-                                                         
+
   b_trTpcUniqueID  = NULL;
   b_trFgdUniqueID  = NULL;
   b_trECALUniqueID = NULL;
   b_trSMRDUniqueID = NULL;
   b_trP0DUniqueID  = NULL;
-                                                         
+
   b_trTpcRawdEdxMeas   = NULL;
   b_trTpcRawdEdxExpMu  = NULL;
   b_trTpcRawdEdxExpEle = NULL;
   b_trTpcRawdEdxExpP   = NULL;
   b_trTpcRawdEdxExpPi  = NULL;
   b_trTpcRawdEdxExpK   = NULL;
-                                                         
+
   b_trFgdHasFgdVA       = NULL;
   b_trFgdHasFgdVA_fmode = NULL;
   b_trFgdTypeVA         = NULL;
@@ -282,9 +282,9 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
   b_trFgdEnd3x3         = NULL;
   b_trFgdEnd5x5         = NULL;
   b_trFgdEnd7x7         = NULL;
-                                                         
-  b_trP0DAvgTime = NULL;                                       
-                                                         
+
+  b_trP0DAvgTime = NULL;
+
   b_trTRACKERDetector       = NULL;
   b_trTRACKERNHits          = NULL;
   b_trTRACKERNNodes         = NULL;
@@ -297,20 +297,20 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
   b_trTRACKERCharge         = NULL;
   b_trTRACKERMomentum       = NULL;
   b_trTRACKERMomentumEnd    = NULL;
-                                                         
+
   b_trDirectionStartFlip      = NULL;
   b_trDirectionEndFlip        = NULL;
   b_trRangeMomentumMuonFlip   = NULL;
   b_trRangeMomentumProtonFlip = NULL;
   b_trMomentumAtVertex        = NULL;
-  b_trLength                  = NULL;                                                       
-                                                         
+  b_trLength                  = NULL;
+
   b_trECALPIDMipPion  = NULL;
   b_trECALContainment = NULL;
-                  
+
   //  SMRD
   b_trSMRDEDeposit = NULL;
-                                                         
+
   b_tecalReconCounter                  = NULL;
   b_tecalReconAverageHitTime           = NULL;
   b_tecalReconAverageZPosition         = NULL;
@@ -366,7 +366,7 @@ FlatTreeConverter::FlatTreeConverter(bool readRooTrackerVtx):RedoTreeConverter()
 //********************************************************************
 bool FlatTreeConverter::Initialize(){
 //********************************************************************
- 
+
    // Use corrected values or raw values
    _useCorrectedValues = ND::params().GetParameterI("highlandIO.ReadFlatTree.UseCorrectedValues");
 
@@ -386,7 +386,7 @@ void FlatTreeConverter::DefineBranches(){
 
   RedoTreeConverter::DefineBranches();
 
-  // The branches commented below are not read becouse they are not currently needed by any analysis. 
+  // The branches commented below are not read becouse they are not currently needed by any analysis.
   // This is equivalent to setting their status to 0, as it was done in the previous version
 
 
@@ -410,11 +410,11 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "sDQGoodDaq", &sDQGoodDaq, &b_sDQGoodDaq);
    anaUtils::ConfigureTreeBranch(fChain, "sDQND280Flag", &sDQND280Flag, &b_sDQND280Flag);
    anaUtils::ConfigureTreeBranch(fChain, "sDQDetFlag", sDQDetFlag, &b_sDQDetFlag);
-   
+
    anaUtils::ConfigureTreeBranch(fChain, "sTriggerFGDCosmic",   &sTriggerFGDCosmic,   &b_sTriggerFGDCosmic);
    anaUtils::ConfigureTreeBranch(fChain, "sTriggerTripTCosmic", &sTriggerTripTCosmic, &b_sTriggerTripTCosmic);
    anaUtils::ConfigureTreeBranch(fChain, "sTriggerCTMTriggerPattern", sTriggerCTMTriggerPattern, &b_sTriggerCTMTriggerPattern);
-   
+
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxIndex", sTrueVertexRooVtxIndex, &b_sTrueVertexRooVtxIndex);
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxEntry", sTrueVertexRooVtxEntry, &b_sTrueVertexRooVtxEntry);
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexReacCode", sTrueVertexReacCode, &b_sTrueVertexReacCode);
@@ -442,12 +442,12 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexIsPauliBlocked", sTrueVertexIsPauliBlocked, &b_sTrueVertexIsPauliBlocked);
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexIsCohOnH", sTrueVertexIsCohOnH, &b_sTrueVertexIsCohOnH);
    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNPrimaryParticles", sTrueVertexNPrimaryParticles, &b_sTrueVertexNPrimaryParticles);
- 
+
    // True track info
    anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackBunch", sTrueParticleBunch, &b_sTrueParticleBunch);
    anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackPurity", sTrueParticlePurity, &b_sTrueParticlePurity);
    //   anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackNReconTracks", sTrueParticleNReconTracks, &b_sTrueParticleNReconTracks);
-  
+
    anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinMinTime", sFgdTimeBinMinTime, &b_sFgdTimeBinMinTime);
    anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinMaxTime", sFgdTimeBinMaxTime, &b_sFgdTimeBinMaxTime);
    anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinRawChargeSum1", sFgdTimeBinRawChargeSum1, &b_sFgdTimeBinRawChargeSum1);
@@ -492,16 +492,16 @@ void FlatTreeConverter::DefineBranches(){
    //   anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorProton", trMomentumErrorProton, &b_trMomentumErrorProton);
    anaUtils::ConfigureTreeBranch(fChain, "trMomentumEle", trMomentumEle, &b_trMomentumEle);
    //   anaUtils::ConfigureTreeBranch(fChain, "trMomentumErrorEle", trMomentumErrorEle, &b_trMomentumErrorEle);
-    
-   
+
+
    anaUtils::ConfigureTreeBranch(fChain, "trLength", trLength, &b_trLength);
 
 #if VERSION_HAS_REVERSED_REFITS
    anaUtils::ConfigureTreeBranch(fChain, "trDirectionStartFlip", trDirectionStartFlip, &b_trDirectionStartFlip);
    anaUtils::ConfigureTreeBranch(fChain, "trDirectionEndFlip",   trDirectionEndFlip,   &b_trDirectionEndFlip);
 #endif
- 
-   
+
+
 #if VERSION_HAS_PRANGE_ESTIMATES
  //  anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumEle", trRangeMomentumEle, &b_trRangeMomentumEle);
    anaUtils::ConfigureTreeBranch(fChain, "trRangeMomentumProton", trRangeMomentumProton, &b_trRangeMomentumProton);
@@ -516,8 +516,8 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "trPositionStart", trPositionStart, &b_trPositionStart);
    anaUtils::ConfigureTreeBranch(fChain, "trPositionEnd", trPositionEnd, &b_trPositionEnd);
    anaUtils::ConfigureTreeBranch(fChain, "trTrueTrackID", trTrueParticleID, &b_trTrueParticleID);
- 
-#if VERSION_HAS_TIME_FITS 
+
+#if VERSION_HAS_TIME_FITS
    //   anaUtils::ConfigureTreeBranch(fChain, "trNTimeNodes", trNTimeNodes, &b_trNTimeNodes);
    //   anaUtils::ConfigureTreeBranch(fChain, "trTimeNodeDetector",  trTimeNodeDetector,  &b_trTimeNodeDetector);
    //   anaUtils::ConfigureTreeBranch(fChain, "trTimeNodeTimeStart", trTimeNodeTimeStart, &b_trTimeNodeTimeStart);
@@ -532,7 +532,7 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "trToFFlag_ECal_FGD1", trToFFlag_ECal_FGD1, &b_trToFFlag_ECal_FGD1);
    anaUtils::ConfigureTreeBranch(fChain, "trToFFlag_ECal_FGD2", trToFFlag_ECal_FGD2, &b_trToFFlag_ECal_FGD2);
 
-#endif   
+#endif
 
    anaUtils::ConfigureTreeBranch(fChain, "trTpcNHits",          trTpcNHits,          &b_trTpcNHits);
    anaUtils::ConfigureTreeBranch(fChain, "trTpcUniqueID",       trTpcUniqueID,       &b_trTpcUniqueID);
@@ -619,8 +619,8 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "trFgdEnd3x3",         trFgdEnd3x3,         &b_trFgdEnd3x3);
    anaUtils::ConfigureTreeBranch(fChain, "trFgdEnd5x5",         trFgdEnd5x5,         &b_trFgdEnd5x5);
    anaUtils::ConfigureTreeBranch(fChain, "trFgdEnd7x7",         trFgdEnd7x7,         &b_trFgdEnd7x7);
-#endif   
-   
+#endif
+
    //   anaUtils::ConfigureTreeBranch(fChain, "trECALDetector", trECALDetector, &b_trECALDetector);
    anaUtils::ConfigureTreeBranch(fChain, "trECALNHits", trECALNHits, &b_trECALNHits);
    //   anaUtils::ConfigureTreeBranch(fChain, "trECALNNodes", trECALNNodes, &b_trECALNNodes);
@@ -634,13 +634,13 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "trECALEDeposit",     trECALEDeposit,     &b_trECALEDeposit);
    anaUtils::ConfigureTreeBranch(fChain, "trECALIsShowerLike", trECALIsShowerLike, &b_trECALIsShowerLike);
    anaUtils::ConfigureTreeBranch(fChain, "trECALAvgTime",      trECALAvgTime,      &b_trECALAvgTime);
-   //ECal PID 
+   //ECal PID
    anaUtils::ConfigureTreeBranch(fChain, "trECALPIDMipPion",           trECALPIDMipPion,           &b_trECALPIDMipPion);
    //   anaUtils::ConfigureTreeBranch(fChain, "trECALPIDMipEm",             trECALPIDMipEm,             &b_trECALPIDMipEm);
    //   anaUtils::ConfigureTreeBranch(fChain, "trECALPIDEmHip",             trECALPIDEmHip,             &b_trECALPIDEmHip);
    anaUtils::ConfigureTreeBranch(fChain, "trECALContainment",          trECALContainment,          &b_trECALContainment);
    //   anaUtils::ConfigureTreeBranch(fChain, "trECALMostUpStreamLayerHit", trECALMostUpStreamLayerHit, &b_trECALMostUpStreamLayerHit);
-   
+
    //   anaUtils::ConfigureTreeBranch(fChain, "trSMRDDetector", trSMRDDetector, &b_trSMRDDetector);
    //   anaUtils::ConfigureTreeBranch(fChain, "trSMRDNHits", trSMRDNHits, &b_trSMRDNHits);
    //   anaUtils::ConfigureTreeBranch(fChain, "trSMRDNNodes", trSMRDNNodes, &b_trSMRDNNodes);
@@ -652,9 +652,9 @@ void FlatTreeConverter::DefineBranches(){
    //   anaUtils::ConfigureTreeBranch(fChain, "trSMRDPositionEnd", trSMRDPositionEnd, &b_trSMRDPositionEnd);
    //   anaUtils::ConfigureTreeBranch(fChain, "trSMRDAvgTime", trSMRDAvgTime, &b_trSMRDAvgTime);
    anaUtils::ConfigureTreeBranch(fChain, "trSMRDEDeposit", trSMRDEDeposit, &b_trSMRDEDeposit);
-   
-   
-     
+
+
+
    //   anaUtils::ConfigureTreeBranch(fChain, "trP0DDetector", trP0DDetector, &b_trP0DDetector);
    anaUtils::ConfigureTreeBranch(fChain, "trP0DUniqueID",       trP0DUniqueID,       &b_trP0DUniqueID);
    anaUtils::ConfigureTreeBranch(fChain, "trP0DNHits",          trP0DNHits,          &b_trP0DNHits);
@@ -665,10 +665,10 @@ void FlatTreeConverter::DefineBranches(){
    anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionEnd",    trP0DPositionEnd,    &b_trP0DPositionEnd);
    anaUtils::ConfigureTreeBranch(fChain, "trP0DPositionStart",  trP0DPositionStart,  &b_trP0DPositionStart);
 
-#if VERSION_HAS_P0D_AVERAGED_TIME     
+#if VERSION_HAS_P0D_AVERAGED_TIME
    anaUtils::ConfigureTreeBranch(fChain, "trP0DAvgTime", trP0DAvgTime, &b_trP0DAvgTime);
 #endif
-   
+
    anaUtils::ConfigureTreeBranch(fChain, "trTRACKERDetector", trTRACKERDetector, &b_trTRACKERDetector);
    anaUtils::ConfigureTreeBranch(fChain, "trTRACKERNHits", trTRACKERNHits, &b_trTRACKERNHits);
    anaUtils::ConfigureTreeBranch(fChain, "trTRACKERNNodes", trTRACKERNNodes, &b_trTRACKERNNodes);
@@ -737,7 +737,7 @@ void FlatTreeConverter::DefineBranches(){
 //********************************************************************
 FlatTreeConverter::~FlatTreeConverter(){
 //********************************************************************
-  
+
 }
 
 //****************************************************************************
@@ -747,16 +747,16 @@ bool FlatTreeConverter::AddFileToTChain(const std::string& inputString){
   std::cout << "FlatTreeConverter::AddFileToTChain(). Adding file: " << inputString << std::endl;
 
   if (!RedoTreeConverter::AddFileToTChain(inputString)) return false;
-  
+
   // Open the file to do few checks
-  TFile *f = TFile::Open(inputString.c_str()); 
-  f->cd(); 
+  TFile *f = TFile::Open(inputString.c_str());
+  f->cd();
 
   // ----------  Deal with RooTrackerVtx trees. Only for the first file
 
 
   if( _firstFile ) {
-    _firstFile = false; 
+    _firstFile = false;
 
     if (_readRooTrackerVtx){
       if (fNeut) {
@@ -767,7 +767,7 @@ bool FlatTreeConverter::AddFileToTChain(const std::string& inputString){
         NVtx = new TClonesArray("ND::NRooTrackerVtx",100);
         NRooTrackerVTX->SetBranchAddress("NVtx",&NNVtx);
         NRooTrackerVTX->SetBranchAddress("Vtx",&NVtx);
-        std::cout << "FlatTreeConverter::AddFileToTChain(). NEUT RooTrackerVtx tree found !!" << std::endl; 
+        std::cout << "FlatTreeConverter::AddFileToTChain(). NEUT RooTrackerVtx tree found !!" << std::endl;
       }
       else if(fGenie) {
         GRooTrackerVTX = GetChain("GRooTrackerVtx");
@@ -777,19 +777,19 @@ bool FlatTreeConverter::AddFileToTChain(const std::string& inputString){
         GVtx = new TClonesArray("ND::GRooTrackerVtx",100);
         GRooTrackerVTX->SetBranchAddress("NVtx",&NGVtx);
         GRooTrackerVTX->SetBranchAddress("Vtx",&GVtx);
-        std::cout << "FlatTreeConverter::AddFileToTChain(). GENIE RooTrackerVtx tree found !!" << std::endl; 
+        std::cout << "FlatTreeConverter::AddFileToTChain(). GENIE RooTrackerVtx tree found !!" << std::endl;
       }
     }
   }
 
   // Close the file
-  f->Close(); 
-  
+  f->Close();
+
   // Define Data/MC status: use the first valid entry in the flat tree
-  Long64_t nentries = GetEntries();  
+  Long64_t nentries = GetEntries();
   for (Long64_t i = 0; i<nentries; i++){
     Int_t entry_temp = flattree->GetEntry(i);
-    if (entry_temp<=0) continue;    
+    if (entry_temp<=0) continue;
     // Set the data/MC mode and return false when mixing data and MC files
     if (!header().SetIsMC(sIsMC)) return false;
     break;
@@ -816,19 +816,19 @@ Int_t FlatTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
     entry++;
     return 0;
   }
-      
+
   if (_readRooTrackerVtx){
     // sEvt should be positive since sEvt=-999 is used for the last flatree entry
     if (entry_temp>0 && sIsMC && (fGenie || fNeut) && sEvt>=0) {
       // Loop over RooTrackerVtx entries until we get the same run, subrun and event numbers
       // In general we will get the right entry in the first iteration, but just in case
-      do{       
+      do{
         if      (NRooTrackerVTX)  NRooTrackerVTX->GetEntry(_entry_roo);
         else if (GRooTrackerVTX)  GRooTrackerVTX->GetEntry(_entry_roo);
         if ((RunID> sRun                                      ) ||
             (RunID==sRun && SubrunID> sSubrun                 ) ||
             (RunID==sRun && SubrunID==sSubrun && EventID>sEvt )){
-          _entry_roo--;  
+          _entry_roo--;
           _RooVtxEntryInCurrentInputFile--;
         }
         else{
@@ -839,17 +839,17 @@ Int_t FlatTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
     }
   }
 
-  
+
 
   // Print the current file
-  TString filename(flattree->GetFile()->GetName());   
+  TString filename(flattree->GetFile()->GetName());
   if( filename != _currentFileName ) {
     _RooVtxEntryInCurrentInputFile=0;
     _currentFileIndex++;
-    std::cout << " Running on file (" << _currentFileIndex << " ): " << filename << std::endl; 
+    std::cout << " Running on file (" << _currentFileIndex << " ): " << filename << std::endl;
     _currentFileName = filename;
   }
-  
+
   // Caset the spill
   _spill = static_cast<AnaSpillB*>(spill);
   //  _spill = spill;
@@ -888,8 +888,8 @@ Int_t FlatTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
     _spill->OutOfBunch = MakeLocalReconBunch();
   else
     _spill->OutOfBunch = MakeBunch();
-  
-  evt_prev = sEvt;  
+
+  evt_prev = sEvt;
 
   while (sEvt==evt_prev && entry < _nentries){
     // Create and fill a new bunch
@@ -901,11 +901,11 @@ Int_t FlatTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
       //      FillNotInBunchObjWithNullPointers(spill->OutOfBunch);
     } else if (Bunch>-1){   // Bunch=-999 when the entry in the FlatTree is just for the Spill info,
       // because there are no reconstructed tracks. We should skip this. Actual bunches are numbered: 0-7
-      
-      AnaBunch* bunch = NULL; 
+
+      AnaBunch* bunch = NULL;
       if (_isUsingReconDirTECAL || _isUsingReconDirPECAL || _isUsingReconDirFGDOnly || _isUsingReconDirP0D)
         bunch = static_cast<AnaLocalReconBunch*>(MakeLocalReconBunch());
-      else 
+      else
         bunch = static_cast<AnaBunch*>          (MakeBunch          ());
 
       _spill->Bunches.push_back(bunch);
@@ -914,7 +914,7 @@ Int_t FlatTreeConverter::GetSpill(Long64_t& entry, AnaSpillC*& spill){
       // Fill tracks->vertices and vertices->tracks with null pointers for tracks and vertices that are not in this bunch
       //      FillNotInBunchObjWithNullPointers(bunch);
     }
-    
+
     // Check that null pointers are still filled properly
     //    CheckNotInBunchObjWithNullPointers(_spill);
 
@@ -939,7 +939,7 @@ void FlatTreeConverter::FillInfo(AnaSpillB* spillB){
 //*****************************************************************************
 
   RedoTreeConverter::FillInfo(spillB);
- 
+
   AnaSpill* spill = static_cast<AnaSpill*>(spillB);
 
   AnaEventInfo& info = *static_cast<AnaEventInfo*>(spill->EventInfo);
@@ -985,7 +985,7 @@ void FlatTreeConverter::FillBunchInfo(std::vector<AnaTrueParticleB*>& truePartic
   RedoTreeConverter::FillBunchInfo(trueParticles, bunchB);
 
   AnaBunch* bunch = static_cast<AnaBunch*>(bunchB);
-        
+
   /// Is there AnaLocalReconBunch information to be filled?
   if(_isUsingReconDirTECAL){
     for (int i=0; i<tecalReconCounter; i++){
@@ -1027,7 +1027,7 @@ void FlatTreeConverter::FillNotInBunchObjWithNullPointers(AnaBunch* bunch){
     myMatch.second.Completeness = -999;
     for (int j = bunch->Vertices.at(i)->TrueVerticesMatch.size(); j < vNTrueVerticesMatch[i]; j++)
         bunch->Vertices.at(i)->TrueVerticesMatch.push_back(myMatch);
-    if ( ! suppress_err_msg) 
+    if ( ! suppress_err_msg)
       if ((int)bunch->Vertices.at(i)->TrueVerticesMatch.size() != vNTrueVerticesMatch[i])
         std::cout<<"minor error 01013"<<std::endl;
 
@@ -1082,14 +1082,14 @@ void FlatTreeConverter::FillFgdTimeBinInfo(std::vector<AnaFgdTimeBinB*>& FgdTime
   RedoTreeConverter::FillFgdTimeBinInfo(FgdTimeBins);
 
   //loop over fgd time bins
-  for(UInt_t ibin=0; ibin<FgdTimeBins.size(); ibin++) {      
+  for(UInt_t ibin=0; ibin<FgdTimeBins.size(); ibin++) {
 
     AnaFgdTimeBin* abin = static_cast<AnaFgdTimeBin*>(FgdTimeBins[ibin]);
 
     abin->MaxTime = sFgdTimeBinMaxTime[ibin];
     abin->G4ID = sFgdTimeBinG4ID[ibin];
   }
-}  
+}
 
 //*****************************************************************************
 void FlatTreeConverter::FillDQInfo(AnaDataQualityB* dqB){
@@ -1101,7 +1101,7 @@ void FlatTreeConverter::FillDQInfo(AnaDataQualityB* dqB){
 
   dq->GoodDaq   = sDQGoodDaq;
   dq->ND280Flag = sDQND280Flag;
-  
+
   for (int i=0;i<7;i++)
     dq->DetFlag[i] = sDQDetFlag[i];
 }
@@ -1130,7 +1130,7 @@ void FlatTreeConverter::FillTriggerInfo(AnaTrigger* trigger){
 
   trigger->FGDCosmic    = sTriggerFGDCosmic;
   trigger->TripTCosmic  = sTriggerTripTCosmic;
-  
+
   for (int i = 0; i < 6; i++){
     trigger->CTMTriggerPattern[i] = (UInt_t)sTriggerCTMTriggerPattern[i];
   }
@@ -1139,11 +1139,11 @@ void FlatTreeConverter::FillTriggerInfo(AnaTrigger* trigger){
 //*****************************************************************************
 void FlatTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& trueParticles, int itrk, AnaTrackB* trackB){
 //*****************************************************************************
-  
+
   RedoTreeConverter::FillTrackInfo(trueParticles,itrk,trackB);
 
   AnaTrack* track = static_cast<AnaTrack*>(trackB);
-  
+
   track->Status        = (trStatus)[itrk];
   track->ReconPDG      = (trReconPDG)[itrk];
   track->Bunch         = (trBunch)[itrk];
@@ -1164,7 +1164,7 @@ void FlatTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& truePartic
   anaUtils::CopyArray(trDirectionStartFlip[itrk], track->DirectionStartFlip, 3);
   anaUtils::CopyArray(trDirectionEndFlip[itrk],   track->DirectionEndFlip,   3);
 #endif
- 
+
 #if VERSION_HAS_PRANGE_ESTIMATES
   track->RangeMomentumEle       = (trRangeMomentumEle)[itrk];
   track->RangeMomentumProton    = (trRangeMomentumProton)[itrk];
@@ -1185,7 +1185,7 @@ void FlatTreeConverter::FillTrackInfo(std::vector<AnaTrueParticleB*>& truePartic
     node->Detector  = trTimeNodeDetector[itrk][i];
     node->TimeStart = trTimeNodeTimeStart[itrk][i];
     node->TimeEnd   = trTimeNodeTimeEnd[itrk][i];
-    
+
     track->TimeNodes.push_back(node);
   }
  }
@@ -1240,6 +1240,7 @@ void FlatTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
         continue;
       AnaP0DParticle* seg = static_cast<AnaP0DParticle*>(MakeP0dTrack());
       int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
+      std::cout << "FillP0DInfo" << std::endl;
       FillP0dInfo(itrk, p0d, seg);
       track->P0DSegments[track->nP0DSegments++] = seg;
     }
@@ -1264,8 +1265,8 @@ void FlatTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
 
 //*****************************************************************************
 void FlatTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticles, int itrk, int tpc, AnaTPCParticleB* segB){
-//*****************************************************************************    
-    
+//*****************************************************************************
+
     RedoTreeConverter::FillTpcInfo(trueParticles,itrk, tpc, segB);
 
     AnaTPCParticle* seg = static_cast<AnaTPCParticle*>(segB);
@@ -1299,7 +1300,7 @@ void FlatTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
     seg->Pullk   = (trTpcPullk)[itrk][tpc];
 
     if(_useCorrectedValues){
-      seg->dEdxMeas      = (trTpcdEdxMeas)[itrk][tpc];      
+      seg->dEdxMeas      = (trTpcdEdxMeas)[itrk][tpc];
       seg->dEdxexpMuon   = (trTpcdEdxExpMu)[itrk][tpc];
       seg->dEdxexpEle    = (trTpcdEdxExpEle)[itrk][tpc];
       seg->dEdxexpProton = (trTpcdEdxExpP)[itrk][tpc];
@@ -1307,7 +1308,7 @@ void FlatTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
       seg->dEdxexpKaon   = (trTpcdEdxExpK)[itrk][tpc];
     }
     else{
-      seg->dEdxMeas      = (trTpcRawdEdxMeas)[itrk][tpc];      
+      seg->dEdxMeas      = (trTpcRawdEdxMeas)[itrk][tpc];
       seg->dEdxexpMuon   = (trTpcRawdEdxExpMu)[itrk][tpc];
       seg->dEdxexpEle    = (trTpcRawdEdxExpEle)[itrk][tpc];
       seg->dEdxexpProton = (trTpcRawdEdxExpP)[itrk][tpc];
@@ -1327,37 +1328,37 @@ void FlatTreeConverter::FillTpcInfo(std::vector<AnaTrueParticleB*>& trueParticle
 
 //*****************************************************************************
 void FlatTreeConverter::FillFgdInfo(int itrk, int fgd, AnaFGDParticleB* segB){
-//*****************************************************************************    
+//*****************************************************************************
 
   RedoTreeConverter::FillFgdInfo(itrk, fgd, segB);
-  
+
   AnaFGDParticle* seg = static_cast<AnaFGDParticle*>(segB);
 
   seg->NHits          = (int)(trFgdNHits)[itrk][fgd];
   seg->UniqueID       = (int)(trFgdUniqueID)[itrk][fgd];
   seg->Length         = (trFgdLength)[itrk][fgd];
-  
+
   seg->E  = (trFgdE)[itrk][fgd];
-  
+
   seg->AvgTime      = (trFgdAvgTime)[itrk][fgd];
 
-#if VERSION_HAS_FGD_VERTEX_AND_END_ACTIVITY  
+#if VERSION_HAS_FGD_VERTEX_AND_END_ACTIVITY
   seg->HasFgdVA       = (trFgdHasFgdVA)[itrk][fgd];
   seg->HasFgdVA_fmode = (trFgdHasFgdVA_fmode)[itrk][fgd];
   seg->TypeVA         = (trFgdTypeVA)[itrk][fgd];
 #endif
-  
+
   seg->Vertex1x1  = (trFgdVertex1x1)[itrk][fgd];
   seg->Vertex3x3  = (trFgdVertex3x3)[itrk][fgd];
   seg->Vertex5x5  = (trFgdVertex5x5)[itrk][fgd];
   seg->Vertex7x7  = (trFgdVertex7x7)[itrk][fgd];
   seg->VertexLayer  = (trFgdVertexLayer)[itrk][fgd];
 
-#if VERSION_HAS_FGD_VERTEX_AND_END_ACTIVITY  
+#if VERSION_HAS_FGD_VERTEX_AND_END_ACTIVITY
   seg->HasFgdEA       = (trFgdHasFgdEA)[itrk][fgd];
   seg->HasFgdEA_fmode = (trFgdHasFgdEA_fmode)[itrk][fgd];
   seg->TypeEA         = (trFgdTypeEA)[itrk][fgd];
-  
+
   seg->End0x0  = (trFgdEnd0x0)[itrk][fgd];
   seg->End1x1  = (trFgdEnd1x1)[itrk][fgd];
   seg->End3x3  = (trFgdEnd3x3)[itrk][fgd];
@@ -1372,10 +1373,10 @@ void FlatTreeConverter::FillFgdInfo(int itrk, int fgd, AnaFGDParticleB* segB){
 
 //*****************************************************************************
 void FlatTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* segB){
-//*****************************************************************************    
+//*****************************************************************************
 
   RedoTreeConverter::FillEcalInfo(itrk, ecal, segB);
-  
+
   AnaECALParticle* seg = static_cast<AnaECALParticle*>(segB);
 
   seg->NHits                = (int)(trECALNHits)[itrk][ecal];
@@ -1388,31 +1389,31 @@ void FlatTreeConverter::FillEcalInfo(int itrk, int ecal, AnaECALParticleB* segB)
 
   for (int i = 0; i < 4; i++){
     seg->PositionStart[i] = (trECALPositionStart)[itrk][ecal][i];
-    seg->PositionEnd[i]   = (trECALPositionEnd)[itrk][ecal][i];  
+    seg->PositionEnd[i]   = (trECALPositionEnd)[itrk][ecal][i];
   }
 
   for (int i = 0; i < 3; i++){
     seg->DirectionStart[i] = (trECALDirectionStart)[itrk][ecal][i];
     seg->DirectionEnd[i]   = (trECALDirectionEnd)[itrk][ecal][i];
   }
-    
+
 }
 
 //*****************************************************************************
 void FlatTreeConverter::FillSmrdInfo(int itrk, int smrd, AnaSMRDParticleB* segB){
-//*****************************************************************************    
+//*****************************************************************************
 
   RedoTreeConverter::FillSmrdInfo(itrk, smrd, segB);
-  
+
   AnaSMRDParticle* seg = static_cast<AnaSMRDParticle*>(segB);
 
   seg->NHits    = (int)(trSMRDNHits)[itrk][smrd];
   seg->NNodes   = (int)(trSMRDNNodes)[itrk][smrd];
   seg->UniqueID = (int)(trSMRDUniqueID)[itrk][smrd];
   seg->Length   = (trSMRDLength)[itrk][smrd];
-    
+
   seg->EDeposit = (trSMRDEDeposit)[itrk][smrd];
-  
+
   for (int i=0;i<3;i++){
     seg->DirectionEnd[i]   = (trSMRDDirectionEnd)[itrk][smrd][i];
   }
@@ -1420,10 +1421,10 @@ void FlatTreeConverter::FillSmrdInfo(int itrk, int smrd, AnaSMRDParticleB* segB)
 
 //*****************************************************************************
 void FlatTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* segB){
-//*****************************************************************************    
+//*****************************************************************************
 
   RedoTreeConverter::FillP0dInfo(itrk, p0d, segB);
-  
+
   AnaP0DParticle* seg = static_cast<AnaP0DParticle*>(segB);
 
   seg->NHits          = (int)(trP0DNHits)[itrk][p0d];
@@ -1439,16 +1440,16 @@ void FlatTreeConverter::FillP0dInfo(int itrk, int p0d, AnaP0DParticleB* segB){
     seg->PositionStart[i]   = (trP0DPositionStart)[itrk][p0d][i];
     seg->PositionEnd[i]   = (trP0DPositionEnd)[itrk][p0d][i];
   }
-  
-#if VERSION_HAS_P0D_AVERAGED_TIME  
+
+#if VERSION_HAS_P0D_AVERAGED_TIME
   seg->AvgTime        = (trP0DAvgTime)[itrk][p0d];
-#endif  
+#endif
 
 }
 
 //*****************************************************************************
 void FlatTreeConverter::FillTrackerInfo(int itrk, int tracker, AnaTrackerTrack* seg){
-//*****************************************************************************    
+//*****************************************************************************
 
   convUtils::ConvertTrackerDetEnumToBitField(seg->Detector, (trTRACKERDetector)[itrk][tracker]);
 
@@ -1464,7 +1465,7 @@ void FlatTreeConverter::FillTrackerInfo(int itrk, int tracker, AnaTrackerTrack* 
     seg->PositionStart[i] = (trTRACKERPositionStart)[itrk][tracker][i];
     seg->PositionEnd[i]   = (trTRACKERPositionEnd)[itrk][tracker][i];
   }
-  
+
   for (int i=0;i<3;i++){
     seg->DirectionStart[i] = (trTRACKERDirectionStart)[itrk][tracker][i];
     seg->DirectionEnd[i]   = (trTRACKERDirectionEnd)[itrk][tracker][i];
@@ -1485,7 +1486,7 @@ void FlatTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
   part->VertexIndex  = (sTrueParticleVertexIndex)[itrk];
 
 
-  // TODO: Use the same code as in psyche for the moment. This is however not optimised since we loop over all vertices again 
+  // TODO: Use the same code as in psyche for the moment. This is however not optimised since we loop over all vertices again
   // this was already done in oaAnalysisTreeConverter to create the FlatTree
   // The code below is supposed to be warking
 
@@ -1500,7 +1501,7 @@ void FlatTreeConverter::FillTrueParticleInfo(int ntrueVertices, AnaTrueVertexB**
 
       if(part->TrueVertex->nTrueParticles<nMaxTrueParticles)
         // add this part to the list of true parts in the true vertex
-        part->TrueVertex->TrueParticles[part->TrueVertex->nTrueParticles++] = part;	
+        part->TrueVertex->TrueParticles[part->TrueVertex->nTrueParticles++] = part;
     }
 
   } else if (part->VertexIndex!=-1)
@@ -1517,8 +1518,8 @@ void FlatTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertexB){
 
   AnaTrueVertex* vertex = static_cast<AnaTrueVertex*>(vertexB);
 
-  vertex->RooVtxEntry = _RooVtxEntryInCurrentInputFile; 
-  
+  vertex->RooVtxEntry = _RooVtxEntryInCurrentInputFile;
+
   vertex->ReacCode = (sTrueVertexReacCode)[ivtx];
 
   anaUtils::CopyArray(sTrueVertexPosition[ivtx], vertex->Position, 4);
@@ -1569,8 +1570,8 @@ void FlatTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertexB){
 bool FlatTreeConverter::FillTrueVertexRooInfo(AnaTrueVertexB* vertexB) {
 //*****************************************************************************
 
-  // Don't recompute RooTrackerVtx derived variables, when: 
-  //   1. We don't read the input RooTrackerVtx, 
+  // Don't recompute RooTrackerVtx derived variables, when:
+  //   1. We don't read the input RooTrackerVtx,
   //   2. When all variables are already available in the FlatTree and we don't want to recompute them from the input RooTrackerVtx
   // Note that with flattrees produced with highland2 v0 these vars were slighty wrong and should be recomputed
 
@@ -1730,7 +1731,7 @@ AnaParticleB* FlatTreeConverter::FindParticle(int ID, AnaBunchB* bunch){
   std::vector<AnaBunchC*>::iterator itbunch;
   std::vector<AnaParticleB*>::iterator ittrack;
   for (itbunch = _spill->Bunches.begin(); itbunch != _spill->Bunches.end(); itbunch++) {
-    AnaBunchB* bunch0 = static_cast<AnaBunchB*>(*itbunch);    
+    AnaBunchB* bunch0 = static_cast<AnaBunchB*>(*itbunch);
     for (ittrack = bunch0->Particles.begin(); ittrack != bunch0->Particles.end(); ittrack++) {
       if (ID == (*ittrack)->UniqueID) {
         if (bunch->Bunch != -1) { // often a global vertex out of bunch has constituents in the near bunch

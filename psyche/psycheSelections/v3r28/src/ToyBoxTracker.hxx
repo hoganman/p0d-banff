@@ -9,16 +9,16 @@ namespace multipi{
 
 class ToyBoxTracker : public ToyBoxND280{
 public :
-  
+
   ToyBoxTracker();
   virtual ~ToyBoxTracker();
 
-  /// This method should be implemented by the derived class. If so it does nothing here 
+  /// This method should be implemented by the derived class. If so it does nothing here
   virtual void Reset();
 
   /// Reset this base class
   virtual void ResetBase();
-  
+
 public:
 
   /// For storing the reconstructed vertex.
@@ -65,13 +65,13 @@ public:
 
   /// For storing the oofv fgd tracks
   AnaTrackB* OOFVtrack;
-  
+
   /// A function to get the multi-pion box
   /// If exists,  hence can/should be over-written
   virtual const multipi::MultiPiBox* GetMultiPiBox() const{
     return NULL;
-  } 
-  
+  }
+
 };
 
 #endif
