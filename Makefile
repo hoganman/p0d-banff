@@ -74,7 +74,7 @@ all: $(TGT)
 
 ##### compile all the objects "ALLOBJS" #####
 %dict.o: %dict.C
-	$(CXX) $(CXXFLAGS) -c dict/$<
+	$(CXX) $(CXXFLAGS) -c $<
 
 %.o: %.cxx
 	$(CXX) $(CXXFLAGS) -c $<
@@ -82,13 +82,13 @@ all: $(TGT)
 
 ##### compile ROOTCINT dictionary #####
 %dict.C: %.hxx
-	$(ROOTCINT) -f dict/$@ -c $<
+	$(ROOTCINT) -f $@ -c $<
 #############################################
 
 ##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
 	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
-	mv *.o *.d $(LIB)
+	# mv *.o *.d $(LIB)
 #############################################
 
 #add a rule to clean all generated files from your directory

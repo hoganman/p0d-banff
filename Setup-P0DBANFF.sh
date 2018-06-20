@@ -80,6 +80,7 @@ source ${P0DBANFFROOT}/highland2/highlandIO/v2r22/cmt/setup.sh
 source ${P0DBANFFROOT}/highland2/highlandTools/v2r18/cmt/setup.sh
 source ${P0DBANFFROOT}/highland2/highlandTools/v2r18/cmt/rootmap_setup.sh
 source ${P0DBANFFROOT}/highland2/p0dNumuCCAnalysis/v2r14/cmt/setup.sh
+source ${P0DBANFFROOT}/highland2/p0dNumuCCQEAnalysis/v2r12/cmt/setup.sh
 source ${P0DBANFFROOT}/BANFF/$BANFFVERSION/cmt/setup.sh
 
 export T2KREWEIGHT=${P0DBANFFROOT}/T2KReWeight
