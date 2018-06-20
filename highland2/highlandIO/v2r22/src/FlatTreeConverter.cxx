@@ -1240,7 +1240,6 @@ void FlatTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
         continue;
       AnaP0DParticle* seg = static_cast<AnaP0DParticle*>(MakeP0dTrack());
       int p0d = convUtils::GetLocalDetEnum(SubDetId::kP0D, idet);
-      std::cout << "FillP0DInfo" << std::endl;
       FillP0dInfo(itrk, p0d, seg);
       track->P0DSegments[track->nP0DSegments++] = seg;
     }
