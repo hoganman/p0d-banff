@@ -64,10 +64,10 @@ def main(argv):
     if P0DNUMUBARCCSELECTION == -1:
         P0DNUMUBARCCSELECTION = sampleIds.GetP0DNuMuBarCC()
     if SELECTION == -1:
-        SELECTION = P0DNUMUBARCCSELECTION
-        print 'WARNING: USING P0DNUMUBARCCSELECTION'
-        # SELECTION = P0DNUMUCCSELECTION
-        # print 'WARNING: USING P0DNUMUCCSELECTION'
+        # SELECTION = P0DNUMUBARCCSELECTION
+        # print 'WARNING: USING P0DNUMUBARCCSELECTION'
+        SELECTION = P0DNUMUCCSELECTION
+        print 'WARNING: USING P0DNUMUCCSELECTION'
     SELECTIONSTR = 'numubarCCInc' if (SELECTION == P0DNUMUBARCCSELECTION) else 'numuCCInc'
     SELECTIONDICT = {
             P0DNUMUCCSELECTION: '#mu^{-} Selection,',
@@ -436,6 +436,7 @@ def make_mc_stack(mc_sample, true_selections, anaBins, hstack, save_title):
         INTERFACE.PrettyUpTH1(a_hist, hstack.x_title, hstack.y_title,
                               BLACK, STACK_COLORS[index])
         legend.AddEntry(a_hist, a_selection.legend_label, 'f')
+        hists.Scale(mc_sample.pot)
         hists.append(a_hist)
         anaBins.Reset()
 
@@ -732,35 +733,37 @@ def GetNeutrinoSelectionList():
     """
     Get a list of the selections (selection_info) for the neutrino species
     """
-    hepconstants = ROOT.HEPConstants()
+
+    cut = ROOT.DefineCuts()
     # all neutrinos
-    all_nom_sel = selection_info('nom_sel', 'SelectionNom==%d' % (SELECTION),
+    all_nom_sel_cut = ROOT.TCut('SelectionNom==%d' % (SELECTION))
+    all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
                                  'P0D numuCC-inclusive')
 
     # muon neutrinos
-    numu_cc_sel = selection_info('numu_cc_sel',
-                                 '%s && TrueNuPDGNom==%d' % (all_nom_sel, hepconstants.kNuMuPDG),
+    numu_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuMu))
+    numu_cc_sel = selection_info('numu_cc_sel', numu_cc_sel_cut,
                                  '#nu_{#mu}')
 
     # muon antineutrinos
-    numubar_cc_sel = selection_info('numubar_cc_sel',
-                                    '%s && TrueNuPDGNom==%s' % (all_nom_sel, hepconstants.kNuMuBarPDG),
+    numubar_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuMubar))
+    numubar_cc_sel = selection_info('numubar_cc_sel', numubar_cc_sel_cut,
                                     '#bar{#nu}_{#mu}')
 
     # nue and nuebars
-    nuenuebar_cc_sel = selection_info('nuenuebar_cc_sel',
-                                      '%s && abs(TrueNuPDGNom)==%s' % (
-                                          all_nom_sel, hepconstants.kNuEPDG),
+    nuenuebar_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuEs))
+    nuenuebar_cc_sel = selection_info('nuenuebar_cc_sel', nuenuebar_cc_sel_cut,
                                       '#nu_{e} + #bar{#nu}_{e}')
 
     # other particles
-    other_sel_cut = '%s && abs(TrueNuPDGNom)!=%s && abs(TrueNuPDGNom)!=%s'
-    other_sel_cut = other_sel_cut % (all_nom_sel, hepconstants.kNuMuPDG,
-                                     hepconstants.kNuEPDG)
+    other_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParOther))
     other_sel = selection_info('other_sel', other_sel_cut, 'other')
 
+    offv_sel_cut = cut.tOOFV
+    offv_sel = selection_info('offv_sel', offv_sel_cut, 'OOFV')
+
     neutrino_selections = [all_nom_sel, numu_cc_sel, numubar_cc_sel,
-                           nuenuebar_cc_sel, other_sel]
+                           nuenuebar_cc_sel, other_sel, offv_sel]
     return neutrino_selections
 
 
@@ -796,10 +799,6 @@ def GetLeptonCandidateSelectionList():
     em_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepEMParticle))
     em_sel = selection_info('em_sel', em_sel_cut, 'e^{#pm}/#gamma')
 
-    # Kaons
-    kaon_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepKaon))
-    kaon_sel = selection_info('kaon_sel', kaon_sel_cut, '#kappa^{#pm}')
-
     # other particles
     other_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepOther))
     other_sel = selection_info('other_sel', other_sel_cut, 'other')
@@ -808,9 +807,13 @@ def GetLeptonCandidateSelectionList():
     oofv_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tOOFV))
     oofv_sel = selection_info('oofv_sel', oofv_sel_cut, 'OOFV')
 
+    # sand muons
+    sandmu_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepSand))
+    sandmu_sel = selection_info('sandmu_sel', sandmu_sel_cut, 'Sand muons')
+
     particle_selections = [all_nom_sel, muMinus_sel, muPlus_sel,
                            piMinus_sel, piPlus_sel, proton_sel,
-                           em_sel, kaon_sel, other_sel, oofv_sel]
+                           em_sel, other_sel, oofv_sel, sandmu_sel]
     return particle_selections
 
 
