@@ -93,7 +93,7 @@ Preselection based on subdetector components
  < highlandIO.FlatTree.UseTPC3    = 0 >
  < highlandIO.FlatTree.UseFGD1    = 1 >
  < highlandIO.FlatTree.UseFGD2    = 1 >
- < highlandIO.FlatTree.UseP0D     = 0 >
+ < highlandIO.FlatTree.UseP0D     = 1 >
  < highlandIO.FlatTree.UseDsECal  = 0 >
  < highlandIO.FlatTree.UseTrECal  = 0 >
  < highlandIO.FlatTree.UseP0DECal = 0 >
@@ -104,7 +104,7 @@ Preselection based on subdetector components
  < highlandIO.FlatTree.UseTPC3outOfBunch    = 0 >
  < highlandIO.FlatTree.UseFGD1outOfBunch    = 0 >
  < highlandIO.FlatTree.UseFGD2outOfBunch    = 0 >
- < highlandIO.FlatTree.UseP0DoutOfBunch     = 0 >
+ < highlandIO.FlatTree.UseP0DoutOfBunch     = 1 >
  < highlandIO.FlatTree.UseDsECaloutOfBunch  = 0 >
  < highlandIO.FlatTree.UseTrECaloutOfBunch  = 0 >
  < highlandIO.FlatTree.UseP0DECaloutOfBunch = 0 >
@@ -127,7 +127,7 @@ Preselection based on true interaction detector
  < highlandIO.FlatTree.TrueVertex.TPC3    = 0 >
  < highlandIO.FlatTree.TrueVertex.FGD1    = 1 >
  < highlandIO.FlatTree.TrueVertex.FGD2    = 1 >
- < highlandIO.FlatTree.TrueVertex.P0D     = 0 >
+ < highlandIO.FlatTree.TrueVertex.P0D     = 1 >
  < highlandIO.FlatTree.TrueVertex.DsECal  = 0 >
  < highlandIO.FlatTree.TrueVertex.TrECal  = 0 >
  < highlandIO.FlatTree.TrueVertex.P0DECal = 0 >
