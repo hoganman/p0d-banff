@@ -40,11 +40,18 @@ void DefineCuts::SetCuts()
     tLepElectron = TCut(TString::Format("tLeptonPDG==%d", pdg.kElectronPDG)) && tFV;
     tLepPositron = TCut(TString::Format("tLeptonPDG==%d", pdg.kPositronPDG)) && tFV;
     tLepEMParticle = (tLepPositron || tLepElectron || tLepGamma) && tFV;
-    tLepKaon = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kKaPlusPDG)) && tFV;
-    tLepOther = !tLepProton && !tLepMuPlus && !tLepMuMinus && !tLepPiPlus && !tLepPiMinus && !tLepEMParticle && !tLepKaon && tFV;
-
+    tLepOther = tFV &&
+                TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kMuMinusPDG)) &&
+                TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kPiPlusPDG)) &&
+                TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kElectronPDG)) &&
+                TCut(TString::Format(    "tLeptonPDG !=    %d" , pdg.kProtonPDG));
+    tLepSand = TCut("abs(tLeptonPDG)==abs(%s) && tVtxZ <= -3500");
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuPDG)) && tFV;
     tParNuMubar = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuBarPDG)) && tFV;
     tParNuEs = TCut(TString::Format("abs(TrueNuPDGNom)==abs(%d)", pdg.kNuEPDG)) && tFV;
+    tParOther = tFV &&
+                TCut(TString::Format("abs(TrueNuPDGNom)!=abs(%d)", pdg.kNuMuPDG)) &&
+                TCut(TString::Format("abs(TrueNuPDGNom)!=abs(%d)", pdg.kNuEPDG));
+
 
 }

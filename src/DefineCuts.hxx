@@ -42,16 +42,18 @@ public:
     TCut tLepPositron;
     ///Is lepton candidate true gamma, e-, or e+
     TCut tLepEMParticle;
-    ///Is lepton candidate true ka+ or ka-
-    TCut tLepKaon;
     ///Any lepton candidate species not listed above
     TCut tLepOther;
+    ///Is the particle coming from the sand?
+    TCut tLepSand;
     ///Is parent neutrino a numu
     TCut tParNuMu;
     ///Is parent neutrino a numubar
     TCut tParNuMubar;
     ///Is parent neutrino a nue and nuebar
     TCut tParNuEs;
+    ///Is parent neutrino not a numu, numubar, nue, nuebar
+    TCut tParOther;
     /// The 3 dim coordinates of P0D FV
     TVector3 minFVcoords;
     TVector3 maxFVcoords;
