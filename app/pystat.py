@@ -92,6 +92,7 @@ def InitNodes():
                 index += 1
         index -= 1
         hostName = line[line.find('@')+1:index+2].strip()
+        # print hostName
         if hostName not in NODES.keys():
             # print hostName+' not found. continuing'
             continue
@@ -99,6 +100,8 @@ def InitNodes():
         # reserverd, jobs, slots
         jobsAndSlots = None
         tmpStr = line.split('BIP  ')[1]
+        state = ''
+        # print tmpStr
         if '.' in tmpStr:
             tmpStr.split('.')[0]
             jobsAndSlots = tmpStr[0:len(tmpStr)-5].strip().split('/')
@@ -109,11 +112,11 @@ def InitNodes():
             jobsAndSlots[2] = jobsAndSlots[2][0:3].strip()
         else:
             jobsAndSlots = ['0', '0', '0']
-        state = line.split('lx-amd64')[1].strip()
+        if 'lx-amd64' in line:
+            state = line.split('lx-amd64')[1].strip()
         # reserved = jobsAndSlots[0]
         jobs = int(jobsAndSlots[1])
         slots = int(jobsAndSlots[2])
-        # print hostName
         # print 'slots = '+str(slots)
         # print 'jobs = '+str(jobs)
         node = NODES[hostName]
