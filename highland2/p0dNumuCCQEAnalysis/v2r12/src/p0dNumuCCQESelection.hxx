@@ -17,6 +17,9 @@ public:
   /// Fill the EventBox with the objects needed by this selection
   virtual void InitializeEvent(AnaEventC&);
   SampleId_h GetSampleId(){return SampleId::kP0DNuMuCC;}
+
+  Int_t GetRelevantRecObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
+  Int_t GetRelevantTrueObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
   //==========================================================
 };
 
