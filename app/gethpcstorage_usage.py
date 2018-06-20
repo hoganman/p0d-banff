@@ -13,7 +13,14 @@ import datetime
 import optparse
 import requests
 import time
+import signal
 import sys
+
+
+def signal_handler(signal, frame):
+    """If you wish to quit using Ctrl-c, this exits the program"""
+    print '\nExiting...'
+    sys.exit(0)
 
 
 def gethpcstorage_usage(diff_time):
@@ -24,12 +31,20 @@ def gethpcstorage_usage(diff_time):
     url = 'http://ens-hpc.engr.colostate.edu/ganglia/graph.php\
 ?r=hour&h=hpc-storage&m=load_one&s=by+name&mc=2&g=load_report&c=ens-hpc&csv=1'
     csv_contents = list()
-    try:
-        urlrequest = requests.get(url, allow_redirects=True)
-        csv_contents = urlrequest.content.split('\n')
-        del urlrequest
-    except requests.RequestException as req_exp:
-        print str(req_exp)
+    iterations = 0
+    while iterations < 3:
+        try:
+            time.sleep(5*(iterations))
+            urlrequest = requests.get(url, allow_redirects=True)
+            csv_contents = urlrequest.content.split('\n')
+            iterations += 1
+            if type(csv_contents) is list and len(csv_contents) > 2:
+                break
+        except requests.RequestException as req_exp:
+            print str(req_exp)
+            print 'Unable to complete process'
+            return 0
+    if len(csv_contents) < 2:
         print 'Unable to complete process'
         return 0
 
@@ -65,16 +80,33 @@ def gethpcstorage_usage(diff_time):
     del time_string, load_string, ncpu_string
     while '' in csv_contents:
         csv_contents.remove('')
-
-    # should already be reverse sorted, but to be safe
-    csv_contents = sorted(csv_contents)
-    latest_entry = csv_contents[len(csv_contents)-1].split(',')
     first_entry = csv_contents[0].split(',')
-    del csv_contents
-
-    latest_load = float(latest_entry[load_column])
-    latest_time = latest_entry[time_column]
     ncpus = int(first_entry[ncpu_column])
+    if ncpus <= 0:
+        print 'ERROR: Unable to determine number of CPUs'
+        return 0
+
+    latest_entry = csv_contents[len(csv_contents)-1].split(',')
+    while latest_entry[ncpu_column] == 0:
+        del csv_contents[len(csv_contents)-1]
+        latest_entry = csv_contents[len(csv_contents)-1].split(',')
+
+    latest_time = latest_entry[time_column]
+
+    # should already be sorted, but to be safe
+    csv_contents = sorted(csv_contents)
+    last_loads = list()
+    n_entries = 20  # 5 minute averge, entries updated every 15 sec (4 times / min * 5 min)
+    for index in range(len(csv_contents)-1,
+                       min(len(csv_contents)-1-n_entries,
+                           len(csv_contents)-1),
+                       -1):
+        entry = csv_contents[index].split(',')
+        load = float(entry[load_column])
+        last_loads.append(load)
+    del csv_contents
+    load_mean = sum(last_loads) / len(last_loads)
+    del last_loads
 
     timeformat = '%Y-%m-%dT%H:%M:%S'
     """
@@ -89,7 +121,7 @@ def gethpcstorage_usage(diff_time):
     if delta_time.total_seconds() > diff_time:
         print 'Warning: latest load is over', diff_time / 60., ' minutes ago.'
 
-    normalized_load = latest_load / ncpus
+    normalized_load = load_mean / ncpus
 
     print 'The load at', str(now), 'is', normalized_load
     return normalized_load
@@ -97,6 +129,7 @@ def gethpcstorage_usage(diff_time):
 
 def main(argv):
 
+    signal.signal(signal.SIGINT, signal_handler)
     parser = optparse.OptionParser()
     parser.add_option('-d', '--diff', dest='diff',
                       default=600,  # in seconds
@@ -106,7 +139,7 @@ and last recorded usage')
                       default=60,  # in seconds
                       help='The time in seconds between checking usage')
     parser.add_option('-l', '--load', dest='load',
-                      default=1.,  # in processes / cpus
+                      default=0.5,  # in processes / cpus
                       help='The normalized load (N procs/CPUs) to wait for')
     options, args = parser.parse_args()
     if len(args) > 0:
@@ -115,18 +148,21 @@ and last recorded usage')
         return 0
     try:
         if int(options.sleep) < 0:
-            options.sleep = 0
+            options.sleep = 60
         if int(options.diff) < 0:
-            options.diff = 0
+            options.diff = 600
+        load_max = float(options.load)
     except ValueError as val_err:
         print str(val_err)
         parser.print_help()
         return 1
 
     load = gethpcstorage_usage(options.diff)
-    while load >= 1.:
-        print 'The load is too high, waiting for', options.sleep, 'seconds'
-        time.sleep(options.sleep)
+    while load >= load_max:
+        sleeptime = options.sleep * load
+        print 'The load is too high, waiting for', sleeptime, 'seconds'
+        # if the load is high, high sleep time, also inserts randomness
+        time.sleep(sleeptime)
         load = gethpcstorage_usage(options.diff)
     print 'Proceeding...'
     return 0
