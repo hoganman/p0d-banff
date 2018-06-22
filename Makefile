@@ -74,25 +74,25 @@ all: $(TGT)
 
 ##### compile all the objects "ALLOBJS" #####
 %dict.o: %dict.C
-	$(CXX) $(CXXFLAGS) -c $(DIC)/$< -o $(LIB)/$@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %.o: $(SRC)/%.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $(LIB)/$@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 #############################################
 
 ##### compile ROOTCINT dictionary #####
 %dict.C: %.hxx
-	$(ROOTCINT) -f $(DIC)/$@ -c $<
+	$(ROOTCINT) -f $@ -c $<
 #############################################
 
 ##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
-	$(LD) $(LDFLAGS) $(foreach obj, $^, $(LIB)/$(obj)) -o $(LIB)/$@
+	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
 #############################################
 
 #add a rule to clean all generated files from your directory
 clean:
-	$(RM) $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
+	$(RM) $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d ./*dict.* $(APP)/*pyc
 
 distclean:
 	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* $(APP)/*pyc
