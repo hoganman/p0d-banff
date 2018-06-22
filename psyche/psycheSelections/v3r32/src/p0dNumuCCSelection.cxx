@@ -32,13 +32,13 @@ void p0dNumuCCSelection::DefineSteps(){
 void p0dNumuCCSelection::InitializeEvent(AnaEventC& eventC){
 //**************************************************
 
-  AnaEventB& event = *static_cast<AnaEventB*>(&eventC); 
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventC);
 
   // Create the appropriate EventBox if it does not exist yet
   if (!event.EventBoxes[EventBoxId::kEventBoxTracker])
     event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
 
-  boxUtils::FillTracksWithTPC(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
+  boxUtils::FillTracksWithTPC(event, static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
   boxUtils::FillTracksWithP0D(event);
   boxUtils::FillTrajsChargedInTPC(event);
   boxUtils::FillTrajsChargedInP0D(event);
