@@ -410,7 +410,7 @@ void AnalysisManager::DefineSelections(){
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuCC"))
     sel().DisableSelection("kP0DNuMuCC");
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuBarCC"))
-    sel().DisableSelection("kP0DNuMuCC");
+    sel().DisableSelection("kP0DNuMuBarCC");
 
 
   /*
