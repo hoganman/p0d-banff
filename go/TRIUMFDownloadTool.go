@@ -188,9 +188,8 @@ func GetInputsFromUser() (inputFiles []string, outputDir, TRIUMFDir string) {
 
 //******************************************************************************
 func Download(remoteFile, remoteDirectory, outputDirectory string,
-	/* the download command "lcg-cp" from TRIUMF */
-
 	status chan string) {
+	/* the download command "lcg-cp" from TRIUMF */
 	program := "lcg-cp"
 	VOname := "--vo t2k.org"
 	remoteFileFullPath := fmt.Sprintf("-v srm://t2ksrm.nd280.org/nd280data/%s/%s", remoteDirectory, remoteFile)
