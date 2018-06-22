@@ -45,7 +45,7 @@ void DefineCuts::SetCuts()
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kPiPlusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kElectronPDG)) &&
                 TCut(TString::Format(    "tLeptonPDG !=    %d" , pdg.kProtonPDG));
-    tLepSand = TCut("abs(tLeptonPDG)==abs(%s) && tVtxZ <= -3500");
+    tLepSand = TCut(TString::Format("abs(tLeptonPDG)==abs(%d) && tVtxZ <= -3500", pdg.kMuMinusPDG));
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuPDG)) && tFV;
     tParNuMubar = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuBarPDG)) && tFV;
     tParNuEs = TCut(TString::Format("abs(TrueNuPDGNom)==abs(%d)", pdg.kNuEPDG)) && tFV;
