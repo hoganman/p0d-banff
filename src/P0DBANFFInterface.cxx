@@ -640,7 +640,6 @@ void P0DBANFFInterface::SetPDGColorCodes()
     pdgColorCodes[hepconsts.kNuMuBarPDG] = kcbGreen;
     pdgColorCodes[hepconsts.kPiPlusPDG] = kcbYellow;
     pdgColorCodes[hepconsts.kPiMinusPDG] = kcbBlue;
-    //pdgColorCodes[hepconsts.kKaPlusPDG] 
 }
 
 //**************************************************
@@ -657,4 +656,31 @@ Double_t P0DBANFFInterface::GetMantissaBase10(Double_t arg, Int_t exp) const
     if(exp == 9999)
         exp = GetExponentBase10(arg);
     return arg * std::pow(10 , -(exp));
+}
+
+
+//**************************************************
+void P0DBANFFInterface::DivideByBinWidth(TH1* hist) const
+//**************************************************
+{
+    if(!hist)
+    {
+        return;
+    }
+    Char_t buffer[500];
+    sprintf(buffer, "%s_clone", hist->GetName());
+    if(!hist->GetSumw2())
+    {
+        hist->Sumw2();
+    }
+    TH1D* hist_clone = static_cast<TH1D*>(hist->Clone(buffer));
+    for(Int_t bin = 1; bin <= hist_clone->GetNbinsX(); ++bin)
+    {
+        const Double_t binLowEdge = hist_clone->GetXaxis()->GetBinLowEdge(bin);
+        const Double_t binUpEdge = hist_clone->GetXaxis()->GetBinUpEdge(bin);
+        hist_clone->SetBinContent(bin, binUpEdge-binLowEdge);
+    }
+    hist->Divide(hist_clone);
+    delete hist_clone;
+
 }
