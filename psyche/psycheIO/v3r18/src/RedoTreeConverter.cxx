@@ -1647,12 +1647,14 @@ void RedoTreeConverter::FillSubdetectorInfo(std::vector<AnaTrueParticleB*>& true
 void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrackB* track){
 //*****************************************************************************
 
+//std::cout << "FillSubdetectorInfo" << std::endl;
   track->nTPCSegments  = 0;
   track->nFGDSegments  = 0;
   track->nECALSegments = 0;
   track->nP0DSegments  = 0;
   for (int i = 0; i < SubDetId::kInvalidSubdetector; ++i){
     SubDetId::SubDetEnum idet = static_cast<SubDetId::SubDetEnum>(i);
+//std::cout << "idet = " << idet << std::endl;
     if(!SubDetId::GetDetectorUsed(track->Detector, idet)) continue;
     if(SubDetId::IsTPCDetector(idet)){
       AnaTPCParticleB* seg = MakeTpcTrack();
@@ -1668,7 +1670,6 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
       track->FGDSegments[track->nFGDSegments] = seg;
       track->nFGDSegments++;
     }
-
     else if(SubDetId::IsECALDetector(idet)){
       if (track->nECALSegments==(int)NMAXECALS)
         continue;
@@ -1679,6 +1680,7 @@ void RedoTreeConverter::FillSubdetectorInfo(AnaEventB* event, int itrk, AnaTrack
       track->nECALSegments++;
     }
     else if(SubDetId::IsP0DDetector(idet)){
+//std::cout << "is P0D detector!" << std::endl;
       if (track->nP0DSegments==(int)NMAXP0DS)
         continue;
       AnaP0DParticleB* seg = MakeP0dTrack();
