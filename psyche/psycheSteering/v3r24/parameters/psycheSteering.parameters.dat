@@ -65,7 +65,7 @@ FGD2
  < psycheSteering.Selections.EnableTrackerAntiNuECCFGD2                    = 0 >
  < psycheSteering.Selections.EnableTrackerGammaFGD2                        = 0 >
 
-P0D+TPC1
+ [MH] P0D+TPC1
  < psycheSteering.Selections.EnableP0DNuMuCC                               = 1 >
  < psycheSteering.Selections.EnableP0DNuMuBarCC                            = 1 >
 
@@ -90,6 +90,8 @@ List valid runs using a comma separated string
  < psycheSteering.Selections.TrackerNuECC.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
  < psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
  < psycheSteering.Selections.TrackerGamma.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
+
+ [MH] P0D
  < psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods        = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
  < psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
 
@@ -154,4 +156,4 @@ Parameter to control the app
  < psycheSteering.RunSyst.RunOnInidividualSyst = 0 >
  < psycheSteering.RunSyst.RunAllSyst = 1 >
  < psycheSteering.RunSyst.ThrowToys = 1 >
- < psycheSteering.RunSyst.CorrelationXMLFile = /data/lasorak/psyche/psyche_v3r28_0/psyche/psycheSteering/v3r20/macros/correlations.xml >
+ < psycheSteering.RunSyst.CorrelationXMLFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheSteering/v3r24/macros/correlations.xml >
