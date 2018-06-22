@@ -94,3 +94,4 @@ python2.7/*pyc
 run_lists/*pyc
 src/*.swp
 src/make
+go/bin
