@@ -95,3 +95,5 @@ run_lists/*pyc
 src/*.swp
 src/make
 go/bin
+*dict.h
+*dict.d

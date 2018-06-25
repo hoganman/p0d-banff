@@ -11,6 +11,7 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
 QUEUE = '\"physics.q|short.q\"'
+HOSTS = '\"node40|node44|node27|node29\"'
 # EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 # HOSTS = '\"'
 # for x in range(20) + range(27, 31) + range(40, 46):
@@ -25,7 +26,7 @@ DATANJOBS = '10'
 MCMIN = '300'
 DATAMIN = '120'
 OUTPUTBASE = '/physics/home/mhogan'
-FLATTREEBASE = OUTPUTBASE+'/flattrees'
+FLATTREEBASE = os.getenv('FLATTREEROOT')
 SPLINEBASE = OUTPUTBASE+'/splines'
 NEUT_6B = 'mcp6_Spin_B/neut'
 NEUT_6L = 'mcp6_Spin_L/neut'
@@ -39,8 +40,8 @@ QSUBSPLINE = 'python qsubmitter_splines.py'
 
 def main(argv):
     """submits all the qsub python scripts"""
-    submit_flattree_jobs()
-    # submit_spline_jobs()
+    # submit_flattree_jobs()
+    submit_spline_jobs()
 
 
 def submit_flattree_jobs():
@@ -68,7 +69,7 @@ def make_qsub_flattree_mc(run_name, production):
 
     run_list = '-L %s' % (run_list_file.get_file_name())
     queue = '-q %s' % (QUEUE)
-    # hosts = '-N %s' % (HOSTS)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
@@ -87,7 +88,7 @@ def make_qsub_flattree_mc(run_name, production):
     this_run.add(run_list)
     this_run.add(memory)
     this_run.add(queue)
-    # this_run.add(hosts)
+    this_run.add(hosts)
     this_run.add(minutes)
     this_run.add(output_path)
     this_run.add(n_jobs)
@@ -105,7 +106,7 @@ def make_qsub_spline_mc(run_name, production):
         return None
     flatttree_dir_list = '-L %s' % (flattree_dir.get())
     queue = '-q %s' % (QUEUE)
-    # hosts = '-N %s' % (HOSTS)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (MCMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
@@ -122,7 +123,7 @@ def make_qsub_spline_mc(run_name, production):
     this_run = ShellCommand('nohup %s' % (QSUBSPLINE))
     this_run.add(flatttree_dir_list)
     this_run.add(queue)
-    # this_run.add(hosts)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(run_type)
@@ -142,7 +143,7 @@ def make_qsub_spline_data(run_name, production):
         return None
     flatttree_dir_list = '-L %s' % (flattree_dir.get())
     queue = '-q %s' % (QUEUE)
-    # hosts = '-N %s' % (HOSTS)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
@@ -160,7 +161,7 @@ def make_qsub_spline_data(run_name, production):
     this_run = ShellCommand('nohup %s' % (QSUBSPLINE))
     this_run.add(flatttree_dir_list)
     this_run.add(queue)
-    # this_run.add(hosts)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(run_type)
@@ -183,7 +184,7 @@ def make_qsub_flattree_data(run_name, production):
 
     run_list = '-L %s' % (run_list_file.get_file_name())
     queue = '-q %s' % (QUEUE)
-    # hosts = '-N %s' % (HOSTS)
+    hosts = '-N %s' % (HOSTS)
     minutes = '-M %s' % (DATAMIN)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (FLATTREEBASE,
@@ -201,7 +202,7 @@ def make_qsub_flattree_data(run_name, production):
     this_run = ShellCommand('nohup %s' % (QSUBFLAT))
     this_run.add(run_list)
     this_run.add(queue)
-    # this_run.add(hosts)
+    this_run.add(hosts)
     this_run.add(memory)
     this_run.add(minutes)
     this_run.add(output_path)
