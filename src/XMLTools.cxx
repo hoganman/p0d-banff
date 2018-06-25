@@ -22,6 +22,7 @@ XMLTools::XMLTools(TString fileName)
     fxml = new TXMLEngine();
     fDoc = NULL;
     fRootNode = NULL;
+    SetFile(fileName);
     SetXMLDocAndRootNode();
 }
 
@@ -35,7 +36,7 @@ XMLTools::~XMLTools()
     {
         fxml->FreeDoc(fDoc);
     }
-    delete fxml;
+    if(fxml) fxml->Delete();
 }
 
 //**************************************************
@@ -56,6 +57,32 @@ void XMLTools::SetXMLDocAndRootNode()
     }
     fDoc      = fxml->ParseFile(fXMLFile);
     fRootNode = fxml->DocGetRootElement(fDoc);
+}
+
+
+//**************************************************
+XMLTools::AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
+//**************************************************
+{
+    XMLTools::AttributeMap attribMap;
+    XMLNodePointer_t node = GetXMLNode(name);
+    XMLNodePointer_t child = fxml->GetChild(node);
+    while(child != 0)
+    {
+        TString child_name = fxml->GetNodeName(child);
+//std::cout << "nodename = " << fxml->GetNodeName(child) << std::endl;
+        XMLAttrPointer_t attr = fxml->GetFirstAttr(child);
+//std::cout << attr << std::endl;
+        while (attr != 0) {
+            TString this_attrValue = fxml->GetAttrValue(attr);
+//std::cout << "child_name = " << child_name.Data() << std::endl;
+//std::cout << "attrValue = " << this_attrValue.Data() << std::endl;
+            attribMap[child_name] = this_attrValue;
+            attr = fxml->GetNextAttr(attr);
+        }
+        child = fxml->GetNext(child);
+    }
+    return attribMap;
 }
 
 //**************************************************
@@ -103,43 +130,17 @@ XMLNodePointer_t XMLTools::GetXMLNode(TString name, XMLNodePointer_t node)
 TString XMLTools::GetChildAttributeFromNode(TString motherNodeName, TString attrName)
 //**************************************************
 {
-    XMLNodePointer_t node = GetXMLNode(motherNodeName);
-    if(!node)
-    {
-        std::cout << "ERROR: Unable to find node with name " << motherNodeName.Data() << std::endl;
-        return "";
-    }
-    XMLNodePointer_t child = fxml->GetChild(node);
-    while(child)
-    {
-        TString child_name = fxml->GetNodeName(child);
-//std::cout << "nodename = " << fxml->GetNodeName(child) << std::endl;
-        XMLAttrPointer_t attr = fxml->GetFirstAttr(child);
-//std::cout << attr << std::endl;
-        while (attr!=0) {
-            TString this_attrName = fxml->GetAttrName(attr);
-            TString this_attrValue = fxml->GetAttrValue(attr);
-//std::cout << "child_name = " << child_name.Data() << std::endl;
-//std::cout << this_attrValue.Data() << std::endl;
-            if(child_name.EqualTo(attrName))
-            {
-//std::cout << "Returned " << this_attrValue.Data() << std::endl;
-                return this_attrValue;
-            }
-            attr = fxml->GetNextAttr(attr);
-        }
-        child = fxml->GetNext(child);
-    }
-    return "";
-
+    return GetAllChildAttributesFromNode(motherNodeName)[attrName];
 }
 
 //**************************************************
 TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
 //**************************************************
 {
-    TString raw_nBinEdges = GetChildAttributeFromNode(binningName, "nBinEdges");
-    TString raw_binEdges = GetChildAttributeFromNode(binningName, "binEdges");
+
+    AttributeMap attribs = GetAllChildAttributesFromNode(binningName);
+    TString raw_nBinEdges = attribs["nBinEdges"];
+    TString raw_binEdges = attribs["binEdges"];
     if(raw_nBinEdges.Length() == 0 || raw_binEdges.Length() == 0)
     {
         std::cout << "Unable to get " << binningName.Data() << std::endl;
@@ -155,12 +156,11 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
         std::cout << "    match the number of found entries" << std::endl;
         return NULL;
     }
-    Double_t* binEdges = new Double_t[nBinEdges];
+    std::vector<Double_t> binEdges(nBinEdges);
     for(Int_t index = 0; index < nBinEdges; ++index)
     {
         binEdges[index] = binEdges_vect.at(index).Atof();
     }
-    TH1D* hist = new TH1D(binningName.Data(), "", nBins, binEdges);
-    delete binEdges;
+    TH1D* hist = new TH1D(binningName.Data(), "", nBins, &binEdges[0]);
     return hist;
 }

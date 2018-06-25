@@ -5,6 +5,16 @@
 #include "TXMLEngine.h"
 #include "TH1D.h"
 #include "TString.h"
+#include <map>
+#ifdef __CINT__
+#pragma link C++ nestedclasses;
+#pragma link C++ nestedtypedefs;
+#pragma link C++ class std::map<TString,TString>+;
+#pragma link C++ class std::map<TString,TString>::*;
+#pragma link C++ operators std::map<TString,TString>::iterator;
+#pragma link C++ operators std::map<TString,TString>::const_iterator;
+#pragma link C++ operators std::map<TString,TString>::reverse_iterator;
+#endif
 
 class XMLTools : public TObject {
 
@@ -30,6 +40,14 @@ public:
     ///Recursively searches for a node with "name"
     XMLNodePointer_t GetXMLNode(TString name);
 
+    ///A useful container for all contents in a XML file
+    typedef std::map<TString, TString> AttributeMap;
+
+    ///Get all the attributes for the input node name
+    ///Key: attribute name
+    ///Value: attribute value
+    AttributeMap GetAllChildAttributesFromNode(TString name);
+
     ///Get from a child node the attribute with name "attrName"
     TString GetChildAttributeFromNode(TString motherNodeName, TString attrName);
 
@@ -37,6 +55,7 @@ public:
     ///specified in the binningName node
     ///If you want to use the last bin as overflow, see AnalysisBins
     TH1D* GetTH1DWithBinning(TString binningName);
+
 
 protected:
 
