@@ -2,6 +2,8 @@
 #define HEPCONSTANTS_HXX
 
 #include "TObject.h"
+#include "TString.h"
+#include <map>
 
 class HEPConstants : public TObject {
 
@@ -84,6 +86,21 @@ public:
         kDeltaZeroMass     = 1232;
         kDeltaPlusMass     = 1232;
         kDeltaPlusPlusMass = 1232;
+
+        MeV = 1.0;
+        conversionMap["MeV"] = MeV;
+        conversionMap["MeV/c"] = MeV;
+        conversionMap["MeV/c2"] = MeV;
+        GeV = 1e-3 * MeV;
+        conversionMap["GeV"] = GeV;
+        conversionMap["GeV/c"] = GeV;
+        conversionMap["GeV/c2"] = GeV;
+
+        mm = 1.0;
+        meter = 1e-3 * mm;
+        conversionMap["mm"] = mm;
+        conversionMap["m"] = meter;
+        conversionMap["meter"] = meter;
 
     }
 
@@ -168,6 +185,13 @@ public:
     Double_t kDeltaPlusPlusMass;
     Double_t kLambdaZeroMass;
 
+    Double_t MeV;
+    Double_t GeV;
+    Double_t mm;
+    Double_t meter;
+
+    std::map<TString, Double_t> conversionMap;
+    Double_t Convert(TString unit) const;
     ClassDef(HEPConstants, 1)
 };
 #endif

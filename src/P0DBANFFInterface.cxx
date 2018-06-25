@@ -91,41 +91,41 @@ P0DBANFFInterface::P0DBANFFInterface()
 P0DBANFFInterface::~P0DBANFFInterface()
 //**************************************************
 {
-    if(cbBlack) delete cbBlack ;
-    if(cbOrange) delete cbOrange;
-    if(cbSky) delete cbSky   ;
-    if(cbGreen) delete cbGreen ;
-    if(cbBlue) delete cbBlue  ;
-    if(cbRed) delete cbRed   ;
-    if(cbPurple) delete cbPurple;
-    if(cbYellow) delete cbYellow;
+    if(cbBlack) cbBlack ->Delete();
+    if(cbOrange) cbOrange->Delete();
+    if(cbSky) cbSky   ->Delete();
+    if(cbGreen) cbGreen ->Delete();
+    if(cbBlue) cbBlue  ->Delete();
+    if(cbRed) cbRed   ->Delete();
+    if(cbPurple) cbPurple->Delete();
+    if(cbYellow) cbYellow->Delete();
 
-    if(cbBrightBlue) delete cbBrightBlue;
-    if(cbBrightCyan) delete cbBrightCyan;
-    if(cbBrightGreen) delete cbBrightGreen; //! USE THIS
-    if(cbBrightYellow) delete cbBrightYellow;
-    if(cbBrightPink) delete cbBrightPink; //called red
-    if(cbBrightPurple) delete cbBrightPurple; //! USE THIS
-    if(cbBrightGrey) delete cbBrightGrey; //! USE THIS
+    if(cbBrightBlue) cbBrightBlue->Delete();
+    if(cbBrightCyan) cbBrightCyan->Delete();
+    if(cbBrightGreen) cbBrightGreen->Delete(); //! USE THIS
+    if(cbBrightYellow) cbBrightYellow->Delete();
+    if(cbBrightPink) cbBrightPink->Delete(); //called red
+    if(cbBrightPurple) cbBrightPurple->Delete(); //! USE THIS
+    if(cbBrightGrey) cbBrightGrey->Delete(); //! USE THIS
 
-    if(cbVibrantBlue) delete cbVibrantBlue;
-    if(cbVibrantCyan) delete cbVibrantCyan;
-    if(cbVibrantGreen) delete cbVibrantGreen; //called teal
-    if(cbVibrantOrange) delete cbVibrantOrange;
-    if(cbVibrantRed) delete cbVibrantRed;
-    if(cbVibrantMagenta) delete cbVibrantMagenta;
+    if(cbVibrantBlue) cbVibrantBlue->Delete();
+    if(cbVibrantCyan) cbVibrantCyan->Delete();
+    if(cbVibrantGreen) cbVibrantGreen->Delete(); //called teal
+    if(cbVibrantOrange) cbVibrantOrange->Delete();
+    if(cbVibrantRed) cbVibrantRed->Delete();
+    if(cbVibrantMagenta) cbVibrantMagenta->Delete();
 
-    if(cbMutedBlue) delete cbMutedBlue;
-    if(cbMutedCyan) delete cbMutedCyan;
-    if(cbMutedTeal) delete cbMutedTeal;
-    if(cbMutedGreen) delete cbMutedGreen;
-    if(cbMutedOlive) delete cbMutedOlive;
-    if(cbMutedYellow) delete cbMutedYellow; //called sand
-    if(cbMutedPink) delete cbMutedPink; //called rose
-    if(cbMutedWine) delete cbMutedWine;
-    if(cbMutedPurple) delete cbMutedPurple;
+    if(cbMutedBlue) cbMutedBlue->Delete();
+    if(cbMutedCyan) cbMutedCyan->Delete();
+    if(cbMutedTeal) cbMutedTeal->Delete();
+    if(cbMutedGreen) cbMutedGreen->Delete();
+    if(cbMutedOlive) cbMutedOlive->Delete();
+    if(cbMutedYellow) cbMutedYellow->Delete(); //called sand
+    if(cbMutedPink) cbMutedPink->Delete(); //called rose
+    if(cbMutedWine) cbMutedWine->Delete();
+    if(cbMutedPurple) cbMutedPurple->Delete();
 
-    if(P0DBANFFStyle) delete P0DBANFFStyle;
+    if(P0DBANFFStyle) P0DBANFFStyle->Delete();
 }
 
 //**************************************************
@@ -183,8 +183,7 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     }
 
     inputFile->Close();
-    if (canvas) delete canvas;
-    //if (htemp_1Dclone) delete htemp_1Dclone;
+    if (canvas) canvas->Delete();
 
 }
 
@@ -383,7 +382,7 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
             canvas->Draw();
             img->FromPad(canvas);
             img->WriteImage(buffer);
-            delete img;
+            img->Delete();
         }
         else{
             canvas->SaveAs(buffer);
@@ -596,8 +595,7 @@ void P0DBANFFInterface::PrettyUpTH2(TString inFileName, TString outputName,
     }
 
     inputFile->Close();
-    if (canvas) delete canvas;
-    //if (htemp_1Dclone) delete htemp_1Dclone;
+    if (canvas) canvas->Delete();
 
 
 }
@@ -656,31 +654,4 @@ Double_t P0DBANFFInterface::GetMantissaBase10(Double_t arg, Int_t exp) const
     if(exp == 9999)
         exp = GetExponentBase10(arg);
     return arg * std::pow(10 , -(exp));
-}
-
-
-//**************************************************
-void P0DBANFFInterface::DivideByBinWidth(TH1* hist) const
-//**************************************************
-{
-    if(!hist)
-    {
-        return;
-    }
-    Char_t buffer[500];
-    sprintf(buffer, "%s_clone", hist->GetName());
-    if(!hist->GetSumw2())
-    {
-        hist->Sumw2();
-    }
-    TH1D* hist_clone = static_cast<TH1D*>(hist->Clone(buffer));
-    for(Int_t bin = 1; bin <= hist_clone->GetNbinsX(); ++bin)
-    {
-        const Double_t binLowEdge = hist_clone->GetXaxis()->GetBinLowEdge(bin);
-        const Double_t binUpEdge = hist_clone->GetXaxis()->GetBinUpEdge(bin);
-        hist_clone->SetBinContent(bin, binUpEdge-binLowEdge);
-    }
-    hist->Divide(hist_clone);
-    delete hist_clone;
-
 }

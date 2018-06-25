@@ -96,8 +96,6 @@ public:
     ///Set Batch mode
     void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
 
-    void DivideByBinWidth(TH1* hist) const;
-
     ///To convert sci notation for stringification
     Int_t GetExponentBase10(Double_t arg) const;
     Double_t GetMantissaBase10(Double_t arg, Int_t exp=9999) const;
