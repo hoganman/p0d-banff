@@ -19,7 +19,7 @@ BenchmarkProcess::BenchmarkProcess(TBenchmark *const bench, const TString& name)
 
 BenchmarkProcess::~BenchmarkProcess()
 {
-    delete fBenchmark;
+    if(fBenchmark) fBenchmark->Delete();
 }
 
 void BenchmarkProcess::SetDefaults()

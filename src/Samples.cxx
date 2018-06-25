@@ -76,6 +76,6 @@ Samples::Samples(TString name, TString configFile)
 Samples::~Samples()
 //**************************************************
 {
-    if(momentumBins) delete momentumBins;
-    if(cosThetaBins) delete cosThetaBins;
+    if(momentumBins) momentumBins->Delete();
+    if(cosThetaBins) cosThetaBins->Delete();
 }
