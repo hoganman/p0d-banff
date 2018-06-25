@@ -6,11 +6,24 @@
 #include<iostream>
 ClassImp(AnalysisBins)
 
+//**************************************************
+void AnalysisBins::Init()
+//**************************************************
+{
+    binningName ="";
+    nBins = 0;
+    units = "";
+    showOverflow = kFALSE;
+    divideByBinWidth = kFALSE;
+    isUniform = kFALSE;
+    hist = NULL;
+}
 
 //**************************************************
 AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t setShowOverflow)
 //**************************************************
 {
+    Init();
     if(!edges)
     {
         printf("ERROR: Unable to create AnalysisBins");
@@ -41,6 +54,7 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
 AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t setShowOverflow)
 //**************************************************
 {
+    Init();
     if(!edges)
     {
         printf("ERROR: Unable to create AnalysisBins");
@@ -70,6 +84,7 @@ AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t 
 AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOverflow)
 //**************************************************
 {
+    Init();
     if(!template_hist)
     {
         printf("ERROR: Unable to create AnalysisBins");
@@ -90,6 +105,7 @@ AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOver
 AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
 //**************************************************
 {
+    Init();
     XMLTools* new_inst = NULL;
     if(!xml)
     {
@@ -104,16 +120,21 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
     {
         binEdges.push_back(hist->GetXaxis()->GetBinLowEdge(bin));
     }
-    TString raw_lastBinOverflow = xml->GetChildAttributeFromNode(name, "lastBinOverflow");
-//std::cout << "raw_lastBinOverflow = " << raw_lastBinOverflow.Data() << std::endl;
-    showOverflow = kFALSE;
-    if(raw_lastBinOverflow.Atoi() == 1)
-    {
+    XMLTools::AttributeMap attribs = xml->GetAllChildAttributesFromNode(name);
+    if (attribs["isUniform"].Atoi() == 1)
+        isUniform = kTRUE;
+    if (attribs["units"].Length() > 0)
+        units = attribs["units"];
+    if (attribs["lastBinOverflow"].Atoi() == 1)
         showOverflow = kTRUE;
+    if (attribs["divideByBinWidth"].Atoi() == 1)
+    {
+        divideByBinWidth = kTRUE;
     }
     if(new_inst)
     {
-        delete new_inst;
+        std::cout << "Cleaning new XMLTools instance" << std::endl;
+        new_inst->Delete();
     }
 }
 
@@ -166,4 +187,23 @@ Int_t AnalysisBins::Fill(Double_t val, Double_t weight)
     }
     std::cout << "NEVER GET HERE!" << std::endl;
     return 0;
+}
+
+//**************************************************
+void AnalysisBins::DivideByBinWidth(Bool_t Sumw2)
+//**************************************************
+{
+    if(!divideByBinWidth)
+        return;
+    for(Int_t bin = 1; bin <= hist->GetNbinsX(); ++bin)
+    {
+        const Double_t old_content = hist->GetBinContent(bin);
+        const Double_t old_error = hist->GetBinError(bin);
+        const Double_t binLowEdge = hist->GetXaxis()->GetBinLowEdge(bin);
+        const Double_t binUpEdge = hist->GetXaxis()->GetBinUpEdge(bin);
+        const Double_t binWidth = (binUpEdge-binLowEdge);
+        hist->SetBinContent(bin, old_content/binWidth);
+        if(Sumw2 && hist->GetSumw2())
+            hist->SetBinError(bin, old_error/std::fabs(binWidth));
+    }
 }
