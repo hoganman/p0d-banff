@@ -6,10 +6,14 @@ import os
 class RunName(p0dbanff.p0dbanff):
     """store upper and lower case spellings of runs"""
 
-    def __init__(self, lowercase, uppercase):
+    def __init__(self, lowercase, uppercase, proper=''):
         super(RunName, self).__init__()
         self.lower = lowercase
         self.upper = uppercase
+        if len(proper) == 0:
+            self.proper = self.upper.replace('_', ' ')
+        else:
+            self.proper = proper
 
     def up(self):
         """get upper case seplling"""
@@ -39,6 +43,10 @@ class RunName(p0dbanff.p0dbanff):
         out_str = self.lowupjoin(prepend)
         out_str += '_%d.root'
         return out_str
+
+    def proper_name(self):
+        """return the proper name"""
+        return self.proper
 
 
 # MC version
