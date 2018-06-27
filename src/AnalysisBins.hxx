@@ -15,6 +15,8 @@ class AnalysisBins : public TObject {
 
 public:
 
+    typedef std::vector<Double_t> BinEdges;
+
     ///The default constructor
     AnalysisBins(){Init();}
 
@@ -27,11 +29,8 @@ public:
     ///The main constructor if using a histogram already constructed
     AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOverflow = kFALSE);
 
-    ///Get the binning from a config XML file
+    ///Get the 1D binning from a config XML file
     AnalysisBins(TString name, TString configFile, XMLTools* xml=NULL);
-
-    ///Initializes the members
-    void Init();
 
     ///The destructor
     virtual ~AnalysisBins();
@@ -41,6 +40,9 @@ public:
 
     ///Get the bin edges array
     const Double_t* GetBinEdges() const {return &binEdges[0];}
+
+    ///Get the bin edges vector
+    std::vector<Double_t> GetBinEdgesVect() const {return binEdges;}
 
     ///Returns the number of bins
     Int_t GetNbins() const {return nBins;}
@@ -70,16 +72,16 @@ public:
     Int_t Fill(Double_t val, Double_t weight=1.0);
 
     ///Reset TH1D
-    void Reset() {hist->Reset();}
+    void Reset() {if(hist) hist->Reset();}
 
     ///Set to show errors
-    void Sumw2(Bool_t flag = kTRUE) {hist->Sumw2(flag);}
+    void Sumw2(Bool_t flag = kTRUE) {if(hist) hist->Sumw2(flag);}
 
     ///Identical to the TH1::DrawCopy() method
-    void DrawCopy(TString options="") {hist->DrawCopy(options.Data());}
+    void DrawCopy(TString options="") {if(hist) hist->DrawCopy(options.Data());}
 
     ///Clone the AnalysisBins histogram
-    TH1D* GetTH1DClone(TString histName) {return static_cast<TH1D*>(hist->Clone(histName));}
+    TH1D* GetTH1DClone(TString histName) {return (hist) ? static_cast<TH1D*>(hist->Clone(histName)) : NULL;}
 
     ///Vary the bin contents of the AnalysisBins histogram according to
     ///Poisson statistics. The mean of the Poisson PDF is the bin content
@@ -90,10 +92,13 @@ public:
 
 protected:
 
+    ///Initializes the members
+    void Init();
+
     TString binningName;
     TString units;
     Int_t nBins;
-    std::vector<Double_t> binEdges;
+    BinEdges binEdges;
     Bool_t showOverflow;
     Bool_t divideByBinWidth;
     Bool_t isUniform;

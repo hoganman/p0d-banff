@@ -11,47 +11,107 @@ void DefineCuts::SetCuts()
 //**************************************************
 {
 
-    minFVcoords.SetXYZ(-836., -871., -2969.);
-    maxFVcoords.SetXYZ(+765., +869., -1264.);
-
     const SampleId samples;
     const HEPConstants pdg;
+    minFidVolCoords.SetXYZ(-836., -871., -2969.);  // in mm
+    maxFidVolCoords.SetXYZ(+765., +869., -1264.);  // in mm
+
+    minSandCoords.SetXYZ(-10000., -10000., -280.e+3);  // in mm
+    maxSandCoords.SetXYZ(+10000., +10000., -3500.);  // in mm
+
     muMinusSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuCC()));
+    muMinusSelection.SetName("#mu^{-} Selection Cut");
+
     muPlusSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBarCC()));
+    muPlusSelection.SetName("#mu^{+} Selection Cut");
+
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
-                             minFVcoords.Z(), "vtxZ", "vtxZ", maxFVcoords.Z(),
-                             minFVcoords.X(), "vtxX", "vtxX", maxFVcoords.X(),
-                             minFVcoords.Y(), "vtxY", "vtxY", maxFVcoords.Y()
+                                minFidVolCoords.Z(), "vtxZ", "vtxZ", maxFidVolCoords.Z(),
+                                minFidVolCoords.X(), "vtxX", "vtxX", maxFidVolCoords.X(),
+                                minFidVolCoords.Y(), "vtxY", "vtxY", maxFidVolCoords.Y()
                              )
              );
-    tFV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
-                             minFVcoords.Z(), "tVtxZ", "tVtxZ", maxFVcoords.Z(),
-                             minFVcoords.X(), "tVtxX", "tVtxX", maxFVcoords.X(),
-                             minFVcoords.Y(), "tVtxY", "tVtxY", maxFVcoords.Y()
-                             )
+    FV.SetName("Fiducial Volume Cut");
+
+    tFV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&!(%f<=%s&&%s<=%f)",
+                                 minFidVolCoords.Z(), "tVtxZ", "tVtxZ", maxFidVolCoords.Z(),
+                                 minFidVolCoords.X(), "tVtxX", "tVtxX", maxFidVolCoords.X(),
+                                 minFidVolCoords.Y(), "tVtxY", "tVtxY", maxFidVolCoords.Y(),
+                                 minSandCoords.Z(),   "tVtxZ", "tVtxZ", maxSandCoords.Z()
+                              )
               );
+    tFV.SetName("True Fiducial Volume Cut");
+
     tOOFV = !tFV;
+    tOOFV.SetName("True OOFV Cut");
+
     tLepMuMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuMinusPDG)) && tFV;
+    tLepMuMinus.SetName("#mu^{-} Cut");
+
     tLepMuPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuPlusPDG)) && tFV;
+    tLepMuPlus.SetName("#mu^{+} Cut");
+
     tLepPiPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiPlusPDG)) && tFV;
+    tLepPiPlus.SetName("#pi^{+} Cut");
+
     tLepPiMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiMinusPDG)) && tFV;
+    tLepPiMinus.SetName("#pi^{-} Cut");
+
     tLepProton = TCut(TString::Format("tLeptonPDG==%d", pdg.kProtonPDG)) && tFV;
+    tLepProton.SetName("Proton Cut");
+
     tLepGamma = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kGammaPDG)) && tFV;
+    tLepGamma.SetName("#gamma Cut");
+
     tLepElectron = TCut(TString::Format("tLeptonPDG==%d", pdg.kElectronPDG)) && tFV;
+    tLepElectron.SetName("Electron Cut");
+
     tLepPositron = TCut(TString::Format("tLeptonPDG==%d", pdg.kPositronPDG)) && tFV;
+    tLepPositron.SetName("Positron Cut");
+
     tLepEMParticle = (tLepPositron || tLepElectron || tLepGamma) && tFV;
+    tLepEMParticle.SetName("e^{#pm}/#gamma Cut");
+
     tLepOther = tFV &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kMuMinusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kPiPlusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kElectronPDG)) &&
                 TCut(TString::Format(    "tLeptonPDG !=    %d" , pdg.kProtonPDG));
-    tLepSand = TCut(TString::Format("abs(tLeptonPDG)==abs(%d) && tVtxZ <= -3500", pdg.kMuMinusPDG));
+    tLepOther.SetName("Other Particle Cut");
+
+    tLepSand = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)&&(%f<=%s&&%s<=%f)",
+                                     pdg.kMuMinusPDG, minSandCoords.Z(), "tVtxZ", "tVtxZ", maxSandCoords.Z()
+                                   )
+                   );
+    tLepSand.SetName("Sand Muon Cut");
+
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuPDG)) && tFV;
+    tParNuMu.SetName("True #nu_{#mu} Cut");
+
     tParNuMubar = TCut(TString::Format("TrueNuPDGNom==%d", pdg.kNuMuBarPDG)) && tFV;
+    tParNuMubar.SetName("True Anti-#nu_{#mu} Cut");
+
     tParNuEs = TCut(TString::Format("abs(TrueNuPDGNom)==abs(%d)", pdg.kNuEPDG)) && tFV;
+    tParNuEs.SetName("True Anti-#nu_{e}+#nu_{e} Cut");
+
     tParOther = tFV &&
                 TCut(TString::Format("abs(TrueNuPDGNom)!=abs(%d)", pdg.kNuMuPDG)) &&
                 TCut(TString::Format("abs(TrueNuPDGNom)!=abs(%d)", pdg.kNuEPDG));
+    tParOther.SetName("True Other FV Neutrino Cut");
 
+    tParNuSand = TCut(TString::Format("abs(TrueNuPDGNom)==abs(%d)&&(%f<=%s&&%s<=%f)",
+                                      pdg.kNuMuPDG, minSandCoords.Z(), "tVtxZ", "tVtxZ", maxSandCoords.Z()
+                                     )
+                     );
+    tParNuSand.SetName("True Sand Neutrino Cut");
 
+}
+
+//**************************************************
+TCut DefineCuts::AndTCuts(TCut cutA, TCut cutB) const
+//**************************************************
+{
+    TCut cutAandB = cutA && cutB;
+    cutAandB.SetName(TString::Format("(%s) && (%s)", cutA.GetName(), cutB.GetName()));
+    return cutAandB;
 }

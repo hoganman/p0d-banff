@@ -106,19 +106,22 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
 //**************************************************
 {
     Init();
-    XMLTools* new_inst = NULL;
+    XMLTools* new_xml_inst = NULL;
     if(!xml)
     {
         std::cout << "WARNING: Creating new XMLTools instance" << std::endl;
         xml = new XMLTools();
-        new_inst = xml;
+        new_xml_inst = xml;
     }
     xml->SetFile(configFile);
+    binningName = name;
     hist = xml->GetTH1DWithBinning(name);
     nBins = hist->GetNbinsX();
-    for( Int_t bin = 1; bin<=hist->GetNbinsX(); ++bin)
+    binEdges.resize(hist->GetNbinsX()+1);
+    for(Int_t bin = 1; bin<=hist->GetNbinsX()+1; ++bin)
     {
-        binEdges.push_back(hist->GetXaxis()->GetBinLowEdge(bin));
+        const Int_t vect_index = bin-1;
+        binEdges[vect_index] = hist->GetXaxis()->GetBinLowEdge(bin);
     }
     XMLTools::AttributeMap attribs = xml->GetAllChildAttributesFromNode(name);
     if (attribs["isUniform"].Atoi() == 1)
@@ -131,10 +134,10 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
     {
         divideByBinWidth = kTRUE;
     }
-    if(new_inst)
+    if(new_xml_inst)
     {
         std::cout << "Cleaning new XMLTools instance" << std::endl;
-        new_inst->Delete();
+        new_xml_inst->Delete();
     }
 }
 
@@ -195,15 +198,19 @@ void AnalysisBins::DivideByBinWidth(Bool_t Sumw2)
 {
     if(!divideByBinWidth)
         return;
+    if(Sumw2 and !hist->GetSumw2())
+        hist->Sumw2();
     for(Int_t bin = 1; bin <= hist->GetNbinsX(); ++bin)
     {
         const Double_t old_content = hist->GetBinContent(bin);
-        const Double_t old_error = hist->GetBinError(bin);
         const Double_t binLowEdge = hist->GetXaxis()->GetBinLowEdge(bin);
         const Double_t binUpEdge = hist->GetXaxis()->GetBinUpEdge(bin);
         const Double_t binWidth = (binUpEdge-binLowEdge);
         hist->SetBinContent(bin, old_content/binWidth);
-        if(Sumw2 && hist->GetSumw2())
-            hist->SetBinError(bin, old_error/std::fabs(binWidth));
+        if(Sumw2)
+        {
+            const Double_t new_error = std::sqrt(old_content)/std::fabs(binWidth);
+            hist->SetBinError(bin, new_error);
+        }
     }
 }

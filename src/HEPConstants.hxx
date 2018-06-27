@@ -8,103 +8,85 @@
 class HEPConstants : public TObject {
 
 public:
-    HEPConstants()
-    {
-        kElectronPDG   = +11;
-        kNuEPDG        = +12;
-        kMuMinusPDG    = +13;
-        kNuMuPDG       = +14;
-        kTauMinusPDG   = +15;
-        kNuTauPDG      = +16;
-        kPositronPDG   = -11;
-        kNuEBarPDG     = -12;
-        kMuPlusPDG     = -13;
-        kNuMuBarPDG    = -14;
-        kTauPlusPDG    = -15;
-        kNuTauBarPDG   = -16;
-        kAntiNuEPDG    = -12;
-        kAntiNuMuPDG   = -14;
-        kAntiNuTauPDG  = -16;
+    HEPConstants(){Init();}
+    virtual ~HEPConstants();
 
-        kElectronMass = 0.510998928;
-        kMuMinusMass  = 105.6583745;
-        kTauMinusMass = 1776.82;
-        kMuPlusMass  = 105.6583745;
+    typedef std::map<TString, Double_t> ConversionMap;
+    ConversionMap convert;
 
-        kGammaPDG = 22;
-        kGammaMass = 0.0;
+    ///Convert different units like GeV
+    ///Dimensions are preserved like energy or position
+    Double_t Convert(TString unit) const;
 
-        //***********
-        // Mesons
-        //***********
-        kKaMinusPDG     = -321;
-        kRho770MinusPDG = -213;
-        kPiMinusPDG     = -211;
+    ///
+    Double_t ConvertKineticEToMomentum(Double_t kinE, Double_t mass) const;
 
-        kPiZeroPDG      = +111;
-        kRho770ZeroPDG  = +113;
-        kKaZeroLongPDG  = +130;
-        kPiPlusPDG      = +211;
-        kRho770PlusPDG  = +213;
-        kEtaPDG         = +221;
-        komega782PDG    = +223;
-        kKaZeroShortPDG = +310;
-        kKaZeroPDG      = +311;
-        kKaPlusPDG      = +321;
-        kEtaPrimePDG    = +331;
+    ///
+    Double_t ConvertMomentumToKineticE(Double_t mom, Double_t mass) const;
 
-        kKaMinusMass     = 493.667;
-        kRho770MinusMass = 775.26;
-        kPiMinusMass     = 139.570;
+    ///
+    Double_t ConvertMomentumToEnergy(Double_t mom, Double_t mass) const;
 
-        kPiZeroMass      = 134.9766;
-        kRho770ZeroMass  = 775.26;
-        kKaZeroLongMass  = 497.614;
-        kPiPlusMass      = 139.570;
-        kRho770PlusMass  = 775.26;
-        kEtaMass         = 547.862;
-        komega782Mass    = 782.65;
-        kZeroShortMass   = 497.614;
-        kKaZeroMass      = 497.648;
-        kKaPlusMass      = 493.667;
-        kEtaPrimeMass    = 547.862;
+    ///
+    Double_t GetParticleMass(Int_t pdg) const;
 
-        //***********
-        // Baryons
-        //***********
-        kNeutronPDG       = 2112;
-        kProtonPDG        = 2212;
-        kDeltaMinusPDG    = 1114;
-        kDeltaZeroPDG     = 2114;
-        kDeltaPlusPDG     = 2214;
-        kDeltaPlusPlusPDG = 2224;
-        kLambdaZeroPDG    = 3122;
-        kNeutronMass       = 939.565379;
-        kProtonMass        = 938.272046;
-        kLambdaZeroMass    = 1115.683;
-        kDeltaMinusMass    = 1232;
-        kDeltaZeroMass     = 1232;
-        kDeltaPlusMass     = 1232;
-        kDeltaPlusPlusMass = 1232;
+    ///
+    Double_t GetParticleCharge(Int_t pdg) const;
 
-        MeV = 1.0;
-        conversionMap["MeV"] = MeV;
-        conversionMap["MeV/c"] = MeV;
-        conversionMap["MeV/c2"] = MeV;
-        GeV = 1e-3 * MeV;
-        conversionMap["GeV"] = GeV;
-        conversionMap["GeV/c"] = GeV;
-        conversionMap["GeV/c2"] = GeV;
+    ///
+    Bool_t IsParticleLepton(Int_t pdg) const;
 
-        mm = 1.0;
-        meter = 1e-3 * mm;
-        conversionMap["mm"] = mm;
-        conversionMap["m"] = meter;
-        conversionMap["meter"] = meter;
+    ///
+    Bool_t IsParticleMeson(Int_t pdg) const;
 
-    }
+    ///
+    Bool_t IsParticleBaryon(Int_t pdg) const;
 
-    virtual ~HEPConstants(){}
+    ///
+    Bool_t IsParticleHadron(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleNeutral(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticle(Int_t pdgA, Int_t pdgB) const;
+
+    ///
+    Bool_t IsParticleAbs(Int_t pdgA, Int_t pdgB) const;
+
+    ///
+    Bool_t IsParticleMuon(Int_t pdg, Double_t charge) const;
+
+    ///
+    Bool_t IsParticleChargedPion(Int_t pdg, Double_t charge) const;
+
+    ///
+    Bool_t IsParticlePiPlus(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticlePiMinus(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticlePiZero(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleElectron(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticlePositron(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleGamma(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleEM(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleProton(Int_t pdg) const;
+
+    ///
+    Bool_t IsParticleNeutron(Int_t pdg) const;
+
     //***********
     // Lepton
     //***********
@@ -129,7 +111,7 @@ public:
     Double_t kTauMinusMass;
     Double_t kMuPlusMass;
 
-    Int_t kGammaPDG;
+    Int_t    kGammaPDG;
     Double_t kGammaMass;
 
     //***********
@@ -190,8 +172,15 @@ public:
     Double_t mm;
     Double_t meter;
 
-    std::map<TString, Double_t> conversionMap;
-    Double_t Convert(TString unit) const;
+private:
+
+    Int_t PDGINDEX;
+    Int_t MASSINDEX;
+    Int_t CHARGEINDEX;
+    Double_t LoopOnParticles(Int_t pdg, const Int_t& returnIndex) const;
+    void Init();
+
+public:
     ClassDef(HEPConstants, 1)
 };
 #endif

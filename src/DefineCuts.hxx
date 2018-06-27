@@ -14,6 +14,11 @@ public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts(){}
 
+    Bool_t IsSandCut(TCut cut);
+
+    TCut AndTCuts(TCut cutA, TCut cutB) const;
+    //TCut ConcatTCuts(TCut cutA, TCut cutB, TCut cutC);
+
     ///Passes the mu- selection
     TCut muMinusSelection;
     ///Passes the mu+ selection
@@ -54,9 +59,13 @@ public:
     TCut tParNuEs;
     ///Is parent neutrino not a numu, numubar, nue, nuebar
     TCut tParOther;
+    ///Is parent neutrino in the sand?
+    TCut tParNuSand;
     /// The 3 dim coordinates of P0D FV
-    TVector3 minFVcoords;
-    TVector3 maxFVcoords;
+    TVector3 minFidVolCoords;
+    TVector3 maxFidVolCoords;
+    TVector3 minSandCoords;
+    TVector3 maxSandCoords;
 
 
 protected:
