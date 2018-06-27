@@ -51,7 +51,7 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
 
-ALLCLASSES :=  HEPConstants XMLTools MakeClSampleSummary MakeClFlatTree P0DBANFFInterface BenchmarkProcess Header TotalPOT TN80POT AnalysisBins Samples SampleId DefineCuts CanvasCoordinates
+ALLCLASSES :=  HEPConstants XMLTools MakeClSampleSummary MakeClFlatTree P0DBANFFInterface BenchmarkProcess Header TotalPOT TN80POT AnalysisBins Samples SampleId DefineCuts CanvasCoordinates AnalysisBins2D
 
 # dict.o Object
 ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
