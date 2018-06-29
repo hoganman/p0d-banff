@@ -16,6 +16,9 @@ void DefineCuts::SetCuts()
     minFidVolCoords.SetXYZ(-836., -871., -2969.);  // in mm
     maxFidVolCoords.SetXYZ(+765., +869., -1264.);  // in mm
 
+    minFidVolTN208Coords.SetXYZ(-836., -871., -2962.);
+    maxFidVolTN208Coords.SetXYZ(+765., +869., -1274.);
+
     minSandCoords.SetXYZ(-10000., -10000., -280.e+3);  // in mm
     maxSandCoords.SetXYZ(+10000., +10000., -3500.);  // in mm
 
@@ -45,6 +48,26 @@ void DefineCuts::SetCuts()
     tOOFV = !tFV;
     tOOFV.SetName("True OOFV Cut");
 
+    FVTN208 = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
+                                minFidVolTN208Coords.Z(), "vtxZ", "vtxZ", maxFidVolTN208Coords.Z(),
+                                minFidVolTN208Coords.X(), "vtxX", "vtxX", maxFidVolTN208Coords.X(),
+                                minFidVolTN208Coords.Y(), "vtxY", "vtxY", maxFidVolTN208Coords.Y()
+                             )
+             );
+    FVTN208.SetName("Fiducial Volume TN208 Cut");
+
+    tFVTN208 = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&!(%f<=%s&&%s<=%f)",
+                                 minFidVolTN208Coords.Z(), "tVtxZ", "tVtxZ", maxFidVolTN208Coords.Z(),
+                                 minFidVolTN208Coords.X(), "tVtxX", "tVtxX", maxFidVolTN208Coords.X(),
+                                 minFidVolTN208Coords.Y(), "tVtxY", "tVtxY", maxFidVolTN208Coords.Y(),
+                                 minSandCoords.Z(),   "tVtxZ", "tVtxZ", maxSandCoords.Z()
+                              )
+              );
+    tFVTN208.SetName("True Fiducial Volume TN208 Cut");
+
+    tOOFVTN208 = !tFVTN208;
+    tOOFVTN208.SetName("True OOFVTN208 Cut");
+
     tLepMuMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuMinusPDG)) && tFV;
     tLepMuMinus.SetName("#mu^{-} Cut");
 
@@ -69,14 +92,17 @@ void DefineCuts::SetCuts()
     tLepPositron = TCut(TString::Format("tLeptonPDG==%d", pdg.kPositronPDG)) && tFV;
     tLepPositron.SetName("Positron Cut");
 
-    tLepEMParticle = (tLepPositron || tLepElectron || tLepGamma) && tFV;
+    tLepEMParticle = (TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kGammaPDG)) ||
+                      TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kElectronPDG))) &&
+                      tFV;
     tLepEMParticle.SetName("e^{#pm}/#gamma Cut");
 
     tLepOther = tFV &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kMuMinusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kPiPlusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kElectronPDG)) &&
-                TCut(TString::Format(    "tLeptonPDG !=    %d" , pdg.kProtonPDG));
+                TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kGammaPDG)) &&
+                TCut(TString::Format("tLeptonPDG!=%d" , pdg.kProtonPDG));
     tLepOther.SetName("Other Particle Cut");
 
     tLepSand = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)&&(%f<=%s&&%s<=%f)",

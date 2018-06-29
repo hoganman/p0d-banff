@@ -17,7 +17,7 @@ public:
     Bool_t IsSandCut(TCut cut);
 
     TCut AndTCuts(TCut cutA, TCut cutB) const;
-    //TCut ConcatTCuts(TCut cutA, TCut cutB, TCut cutC);
+    TCut AndTCuts(TCut cutA, TString cutB) const {return AndTCuts(cutA, TCut(cutB.Data()));}
 
     ///Passes the mu- selection
     TCut muMinusSelection;
@@ -29,6 +29,12 @@ public:
     TCut tFV;
     ///True out of FV
     TCut tOOFV;
+    /// Reduce the FV to the TN208 value instead of TN73
+    TCut FVTN208;
+    /// Reduce the true FV to the TN208 value instead of TN73
+    TCut tFVTN208;
+    /// True out of FV for TN208
+    TCut tOOFVTN208;
     ///Is lepton candidate true mu-
     TCut tLepMuMinus;
     ///Is lepton candidate true mu+
@@ -64,8 +70,11 @@ public:
     /// The 3 dim coordinates of P0D FV
     TVector3 minFidVolCoords;
     TVector3 maxFidVolCoords;
+    TVector3 minFidVolTN208Coords;
+    TVector3 maxFidVolTN208Coords;
     TVector3 minSandCoords;
     TVector3 maxSandCoords;
+
 
 
 protected:
