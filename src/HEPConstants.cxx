@@ -18,6 +18,10 @@ void HEPConstants::Init()
     convert["GeV"   ] = GeV;
     convert["GeV/c" ] = GeV;
     convert["GeV/c2"] = GeV;
+    MeV2 = MeV*MeV;
+    convert["MeV2"] = MeV2;
+    GeV2 = GeV*GeV;
+    convert["GeV2"] = GeV2;
 
     mm = 1.0;
     meter = 1.0e+3 * mm;
@@ -106,7 +110,9 @@ Double_t HEPConstants::Convert(TString unit) const {
 //**************************************************
     ConversionMap::const_iterator iter = convert.find(unit);
     if(iter != convert.end())
-        return iter->second;
+    {
+        return 1.0/iter->second;
+    }
     return 1.0;
 }
 

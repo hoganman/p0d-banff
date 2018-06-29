@@ -167,8 +167,13 @@ public:
     Double_t kDeltaPlusPlusMass;
     Double_t kLambdaZeroMass;
 
+    //************
+    //Units
+    //************
     Double_t MeV;
+    Double_t MeV2;
     Double_t GeV;
+    Double_t GeV2;
     Double_t mm;
     Double_t meter;
 
