@@ -689,10 +689,10 @@ void RedoTreeConverter::DefineBranches(){
 
 //        anaUtils::ConfigureTreeBranch(fChain, "sPOTSincePreviousSpill", &sPOTSincePreviousSpill, &b_sPOTSincePreviousSpill);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuEnergy", sTrueVertexNuEnergy, &b_sTrueVertexNuEnergy);
-//        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexQ2", sTrueVertexQ2, &b_sTrueVertexQ2);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexQ2", sTrueVertexQ2, &b_sTrueVertexQ2);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexPosition", sTrueVertexPosition, &b_sTrueVertexPosition);
 //        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuParentDecPoint", sTrueVertexNuParentDecPoint, &b_sTrueVertexNuParentDecPoint);
-//        anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuDir", sTrueVertexNuDir, &b_sTrueVertexNuDir);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNuDir", sTrueVertexNuDir, &b_sTrueVertexNuDir);
 
 //        anaUtils::ConfigureTreeBranch(fChain, "sTrueTrackPurity", sTrueParticlePurity, &b_sTrueParticlePurity);
   anaUtils::ConfigureTreeBranch(fChain, "sFgdTimeBinMinTime",       sFgdTimeBinMinTime,       &b_sFgdTimeBinMinTime);
@@ -1965,6 +1965,8 @@ void RedoTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertex){
   vertex->ID = sTrueVertexID[ivtx];
   vertex->NuPDG = sTrueVertexNuPDG[ivtx];
   vertex->NuEnergy = sTrueVertexNuEnergy[ivtx];
+  anaUtils::CopyArray(sTrueVertexNuDir[ivtx], vertex->NuDir, 3);
+  vertex->Q2 = sTrueVertexQ2[ivtx];
 
   anaUtils::CopyArray(sTrueVertexPosition[ivtx], vertex->Position, 4);
 

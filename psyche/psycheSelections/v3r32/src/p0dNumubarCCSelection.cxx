@@ -3,6 +3,7 @@
 #include "CutUtils.hxx"
 #include "trackerSelectionUtils.hxx"
 #include "EventBoxUtils.hxx"
+#include "antiNumuCCSelection.hxx"
 
 
 //********************************************************************
@@ -23,6 +24,7 @@ void p0dNumubarCCSelection::DefineSteps(){
     AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
     AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumubarCC());
     AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
+    AddStep(StepBase::kCut,    "pos_mult",            new PositiveMultiplicityCut());
     AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction_p0dNumubarCC());
     AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut_p0dNumubarCC(),     true);
     SetBranchAlias(0,"trunk");

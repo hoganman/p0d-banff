@@ -20,18 +20,18 @@
 
 ///Array printing
 
-#define dump_array4(par) std::cout<< #par << ": \t" << par[0] << " " << par[1] << " " << par[2] << " " << par[3] << std::endl;  
-#define dump_array3(par) std::cout<< #par << ": \t" << par[0] << " " << par[1] << " " << par[2] << std::endl; 
+#define dump_array4(par) std::cout<< #par << ": \t" << par[0] << " " << par[1] << " " << par[2] << " " << par[3] << std::endl;
+#define dump_array3(par) std::cout<< #par << ": \t" << par[0] << " " << par[1] << " " << par[2] << std::endl;
 
 #define dump_array(par, n) \
   std::cout<< #par << " *** start *** \n "; \
   for (int i = 0; i < n; i++) std::cout << " \t " << par[i] << " \n "; \
-  std::cout << #par << " *** end *** " << std::endl; 
+  std::cout << #par << " *** end *** " << std::endl;
 
 #define dump_vector(par, n) \
   std::cout<< #par << " *** start *** \n "; \
   for (int i = 0; i < n; i++) std::cout << " \t " << par[i] << " \n "; \
-  std::cout << #par << " *** end *** " << std::endl; 
+  std::cout << #par << " *** end *** " << std::endl;
 
 
 
@@ -80,11 +80,11 @@ class AnaDetCrossingB{
   /// Copy constructor is protected, as Clone() should be used to copy this object.
   AnaDetCrossingB(const AnaDetCrossingB& cross);
 
- public:  
+ public:
 
   /// for each subdetector tell the entrance position
   Float_t EntrancePosition[4];
-  
+
   /// for each subdetector tell the exit position
   Float_t ExitPosition[4];
 
@@ -93,12 +93,12 @@ class AnaDetCrossingB{
 
   /// for each subdetector tell the exit momentum
   Float_t ExitMomentum[3];
-  
+
   /// If the particle passes through an active part of the subdetector
   bool InActive;
 
-  /// Bit field describing the detector that the object is in. 
-  /// See SubDetId.hxx for the detector enumerations used to 
+  /// Bit field describing the detector that the object is in.
+  /// See SubDetId.hxx for the detector enumerations used to
   /// interrogate this object
   unsigned long Detector;
 
@@ -118,19 +118,25 @@ class AnaTrueVertexB: public AnaTrueObjectC{
 
   /// Dump the object to screen.
   void Print() const;
- 
+
  protected:
 
   /// Copy constructor is protected, as Clone() should be used to copy this object.
   AnaTrueVertexB(const AnaTrueVertexB& vertex);
 
  public:
-  
+
   /// The PDG code of the incoming neutrino.
   Int_t NuPDG;
 
   /// The true energy of the incoming neutrino.
   Float_t NuEnergy;
+
+  /// The true direction of the incoming neutrino
+  Float_t NuDir[3];
+
+  /// The true Q2 of the event
+  Float_t Q2;
 
   /// The position the true interaction happened at.
   Float_t Position[4];
@@ -147,8 +153,8 @@ class AnaTrueVertexB: public AnaTrueObjectC{
   /// A copy of TrueParticles but using an std::vector, which can be saved into a tree
   std::vector<AnaTrueParticleB*> TrueParticlesVect;
 
-  /// Bit field describing the detector that the object is in. 
-  /// See SubDetId.hxx for the detector enumerations used to 
+  /// Bit field describing the detector that the object is in.
+  /// See SubDetId.hxx for the detector enumerations used to
   /// interrogate this object
   unsigned long Detector;
 
@@ -183,7 +189,7 @@ class AnaTrueParticleB: public AnaTrueObjectC{
   /// anaUtils::GetTrueTrackByID(Int_t ID) or anaUtils::GetPrimaryTrueTrack(AnaTrueParticleB* track)
   /// functions to find the AnaTrueParticleB representing the primary particle.
   Int_t PrimaryID;
-  
+
   /// The ID of this particle's immediate parent, or 0 if there is no parent.
   Int_t ParentID;
 
@@ -192,7 +198,7 @@ class AnaTrueParticleB: public AnaTrueObjectC{
 
   /// The ID of this particle's  grandparent, or 0 if there is no grandparent.
   Int_t GParentID;
-  
+
   /// The PDG code of this particle's grandparent, or 0 if there is no grandparent.
   Int_t GParentPDG;
 
@@ -215,7 +221,7 @@ class AnaTrueParticleB: public AnaTrueObjectC{
   Int_t VertexID;
 
   /// Pointer to the AnaTrueVertexB of the interaction that created this AnaTrueParticleB.
-  AnaTrueVertexB* TrueVertex; 
+  AnaTrueVertexB* TrueVertex;
 
   /// Vector of detector crossings. These are in the order in which the
   /// detectors were crossed.
@@ -225,12 +231,12 @@ class AnaTrueParticleB: public AnaTrueObjectC{
 
   /// A copy of DetCrossings but using an std::vector, which can be saved into a tree
   std::vector<AnaDetCrossingB*> DetCrossingsVect;
-  
-  
+
+
   /// Is this a true primary pi0 decay photon or the child of one?
   bool IsTruePrimaryPi0DecayPhoton;
   bool IsTruePrimaryPi0DecayPhotonChild;
-   
+
   /// Function used to sort momentum in decreasing order
   static bool CompareMomentum(const AnaTrueParticleB* t1, const AnaTrueParticleB* t2);
 };
@@ -312,14 +318,14 @@ class AnaParticleB: public AnaRecObjectC{
   Int_t NHits;
 
   /// The number of nodes in the reconstructed object.
-  Int_t NNodes;  
-  
+  Int_t NNodes;
+
   /// The reconstructed start direction of the particle.
   Float_t DirectionStart[3];
 
   /// The reconstructed end direction of the particle.
   Float_t DirectionEnd[3];
-  
+
   /// The reconstructed start position of the particle.
   Float_t PositionStart[4];
 
@@ -356,7 +362,7 @@ class AnaParticleMomE{
   Float_t Charge;
 
   /// The reconstructed momentum of the particle, at the start position.
-  Float_t Momentum;  
+  Float_t Momentum;
 
   /// The reconstructed momentum of the particle, at the end position.
   Float_t MomentumEnd;
@@ -423,28 +429,28 @@ class AnaTPCParticleB:public AnaParticleMomB {
   Float_t dEdxMeas;
 
   /// Expected dE/dx for a muon, based on the reconstructed momentum.
-  Float_t dEdxexpMuon; 
+  Float_t dEdxexpMuon;
 
   /// Expected dE/dx for an electron, based on the reconstructed momentum.
-  Float_t dEdxexpEle; 
+  Float_t dEdxexpEle;
 
   /// Expected dE/dx for a pion, based on the reconstructed momentum.
-  Float_t dEdxexpPion; 
+  Float_t dEdxexpPion;
 
   /// Expected dE/dx for a proton, based on the reconstructed momentum.
-  Float_t dEdxexpProton; 
+  Float_t dEdxexpProton;
 
   /// Expected error on the dE/dx measurement, for the muon hypothesis.
-  Float_t dEdxSigmaMuon; 
+  Float_t dEdxSigmaMuon;
 
   /// Expected error on the dE/dx measurement, for the electron hypothesis.
-  Float_t dEdxSigmaEle; 
+  Float_t dEdxSigmaEle;
 
   /// Expected error on the dE/dx measurement, for the pion hypothesis.
-  Float_t dEdxSigmaPion; 
+  Float_t dEdxSigmaPion;
 
   /// Expected error on the dE/dx measurement, for the proton hypothesis.
-  Float_t dEdxSigmaProton; 
+  Float_t dEdxSigmaProton;
 };
 
 /// Representation of a FGD segment of a global track.
@@ -466,7 +472,7 @@ class AnaFGDParticleB:public AnaParticleB{
 
  public:
 
-  /// Input to the pull calculations, FGD-iso length calculated assuming a straight line and 
+  /// Input to the pull calculations, FGD-iso length calculated assuming a straight line and
   /// applying a correction retrieved from truth based studies
   Float_t X;
 
@@ -482,7 +488,7 @@ class AnaFGDParticleB:public AnaParticleB{
   /// Dummy pull. If the FGD pulls weren't set, this is set to 1.
   Float_t Pullno;
 
-  /// Containment flag required for proper PID analysis. 
+  /// Containment flag required for proper PID analysis.
   Int_t Containment;
 
 };
@@ -508,17 +514,17 @@ class AnaECALParticleB:public AnaParticleB{
 
   /// The Ecal Track-Shower PID variable.
   /// Track-like objects tend to 1, shower-like to 0
-  Float_t TrShVal; 
-  
+  Float_t TrShVal;
+
   /// The mipEM LLR PID variable
   /// Negative means MIP-like, positive EM shower-like
-  Float_t PIDMipEm; 
+  Float_t PIDMipEm;
 
   Float_t PIDEmHip;
-  
+
   /// The length of the ECal segment
   Float_t Length;
-  
+
   /// The energy deposited in the ECal, as determined by an EM energy fitter.
   /// This is the recommended value to use when examining the ECal energy.
   Float_t EMEnergy;
@@ -531,8 +537,8 @@ class AnaECALParticleB:public AnaParticleB{
   /// Whether the object is shower-like or track-like. A default cut of 0.5
   /// is applied - below 0.5 means the object is shower-like.
   Int_t IsShowerLike;
-  
-  /// Time charged averaged over hits 
+
+  /// Time charged averaged over hits
   Float_t AvgTime;
 
   /// Innermost layer hit of the ecal object (used in ecal pi0 veto)
@@ -561,7 +567,7 @@ class AnaSMRDParticleB:public AnaParticleB{
 
  public:
 
-  /// The averaged (using estimated  uncertainties) times 
+  /// The averaged (using estimated  uncertainties) times
   /// of track reconstructed hits
   Float_t AvgTime;
 };
@@ -623,7 +629,7 @@ class AnaRecTrueMatchB{
   }
 
  public:
-  
+
   /// The cleanliness of the true-reco matching.
   Float_t Cleanliness;
 
@@ -648,7 +654,7 @@ class AnaTrackB: public AnaParticleMomB{
 
   /// Return a casted version of the original AnaParticleB associated
   const AnaTrackB* GetOriginalTrack() const {return static_cast<const AnaTrackB*>(Original);}
-  
+
   /// Function used to sort range momentum muon in decreasing order
   static bool CompareMuonRangeMomentum(const AnaTrackB* t1, const AnaTrackB* t2);
 
@@ -662,22 +668,22 @@ class AnaTrackB: public AnaParticleMomB{
   /// The index of this particle track in the vector of particles. TODO: Not sure it is needed (only use in PID utils)
   Int_t Index;
 
-  ///Momentum by range calculated with muon hypothesis 
+  ///Momentum by range calculated with muon hypothesis
   Float_t RangeMomentumMuon;
 
   /// Variables in order to be able to flip a particle based on ToF info
-  /// Contains kinematics parameters which results of the particle fit 
+  /// Contains kinematics parameters which results of the particle fit
   /// with a reverse sense hypothesis
 
   /// Momentum for the main PID hypothesis and reverse sense
-  Float_t MomentumFlip; 
+  Float_t MomentumFlip;
 
   /// Whether track passes TPC quality cut.
   Int_t TPCQualityCut;
-  
+
   /// Times of flight between pairs of detectors
   AnaToF ToF;
- 
+
   /// The TPC segments that contributed to this global track.
   AnaTPCParticleB* TPCSegments[NMAXTPCS]; //!
   /// How many TPC tracks are associated with this track
@@ -704,11 +710,11 @@ class AnaTrackB: public AnaParticleMomB{
   int nP0DSegments; //!
 
   /// A copy of the segment arrays but using an std::vector, which can be saved into a tree
-  std::vector<AnaTPCParticleB*>  TPCSegmentsVect; 
-  std::vector<AnaFGDParticleB*>  FGDSegmentsVect; 
-  std::vector<AnaECALParticleB*> ECALSegmentsVect; 
-  std::vector<AnaSMRDParticleB*> SMRDSegmentsVect; 
-  std::vector<AnaP0DParticleB*>  P0DSegmentsVect; 
+  std::vector<AnaTPCParticleB*>  TPCSegmentsVect;
+  std::vector<AnaFGDParticleB*>  FGDSegmentsVect;
+  std::vector<AnaECALParticleB*> ECALSegmentsVect;
+  std::vector<AnaSMRDParticleB*> SMRDSegmentsVect;
+  std::vector<AnaP0DParticleB*>  P0DSegmentsVect;
 };
 
 /// Representation of a global vertex.
@@ -735,7 +741,7 @@ class AnaVertexB: public AnaRecObjectC{
   AnaVertexB(const AnaVertexB& vertex);
 
  public:
-  
+
   /// The bunch of the global vertex, based on the Position.T()
   Int_t Bunch;
 
@@ -807,10 +813,10 @@ class AnaBeamB{
   AnaBeamB(const AnaBeamB& beam);
 
  public:
-  
+
   /// Good spill flag, as defined in Beam Summary Data.
   /// The flag is provided by TBeamSummaryDataModule from oaAnalysis and
-  /// corresponds to good_spill flag variable in Beam Summary Data 
+  /// corresponds to good_spill flag variable in Beam Summary Data
   /// (http://www.t2k.org/beam/beam_summary/definition-of-beam-summary-variable)
   /// It can be used to also retrieve the horn current/polarity used
   /// Good spill flag (=0:Bad, =1:Good@horn250kA, =-1:Good@horn-250kA, =2:Good@horn200kA, =100:Good@horn0kA)
@@ -818,7 +824,7 @@ class AnaBeamB{
   /// Flag == 99 is applied for Horn-off run in early Run 3 (early 2012) (need to check if this is still valid).
   Int_t GoodSpill;
 
-  /// The POT since the previously saved spill. For data, this comes from the Beam Summary Data 
+  /// The POT since the previously saved spill. For data, this comes from the Beam Summary Data
   /// Is the single Spill POT for oaAnalysis input and accumulated for MiniTree input
   Double_t POTSincePreviousSavedSpill;
 
@@ -913,15 +919,15 @@ class AnaBunchB: public AnaBunchC{
 
   /// The reconstructed vertices in this bunch after deleting CohOnH, PauliBlocked and fully contained events
   /// See https://bugzilla.nd280.org/show_bug.cgi?id=1174
-  std::vector<AnaVertexB*> Vertices; 
+  std::vector<AnaVertexB*> Vertices;
 
   /// The reconstructed particles in this bunch after deleting CohOnH, PauliBlocked and fully contained events
   /// See https://bugzilla.nd280.org/show_bug.cgi?id=1174
   std::vector<AnaParticleB*> Particles;
 
   /// The delayed cluster groups
-  AnaDelayedClustersB** DelayedClusters; //! 
-  Int_t nDelayedClusters; //! 
+  AnaDelayedClustersB** DelayedClusters; //!
+  Int_t nDelayedClusters; //!
 };
 
 class AnaFgdTimeBinB{
@@ -944,10 +950,10 @@ class AnaFgdTimeBinB{
   AnaFgdTimeBinB(const AnaFgdTimeBinB& timeBin);
 
  public:
-  
+
   Float_t      MinTime;     //
   Int_t        NHits[2];    //
-  Float_t      RawChargeSum[2];    //  
+  Float_t      RawChargeSum[2];    //
 };
 
 class AnaEventInfoB{
@@ -988,7 +994,7 @@ class AnaEventInfoB{
 
   /// The ND280 event number.
   Int_t Event;
-  
+
   /// Says if the event is MC or data
   bool IsMC;
 
@@ -1059,7 +1065,7 @@ class AnaSpillB: public AnaSpillC{
 
   /// The unique ID of the Geometry for this spill
   UInt_t GeomID;
-  
+
   /// Run, sunrun, event, time  stamp, etc
   AnaEventInfoB* EventInfo;
 
@@ -1069,11 +1075,11 @@ class AnaSpillB: public AnaSpillC{
   /// The beam quality flags for this spill.
   AnaBeamB* Beam;
 
-  /// Total number of true vertices in the oaAnalysis Tree (even those not saved in the flat tree) 
+  /// Total number of true vertices in the oaAnalysis Tree (even those not saved in the flat tree)
   /// after deleting CohOnH, PauliBlocked and fully contained events (see https://bugzilla.nd280.org/show_bug.cgi?id=1174)
   UInt_t NTotalTrueVertices;
 
-  /// Total number of true particles in the oaAnalysis Tree (even those not saved in the flat tree) 
+  /// Total number of true particles in the oaAnalysis Tree (even those not saved in the flat tree)
   /// after deleting CohOnH, PauliBlocked and fully contained events (see https://bugzilla.nd280.org/show_bug.cgi?id=1174)
   UInt_t NTotalTrueParticles;
 
@@ -1090,12 +1096,12 @@ class AnaSpillB: public AnaSpillC{
   std::vector<AnaFgdTimeBinB*> FgdTimeBins;
 };
 
-/// An AnaEventSummaryB is a class used for storing high level objects and quantities 
-/// output of the analysis. For example 
+/// An AnaEventSummaryB is a class used for storing high level objects and quantities
+/// output of the analysis. For example
 ///  - LeptonCandidate
 ///  - Event vertex
 ///  - NeutrinoEnergy
-/// 
+///
 
 class AnaEventSummaryB:public AnaEventSummaryC{
  public :
@@ -1187,8 +1193,8 @@ class AnaEventB: public AnaEventC{
   int nFgdTimeBins;
 
   /// The delayed cluster groups
-  AnaDelayedClustersB** DelayedClusters; //! 
-  Int_t nDelayedClusters; //! 
+  AnaDelayedClustersB** DelayedClusters; //!
+  Int_t nDelayedClusters; //!
 
   /// The true MC particles used in this spill.
   AnaTrueParticleB** TrueParticles;

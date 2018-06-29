@@ -22,6 +22,8 @@
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
 std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
 Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition);
+AnaTrueParticleB* GetTrueVtxLepton(AnaTrueVertexB* trueVtx, Bool_t absPDG = kTRUE);
+Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 
 int main(int argc, char **argv){
 
@@ -232,10 +234,10 @@ int main(int argc, char **argv){
     Int_t EventNumber = kDoubleInit;
     UInt_t RooVertexIndex = kUIntInit;
 
-    Int_t    TrueVertexIDNom = kDoubleInit;
-    Int_t    SelectionNom    = kDoubleInit;
+    Int_t    TrueVertexIDNom = kIntInit;
+    Int_t    SelectionNom    = kIntInit;
+    Int_t    TrueNuPDGNom    = kIntInit;
     Double_t TrueEnuNom      = kDoubleInit;
-    Int_t    TrueNuPDGNom    = kDoubleInit;
     Double_t WeightNom       = kDoubleInit;
     Double_t FluxWeightNom   = kDoubleInit;
 
@@ -243,13 +245,19 @@ int main(int argc, char **argv){
     Int_t tLeptonPDG = kIntInit;
     Int_t tLeptonParentPDG = kIntInit;
     Int_t tLeptonGParentPDG = kIntInit;
+    Int_t tOnWaterTarget = kIntInit;
     Double_t tLeptonPositionX = kDoubleInit;
     Double_t tLeptonPositionY = kDoubleInit;
     Double_t tLeptonPositionZ = kDoubleInit;
     Double_t tVtxX = kDoubleInit;
     Double_t tVtxY = kDoubleInit;
     Double_t tVtxZ = kDoubleInit;
-    Int_t tOnWaterTarget = kDoubleInit;
+
+    Double_t tNu = kDoubleInit;
+    Double_t tYbj = kDoubleInit;
+    Double_t tW2 = kDoubleInit;
+    Double_t tQ2 = kDoubleInit;
+    Double_t tXbj = kDoubleInit;
 
     //reconstructed quantities
     Double_t LeptonPositionX = kDoubleInit;
@@ -257,6 +265,7 @@ int main(int argc, char **argv){
     Double_t LeptonPositionZ = kDoubleInit;
     Double_t LeptonMomNom    = kDoubleInit;
     Double_t LeptonCosNom    = kDoubleInit;
+    Double_t LeptonTPC1MomNom = kDoubleInit;
     Double_t vtxX = kDoubleInit;
     Double_t vtxY = kDoubleInit;
     Double_t vtxZ = kDoubleInit;
@@ -350,6 +359,7 @@ int main(int argc, char **argv){
         tree->Branch("TrueNuPDGNom",        &TrueNuPDGNom,        "TrueNuPDGNom/I"     );
         tree->Branch("TrueVertexIDNom", &TrueVertexIDNom, "TrueVertexIDNom/I");
         tree->Branch("LeptonMomNom",        &LeptonMomNom,        "LeptonMomNom/D"     );
+        tree->Branch("LeptonTPC1MomNom",        &LeptonTPC1MomNom,        "LeptonTPC1MomNom/D"     );
         tree->Branch("LeptonCosNom",        &LeptonCosNom,        "LeptonCosNom/D"     );
         tree->Branch("WeightNom",             &WeightNom,             "WeightNom/D"            );
         tree->Branch("FluxWeightNom",     &FluxWeightNom,     "FluxWeightNom/D"    );
@@ -369,6 +379,13 @@ int main(int argc, char **argv){
         tree->Branch("tVtxX",&tVtxX,"tVtxX/D");
         tree->Branch("tVtxY",&tVtxY,"tVtxY/D");
         tree->Branch("tVtxZ",&tVtxZ,"tVtxZ/D");
+
+        tree->Branch("tW2", &tW2, "tW2/D");
+        tree->Branch("tQ2", &tQ2, "tQ2/D");
+        tree->Branch("tXbj", &tXbj, "tXbj/D");
+        tree->Branch("tNu", &tNu, "tNu/D");
+        tree->Branch("tYbj", &tYbj, "tYbj/D");
+
         tree->Branch("inFGD1", &inFGD1,"inFGD1/I");
         tree->Branch("inFGD2", &inFGD2,"inFGD2/I");
         tree->Branch("tOnWaterTarget",&tOnWaterTarget,"tOnWaterTarget/I");
@@ -467,16 +484,16 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
                     _man.eweight().InitializeEvent(_man.sel(),*event);
                 }
             }
-            RooVertexIndex = kUIntInit;
-            TrueEnuNom      = kDoubleInit;
-            TrueNuPDGNom    = kDoubleInit;
-            LeptonMomNom    = kDoubleInit;
-            LeptonCosNom    = kDoubleInit;
-            SelectionNom    = kDoubleInit;
-            FluxWeightNom   = kDoubleInit;
-            WeightNom       = kDoubleInit;
-            TrueVertexIDNom = kDoubleInit;
-            SelectionNom    = kDoubleInit;
+            TrueEnuNom        = kDoubleInit;
+            TrueNuPDGNom      = kDoubleInit;
+            LeptonMomNom      = kDoubleInit;
+            LeptonTPC1MomNom  = kDoubleInit;
+            LeptonCosNom      = kDoubleInit;
+            SelectionNom      = kDoubleInit;
+            FluxWeightNom     = kDoubleInit;
+            WeightNom         = kDoubleInit;
+            TrueVertexIDNom   = kDoubleInit;
+            SelectionNom      = kDoubleInit;
             tLeptonPDG        = kDoubleInit;
             tLeptonParentPDG  = kDoubleInit;
             tLeptonGParentPDG = kDoubleInit;
@@ -489,10 +506,16 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tVtxX = kDoubleInit;
             tVtxY = kDoubleInit;
             tVtxZ = kDoubleInit;
-            vtxX =  kDoubleInit;
-            vtxY =  kDoubleInit;
-            vtxZ =  kDoubleInit;
-            tOnWaterTarget = -1;
+            tW2   = kDoubleInit;
+            tQ2   = kDoubleInit;
+            tNu   = kDoubleInit;
+            tYbj  = kDoubleInit;
+            tXbj  = kDoubleInit;
+            vtxX  =  kDoubleInit;
+            vtxY  =  kDoubleInit;
+            vtxZ  =  kDoubleInit;
+            tOnWaterTarget    = kIntInit;
+            RooVertexIndex    = kUIntInit;
 
             //_man.syst().InitializeEventSystematics(_man.sel(),*event);
             Bool_t passednom = false;
@@ -513,6 +536,11 @@ if(debug) std::cout << "passednom = " << passednom << std::endl;
                 //AnaVertexB** Vertices = event->Vertices;
                 const Int_t nParticles = event->nParticles;
 if(debug) std::cout << "There are " << nParticles  << " particles in this event" <<std::endl;
+                AnaEventInfoB* eventInfo = static_cast<AnaEventInfoB*>(&event->EventInfo);
+                Run = eventInfo->Run;
+                SubRun = eventInfo->SubRun;
+                EventNumber = eventInfo->Event;
+
                 AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
                 if(!summary || !summary->EventSample)
                     continue;
@@ -551,6 +579,26 @@ if(debug) DEBUG(trueParticle->PDG)
                         TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID;
                         TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
                         TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
+                        tQ2 = summary->TrueVertex[summary->EventSample]->Q2;
+
+                        AnaTrueParticleB* trLepton = GetTrueVtxLepton(trVtx);
+                        if(trLepton)
+                        {
+                            TLorentzVector nu4Mom;
+                            TVector3 nu3Mom(trVtx->NuDir[0], trVtx->NuDir[1], trVtx->NuDir[2]);
+                            nu3Mom *= TrueEnuNom;
+                            nu4Mom.SetXYZT(nu3Mom.X(), nu3Mom.Y(), nu3Mom.Z(), TrueEnuNom);
+                            const Double_t Emu = anaUtils::GetParticleMass(ParticleId::GetParticle(trLepton->PDG));
+                            tNu  = nu4Mom.E() - Emu;
+                            //const Double_t M_N = (TrueNuPDGNom < 0) ? 939.565 : 938.27231;  // neutron vs proton mass
+                            const Double_t M_N = (TrueNuPDGNom < 0) ?
+                                                 anaUtils::GetParticleMass(ParticleId::kNeutron) :
+                                                 anaUtils::GetParticleMass(ParticleId::kProton);  // neutron vs proton mass
+                            tYbj = tNu/nu4Mom[3];
+                            tXbj = tQ2/(2.0*M_N*tNu);
+                            tW2  = M_N*M_N + 2.0*M_N*tNu - tQ2;
+                        }
+
                         if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
                         {
                             TLorentzVector start = trVtx->Position;
@@ -582,6 +630,12 @@ if(debug) DEBUG(trueParticle->PDG)
                     if(static_cast<AnaTrackB*>(lepCand)->FGDSegments[1])
                         inFGD2 = 1;
                 }
+                if(static_cast<AnaTrackB*>(lepCand)->TPCSegments)
+                {
+                    AnaTPCParticleB* tpc1_Track = static_cast<AnaTrackB*>(lepCand)->TPCSegments[0];
+                    LeptonTPC1MomNom = tpc1_Track->Momentum;
+                }
+
 
             }
 
@@ -895,4 +949,33 @@ std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentz
   thisGeoManger->InitTrack( checkPosition.X(), checkPosition.Y(), checkPosition.Z(), 0, 0, 1); // 0, 0, 1 = the direction vector
   std::string tmpMCPath = thisGeoManger->GetPath();
   return ( tmpMCPath );
+}
+
+AnaTrueParticleB* GetTrueVtxLepton(AnaTrueVertexB* trueVtx, Bool_t absPDG)
+{
+    const Int_t vtxID = trueVtx->ID;
+    const Int_t nuPDG = trueVtx->NuPDG;
+    Int_t pdg = GetSameGenerationLepton(nuPDG);
+    const Int_t checkPDG = (absPDG) ? std::abs(pdg) : pdg;
+    for (Int_t part_i = 0; part_i < trueVtx->nTrueParticles; ++part_i)
+    {
+        AnaTrueParticleB* truePart = trueVtx->TrueParticles[part_i];
+        if(truePart->VertexID != vtxID)
+            continue;
+        const Int_t particle_PDG = (absPDG) ? std::abs(truePart->PDG) : truePart->PDG;
+        //if(checkPDG == particle_PDG && nuPDG == truePart->ParentPDG){
+        if(checkPDG == particle_PDG){// && nuPDG == truePart->ParentPDG){
+            return truePart;
+        }
+    }
+    return NULL;
+}
+
+Int_t GetSameGenerationLepton(const Int_t& nuPDG)
+{
+    if(nuPDG == 14) return 13;
+    if(nuPDG == -14) return -13;
+    if(nuPDG == 12) return 11;
+    if(nuPDG == -12) return -11;
+    return 0;
 }

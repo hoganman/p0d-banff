@@ -31,15 +31,15 @@ AnaTPCParticleB::AnaTPCParticleB(const AnaTPCParticleB& seg):AnaParticleMomB(seg
     RefitMomentum  = seg.RefitMomentum;
     EFieldRefitMomentum       = seg.EFieldRefitMomentum;
 
-    dEdxMeas      = seg.dEdxMeas; 
-    dEdxexpMuon   = seg.dEdxexpMuon; 
-    dEdxexpEle    = seg.dEdxexpEle; 
-    dEdxexpPion   = seg.dEdxexpPion;  
-    dEdxexpProton = seg.dEdxexpProton; 
+    dEdxMeas      = seg.dEdxMeas;
+    dEdxexpMuon   = seg.dEdxexpMuon;
+    dEdxexpEle    = seg.dEdxexpEle;
+    dEdxexpPion   = seg.dEdxexpPion;
+    dEdxexpProton = seg.dEdxexpProton;
 
-    dEdxSigmaMuon   = seg.dEdxSigmaMuon; 
-    dEdxSigmaEle    = seg.dEdxSigmaEle; 
-    dEdxSigmaPion   = seg.dEdxSigmaPion; 
+    dEdxSigmaMuon   = seg.dEdxSigmaMuon;
+    dEdxSigmaEle    = seg.dEdxSigmaEle;
+    dEdxSigmaPion   = seg.dEdxSigmaPion;
     dEdxSigmaProton = seg.dEdxSigmaProton;
 }
 
@@ -72,7 +72,7 @@ AnaFGDParticleB::AnaFGDParticleB():AnaParticleB() {
 AnaFGDParticleB::AnaFGDParticleB(const AnaFGDParticleB& seg):AnaParticleB(seg){
 //********************************************************************
     X = seg.X;
-    Containment = seg.Containment; 
+    Containment = seg.Containment;
 
     Pullmu  = seg.Pullmu;
     Pullp   = seg.Pullp;
@@ -138,7 +138,7 @@ AnaP0DParticleB::AnaP0DParticleB():AnaParticleB() {
 AnaP0DParticleB::AnaP0DParticleB(const AnaP0DParticleB& seg):AnaParticleB(seg){
 //********************************************************************
   Length = seg.Length;
-  ELoss = seg.ELoss; 
+  ELoss = seg.ELoss;
 }
 
 //********************************************************************
@@ -295,7 +295,7 @@ void AnaParticleB::Print() const{
 
     dump_array4(PositionStart);
     dump_array4(PositionEnd);
-    
+
     dump_array3(DirectionStart);
     dump_array3(DirectionEnd);
 }
@@ -328,23 +328,23 @@ AnaTrackB::~AnaTrackB(){
 //********************************************************************
 
     for (Int_t i=0;i<nTPCSegments;i++){
-        delete TPCSegments[i];    
+        delete TPCSegments[i];
         TPCSegments[i] = NULL;
     }
     for (Int_t i=0;i<nFGDSegments;i++){
-        delete FGDSegments[i];    
+        delete FGDSegments[i];
         FGDSegments[i] = NULL;
     }
     for (Int_t i=0;i<nECALSegments;i++){
-        delete ECALSegments[i];    
+        delete ECALSegments[i];
         ECALSegments[i] = NULL;
     }
     for (Int_t i=0;i<nSMRDSegments;i++){
-        delete SMRDSegments[i];    
+        delete SMRDSegments[i];
         SMRDSegments[i] = NULL;
     }
     for (Int_t i=0;i<nP0DSegments;i++){
-        delete P0DSegments[i];    
+        delete P0DSegments[i];
         P0DSegments[i] = NULL;
     }
 
@@ -417,7 +417,7 @@ void AnaTrackB::Print() const{
     std::cout << "MomentumFlip:         " << MomentumFlip       << std::endl;
     std::cout << "RangeMomentumMuon:    " << RangeMomentumMuon  << std::endl;
 
-    
+
     std::cout << "NTPCs:                " << nTPCSegments       << std::endl;
     std::cout << "NFGDs:                " << nFGDSegments       << std::endl;
     std::cout << "NP0Ds:                " << nP0DSegments       << std::endl;
@@ -430,7 +430,7 @@ void AnaTrackB::Print() const{
 bool AnaTrackB::CompareMuonRangeMomentum(const AnaTrackB* t1, const AnaTrackB* t2){
 //********************************************************************
 
-    
+
   // set null pointer to be sorted the very last.
   Float_t m1 = -3e6;
   Float_t m2 = -3e6;
@@ -459,7 +459,7 @@ AnaDetCrossingB::AnaDetCrossingB(){
 
     anaUtils::ReserveArray(EntrancePosition, 4);
     anaUtils::ReserveArray(ExitPosition,     4);
-  
+
     anaUtils::ReserveArray(EntranceMomentum, 3);
     anaUtils::ReserveArray(ExitMomentum,     3);
 }
@@ -500,7 +500,7 @@ AnaTrueParticleB::AnaTrueParticleB():AnaTrueObjectC(){
     nDetCrossings = 0;
     DetCrossings  = NULL;
     DetCrossingsVect.clear();
-    
+
     IsTruePrimaryPi0DecayPhoton      = false;
     IsTruePrimaryPi0DecayPhotonChild = false;
 }
@@ -516,10 +516,10 @@ AnaTrueParticleB::~AnaTrueParticleB(){
   DetCrossingsVect.clear();
 
   nDetCrossings = 0;
-  
+
   // Must delete array of pointers, since we re-create this every time we apply a selection
   if(DetCrossings != NULL) delete [] DetCrossings;
-  DetCrossings = NULL;      
+  DetCrossings = NULL;
 }
 
 //********************************************************************
@@ -541,23 +541,23 @@ AnaTrueParticleB::AnaTrueParticleB(const AnaTrueParticleB& truePart):AnaTrueObje
     Charge     = truePart.Charge;
     VertexID   = truePart.VertexID;
     TrueVertex = truePart.TrueVertex;
-    
+
     IsTruePrimaryPi0DecayPhoton      = truePart.IsTruePrimaryPi0DecayPhoton;
     IsTruePrimaryPi0DecayPhotonChild = truePart.IsTruePrimaryPi0DecayPhotonChild;
 
     /// store for each subdetector
     /// if the true truePart enter the active volume of the subdetector i
     /// what is the entrance position of the subdetector i
-    ///  "    "  "   exit       "               "        
+    ///  "    "  "   exit       "               "
 
     anaUtils::CreateArray(DetCrossings, truePart.nDetCrossings);
     for (Int_t i=0;i<truePart.nDetCrossings;i++){
         DetCrossings[i] = truePart.DetCrossings[i]->Clone();
     }
     nDetCrossings = truePart.nDetCrossings;
-    
+
     DetCrossingsVect.clear();
-    
+
 }
 
 //********************************************************************
@@ -609,10 +609,12 @@ AnaTrueVertexB::AnaTrueVertexB():AnaTrueObjectC(){
     Detector = 0;
 
     NuEnergy      = -999;
+    Q2            = -999;
     NuPDG         = -999;
     Bunch         = -999;
 
     anaUtils::ReserveArray(Position, 4);
+    anaUtils::ReserveArray(NuDir, 3);
 
     TrueParticles = NULL;
     nTrueParticles = 0;
@@ -626,7 +628,7 @@ AnaTrueVertexB::~AnaTrueVertexB(){
 
   // Must delete array of pointers, since we re-create this every time we apply a selection
   if(TrueParticles != NULL) delete [] TrueParticles;
-  TrueParticles = NULL;      
+  TrueParticles = NULL;
 
   TrueParticlesVect.clear();
 }
@@ -719,7 +721,7 @@ AnaBunchB::~AnaBunchB(){
     }
     nDelayedClusters = 0;
     if (DelayedClusters) delete [] DelayedClusters;
-    DelayedClusters = NULL;    
+    DelayedClusters = NULL;
 }
 
 //********************************************************************
@@ -737,17 +739,17 @@ AnaBunchB::AnaBunchB(const AnaBunchB& bunch):AnaBunchC(bunch){
     nDelayedClusters = 0;
 
     //  anaUtils::CreateArray(DelayedClusters, bunch.nDelayedClusters);
-    
+
     DelayedClusters = new AnaDelayedClustersB*[bunch.nDelayedClusters];
     for(int i = 0; i < bunch.nDelayedClusters; ++i){
       DelayedClusters[i] = NULL;
     }
-        
+
     for (Int_t i=0;i<bunch.nDelayedClusters;i++){
       DelayedClusters[nDelayedClusters] = bunch.DelayedClusters[i]->Clone();
       nDelayedClusters++;
     }
-    
+
 }
 
 //********************************************************************
@@ -844,9 +846,9 @@ AnaSpillB::AnaSpillB():AnaSpillC(){
     GeomID=999;
     NTotalTrueVertices = 999;
     NTotalTrueParticles   = 999;
-    TrueVertices.clear();    
-    TrueParticles.clear();    
-    FgdTimeBins.clear();    
+    TrueVertices.clear();
+    TrueParticles.clear();
+    FgdTimeBins.clear();
     OutOfBunch = NULL;
     EventInfo = NULL;
     Beam = NULL;
@@ -861,23 +863,23 @@ AnaSpillB::~AnaSpillB(){
     // TrueVertex's are not cloned. Only delete them in the raw spill
     if (!isClone){
         for (UInt_t i=0;i<TrueVertices.size();i++)
-            delete TrueVertices[i];    
+            delete TrueVertices[i];
     }
 
-    TrueVertices.clear();    
+    TrueVertices.clear();
 
     // TrueParticles are not cloned.  Only delete them in the raw spill
     if (!isClone){
       for (UInt_t i=0;i<TrueParticles.size();i++)
-            delete TrueParticles[i];    
+            delete TrueParticles[i];
     }
 
-    TrueParticles.clear();    
+    TrueParticles.clear();
 
     for (UInt_t i=0;i<FgdTimeBins.size();i++)
-        delete FgdTimeBins[i];    
+        delete FgdTimeBins[i];
 
-    FgdTimeBins.clear();    
+    FgdTimeBins.clear();
 
 
     if (OutOfBunch)
@@ -902,7 +904,7 @@ AnaSpillB::AnaSpillB(const AnaSpillB& spill):AnaSpillC(spill){
 
     NTotalTrueVertices = spill.NTotalTrueVertices;
     NTotalTrueParticles   = spill.NTotalTrueParticles;
-    
+
     // Don't clone truth
     TrueVertices.clear();
     for (UInt_t i=0;i<spill.TrueVertices.size();i++)
@@ -983,7 +985,7 @@ void AnaSpillB::RedoLinks(){
                   associateVertexToParticle(vertex->Particles[k], vertex);
                   found=true;
                   break;
-                }                
+                }
               }
               if (found) break;
             }
@@ -1010,7 +1012,7 @@ void AnaSpillB::Print() const{
     std::cout << "NTotalTrueParticles:    " << NTotalTrueParticles << std::endl;
     std::cout << "NSavedTrueParticles:    " << (int)TrueParticles.size() << std::endl;
     std::cout << "NFgdTimeBins:        " << (int)FgdTimeBins.size() << std::endl;
-    if (DataQuality) 
+    if (DataQuality)
       std::cout << "Good DQ:             " << DataQuality->GoodDaq << std::endl;
     else
       std::cout << "NO DataQuality Info available !!!" << std::endl;
@@ -1031,13 +1033,13 @@ void AnaSpillB::CopyArraysIntoVectors(){
     if (OutOfBunch) bunches.push_back(OutOfBunch);
 
     for (std::vector<AnaBunchC*>::iterator it=bunches.begin();it!=bunches.end();it++){
-      AnaBunchB* bunch = static_cast<AnaBunchB*>(*it);      
+      AnaBunchB* bunch = static_cast<AnaBunchB*>(*it);
       for (UInt_t i=0;i<bunch->Particles.size();i++){
         AnaTrackB* track = dynamic_cast<AnaTrackB*>(bunch->Particles[i]);
         if (!track) continue;
         track->TPCSegmentsVect.clear();
         for (Int_t j=0;j<track->nTPCSegments;j++)
-          track->TPCSegmentsVect.push_back(track->TPCSegments[j]);       
+          track->TPCSegmentsVect.push_back(track->TPCSegments[j]);
 
         track->FGDSegmentsVect.clear();
         for (Int_t j=0;j<track->nFGDSegments;j++)
@@ -1055,7 +1057,7 @@ void AnaSpillB::CopyArraysIntoVectors(){
         for (Int_t j=0;j<track->nP0DSegments;j++)
           track->P0DSegmentsVect.push_back(track->P0DSegments[j]);
 
-      }      
+      }
       for (UInt_t i=0;i<bunch->Vertices.size();i++){
         AnaVertexB* vertex = bunch->Vertices[i];
 
@@ -1080,7 +1082,7 @@ void AnaSpillB::CopyArraysIntoVectors(){
       for (Int_t j=0;j<truePart->nDetCrossings;j++)
         truePart->DetCrossingsVect.push_back(truePart->DetCrossings[j]);
     }
-    
+
 
 }
 
@@ -1268,7 +1270,7 @@ AnaVertexB::AnaVertexB(const AnaVertexB& vertex):AnaRecObjectC(vertex){
 
     anaUtils::CopyArray(vertex.Position, Position, 4);
 
-    anaUtils::CreateArray(Particles, vertex.nParticles);   
+    anaUtils::CreateArray(Particles, vertex.nParticles);
     anaUtils::CopyArray(vertex.Particles, Particles, vertex.nParticles);
 
     nParticles = vertex.nParticles;
@@ -1495,7 +1497,7 @@ AnaEventB::~AnaEventB(){
         delete Particles[i];
         Particles[i] = NULL;
     }
-    nParticles = 0;    
+    nParticles = 0;
     if (Particles) delete [] Particles;
     Particles = NULL;
 
@@ -1505,7 +1507,7 @@ AnaEventB::~AnaEventB(){
     }
     nVertices = 0;
     if (Vertices) delete [] Vertices;
-    Vertices = NULL;    
+    Vertices = NULL;
 
     // TrueParticles are not cloned.  Only delete them in the raw spill
     if (!isClone){
@@ -1614,11 +1616,11 @@ void AnaEventB::Copy(const AnaEventC& eventC, bool copyBunchInfo, bool cloneTrut
                     if(TrueVertices[j]->nTrueParticles == 0){
                         anaUtils::CreateArray(TrueVertices[j]->TrueParticles, event.nTrueParticles);
                     }
-                    TrueVertices[j]->TrueParticles[TrueVertices[j]->nTrueParticles] = TrueParticles[nTrueParticles];	
+                    TrueVertices[j]->TrueParticles[TrueVertices[j]->nTrueParticles] = TrueParticles[nTrueParticles];
                     TrueVertices[j]->nTrueParticles++;
                     break;
                 }
-            } 
+            }
             nTrueParticles++;
         }
         else{
@@ -1638,7 +1640,7 @@ void AnaEventB::Copy(const AnaEventC& eventC, bool copyBunchInfo, bool cloneTrut
     // Fill the FGD time bins vector
     nDelayedClusters = 0;
     //  anaUtils::CreateArray(DelayedClusters, event.nDelayedClusters);
-    
+
     DelayedClusters = new AnaDelayedClustersB*[event.nDelayedClusters];
     for(int i = 0; i < event.nDelayedClusters; ++i){
     DelayedClusters[i] = NULL;
@@ -1702,7 +1704,7 @@ std::string AnaEventB::GetEventInfoString() const{
 
   std::stringstream sBunch;
   sBunch << Bunch;
-  
+
   return "("+sRun.str()+"/"+sSubRun.str()+"/"+sEvent.str()+"/"+sBunch.str()+")";
 }
 
@@ -1713,17 +1715,17 @@ AnaEventB::AnaEventB(const AnaSpillB& spill, const AnaBunchB& bunch){
   nEventBoxes=0;
   for (UInt_t i=0;i<NMAXEVENTBOXES;i++)
     EventBoxes[i]=NULL;
-  
+
   // The initial weight of the Event is 1;
   Weight=1;
-  
+
   // Must create a summary object when we create an event
   // This is initialised to NULL and SampleId::kUnassigned, so you know it has not passed a selection
   Summary = new AnaEventSummaryB();
 
 
   UniqueID = 0;
-  isClone = false;  
+  isClone = false;
   Particles = NULL;
   Vertices = NULL;
   TrueParticles = NULL;
@@ -1736,7 +1738,7 @@ AnaEventB::AnaEventB(const AnaSpillB& spill, const AnaBunchB& bunch){
   nTrueVertices = 0;
   Beam = NULL;
   DataQuality = NULL;
-  
+
   //------ Copy from Spill and Bunch ----------------
 
   Weight      = bunch.Weight;
