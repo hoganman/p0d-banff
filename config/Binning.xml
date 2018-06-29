@@ -51,6 +51,7 @@
             <nBinEdges attr="51" />
             <units attr="GeV/c"/>
             <uniformWidth attr="1"/>
+            <lastBinOverflow attr="0"/>
         </Momentum>
         <TN328Momentum>
             <comment> </comment>
