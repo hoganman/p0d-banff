@@ -10,6 +10,7 @@ export ENSHPC="ens-hpc"
 export ENSSANDBOX="node7"
 export HEP="hep.colostate.edu"
 export BKUP="bkup.hep.colostate.edu"
+export OPTIPLEX990="OptiPlex-990"
 export ISENSHPCQUEUENODE=0
 ENSHPCNODES=( "node1" "node2" "node3")
 for i in `seq 4 45`;
@@ -33,6 +34,10 @@ if [ -z ${P0DBANFFROOT+x} ]; then
 
     # is it one of your HEPPA maintained servers?
     if [ $HOSTNAME == $HEP ] || [ $HOSTNAME == $BKUP ]; then
+        export P0DBANFFROOT=/home/mhogan/software/p0d-banff
+    fi
+
+    if [ $HOSTNAME == $OPTIPLEX990 ]; then
         export P0DBANFFROOT=/home/mhogan/software/p0d-banff
     fi
 

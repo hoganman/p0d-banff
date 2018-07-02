@@ -72,6 +72,19 @@ if [ $HOSTNAME == $BKUP ]; then
     export ROOTVERSION=v5r34p09n04
 fi
 
+if [ $HOSTNAME == $OPTIPLEX990 ]; then
+    export SOFTWARE=/home/mhogan/software/p0d-banff
+    export ND280=$SOFTWARE
+    export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
+    export IRODSROOT=
+    export GOPATH=/home/mhogan/go
+    export CMTVERSION=v1r20p20081118
+    export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
+    export ND280VERSION=v11r31
+    export ROOTVERSION=v5r34p09n04
+fi
+
+
 #if [ ! -z ${IRODSROOT+x} ] ; then
 #    CWD=$PWD
 #    cd $IRODSROOT
