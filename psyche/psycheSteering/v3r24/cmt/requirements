@@ -6,12 +6,12 @@ author nd280-software@mailman.t2k.org
 
 branches cmt src app parameters
 
-use psycheSystematics * psyche
-use psycheSelections  * psyche
-use psycheIO          * psyche
-use psycheND280Utils  * psyche
-use psycheEventModel  * psyche
-use psycheCore        * psyche
+use psycheSystematics v3r28 psyche
+use psycheSelections  v3r32 psyche
+use psycheIO          v3r18 psyche
+use psycheND280Utils  v3r26 psyche
+use psycheEventModel  v3r24 psyche
+use psycheCore        v3r26 psyche
 
 # Build methods to include.
 document doxygen doxygen -group=documentation src/*.cpp src/*.h src/*.hxx src/*.cxx ../doc/*.dox
