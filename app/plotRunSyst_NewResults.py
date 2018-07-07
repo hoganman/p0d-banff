@@ -13,6 +13,24 @@ from ROOTHStack import ROOTHStack
 import RunName as RN
 import sys
 
+# toggle these to draw particular variables
+DRAW_ENU = 0
+DRAW_PMU = 0
+DRAW_COSTHETAMU = 0
+DRAW_PMU_TN328 = 0
+DRAW_COSTHETAMU_TN328 = 0
+DRAW_THETAMU = 1
+DRAW_P0DX = 0
+DRAW_P0DY = 0
+DRAW_P0DZ = 0
+
+# use the TN-208 runs
+TN208_ANALYSIS = 1
+
+# cut the measured momentum
+USE_MOMENTUM_CUT = 0
+MOMENTUM_CUT_VALUE = '5000.'
+
 # Which selection to run
 P0DNUMUCCSELECTION = -1
 P0DNUMUBARCCSELECTION = -1
@@ -70,7 +88,7 @@ def main(argv):
     # cosTheta_AnaBins = P0D_SAMPLE_BINS.GetAnalysiscosThetaBins()
     binningLocation = '%s/config/Binning.xml' % p0dbanffroot
 
-    # Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, xml)
+    Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, xml)
     pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, xml)
     cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, xml)
     pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, xml)
@@ -94,7 +112,9 @@ def main(argv):
     STACK_COLORS.append(INTERFACE.kcbBrightPurple)  # 9
     STACK_COLORS.append(INTERFACE.kcbBrightGrey)  # 10
 
-    for current_sel in (P0DNUMUBARCCSELECTION, P0DNUMUCCSELECTION):
+    selections_tuple = (P0DNUMUCCSELECTION, P0DNUMUBARCCSELECTION)
+
+    for current_sel in selections_tuple:
         SELECTION = current_sel
         SELECTIONSTR = 'numubarCCInc' if (SELECTION == P0DNUMUBARCCSELECTION) else 'numuCCInc'
 
@@ -105,6 +125,12 @@ def main(argv):
         mc_data_sample_dict_MC_key = 'MC'
         mc_data_sample_dict_DATA_key = 'DATA'
         for sample_name in mc_samples_dict.keys():
+            if TN208_ANALYSIS and 'Air' in sample_name:
+                continue
+            if TN208_ANALYSIS and SELECTION == P0DNUMUBARCCSELECTION and 'FHC' in sample_name:
+                continue
+            if TN208_ANALYSIS and SELECTION == P0DNUMUCCSELECTION and 'RHC' in sample_name:
+                continue
             mc_data_sample_dict[sample_name] =\
                 {
                 mc_data_sample_dict_MC_key: mc_samples_dict[sample_name],
@@ -112,7 +138,7 @@ def main(argv):
                 }
 
         # these store how to break down the samples by particles or other grouping
-        # neutrino_selections = GetNeutrinoSelectionList()
+        neutrino_selections = GetNeutrinoSelectionList()
         particle_selections = GetLeptonCandidateSelectionList()
         evts_p_bin = 'Events / bin'
 
@@ -126,87 +152,96 @@ def main(argv):
                                                    data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
-            # # neutrino energy
-            # histstack_Enu = ROOTHStack()
-            # histstack_Enu.plot_var = 'TrueEnuNom*1e-3'
-            # histstack_Enu.x_title = 'True Neutrino Energy [GeV]'
-            # histstack_Enu.y_title = evts_p_bin_p_pot
-            # make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
-            #               histstack_Enu, 'trueE_nu')
-            # Enu_AnaBins.Reset()
+            # neutrino energy
+            if DRAW_ENU:
+                histstack_Enu = ROOTHStack()
+                histstack_Enu.plot_var = 'TrueEnuNom'
+                histstack_Enu.x_title = 'True Neutrino Energy'
+                histstack_Enu.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
+                make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+                              histstack_Enu, 'trueE_nu')
 
             # TN-328 Momentum
-            histstack_pMu_TN328 = ROOTHStack()
-            histstack_pMu_TN328.plot_var = 'LeptonMomNom'
-            histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
-            histstack_pMu_TN328.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, pMu_TN328_AnaBins,
-                       histstack_pMu_TN328, 'recoP_mu_TN328')
+            if DRAW_PMU_TN328:
+                histstack_pMu_TN328 = ROOTHStack()
+                histstack_pMu_TN328.plot_var = 'LeptonMomNom'
+                histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
+                histstack_pMu_TN328.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, pMu_TN328_AnaBins,
+                           histstack_pMu_TN328, 'recoP_mu_TN328')
 
             # lepton candidate momentum
-            histstack_pMu = ROOTHStack()
-            histstack_pMu.plot_var = 'LeptonMomNom'
-            histstack_pMu.x_title = 'Lepton Candidate Momentum'
-            histstack_pMu.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, pMu_AnaBins,
-                       histstack_pMu, 'recoP_mu_uniform')
+            if DRAW_PMU:
+                histstack_pMu = ROOTHStack()
+                histstack_pMu.plot_var = 'LeptonMomNom'
+                histstack_pMu.x_title = 'Lepton Candidate Momentum'
+                histstack_pMu.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, pMu_AnaBins,
+                           histstack_pMu, 'recoP_mu_uniform')
 
             # TN-328 cos(theta)
-            histstack_cosThetaMu_TN328 = ROOTHStack()
-            histstack_cosThetaMu_TN328.plot_var = 'LeptonCosNom'
-            histstack_cosThetaMu_TN328.x_title = 'Lepton Candidate cos(#theta)'
-            histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_cosThetaMu_TN328,
-                                cosThetaMu_TN328_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, cosThetaMu_TN328_AnaBins,
-                       histstack_cosThetaMu_TN328, 'recocosq_mu_TN328_uniform')
+            if DRAW_COSTHETAMU_TN328:
+                histstack_cosThetaMu_TN328 = ROOTHStack()
+                histstack_cosThetaMu_TN328.plot_var = 'LeptonCosNom'
+                histstack_cosThetaMu_TN328.x_title = 'Lepton Candidate Angle'
+                histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_cosThetaMu_TN328,
+                                    cosThetaMu_TN328_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, cosThetaMu_TN328_AnaBins,
+                           histstack_cosThetaMu_TN328, 'recocosq_mu_TN328_uniform')
 
             # lepton candidate cos(theta)
-            histstack_cosThetaMu = ROOTHStack()
-            histstack_cosThetaMu.plot_var = 'LeptonCosNom'
-            histstack_cosThetaMu.x_title = 'Lepton Candidate cos(#theta)'
-            histstack_cosThetaMu.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, cosThetaMu_AnaBins,
-                       histstack_cosThetaMu, 'recocosq_mu_uniform')
+            if DRAW_COSTHETAMU:
+                histstack_cosThetaMu = ROOTHStack()
+                histstack_cosThetaMu.plot_var = 'LeptonCosNom'
+                histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
+                histstack_cosThetaMu.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, cosThetaMu_AnaBins,
+                           histstack_cosThetaMu, 'recocosq_mu_uniform')
 
             # lepton candidate thetaMu
-            histstack_thetaMu = ROOTHStack()
-            histstack_thetaMu.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
-            histstack_thetaMu.x_title = 'Lepton Candidate #theta_{ND280}'
-            histstack_thetaMu.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, thetaMu_AnaBins,
-                       histstack_thetaMu, 'recothetaMu_mu_uniform')
+            if DRAW_THETAMU:
+                histstack_thetaMu = ROOTHStack()
+                histstack_thetaMu.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
+                histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
+                histstack_thetaMu.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, thetaMu_AnaBins,
+                           histstack_thetaMu, 'recothetaMu_mu_uniform')
 
             # lepton p0d position Z
-            histstack_p0dZ = ROOTHStack()
-            histstack_p0dZ.plot_var = 'vtxZ'
-            histstack_p0dZ.x_title = 'Vertex Z'
-            histstack_p0dZ.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, p0dZ_AnaBins,
-                       histstack_p0dZ, 'recoZ_mu')
+            if DRAW_P0DZ:
+                histstack_p0dZ = ROOTHStack()
+                histstack_p0dZ.plot_var = 'vtxZ'
+                histstack_p0dZ.x_title = 'Vertex Z'
+                histstack_p0dZ.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, p0dZ_AnaBins,
+                           histstack_p0dZ, 'recoZ_mu')
 
             # lepton p0d position X
-            histstack_p0dX = ROOTHStack()
-            histstack_p0dX.plot_var = 'vtxX'
-            histstack_p0dX.x_title = 'Vertex X'
-            histstack_p0dX.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, p0dX_AnaBins,
-                       histstack_p0dX, 'recoX_mu')
+            if DRAW_P0DX:
+                histstack_p0dX = ROOTHStack()
+                histstack_p0dX.plot_var = 'vtxX'
+                histstack_p0dX.x_title = 'Vertex X'
+                histstack_p0dX.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, p0dX_AnaBins,
+                           histstack_p0dX, 'recoX_mu')
 
             # lepton p0d position Y
-            histstack_p0dY = ROOTHStack()
-            histstack_p0dY.plot_var = 'vtxY'
-            histstack_p0dY.x_title = 'Vertex Y'
-            histstack_p0dY.y_title = evts_p_bin_p_pot
-            ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
-            make_stack(smpls, particle_selections, p0dY_AnaBins,
-                       histstack_p0dY, 'recoY_mu')
+            if DRAW_P0DY:
+                histstack_p0dY = ROOTHStack()
+                histstack_p0dY.plot_var = 'vtxY'
+                histstack_p0dY.x_title = 'Vertex Y'
+                histstack_p0dY.y_title = evts_p_bin_p_pot
+                ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
+                make_stack(smpls, particle_selections, p0dY_AnaBins,
+                           histstack_p0dY, 'recoY_mu')
     del engine
 
 
@@ -267,7 +302,8 @@ class selection_info(object):
 
 
 def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
-    """Take evt_sample (sample) and separate it by
+    """
+    Take evt_sample (sample) and separate it by
     true_selections (selection_info). The histogram is stored in
     anaBins (ROOT.AnaysisBins) with the histogram labels in hstack (ROOTHStack)
     Saved as "save_title".root  and .png (str)
@@ -301,16 +337,16 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     for entry_in_draw in range(nEntries):
         anaBins.Fill(v1[entry_in_draw])
     if anaBins.GetDivideByBinWidth():
-        print 'WARNING dividing by bin width'
-        anaBins.DivideByBinWidth()
+        print 'WARNING:', anaBins.GetName(), 'dividing by bin width'
+        anaBins.DivideByBinWidth(True)
     data_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name, data_sample.save_title))
     data_hist.SetMarkerStyle(20)
     INTERFACE.PrettyUpTH1(data_hist, hstack.x_title, hstack.y_title,
                           BLACK, BLACK)
     if anaBins.GetShowOverflow():
-        legend.AddEntry(data_hist, 'DATA (Overflow shown)', 'LE')
+        legend.AddEntry(data_hist, 'DATA (Overflow shown)', 'LPE')
     else:
-        legend.AddEntry(data_hist, 'DATA', 'LE')
+        legend.AddEntry(data_hist, 'DATA', 'LPE')
     anaBins.Reset()
     anaBins.Sumw2(False)
     data_stats = TLegend(coords.PaveStats_Data_X1, coords.PaveStats_Data_Y1,
@@ -325,11 +361,11 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
+        mc_hist = None
 
-        mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
-        sand_nEntries = sand_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
-        if mc_nEntries > 0:
-            mc_v1 = mc_sample.chain.GetV1()
+        if not ROOT.TString(a_selection.cuts.GetName()).Contains('Sand'):
+            mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+            mc_v1 = mc_sample.getTChain().GetV1()
             for entry_in_draw in range(mc_nEntries):
                 anaBins.Fill(mc_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
@@ -337,23 +373,22 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
             mc_hist = anaBins.GetTH1DClone('mc_h1d_%s_%s' % (tmp_save_name,
                                                              mc_sample.save_title))
             mc_hist.Scale(mc_sample.scale)
-            anaBins.Reset()
-        elif sand_nEntries > 0:
-            sand_v1 = sand_sample.chain.GetV1()
+
+        else:
+            sand_nEntries = sand_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+            sand_v1 = sand_sample.getTChain().GetV1()
             for entry_in_draw in range(sand_nEntries):
                 anaBins.Fill(sand_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
-            sand_hist = anaBins.GetTH1DClone('sand_h1d_%s_%s' % (tmp_save_name,
-                                                                 sand_sample.save_title))
-            sand_hist.Scale(sand_sample.scale)
-            mc_hist.Add(sand_hist)
-        else:
-            print 'ERROR: No entries in neither magnet nor sand MC!'
+            mc_hist = anaBins.GetTH1DClone('sand_h1d_%s_%s' % (tmp_save_name,
+                                                               sand_sample.save_title))
+            mc_hist.Scale(sand_sample.scale)
+
         INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
                               STACK_COLORS[index])
-        legend.AddEntry(mc_hist, a_selection.legend_label, 'f')
         mc_hists.append(mc_hist)
+        legend.AddEntry(mc_hist, a_selection.legend_label, 'f')
         anaBins.Reset()
 
     mc_hists.reverse()
@@ -401,8 +436,8 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     mc_stats.Draw()
 
     canvas.SetFillColor(0)
-    if(ROOT.gPad.GetPrimitive('TFrame')):
-        ROOT.gPad.GetPrimitive('TFrame').SetFillColor(0)
+    # if(ROOT.gPad.GetPrimitive('TFrame')):
+    #     ROOT.gPad.GetPrimitive('TFrame').SetFillColor(0)
 
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
@@ -539,46 +574,13 @@ def GetMonteCarloSamples():
 
     """
     RunSyst_New_NEUT_TTREE_name = 'all'
-    file_path = getenv('SYSTEMATICSROOT')
+    # file_path = getenv('SYSTEMATICSROOT')
+    file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     NEUTP6B = join(file_path, 'mcp6_Spin_B', 'neut')
     NEUTP6L = join(file_path, 'mcp6_Spin_L', 'neut')
     SAND = join(file_path, 'mcp6_Spin_B', 'sand')
-    # chn_NEUTRun2Air = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun2Wtr = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun3bAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun3cAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun4Air = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun4Wtr = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun5cWtr = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun6bAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun6cAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun6dAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun6eAir = TChain(RunSyst_New_NEUT_TTREE_name)
-    # chn_NEUTRun7bWtr = TChain(RunSyst_New_NEUT_TTREE_name)
-    # Run2Air = RN.RUN2A.lowupjoin() + '_hadd.root'
-    # Run2Wtr = RN.RUN2W.lowupjoin() + '_hadd.root'
-    # Run3bAir = RN.RUN3B.lowupjoin() + '_hadd.root'
-    # Run3cAir = RN.RUN3C.lowupjoin() + '_hadd.root'
-    # Run4Air = RN.RUN4A.lowupjoin() + '_hadd.root'
-    # Run4Wtr = RN.RUN4W.lowupjoin() + '_hadd.root'
-    # Run5cWtr = RN.RUN5C.lowupjoin() + '_hadd.root'
-    # Run6bAir = RN.RUN6B.lowupjoin() + '_hadd.root'
-    # Run6cAir = RN.RUN6C.lowupjoin() + '_hadd.root'
-    # Run6dAir = RN.RUN6D.lowupjoin() + '_hadd.root'
-    # Run6eAir = RN.RUN6E.lowupjoin() + '_hadd.root'
-    # Run7bWtr = RN.RUN7B.lowupjoin() + '_hadd.root'
-    # chn_NEUTRun2Air.Add(join(file_path, NEUTP6B, Run2Air))
-    # chn_NEUTRun2Wtr.Add(join(file_path, NEUTP6B, Run2Wtr))
-    # chn_NEUTRun3bAir.Add(join(file_path, NEUTP6B, Run3bAir))
-    # chn_NEUTRun3cAir.Add(join(file_path, NEUTP6B, Run3cAir))
-    # chn_NEUTRun4Air.Add(join(file_path, NEUTP6B, Run4Air))
-    # chn_NEUTRun4Wtr.Add(join(file_path, NEUTP6B, Run4Wtr))
-    # chn_NEUTRun5cWtr.Add(join(file_path, NEUTP6B, Run5cWtr))
-    # chn_NEUTRun6bAir.Add(join(file_path, NEUTP6B, Run6bAir))
-    # chn_NEUTRun6dAir.Add(join(file_path, NEUTP6B, Run6dAir))
-    # chn_NEUTRun6cAir.Add(join(file_path, NEUTP6B, Run6cAir))
-    # chn_NEUTRun6eAir.Add(join(file_path, NEUTP6B, Run6eAir))
-    # chn_NEUTRun7bWtr.Add(join(file_path, NEUTP6L, Run7bWtr))
+    T2K = ROOT.TotalPOT()
+
     chn_NEUTRun2Air = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN2A.iter_name(NEUTP6B))
     chn_NEUTRun2Wtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN2W.iter_name(NEUTP6B))
     chn_NEUTRun3bAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN3B.iter_name(NEUTP6B))
@@ -596,61 +598,64 @@ def GetMonteCarloSamples():
     chn_SANDRun3AirRHC = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.SANDRHC.iter_name(SAND))
 
     # FHC, P0D water-in
-    chn_FHC_Wtr = chn_NEUTRun2Wtr
-    chn_FHC_Wtr.Add(chn_NEUTRun4Wtr)
+    chn_FHC_Wtr = chn_NEUTRun4Wtr
+    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC, Water-In', 'fhc_water')
+    FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-In, Sand', 'fhc_water_sand')
+    if not TN208_ANALYSIS:
+        chn_FHC_Wtr.Add(chn_NEUTRun2Wtr)
+        FHC_Wtr.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCWaterMC()
+        FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
+        FHC_Wtr_Snd.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCAirSandMC()
+    else:
+        FHC_Wtr.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTRun4WaterMC()
+        FHC_Wtr.data_pot = T2K.GetPOTRun4WaterData()
+        FHC_Wtr_Snd.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTFHCAirSandMC()
 
     # FHC, P0D water-out
-    chn_FHC_Air = chn_NEUTRun2Air
-    chn_FHC_Air.Add(chn_NEUTRun3bAir)
-    chn_FHC_Air.Add(chn_NEUTRun3cAir)
-    chn_FHC_Air.Add(chn_NEUTRun4Air)
+    if not TN208_ANALYSIS:
+        chn_FHC_Air = chn_NEUTRun4Air
+        FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC, Water-Out', 'fhc_air')
+        FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-Out, Sand', 'fhc_air_sand')
+        chn_FHC_Air.Add(chn_NEUTRun3bAir)
+        chn_FHC_Air.Add(chn_NEUTRun3cAir)
+        chn_FHC_Air.Add(chn_NEUTRun2Air)
+        FHC_Air.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirMC()
+        FHC_Air.data_pot = T2K.GetPOTFHCAirData()
+        FHC_Air_Snd.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirSandMC()
 
     # RHC, P0D water-in
     chn_RHC_Wtr = chn_NEUTRun5cWtr
-    chn_RHC_Wtr.Add(chn_NEUTRun7bWtr)
+    RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-In, Sand', 'rhc_water_sand')
+    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC, Water-In', 'rhc_water')
+    if not TN208_ANALYSIS:
+        chn_RHC_Wtr.Add(chn_NEUTRun7bWtr)
+        RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
+        RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
+        RHC_Wtr_Snd.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCAirSandMC()
+    else:
+        RHC_Wtr.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRun5cWaterMC()
+        RHC_Wtr.data_pot = T2K.GetPOTRun5cWaterData()
+        RHC_Wtr_Snd.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRHCAirSandMC()
 
     # RHC, P0D water-out
-    chn_RHC_Air = chn_NEUTRun6bAir
-    chn_RHC_Air.Add(chn_NEUTRun6cAir)
-    chn_RHC_Air.Add(chn_NEUTRun6dAir)
-    chn_RHC_Air.Add(chn_NEUTRun6eAir)
-
-    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC, Water-In', 'fhc_water')
-    FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC, Water-Out', 'fhc_air')
-    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC, Water-In', 'rhc_water')
-    RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC, Water-Out', 'rhc_air')
-    FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-In, Sand', 'fhc_water_sand')
-    FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' FHC, Water-Out, Sand', 'fhc_air_sand')
-    RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-In, Sand', 'rhc_water_sand')
-    RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-Out, Sand', 'rhc_air_sand')
-
-    T2K = ROOT.TotalPOT()
-    # TN80 = ROOT.TN80POT()
-    # FHC_Wtr.scale = TN80.GetPOTWaterDataWitouthRun1()/T2K.GetPOTFHCWaterMC()
-    # FHC_Air.scale = TN80.GetPOTAirData()/T2K.GetPOTFHCAirMC()
-    FHC_Wtr.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCWaterMC()
-    FHC_Air.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirMC()
-    RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
-    RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
-
-    FHC_Wtr_Snd.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCAirSandMC()
-    FHC_Air_Snd.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirSandMC()
-    RHC_Wtr_Snd.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCAirSandMC()
-    RHC_Air_Snd.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirSandMC()
-
-    # FHC_Wtr.data_pot = TN80.GetPOTWaterData()
-    # FHC_Air.data_pot = TN80.GetPOTAirData()
-    FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
-    FHC_Air.data_pot = T2K.GetPOTFHCAirData()
-    RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
-    RHC_Air.data_pot = T2K.GetPOTRHCAirData()
+    if not TN208_ANALYSIS:
+        chn_RHC_Air = chn_NEUTRun6bAir
+        chn_RHC_Air.Add(chn_NEUTRun6cAir)
+        chn_RHC_Air.Add(chn_NEUTRun6dAir)
+        chn_RHC_Air.Add(chn_NEUTRun6eAir)
+        RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC, Water-Out', 'rhc_air')
+        RHC_Air.data_pot = T2K.GetPOTRHCAirData()
+        RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
+        RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' RHC, Water-Out, Sand', 'rhc_air_sand')
+        RHC_Air_Snd.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirSandMC()
 
     all_samples = {
             'FHC_Wtr': {'Magnet': FHC_Wtr, 'Sand': FHC_Wtr_Snd},
-            'FHC_Air': {'Magnet': FHC_Air, 'Sand': FHC_Air_Snd},
-            'RHC_Wtr': {'Magnet': RHC_Wtr, 'Sand': RHC_Wtr_Snd},
-            'RHC_Air': {'Magnet': RHC_Air, 'Sand': RHC_Air_Snd}
+            'RHC_Wtr': {'Magnet': RHC_Wtr, 'Sand': RHC_Wtr_Snd}
     }
+    if not TN208_ANALYSIS:
+        all_samples['FHC_Air'] = {'Magnet': FHC_Air, 'Sand': FHC_Air_Snd}
+        all_samples['RHC_Air'] = {'Magnet': RHC_Air, 'Sand': RHC_Air_Snd}
     return all_samples
 
 
@@ -667,46 +672,12 @@ def GetDATAsamples():
                  'RHC_Air': RHC_Air
     }
     """
-    file_path = getenv('SYSTEMATICSROOT')
+    # file_path = getenv('SYSTEMATICSROOT')
+    file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     RunSyst_New_DATA_TTREE_name = 'nominal'
     DATAP6M = join(file_path, 'rdp6_Spin_M')
     DATAP6N = join(file_path, 'rdp6_Spin_N')
-    # chn_DATARun2Air = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun2Wtr = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun3bAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun3cAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun4Air = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun4Wtr = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun5cWtr = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun6bAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun6cAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun6dAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun6eAir = TChain(RunSyst_New_DATA_TTREE_name)
-    # chn_DATARun7bWtr = TChain(RunSyst_New_DATA_TTREE_name)
-    # Run2Air_data = RN.RUN2A.lowupjoin() + '_data_hadd.root'
-    # Run2Wtr_data = RN.RUN2W.lowupjoin() + '_data_hadd.root'
-    # Run3bAir_data = RN.RUN3B.lowupjoin() + '_data_hadd.root'
-    # Run3cAir_data = RN.RUN3C.lowupjoin() + '_data_hadd.root'
-    # Run4Air_data = RN.RUN4A.lowupjoin() + '_data_hadd.root'
-    # Run4Wtr_data = RN.RUN4W.lowupjoin() + '_data_hadd.root'
-    # Run5cWtr_data = RN.RUN5C.lowupjoin() + '_data_hadd.root'
-    # Run6bAir_data = RN.RUN6B.lowupjoin() + '_data_hadd.root'
-    # Run6cAir_data = RN.RUN6C.lowupjoin() + '_data_hadd.root'
-    # Run6dAir_data = RN.RUN6D.lowupjoin() + '_data_hadd.root'
-    # Run6eAir_data = RN.RUN6E.lowupjoin() + '_data_hadd.root'
-    # Run7bWtr_data = RN.RUN7B.lowupjoin() + '_data_hadd.root'
-    # chn_DATARun2Air.Add(join(file_path, DATA6M, Run2Air_data))
-    # chn_DATARun2Wtr.Add(join(file_path, DATA6M, Run2Wtr_data))
-    # chn_DATARun3bAir.Add(join(file_path, DATA6M, Run3bAir_data))
-    # chn_DATARun3cAir.Add(join(file_path, DATA6M, Run3cAir_data))
-    # chn_DATARun4Air.Add(join(file_path, DATA6M, Run4Air_data))
-    # chn_DATARun4Wtr.Add(join(file_path, DATA6M, Run4Wtr_data))
-    # chn_DATARun5cWtr.Add(join(file_path, DATA6M, Run5cWtr_data))
-    # chn_DATARun6bAir.Add(join(file_path, DATA6M, Run6bAir_data))
-    # chn_DATARun6dAir.Add(join(file_path, DATA6M, Run6dAir_data))
-    # chn_DATARun6cAir.Add(join(file_path, DATA6M, Run6cAir_data))
-    # chn_DATARun6eAir.Add(join(file_path, DATA6M, Run6eAir_data))
-    # chn_DATARun7bWtr.Add(join(file_path, DATA6N, Run7bWtr_data))
+    T2K = ROOT.TotalPOT()
     chn_DATARun2Air = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN2ADATA.iter_name(DATAP6M), 1, 10)
     chn_DATARun2Wtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN2WDATA.iter_name(DATAP6M), 1, 10)
     chn_DATARun3bAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN3BDATA.iter_name(DATAP6M), 1, 10)
@@ -720,42 +691,45 @@ def GetDATAsamples():
     chn_DATARun6eAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN6EDATA.iter_name(DATAP6M), 1, 10)
     chn_DATARun7bWtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN7BDATA.iter_name(DATAP6N), 1, 10)
 
-    chn_FHC_Wtr = chn_DATARun2Wtr
-    chn_FHC_Wtr.Add(chn_DATARun4Wtr)
+    chn_FHC_Wtr = chn_DATARun4Wtr
+    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC Water', 'fhc_water')
+    if not TN208_ANALYSIS:
+        chn_FHC_Wtr.Add(chn_DATARun2Wtr)
+        FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
+    else:
+        FHC_Wtr.data_pot = T2K.GetPOTRun4WaterData()
 
-    chn_FHC_Air = chn_DATARun2Air
-    chn_FHC_Air.Add(chn_DATARun3bAir)
-    chn_FHC_Air.Add(chn_DATARun3cAir)
-    chn_FHC_Air.Add(chn_DATARun4Air)
+    if not TN208_ANALYSIS:
+        chn_FHC_Air = chn_DATARun4Air
+        FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC Air', 'fhc_air')
+        chn_FHC_Air.Add(chn_DATARun3bAir)
+        chn_FHC_Air.Add(chn_DATARun3cAir)
+        chn_FHC_Air.Add(chn_DATARun2Air)
+        FHC_Air.data_pot = T2K.GetPOTFHCAirData()
 
     chn_RHC_Wtr = chn_DATARun5cWtr
-    chn_RHC_Wtr.Add(chn_DATARun7bWtr)
-
-    chn_RHC_Air = chn_DATARun6bAir
-    chn_RHC_Air.Add(chn_DATARun6cAir)
-    chn_RHC_Air.Add(chn_DATARun6dAir)
-    chn_RHC_Air.Add(chn_DATARun6eAir)
-
-    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC Water', 'fhc_water')
-    FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' FHC Air', 'fhc_air')
     RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC Water', 'rhc_water')
-    RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC Air', 'rhc_air')
+    if not TN208_ANALYSIS:
+        chn_RHC_Wtr.Add(chn_DATARun7bWtr)
+        RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
+    else:
+        RHC_Wtr.data_pot = T2K.GetPOTRun5cWaterData()
 
-    # TN80 = ROOT.TN80POT()
-    T2K = ROOT.TotalPOT()
-    # FHC_Wtr.data_pot = TN80.GetPOTWaterDataWitouthRun1()
-    # FHC_Air.data_pot = TN80.GetPOTAirData()
-    FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
-    FHC_Air.data_pot = T2K.GetPOTFHCAirData()
-    RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
-    RHC_Air.data_pot = T2K.GetPOTRHCAirData()
+    if not TN208_ANALYSIS:
+        chn_RHC_Air = chn_DATARun6bAir
+        chn_RHC_Air.Add(chn_DATARun6cAir)
+        chn_RHC_Air.Add(chn_DATARun6dAir)
+        chn_RHC_Air.Add(chn_DATARun6eAir)
+        RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC Air', 'rhc_air')
+        RHC_Air.data_pot = T2K.GetPOTRHCAirData()
 
     all_samples = {
             'FHC_Wtr': FHC_Wtr,
-            'FHC_Air': FHC_Air,
             'RHC_Wtr': RHC_Wtr,
-            'RHC_Air': RHC_Air
     }
+    if not TN208_ANALYSIS:
+        all_samples['FHC_Air'] = FHC_Air
+        all_samples['RHC_Air'] = RHC_Air
     return all_samples
 
 
@@ -765,80 +739,141 @@ def GetNeutrinoSelectionList():
     """
 
     cut = ROOT.DefineCuts()
+    sampleID = ROOT.SampleId()
+    all_nom_sel_cut = None
+
+    if SELECTION == sampleID.GetP0DNuMuCC():
+        all_nom_sel_cut = cut.muMinusSelection
+    elif SELECTION == sampleID.GetP0DNuMuBarCC():
+        all_nom_sel_cut = cut.muPlusSelection
+    else:
+        print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
+        sys.exit(1)
+    if TN208_ANALYSIS:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+    if USE_MOMENTUM_CUT:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+
     # all neutrinos
-    all_nom_sel_cut = ROOT.TCut('SelectionNom==%d' % (SELECTION))
     all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
                                  'P0D numuCC-inclusive')
 
     # muon neutrinos
-    numu_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuMu))
+    numu_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuMu)
+    if TN208_ANALYSIS:
+        numu_cc_sel_cut = cut.AndTCuts(numu_cc_sel_cut, cut.tFVTN208)
     numu_cc_sel = selection_info('numu_cc_sel', numu_cc_sel_cut,
                                  '#nu_{#mu}')
 
     # muon antineutrinos
-    numubar_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuMubar))
+    numubar_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuMubar)
+    if TN208_ANALYSIS:
+        numubar_cc_sel_cut = cut.AndTCuts(numubar_cc_sel_cut, cut.tFVTN208)
     numubar_cc_sel = selection_info('numubar_cc_sel', numubar_cc_sel_cut,
                                     '#bar{#nu}_{#mu}')
 
     # nue and nuebars
-    nuenuebar_cc_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParNuEs))
+    nuenuebar_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuEs)
+    if TN208_ANALYSIS:
+        nuenuebar_cc_sel_cut = cut.AndTCuts(nuenuebar_cc_sel_cut, cut.tFVTN208)
     nuenuebar_cc_sel = selection_info('nuenuebar_cc_sel', nuenuebar_cc_sel_cut,
                                       '#nu_{e} + #bar{#nu}_{e}')
 
     # other particles
-    other_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tParOther))
+    other_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParOther)
+    if TN208_ANALYSIS:
+        other_sel_cut = cut.AndTCuts(other_sel_cut, cut.tFVTN208)
     other_sel = selection_info('other_sel', other_sel_cut, 'other')
 
-    offv_sel_cut = cut.tOOFV
+    # OOFV but NOT sand
+    offv_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tOOFV)
+    if TN208_ANALYSIS:
+        offv_sel_cut = cut.AndTCuts(offv_sel_cut, cut.tOOFVTN208)
     offv_sel = selection_info('offv_sel', offv_sel_cut, 'OOFV')
 
+    # Sand neutrino
+    sand_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuSand)
+    sand_sel = selection_info('sand_sel', sand_sel_cut, 'Sand')
+
     neutrino_selections = [all_nom_sel, numu_cc_sel, numubar_cc_sel,
-                           nuenuebar_cc_sel, other_sel, offv_sel]
+                           nuenuebar_cc_sel, other_sel, offv_sel, sand_sel]
+
     return neutrino_selections
 
 
 def GetLeptonCandidateSelectionList():
-    """"""
+    """Make a list of lepton candidate cuts by particle"""
+
     cut = ROOT.DefineCuts()
+    sampleID = ROOT.SampleId()
+    all_nom_sel_cut = None
+
+    if SELECTION == sampleID.GetP0DNuMuCC():
+        all_nom_sel_cut = cut.muMinusSelection
+    elif SELECTION == sampleID.GetP0DNuMuBarCC():
+        all_nom_sel_cut = cut.muPlusSelection
+    else:
+        print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
+        sys.exit(1)
+
+    all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+    if USE_MOMENTUM_CUT:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
     # all selection events
-    all_nom_sel_cut = ROOT.TCut('SelectionNom==%d' % (SELECTION))
     all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
                                  'P0D numuCC-inclusive')
     # mu minuses
-    muMinus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepMuMinus))
+    muMinus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepMuMinus)
+    if TN208_ANALYSIS:
+        muMinus_sel_cut = cut.AndTCuts(muMinus_sel_cut, cut.tFVTN208)
     muMinus_sel = selection_info('muMinus_sel', muMinus_sel_cut, '#mu^{-}')
 
     # mu plus
-    muPlus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepMuPlus))
+    muPlus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepMuPlus)
+    if TN208_ANALYSIS:
+        muPlus_sel_cut = cut.AndTCuts(muPlus_sel_cut, cut.tFVTN208)
     muPlus_sel = selection_info('muPlus_sel', muPlus_sel_cut, '#mu^{+}')
 
     # pi minus
-    piMinus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepPiMinus))
+    piMinus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepPiMinus)
+    if TN208_ANALYSIS:
+        piMinus_sel_cut = cut.AndTCuts(piMinus_sel_cut, cut.tFVTN208)
     piMinus_sel = selection_info('piMinus_sel', piMinus_sel_cut, '#pi^{-}')
 
     # pi plus
-    piPlus_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepPiPlus))
+    piPlus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepPiPlus)
+    if TN208_ANALYSIS:
+        piPlus_sel_cut = cut.AndTCuts(piPlus_sel_cut, cut.tFVTN208)
     piPlus_sel = selection_info('piPlus_sel', piPlus_sel_cut, '#pi^{+}')
 
     # pi plus
-    proton_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepProton))
+    proton_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepProton)
+    if TN208_ANALYSIS:
+        proton_sel_cut = cut.AndTCuts(proton_sel_cut, cut.tFVTN208)
     proton_sel = selection_info('proton_sel', proton_sel_cut, 'p')
 
     # EM particles
-    em_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepEMParticle))
+    em_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepEMParticle)
+    if TN208_ANALYSIS:
+        em_sel_cut = cut.AndTCuts(em_sel_cut, cut.tFVTN208)
     em_sel = selection_info('em_sel', em_sel_cut, 'e^{#pm}/#gamma')
 
     # other particles
-    other_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepOther))
+    other_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepOther)
+    if TN208_ANALYSIS:
+        other_sel_cut = cut.AndTCuts(other_sel_cut, cut.tFVTN208)
     other_sel = selection_info('other_sel', other_sel_cut, 'other')
 
     # OOFV
-    oofv_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tOOFV))
+    oofv_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tOOFV)
+    if TN208_ANALYSIS:
+        oofv_sel_cut = cut.AndTCuts(oofv_sel_cut, cut.tOOFVTN208)
     oofv_sel = selection_info('oofv_sel', oofv_sel_cut, 'OOFV')
 
     # sand muons
-    sandmu_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepSand))
+    # sandmu_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepSand))
+    sandmu_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepSand)
     sandmu_sel = selection_info('sandmu_sel', sandmu_sel_cut, 'Sand muons')
 
     particle_selections = [all_nom_sel, muMinus_sel, muPlus_sel,
