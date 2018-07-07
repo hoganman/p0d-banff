@@ -18,7 +18,7 @@
     gSystem->Load("libPhysics");
     gROOT->ProcessLine("#include \"TXMLEngine.h\"");
     gSystem->Load("libP0DBANFF");
-    //P0DBANFFInterface interface;
-    //interface.LoadColorBlindPalette();
-    //printf("Loaded P0DBANFFInterface as \"interface\"\n");
+    P0DBANFFInterface interface;
+    interface.LoadColorBlindPalette();
+    printf("Loaded P0DBANFFInterface as \"interface\"\n");
 }
