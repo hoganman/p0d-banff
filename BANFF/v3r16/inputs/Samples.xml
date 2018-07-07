@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<main>
+    <Binning>
+        <fhc_fgd1_numucc0pi>
+            <pBinsEdges attr="0., 300., 400., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 3000., 5000., 30000."/>
+            <pBinsEdgesN attr="15"/>
+            <ctBinsEdges attr="-1.0,+0.6,+0.7,+0.8,+0.85,+0.90,+0.92,+0.94,+0.96,+0.98,+0.99,+1.0"/>
+            <ctBinsEdgesN attr="12"/>
+        </fhc_fgd1_numucc0pi>
+        <fhc_fgd2_numucc0pi>
+            <pBinsEdges attr="0., 300., 400., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 3000., 5000., 30000."/>
+            <pBinsEdgesN attr="15"/>
+            <ctBinsEdges attr="-1.0,+0.6,+0.7,+0.8,+0.85,+0.90,+0.92,+0.94,+0.96,+0.98,+0.99,+1.0"/>
+            <ctBinsEdgesN attr="12"/>
+        </fhc_fgd2_numucc0pi>
+    </Binning>
+</main>
+
