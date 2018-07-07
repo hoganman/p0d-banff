@@ -130,6 +130,7 @@ namespace SampleId{
 
   std::string ConvertSample(SampleEnum sample);
   std::string ConvertSampleToSelection(SampleEnum sample);
+  SampleEnum ConvertSample(std::string sample);
 
 }
 

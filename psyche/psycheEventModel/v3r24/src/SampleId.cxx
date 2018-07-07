@@ -1,5 +1,5 @@
 #include "SampleId.hxx"
-
+#include <cstring>
 
 //*********************************************************
 std::string SampleId::ConvertSample(SampleEnum sample){
@@ -170,4 +170,102 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
     else                                                  ssample = "Unassigned";
 
     return ssample;
+}
+
+//*********************************************************
+SampleId::SampleEnum SampleId::ConvertSample(std::string sample)
+//*********************************************************
+{
+    SampleEnum enum_sample = kUnassigned;
+    if( strcmp("kFGD1NuMuCC",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC;
+    else if( strcmp("kFGD1NuMuCCQE",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCQE;
+    else if( strcmp("kFGD1NuMuCC0Pi",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC0Pi;
+    else if( strcmp("kFGD1NuMuCC1Pi",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC1Pi;
+    else if( strcmp("kFGD1NuMuCCOther",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCOther;
+    else if( strcmp("kFGD1NuMuCC0PiFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC0PiFwd;
+    else if( strcmp("kFGD1NuMuCC1PiFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC1PiFwd;
+    else if( strcmp("kFGD1NuMuCCOtherFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCOtherFwd;
+    else if( strcmp("kFGD1NuMuCC0PiBwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC0PiBwd;
+    else if( strcmp("kFGD1NuMuCC1PiBwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC1PiBwd;
+    else if( strcmp("kFGD1NuMuCCOtherBwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCOtherBwd;
+    else if( strcmp("kFGD1NuMuCC0PiHAFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC0PiHAFwd;
+    else if( strcmp("kFGD1NuMuCC1PiHAFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC1PiHAFwd;
+    else if( strcmp("kFGD1NuMuCCOtherHAFwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCOtherHAFwd;
+    else if( strcmp("kFGD1NuMuCC0PiHABwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC0PiHABwd;
+    else if( strcmp("kFGD1NuMuCC1PiHABwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCC1PiHABwd;
+    else if( strcmp("kFGD1NuMuCCOtherHABwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCOtherHABwd;
+    else if( strcmp("kFGD2NuMuCC",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC;
+    else if( strcmp("kFGD2NuMuCC0Pi",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC0Pi;
+    else if( strcmp("kFGD2NuMuCC1Pi",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC1Pi;
+    else if( strcmp("kFGD2NuMuCCOther",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCOther;
+    else if( strcmp("kFGD2NuMuCC0PiFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC0PiFwd;
+    else if( strcmp("kFGD2NuMuCC1PiFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC1PiFwd;
+    else if( strcmp("kFGD2NuMuCCOtherFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCOtherFwd;
+    else if( strcmp("kFGD2NuMuCC0PiBwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC0PiBwd;
+    else if( strcmp("kFGD2NuMuCC1PiBwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC1PiBwd;
+    else if( strcmp("kFGD2NuMuCCOtherBwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCOtherBwd;
+    else if( strcmp("kFGD2NuMuCC0PiHAFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC0PiHAFwd;
+    else if( strcmp("kFGD2NuMuCC1PiHAFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC1PiHAFwd;
+    else if( strcmp("kFGD2NuMuCCOtherHAFwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCOtherHAFwd;
+    else if( strcmp("kFGD2NuMuCC0PiHABwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC0PiHABwd;
+    else if( strcmp("kFGD2NuMuCC1PiHABwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCC1PiHABwd;
+    else if( strcmp("kFGD2NuMuCCOtherHABwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCOtherHABwd;
+    else if( strcmp("kFGD1NuECC",sample.c_str()) == 0) enum_sample = kFGD1NuECC;
+    else if( strcmp("kFGD1NuECC0Pi",sample.c_str()) == 0) enum_sample = kFGD1NuECC0Pi;
+    else if( strcmp("kFGD1NuECCOther",sample.c_str()) == 0) enum_sample = kFGD1NuECCOther;
+    else if( strcmp("kFGD2NuECC",sample.c_str()) == 0) enum_sample = kFGD2NuECC;
+    else if( strcmp("kFGD2NuECC0Pi",sample.c_str()) == 0) enum_sample = kFGD2NuECC0Pi;
+    else if( strcmp("kFGD2NuECCOther",sample.c_str()) == 0) enum_sample = kFGD2NuECCOther;
+    else if( strcmp("kFGD1AntiNuMuCC",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCC;
+    else if( strcmp("kFGD1AntiNuMuCC1Track",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCC1Track;
+    else if( strcmp("kFGD1AntiNuMuCCNTracks",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCCNTracks;
+    else if( strcmp("kFGD1AntiNuMuCC0Pi",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCC0Pi;
+    else if( strcmp("kFGD1AntiNuMuCC1Pi",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCC1Pi;
+    else if( strcmp("kFGD1AntiNuMuCCOther",sample.c_str()) == 0) enum_sample = kFGD1AntiNuMuCCOther;
+    else if( strcmp("kFGD2AntiNuMuCC",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCC;
+    else if( strcmp("kFGD2AntiNuMuCC1Track",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCC1Track;
+    else if( strcmp("kFGD2AntiNuMuCCNTracks",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCCNTracks;
+    else if( strcmp("kFGD2AntiNuMuCC0Pi",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCC0Pi;
+    else if( strcmp("kFGD2AntiNuMuCC1Pi",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCC1Pi;
+    else if( strcmp("kFGD2AntiNuMuCCOther",sample.c_str()) == 0) enum_sample = kFGD2AntiNuMuCCOther;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCC;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCC1Track",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCC1Track;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCCNTracks",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCCNTracks;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCC0Pi;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCC1Pi",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCC1Pi;
+    else if( strcmp("kFGD1NuMuBkgInAntiNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD1NuMuBkgInAntiNuModeCCOther;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCC;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCC1Track",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCC1Track;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCCNTracks",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCCNTracks;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCC0Pi;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCC1Pi",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCC1Pi;
+    else if( strcmp("kFGD2NuMuBkgInAntiNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD2NuMuBkgInAntiNuModeCCOther;
+    else if( strcmp("kFGD1NuMuCCBwd",sample.c_str()) == 0) enum_sample = kFGD1NuMuCCBwd;
+    else if( strcmp("kFGD2NuMuCCBwd",sample.c_str()) == 0) enum_sample = kFGD2NuMuCCBwd;
+    else if( strcmp("kFGD1AntiNuECC",sample.c_str()) == 0) enum_sample = kFGD1AntiNuECC;
+    else if( strcmp("kFGD1AntiNuECC0Pi",sample.c_str()) == 0) enum_sample = kFGD1AntiNuECC0Pi;
+    else if( strcmp("kFGD1AntiNuECCOther",sample.c_str()) == 0) enum_sample = kFGD1AntiNuECCOther;
+    else if( strcmp("kFGD2AntiNuECC",sample.c_str()) == 0) enum_sample = kFGD2AntiNuECC;
+    else if( strcmp("kFGD2AntiNuECC0Pi",sample.c_str()) == 0) enum_sample = kFGD2AntiNuECC0Pi;
+    else if( strcmp("kFGD2AntiNuECCOther",sample.c_str()) == 0) enum_sample = kFGD2AntiNuECCOther;
+    else if( strcmp("kFGD1AntiNuEBkgInNuModeCC",sample.c_str()) == 0) enum_sample = kFGD1AntiNuEBkgInNuModeCC;
+    else if( strcmp("kFGD1AntiNuEBkgInNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD1AntiNuEBkgInNuModeCC0Pi;
+    else if( strcmp("kFGD1AntiNuEBkgInNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD1AntiNuEBkgInNuModeCCOther;
+    else if( strcmp("kFGD2AntiNuEBkgInNuModeCC",sample.c_str()) == 0) enum_sample = kFGD2AntiNuEBkgInNuModeCC;
+    else if( strcmp("kFGD2AntiNuEBkgInNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD2AntiNuEBkgInNuModeCC0Pi;
+    else if( strcmp("kFGD2AntiNuEBkgInNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD2AntiNuEBkgInNuModeCCOther;
+    else if( strcmp("kFGD1NuEBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kFGD1NuEBkgInAntiNuModeCC;
+    else if( strcmp("kFGD1NuEBkgInAntiNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD1NuEBkgInAntiNuModeCC0Pi;
+    else if( strcmp("kFGD1NuEBkgInAntiNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD1NuEBkgInAntiNuModeCCOther;
+    else if( strcmp("kFGD2NuEBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kFGD2NuEBkgInAntiNuModeCC;
+    else if( strcmp("kFGD2NuEBkgInAntiNuModeCC0Pi",sample.c_str()) == 0) enum_sample = kFGD2NuEBkgInAntiNuModeCC0Pi;
+    else if( strcmp("kFGD2NuEBkgInAntiNuModeCCOther",sample.c_str()) == 0) enum_sample = kFGD2NuEBkgInAntiNuModeCCOther;
+    else if( strcmp("kFGD1Gamma",sample.c_str()) == 0) enum_sample = kFGD1Gamma;
+    else if( strcmp("kFGD2Gamma",sample.c_str()) == 0) enum_sample = kFGD2Gamma;
+    else if( strcmp("kFGD1GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD1GammaInAntiNuMode;
+    else if( strcmp("kFGD2GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD2GammaInAntiNuMode;
+    else if( strcmp("kP0DNuMuCC",sample.c_str()) == 0) enum_sample = kP0DNuMuCC;
+    else if( strcmp("kP0DNuMuBarCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBarCC;
+    else enum_sample = kUnassigned;
+    return enum_sample;
 }
