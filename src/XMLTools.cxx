@@ -164,3 +164,41 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
     TH1D* hist = new TH1D(binningName.Data(), "", nBins, &binEdges[0]);
     return hist;
 }
+
+//**************************************************
+std::map<TString, XMLTools::AttributeMap> XMLTools::GetAllNodes()
+//**************************************************
+{
+    std::map<TString, AttributeMap> attribs;
+    if(!fRootNode || !fDoc)
+    {
+        std::cout << "No fRootNode or no fDoc" << std::endl;
+        return attribs;
+    }
+    XMLNodePointer_t node = fxml->GetChild(fRootNode);
+    XMLNodePointer_t child = fxml->GetChild(node);
+
+    while(child)
+    {
+        TString nodeName = fxml->GetNodeName(child);
+        AttributeMap a_attrib = GetAllChildAttributesFromNode(nodeName);
+        attribs[nodeName] = a_attrib;
+        child = fxml->GetNext(child);
+    }
+
+    /*
+    std::cout << attribs.size() << std::endl;
+    for(std::map<TString, AttributeMap>::iterator it0 = attribs.begin(); it0!=attribs.end(); ++it0)
+    {
+        std::cout << it0->first << std::endl;
+        AttributeMap tmp = it0->second;
+        std::cout << tmp.size() << std::endl;
+        for(AttributeMap::iterator it = tmp.begin(); it!=tmp.end(); ++it)
+        {
+            std::cout << it->first << std::endl;
+            std::cout << it->second << std::endl;
+        }
+    }
+    */
+    return attribs;
+}

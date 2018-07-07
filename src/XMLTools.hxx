@@ -5,6 +5,7 @@
 #include "TXMLEngine.h"
 #include "TH1D.h"
 #include "TString.h"
+#include <vector>
 #include <map>
 #ifdef __CINT__
 #pragma link C++ nestedclasses;
@@ -46,7 +47,9 @@ public:
     ///Get all the attributes for the input node name
     ///Key: attribute name
     ///Value: attribute value
-    AttributeMap GetAllChildAttributesFromNode(TString name);
+    XMLTools::AttributeMap GetAllChildAttributesFromNode(TString name);
+
+    std::map<TString, XMLTools::AttributeMap> GetAllNodes();
 
     ///Get from a child node the attribute with name "attrName"
     TString GetChildAttributeFromNode(TString motherNodeName, TString attrName);
