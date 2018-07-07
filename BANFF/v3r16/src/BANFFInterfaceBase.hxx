@@ -61,7 +61,7 @@ class BANFFInterfaceBase{
 
         ///The list of lists of files.
         std::string file_list;
-        
+
         ///A map that stores a vector of (string) file paths to data files, with the run
         ///identifier parameterizing the map.
         std::map<std::string, std::vector<std::string> > dataFiles;
@@ -117,7 +117,7 @@ class BANFFInterfaceBase{
         virtual void LoadEvents(){};
 
         ///Loops through the events and computes the each event total weight given the
-        ///current values of the fit parameters. 
+        ///current values of the fit parameters.
         void ComputeEventWeights();
 
         ///Reprocess the MC to make a prediction with new FitParameters values.
@@ -166,11 +166,11 @@ class BANFFInterfaceBase{
         void VaryParametersByNSigma(int nSigmaValues, double* sigmaValues, std::string fileName);
 
         ///Loops through the events and builds the reaction code breakdowns.
-        void BuildReactionCodeBreakdowns();    
+        void BuildReactionCodeBreakdowns();
 
         ///Condenses the building, saving, and resetting of the MC prediction
         ///into one method, instead of copying and pasting several lines of
-        ///code when want to do this. 
+        ///code when want to do this.
         void BuildSaveAndResetMCPrediction(std::string nameSuffix);
 };
 
