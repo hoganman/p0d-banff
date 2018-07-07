@@ -44,6 +44,7 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ] || [ $ISENSHPCQUEUEN
 
     export FLATTREEROOT=/physics/home/mhogan/flattrees
     export SYSTEMATICSROOT=/physics/home/mhogan/systematics
+    export SPLINEROOT=/physics/home/mhogan/splines
 fi
 
 if [ $HOSTNAME == $HEP ]; then
