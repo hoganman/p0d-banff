@@ -245,6 +245,7 @@ int main(int argc, char **argv){
     Int_t tLeptonPDG = kIntInit;
     Int_t tLeptonParentPDG = kIntInit;
     Int_t tLeptonGParentPDG = kIntInit;
+    Double_t tLeptonMomentum = kDoubleInit;
     Int_t tOnWaterTarget = kIntInit;
     Double_t tLeptonPositionX = kDoubleInit;
     Double_t tLeptonPositionY = kDoubleInit;
@@ -367,6 +368,7 @@ int main(int argc, char **argv){
         tree->Branch("tLeptonPDG", &tLeptonPDG, "tLeptonPDG/I");
         tree->Branch("tLeptonParentPDG", &tLeptonParentPDG, "tLeptonParentPDG/I");
         tree->Branch("tLeptonGParentPDG", &tLeptonGParentPDG, "tLeptonGParentPDG/I");
+        tree->Branch("tLeptonMomentum", &tLeptonMomentum, "tLeptonMomentum/D");
         tree->Branch("vtxX" ,&vtxX ,"vtxX/D");
         tree->Branch("vtxY" ,&vtxY ,"vtxY/D");
         tree->Branch("vtxZ" ,&vtxZ ,"vtxZ/D");
@@ -497,6 +499,7 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tLeptonPDG        = kDoubleInit;
             tLeptonParentPDG  = kDoubleInit;
             tLeptonGParentPDG = kDoubleInit;
+            tLeptonMomentum   = kDoubleInit;
             LeptonPositionX = kDoubleInit;
             LeptonPositionY = kDoubleInit;
             LeptonPositionZ = kDoubleInit;
@@ -581,22 +584,28 @@ if(debug) DEBUG(trueParticle->PDG)
                         TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
                         tQ2 = summary->TrueVertex[summary->EventSample]->Q2;
 
+                        TVector3 nu3Mom(trVtx->NuDir[0], trVtx->NuDir[1], trVtx->NuDir[2]);
+                        nu3Mom *= TrueEnuNom;
+
+
                         AnaTrueParticleB* trLepton = GetTrueVtxLepton(trVtx);
                         if(trLepton)
                         {
-                            TLorentzVector nu4Mom;
-                            TVector3 nu3Mom(trVtx->NuDir[0], trVtx->NuDir[1], trVtx->NuDir[2]);
-                            nu3Mom *= TrueEnuNom;
-                            nu4Mom.SetXYZT(nu3Mom.X(), nu3Mom.Y(), nu3Mom.Z(), TrueEnuNom);
-                            const Double_t Emu = anaUtils::GetParticleMass(ParticleId::GetParticle(trLepton->PDG));
-                            tNu  = nu4Mom.E() - Emu;
-                            //const Double_t M_N = (TrueNuPDGNom < 0) ? 939.565 : 938.27231;  // neutron vs proton mass
-                            const Double_t M_N = (TrueNuPDGNom < 0) ?
-                                                 anaUtils::GetParticleMass(ParticleId::kNeutron) :
-                                                 anaUtils::GetParticleMass(ParticleId::kProton);  // neutron vs proton mass
-                            tYbj = tNu/nu4Mom[3];
-                            tXbj = tQ2/(2.0*M_N*tNu);
-                            tW2  = M_N*M_N + 2.0*M_N*tNu - tQ2;
+                            tLeptonMomentum = trLepton->Momentum;
+                            const Double_t Mmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trLepton->PDG));
+                            if(Mmu > 0)
+                            {
+                                TLorentzVector nu4Mom;
+                                nu4Mom.SetXYZT(nu3Mom.X(), nu3Mom.Y(), nu3Mom.Z(), TrueEnuNom);
+                                const Double_t Emu = std::sqrt(tLeptonMomentum*tLeptonMomentum+Mmu*Mmu);
+                                const Double_t M_N = (TrueNuPDGNom < 0) ?
+                                                     anaUtils::GetParticleMass(ParticleId::kNeutron) :
+                                                     anaUtils::GetParticleMass(ParticleId::kProton);  // neutron vs proton mass
+                                tNu  = nu4Mom.E() - Emu;
+                                tYbj = tNu/nu4Mom[3];
+                                tXbj = tQ2/(2.0*M_N*tNu);
+                                tW2  = M_N*M_N + 2.0*M_N*tNu - tQ2;
+                            }
                         }
 
                         if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
@@ -761,7 +770,7 @@ if(debug) DEBUG(trueParticle->PDG)
     }
 
     inputFile = new TFile(inputFileName.c_str(), "READ");
-    if((Bool_t)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx"))
+    if((Bool_t)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx") && inputFile->Get("NRooTrackerVtx"))
     {
         std::cout << "Copying the NRooTrackerVtx Tree" << std::endl;
         RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
@@ -776,6 +785,15 @@ if(debug) DEBUG(trueParticle->PDG)
         header = static_cast<TTree*>(inputFile->Get("header"));
         outfile->cd();
         header->CloneTree()->Write();
+    }
+
+    TTree* config = NULL;
+    if(inputFile->Get("config"))
+    {
+        std::cout << "Copying the config Tree" << std::endl;
+        config = static_cast<TTree*>(inputFile->Get("config"));
+        outfile->cd();
+        config->CloneTree()->Write();
     }
 
     outfile->Close();
