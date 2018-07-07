@@ -459,7 +459,7 @@ int main(int argc, char** argv){
     BANFFBinnedSample* rhc_fgd2_nuccqe;
     BANFFBinnedSample* rhc_fgd2_nuccnqe;
 
-    int nSample = 6;
+    int nSamples = 6;
     bool DoNue        = (bool)ND::params().GetParameterI("BANFF.DoNueSelections");
     bool DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
     bool DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
@@ -544,7 +544,7 @@ int main(int argc, char** argv){
       rhc_fgd2_anuecc = new BANFFBinnedSample("rhc_fgd2_anuecc", SampleId::kFGD2AntiNuECC,                  2, observables, anue_axes,       throwMCStat, throwStat);
       rhc_fgd2_gamma  = new BANFFBinnedSample("rhc_fgd2_gamma",  SampleId::kFGD2GammaInAntiNuMode,          2, observables, gamma_rhc_axes,  throwMCStat, throwStat);
 
-      nSample=nSample+12;
+      nSamples = nSamples + 12;
 
       // Some idiot proof check...
       if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC")         == 0 ||
@@ -596,7 +596,7 @@ int main(int argc, char** argv){
             rhc_fgd2_anumucc1pi = new BANFFBinnedSample("rhc_fgd2_anumucc1pi", SampleId::kFGD2AntiNuMuCC1Pi,              2, observables, anucc1pi_axes,   throwMCStat, throwStat);
             rhc_fgd2_anumuccOth = new BANFFBinnedSample("rhc_fgd2_anumuccOth", SampleId::kFGD2AntiNuMuCCOther,            2, observables, anuccOth_axes,   throwMCStat, throwStat);
 
-            nSample=nSample+12;
+            nSamples = nSamples + 12;
 
             // Some idiot proof check...
             if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 0 ||
@@ -635,7 +635,7 @@ int main(int argc, char** argv){
             rhc_fgd2_nuccqe   = new BANFFBinnedSample("rhc_fgd2_nucc1tr",  SampleId::kFGD2NuMuBkgInAntiNuModeCC1Track,  2, observables, nuccqe_axes,   throwMCStat, throwStat);
             rhc_fgd2_nuccnqe  = new BANFFBinnedSample("rhc_fgd2_nuccntr",  SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes,  throwMCStat, throwStat);
 
-            nSample=nSample+8;
+            nSamples = nSamples + 8;
 
             // Some idiot proof check...
             if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
@@ -660,7 +660,7 @@ int main(int argc, char** argv){
     // ONLY NUE SELECTIONS
     else
     {
-        nSample=12;
+        nSamples = 12;
         // Some idiot proof check...
         if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
@@ -692,7 +692,7 @@ int main(int argc, char** argv){
         }
     }
 
-    BANFFSampleBase** samples = new BANFFSampleBase*[nSample];
+    BANFFSampleBase** samples = new BANFFSampleBase*[nSamples];
     int iSample = 0;
     if(!DoOnlyNue)
     {
@@ -789,7 +789,7 @@ int main(int argc, char** argv){
     {
         fitParameters->LoadObsNormParametersFromFile(
                 ND::params().GetParameterS("BANFF.ObsNormInputFile"),
-                nSample, samples,
+                nSamples, samples,
                 ND::params().GetParameterI("BANFF.RunFit.FitObsNormParams"));
     }
 
@@ -847,7 +847,7 @@ int main(int argc, char** argv){
 
     std::string diagnostic_name = "diagnostic_" + outputName;
 
-    psycheInterface* interface = new psycheInterface(nSample, samples, fitParameters, false, false, diagnostic_name);
+    psycheInterface* interface = new psycheInterface(nSamples, samples, fitParameters, false, false, diagnostic_name);
 
     //Create the fitter that we want, and pass it the interface and the name of
     //the output file.
