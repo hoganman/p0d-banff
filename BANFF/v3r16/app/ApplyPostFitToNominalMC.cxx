@@ -72,9 +72,9 @@ int main(int argc, char** argv){
 
     if(inputFileName.length() < 1)
     {
-	char* buffer[1000];
-	inputFileName = sprintf(buffer,"%s/inputs/Binning.xml", getenv("BANFFROOT"));
-	std::cout << "WARNING: Using " << buffer << as input file since none was provided!" << endl;
+	    char* buffer[1000];
+        inputFileName = Form("%s/inputs/Binning.xml", getenv("BANFFROOT"));
+	    std::cout << "WARNING: Using " << buffer << "as input file since none was provided!" << std::endl;
     }
 
     //If there is 1 command line argument, it is specifying a parameter
@@ -124,7 +124,7 @@ int main(int argc, char** argv){
         {
             pBinsEdges.at(index) = pBinsEdgesStr.at(index).Atof();
         }
-        if(attributes["pBinsEdgesN"].Atoi() != pBinsEdges.size())
+        if(attributes["pBinsEdgesN"].Atoi() != static_cast<Int_t>(pBinsEdges.size()))
         {
             std::cout << "ERROR: the number of stated pBins for "
                       << sample_name
@@ -136,7 +136,7 @@ int main(int argc, char** argv){
         {
             ctBinsEdges.at(index) = ctBinsEdgesStr.at(index).Atof();
         }
-        if(attributes["ctBinsEdgesN"].Atoi() != ctBinsEdges.size())
+        if(attributes["ctBinsEdgesN"].Atoi() != static_cast<Int_t>(ctBinsEdges.size()))
         {
             std::cout << "ERROR: the number of stated ctBins for "
                       << sample_name
@@ -194,7 +194,7 @@ int main(int argc, char** argv){
     //The ability to load observable normalization parameters if so desired,
     //likely for validation purposes.
     if(ND::params().GetParameterI("BANFF.ThrowToys.LoadObsNormParams")){
-        fitParameters->LoadObsNormParametersFromFile(((ND::params().GetParameterS("BANFF.ObsNormInputFile"))), nSamples, samples, ND::params().GetParameterI("BANFF.ThrowToys.ThrowObsNormParams"));
+        fitParameters->LoadObsNormParametersFromFile(((ND::params().GetParameterS("BANFF.ObsNormInputFile"))), nSamples, &samples[0], ND::params().GetParameterI("BANFF.ThrowToys.ThrowObsNormParams"));
     }
 
     //With the samples, observables, and fit parameters specified, create the
@@ -205,7 +205,7 @@ int main(int argc, char** argv){
     //FitParameters pointer.
     //Whether to load the detector parameters from psyche.
     //Whether to vary the psyche detector parameters.
-    psycheInterface* interface = new psycheInterface(nSamples, samples, fitParameters, ND::params().GetParameterI("BANFF.ThrowToys.LoadDetParams"), ND::params().GetParameterI("BANFF.ThrowToys.ThrowDetParams"));
+    psycheInterface* interface = new psycheInterface(nSamples, &samples[0], fitParameters, ND::params().GetParameterI("BANFF.ThrowToys.LoadDetParams"), ND::params().GetParameterI("BANFF.ThrowToys.ThrowDetParams"));
 
 
     //Create the output file that the plots will be saved into

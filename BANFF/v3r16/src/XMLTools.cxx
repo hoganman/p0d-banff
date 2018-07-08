@@ -2,7 +2,6 @@
 
 #include "XMLTools.hxx"
 #include <iostream>
-ClassImp(XMLTools)
 
 //**************************************************
 XMLTools::XMLTools()

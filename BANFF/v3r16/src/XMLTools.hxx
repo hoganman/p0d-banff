@@ -7,17 +7,8 @@
 #include "TString.h"
 #include <vector>
 #include <map>
-#ifdef __CINT__
-#pragma link C++ nestedclasses;
-#pragma link C++ nestedtypedefs;
-#pragma link C++ class std::map<TString,TString>+;
-#pragma link C++ class std::map<TString,TString>::*;
-#pragma link C++ operators std::map<TString,TString>::iterator;
-#pragma link C++ operators std::map<TString,TString>::const_iterator;
-#pragma link C++ operators std::map<TString,TString>::reverse_iterator;
-#endif
 
-class XMLTools : public TObject {
+class XMLTools {
 
 public:
     ///The constructor
@@ -69,7 +60,6 @@ protected:
 
     ///Recursively search for a node
     XMLNodePointer_t GetXMLNode(TString name, XMLNodePointer_t node);
-    ClassDef(XMLTools, 1)
 
 };
 

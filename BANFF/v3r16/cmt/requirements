@@ -9,7 +9,14 @@ author nd280-software@mailman.t2k.org
 branches cmt doc src app parameters inputs
 
 use ROOT *
-use nd280Psyche *
+use psycheSteering    v3r24 psyche
+use psycheSystematics v3r28 psyche
+use psycheSelections  v3r32 psyche
+use psycheIO          v3r18 psyche
+use psycheND280Utils  v3r26 psyche
+use psycheEventModel  v3r24 psyche
+use psycheCore        v3r26 psyche
+
 
 #Copy make fragments from nd280Policy
 make_fragment version -header=version_header -trailer=version_trailer
@@ -52,6 +59,7 @@ application RunJointFit2016 ../app/RunJointFit2016.cxx
 application Make2016PostFitFileAllParams ../app/Make2016PostFitFileAllParams.cxx
 
 application MakeND280DetectorCov ../app/MakeND280Cov.cxx
+application ApplyPostFitToNominalMC ../app/ApplyPostFitToNominalMC.cxx
 # #application ThrowToys2013 ../app/ThrowToys2013.cxx
 # #application ThrowToys2013FitBinning ../app/ThrowToys2013FitBinning.cxx
 # application BinnedToysToObsNormFile ../app/BinnedToysToObsNormFile.cxx
