@@ -15,7 +15,7 @@ import sys
 
 # toggle these to draw particular variables
 DRAW_ENU = 0
-DRAW_PMU = 0
+DRAW_PMU = 1
 DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
@@ -25,10 +25,10 @@ DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # use the TN-208 runs
-TN208_ANALYSIS = 1
+TN208_ANALYSIS = 0
 
 # cut the measured momentum
-USE_MOMENTUM_CUT = 0
+USE_MOMENTUM_CUT = 1
 MOMENTUM_CUT_VALUE = '5000.'
 
 # Which selection to run
@@ -574,8 +574,8 @@ def GetMonteCarloSamples():
 
     """
     RunSyst_New_NEUT_TTREE_name = 'all'
-    # file_path = getenv('SYSTEMATICSROOT')
-    file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
+    file_path = getenv('SYSTEMATICSROOT')
+    # file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     NEUTP6B = join(file_path, 'mcp6_Spin_B', 'neut')
     NEUTP6L = join(file_path, 'mcp6_Spin_L', 'neut')
     SAND = join(file_path, 'mcp6_Spin_B', 'sand')
@@ -672,8 +672,8 @@ def GetDATAsamples():
                  'RHC_Air': RHC_Air
     }
     """
-    # file_path = getenv('SYSTEMATICSROOT')
-    file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
+    file_path = getenv('SYSTEMATICSROOT')
+    # file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     RunSyst_New_DATA_TTREE_name = 'nominal'
     DATAP6M = join(file_path, 'rdp6_Spin_M')
     DATAP6N = join(file_path, 'rdp6_Spin_N')
