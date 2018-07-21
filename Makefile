@@ -10,12 +10,12 @@
 # executing "make" will generate all libraries and executiables
 
 LIB	:= ${P0DBANFFROOT}/lib
-SRC	:= ${P0DBANFFROOT}/src
+SRC	:= src
 MACROS  := ${P0DBANFFROOT}/macros
 BIN	:= ${P0DBANFFROOT}/bin
 DIC     := ${P0DBANFFROOT}/dict
 APP     := ${P0DBANFFROOT}/app
-VPATH    = ${PWD}:$(SRC):$(APP):$(DIC)
+# VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC)
 
 EMPTYSTRING :=
 
@@ -43,7 +43,7 @@ PARSED_C_INCLUDE_PATH	:= -I${C_INCLUDE_PATH} -I$(MACROS)
 PARSED_C_INCLUDE_PATH	:= $(subst :, -I,$(PARSED_C_INCLUDE_PATH))
 
 ##### Library path and compiler / linker / rootcint options #####
-INCLUDES := $(ROOT_INCLUDES)
+INCLUDES := -I${P0DBANFFROOT}
 
 # compiler and preprocessor flags
 # Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
@@ -51,48 +51,52 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
 
-ALLCLASSES :=  HEPConstants XMLTools MakeClSampleSummary MakeClFlatTree P0DBANFFInterface BenchmarkProcess Header TotalPOT TN80POT AnalysisBins Samples SampleId DefineCuts CanvasCoordinates AnalysisBins2D BANFFPostFit
+ALLCLASSES_CXX := src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/P0DBANFFInterface.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx
+ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
 
 # dict.o Object
-ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
+# ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
+ROOTDICTS_O := $(subst src, lib, $(ALLCLASSES_HXX:.hxx=dict.o))
+ROOTDICTS_H := $(subst src, lib, $(ALLCLASSES_HXX:.hxx=dict.h))
 # regular C++ .o objects
-OBJS     := $(foreach obj, $(ALLCLASSES), $(obj).o)
+# OBJS     := $(foreach obj, $(ALLCLASSES), $(obj).o)
+OBJS     := $(subst src, lib, $(ALLCLASSES:.cxx=.o))
 
 ##### All our targets#####
-ALLOBJS := $(ROOTDICTS) $(OBJS)
+ALLOBJS := $(OBJS) $(ROOTDICTS_O)
 # lib%.so Shared library Objects
-ALLLIBS		:= libP0DBANFF.so
+ALLLIBS	:= lib/libP0DBANFF.so
 # Executables
-ALLEXES         :=
+ALLEXES :=
 ##### Rules #####
 
 TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
 
-.PHONY: all clean
+.PHONY: all clean distclean
 
 all: $(TGT)
 
 ##### compile all the objects "ALLOBJS" #####
-%dict.o: %dict.C
+lib/%dict.o: dict/%dict.C
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%.o: $(SRC)/%.cxx
+lib/%.o: src/%.cxx
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 #############################################
 
 ##### compile ROOTCINT dictionary #####
-%dict.C: %.hxx
+dict/%dict.C: src/%.hxx
 	$(ROOTCINT) -f $@ -c $<
 #############################################
 
 ##########  # master library   #############
-libP0DBANFF.so: $(ALLOBJS)
-	$(LD) $(LDFLAGS) $^ -o $(LIB)/$@
+lib/libP0DBANFF.so: $(ALLOBJS)
+	$(LD) $(LDFLAGS) $^ -o $@
 #############################################
 
 #add a rule to clean all generated files from your directory
 clean:
-	$(RM) ./*.d ./*dict.* $(APP)/*pyc
+	$(RM) $(APP)/*pyc
 
 distclean:
-	$(RM) $(BIN)/*exe $(LIB)/*.so $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* ./*dict.* $(APP)/*pyc
+	$(RM) $(BIN)/*exe $(LIB)/*o $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* ./*dict.* $(APP)/*pyc lib/*.d
