@@ -40,17 +40,17 @@ XsecSysts ParamNameToXsecSysts(std::string paramName){
     else if((paramName == "RPA_C") || (paramName == "RPA_O")) return RPA;  //TODO: This probably needs to be changed to separate these two... either that or handle them properly elsewhere.
     else if(paramName == "SF_RFG") return SF_RFG;
     else if(paramName == "CCNUE_0") return CCNuE;
-   
+
     // Kendall's parameter
     else if(paramName == "COH_BS") return COH_BS;
 
-	
+
 	//Now those for 2016 with some additions and some names that have changed
     else if(paramName == "2p2h_shape_C") return MEC_shape_C;
     else if(paramName == "2p2h_shape_O") return MEC_shape_O;
     else if(paramName == "CC_DIS") return DISMPISHP;
     else if(paramName == "ISO_BKG") return BgSclRes;
-	
+
     //If it is not in the above list, it's a normalization parameter, so return
     //NORM, i.e. -1.
     else return NORM;
@@ -69,225 +69,168 @@ void WeightFile::MakeSplines(int entry)
     fChain->GetEntry(entry);
 
     //Start by making sure the splines are all clear.
-    for(int i = 0; i < SampleId::kNSamples; i++){
-
+    for(int i = 0; i < SampleId::kNSamples; i++)
+    {
 
       //Delete the individual splines.
-      if(MAQESpline!=NULL){ 
-	if(MAQESpline[i] != NULL){
-	  delete MAQESpline[i];
-	}
-      }
+      if(MAQESpline)
+          if(MAQESpline[i])
+              MAQESpline[i]->Delete();
 
-      if(MARESSpline!=NULL){
-	if(MARESSpline[i] != NULL){
-	  delete MARESSpline[i];
-	}
-      }
+      if(MARESSpline)
+          if(MARESSpline[i])
+              MARESSpline[i]->Delete();
 
-      if(DISMPISHPSpline!=NULL){
-	if(DISMPISHPSpline[i] != NULL){
-	  delete DISMPISHPSpline[i];
-	}
-      }
+      if(DISMPISHPSpline)
+          if(DISMPISHPSpline[i])
+              DISMPISHPSpline[i]->Delete();
 
-      if(SFSpline!=NULL){
-	if(SFSpline[i] != NULL){
-	  delete SFSpline[i];
-	}
-      }
-      if(EBSpline!=NULL){
-	if(EBSpline[i] != NULL){
-	  delete EBSpline[i];
-	}
-      }
+      if(SFSpline)
+          if(SFSpline[i])
+            SFSpline[i]->Delete();
 
-      if(PFSpline!=NULL){
-	if(PFSpline[i] != NULL){
-	  delete PFSpline[i];
-	}
-      }
+      if(EBSpline)
+          if(EBSpline[i])
+              EBSpline[i]->Delete();
 
-      if(PDDSpline!=NULL){
-	if(PDDSpline[i] != NULL){
-	  delete PDDSpline[i];
-	}
-      }
+      if(PFSpline)
+          if(PFSpline[i])
+              PFSpline[i]->Delete();
 
-      if(FSI_PI_ABSSpline!=NULL){
-	if(FSI_PI_ABSSpline[i] != NULL){
-	  delete FSI_PI_ABSSpline[i];
-	}
-      }
+      if(PDDSpline)
+          if(PDDSpline[i])
+              PDDSpline[i]->Delete();
 
-      if(FSI_CEX_LOSpline!=NULL){
-	if(FSI_CEX_LOSpline[i] != NULL){
-	  delete FSI_CEX_LOSpline[i];
-	}
-      }
+      if(FSI_PI_ABSSpline)
+          if(FSI_PI_ABSSpline[i])
+              FSI_PI_ABSSpline[i]->Delete();
 
-      if(FSI_INEL_LOSpline!=NULL){
-	if(FSI_INEL_LOSpline[i] != NULL){
-	  delete FSI_INEL_LOSpline[i];
-	}
-      }
+      if(FSI_CEX_LOSpline)
+          if(FSI_CEX_LOSpline[i])
+              FSI_CEX_LOSpline[i]->Delete();
 
-      if(FSI_PI_PRODSpline!=NULL){
-	if(FSI_PI_PRODSpline[i] != NULL){
-	  delete FSI_PI_PRODSpline[i];
-	}
-      }
+      if(FSI_INEL_LOSpline)
+          if(FSI_INEL_LOSpline[i])
+              FSI_INEL_LOSpline[i]->Delete();
 
-      if(FSI_CEX_HISpline!=NULL){
-	if(FSI_CEX_HISpline[i] != NULL){
-	  delete FSI_CEX_HISpline[i];
-	}
-      }
+      if(FSI_PI_PRODSpline)
+          if(FSI_PI_PRODSpline[i])
+              FSI_PI_PRODSpline[i]->Delete();
 
-      if(FSI_INEL_HISpline!=NULL){
-	if(FSI_INEL_HISpline[i] != NULL){
-	  delete FSI_INEL_HISpline[i];
-	}
-      }
+      if(FSI_CEX_HISpline)
+          if(FSI_CEX_HISpline[i])
+              FSI_CEX_HISpline[i]->Delete();
 
-      if(PDD_MECSpline!=NULL){
-	if(PDD_MECSpline[i] != NULL){
-	  delete PDD_MECSpline[i];
-	}
-      }
+      if(FSI_INEL_HISpline)
+          if(FSI_INEL_HISpline[i])
+              FSI_INEL_HISpline[i]->Delete();
 
-      if(MECSpline!=NULL){
-	if(MECSpline[i] != NULL){
-	  delete MECSpline[i];
-	}
-      }
+      if(PDD_MECSpline)
+          if(PDD_MECSpline[i])
+              PDD_MECSpline[i]->Delete();
 
-      if(MEC_CSpline != NULL){ 
-	if(MEC_CSpline[i] != NULL){
-	  delete MEC_CSpline[i];
-	}
-      }
+      if(MECSpline)
+          if(MECSpline[i])
+              MECSpline[i]->Delete();
 
-      if(PF_CSpline != NULL){
-	if(PF_CSpline[i] != NULL){
-	  delete PF_CSpline[i];
-	}
-      }
+      if(MEC_CSpline)
+          if(MEC_CSpline[i])
+              MEC_CSpline[i]->Delete();
 
-      if(EB_CSpline != NULL){
-	if(EB_CSpline[i] != NULL){
-	  delete EB_CSpline[i];
-	}
-      }
+      if(PF_CSpline)
+          if(PF_CSpline[i])
+              PF_CSpline[i]->Delete();
 
-      if(MEC_OSpline != NULL){
-	if(MEC_OSpline[i] != NULL){
-	  delete MEC_OSpline[i];
-	}
-      }
+      if(EB_CSpline)
+          if(EB_CSpline[i])
+              EB_CSpline[i]->Delete();
 
-      if(PF_OSpline != NULL){
-	if(PF_OSpline[i] != NULL){
-	  delete PF_OSpline[i];
-	}
-      }
+      if(MEC_OSpline)
+          if(MEC_OSpline[i])
+              MEC_OSpline[i]->Delete();
 
-      if(EB_OSpline != NULL){ 
-	if(EB_OSpline[i] != NULL){
-	  delete EB_OSpline[i];
-	}
-      }
+      if(PF_OSpline)
+          if(PF_OSpline[i])
+              PF_OSpline[i]->Delete();
 
-      if(CA5Spline != NULL){ 
-	if(CA5Spline[i] != NULL){
-	  delete CA5Spline[i];
-	}
-      }
+      if(EB_OSpline)
+          if(EB_OSpline[i])
+              EB_OSpline[i]->Delete();
 
-      if(BgSclResSpline != NULL){
-	if(BgSclResSpline[i] != NULL){
-	  delete BgSclResSpline[i];
-	}
-      }
+      if(CA5Spline)
+          if(CA5Spline[i])
+              CA5Spline[i]->Delete();
 
-      if(SCCVSpline != NULL){ 
-	if(SCCVSpline[i] != NULL){
-	  delete SCCVSpline[i];
-	}
-      }
+      if(BgSclResSpline)
+          if(BgSclResSpline[i])
+              BgSclResSpline[i]->Delete();
 
-      if(SCCASpline != NULL){
-	if(SCCASpline[i] != NULL){
-	  delete SCCASpline[i];
-	}
-      }
+      if(SCCVSpline)
+          if(SCCVSpline[i])
+              SCCVSpline[i]->Delete();
 
-      if(SF_RFGSpline != NULL){
-	if(SF_RFGSpline[i] != NULL){
-	  delete SF_RFGSpline[i];
-	}
-      }
-      if(RPASpline != NULL){
-	if(RPASpline[i] != NULL){
-	  delete RPASpline[i];
-	}
-      }
-      if(CCNuESpline != NULL){
-	if(CCNuESpline[i] != NULL){
-	  delete CCNuESpline[i];
-	}
-      }
-		
-      if(PDD_CSpline != NULL){
-	if(PDD_CSpline[i] != NULL){
-	  delete PDD_CSpline[i];
-	}
-      }
-		
-      if(PDD_OSpline != NULL){
-	if(PDD_OSpline[i] != NULL){
-	  delete PDD_OSpline[i];
-	}
-      }
+      if(SCCASpline)
+          if(SCCASpline[i])
+              SCCASpline[i]->Delete();
+
+      if(SF_RFGSpline)
+          if(SF_RFGSpline[i])
+              SF_RFGSpline[i]->Delete();
+
+      if(RPASpline)
+          if(RPASpline[i])
+              RPASpline[i]->Delete();
+
+      if(CCNuESpline)
+          if(CCNuESpline[i])
+              CCNuESpline[i]->Delete();
+
+      if(PDD_CSpline)
+          if(PDD_CSpline[i])
+              PDD_CSpline[i]->Delete();
+
+      if(PDD_OSpline)
+          if(PDD_OSpline[i])
+              PDD_OSpline[i]->Delete();
     }
 
     //Delete the pointers to the arrays.
     //The individual elements have already been deleted, so use delete
     //instead of delete[].
-    if(MAQESpline!=NULL) delete[] MAQESpline;
-    if(MARESSpline!=NULL) delete[] MARESSpline;
-    if(DISMPISHPSpline!=NULL) delete[] DISMPISHPSpline;
-    if(SFSpline!=NULL) delete[] SFSpline;
-    if(EBSpline!=NULL) delete[] EBSpline;
-    if(PFSpline!=NULL) delete[] PFSpline;
-    if(PDDSpline!=NULL) delete[] PDDSpline;
-    if(FSI_PI_ABSSpline!=NULL) delete[] FSI_PI_ABSSpline;
-    if(FSI_CEX_LOSpline!=NULL) delete[] FSI_CEX_LOSpline;
-    if(FSI_INEL_LOSpline!=NULL) delete[] FSI_INEL_LOSpline;
-    if(FSI_PI_PRODSpline!=NULL) delete[] FSI_PI_PRODSpline;
-    if(FSI_CEX_HISpline!=NULL) delete[] FSI_CEX_HISpline;
-    if(FSI_INEL_HISpline!=NULL) delete[] FSI_INEL_HISpline;
-    if(PDD_MECSpline!=NULL) delete[] PDD_MECSpline;
-    if(MECSpline!=NULL) delete[] MECSpline;
+    if(MAQESpline) delete[] MAQESpline;
+    if(MARESSpline) delete[] MARESSpline;
+    if(DISMPISHPSpline) delete[] DISMPISHPSpline;
+    if(SFSpline) delete[] SFSpline;
+    if(EBSpline) delete[] EBSpline;
+    if(PFSpline) delete[] PFSpline;
+    if(PDDSpline) delete[] PDDSpline;
+    if(FSI_PI_ABSSpline) delete[] FSI_PI_ABSSpline;
+    if(FSI_CEX_LOSpline) delete[] FSI_CEX_LOSpline;
+    if(FSI_INEL_LOSpline) delete[] FSI_INEL_LOSpline;
+    if(FSI_PI_PRODSpline) delete[] FSI_PI_PRODSpline;
+    if(FSI_CEX_HISpline) delete[] FSI_CEX_HISpline;
+    if(FSI_INEL_HISpline) delete[] FSI_INEL_HISpline;
+    if(PDD_MECSpline) delete[] PDD_MECSpline;
+    if(MECSpline) delete[] MECSpline;
 
-    if(MEC_CSpline != NULL) delete[] MEC_CSpline;
-    if(PF_CSpline != NULL) delete[] PF_CSpline;
-    if(EB_CSpline != NULL) delete[] EB_CSpline;
+    if(MEC_CSpline) delete[] MEC_CSpline;
+    if(PF_CSpline) delete[] PF_CSpline;
+    if(EB_CSpline) delete[] EB_CSpline;
 
-    if(MEC_OSpline != NULL) delete[] MEC_OSpline;
-    if(PF_OSpline != NULL) delete[] PF_OSpline;
-    if(EB_OSpline != NULL) delete[] EB_OSpline;
+    if(MEC_OSpline) delete[] MEC_OSpline;
+    if(PF_OSpline) delete[] PF_OSpline;
+    if(EB_OSpline) delete[] EB_OSpline;
 
-    if(CA5Spline != NULL) delete[] CA5Spline;
-    if(BgSclResSpline != NULL) delete[] BgSclResSpline;
-    if(SCCVSpline != NULL) delete[] SCCVSpline;
-    if(SCCASpline != NULL) delete[] SCCASpline;
-    if(SF_RFGSpline != NULL) delete[] SF_RFGSpline;
-    if(RPASpline != NULL) delete[] RPASpline;
-    if(CCNuESpline != NULL) delete[] CCNuESpline;
+    if(CA5Spline) delete[] CA5Spline;
+    if(BgSclResSpline) delete[] BgSclResSpline;
+    if(SCCVSpline) delete[] SCCVSpline;
+    if(SCCASpline) delete[] SCCASpline;
+    if(SF_RFGSpline) delete[] SF_RFGSpline;
+    if(RPASpline) delete[] RPASpline;
+    if(CCNuESpline) delete[] CCNuESpline;
 
-    if(PDD_CSpline != NULL) delete[] PDD_CSpline;
-    if(PDD_OSpline != NULL) delete[] PDD_OSpline;
+    if(PDD_CSpline) delete[] PDD_CSpline;
+    if(PDD_OSpline) delete[] PDD_OSpline;
 
     //Set up the spline arrays.
     //Here we use NSamples as read in from the tree.
@@ -365,62 +308,62 @@ void WeightFile::MakeSplines(int entry)
         PDD_CSpline[i] = NULL;
         PDD_OSpline[i] = NULL;
 
-        if(MAQEGraph->At(i) != NULL){
+        if(MAQEGraph->At(i)){
             if(((TGraph*)(MAQEGraph->At(i)))->GetN()>1) MAQESpline[i] = new TSpline3("MAQESpline",(TGraph*)(MAQEGraph->At(i)));
         }
 
-        if(MARESGraph->At(i) != NULL){
+        if(MARESGraph->At(i)){
             if(((TGraph*)(MARESGraph->At(i)))->GetN()>1) MARESSpline[i] = new TSpline3("MARESSpline",(TGraph*)(MARESGraph->At(i)));
         }
 
-        if(DISMPISHPGraph->At(i) != NULL){
+        if(DISMPISHPGraph->At(i)){
             if(((TGraph*)(DISMPISHPGraph->At(i)))->GetN()>1) DISMPISHPSpline[i] = new TSpline3("DISMPISHPSpline",(TGraph*)(DISMPISHPGraph->At(i)));
         }
 
-        if(FSI_PI_ABSGraph->At(i) != NULL){
+        if(FSI_PI_ABSGraph->At(i)){
             if(((TGraph*)(FSI_PI_ABSGraph->At(i)))->GetN()>1) FSI_PI_ABSSpline[i] = new TSpline3("FSI_PI_ABSSpline",(TGraph*)(FSI_PI_ABSGraph->At(i)));
         }
 
-        if(FSI_PI_PRODGraph->At(i) != NULL){
+        if(FSI_PI_PRODGraph->At(i)){
             if(((TGraph*)(FSI_PI_PRODGraph->At(i)))->GetN()>1) FSI_PI_PRODSpline[i] = new TSpline3("FSI_PI_PRODSpline",(TGraph*)(FSI_PI_PRODGraph->At(i)));
         }
 
-        if(FSI_CEX_LOGraph->At(i) != NULL){
+        if(FSI_CEX_LOGraph->At(i)){
             if(((TGraph*)(FSI_CEX_LOGraph->At(i)))->GetN()>1) FSI_CEX_LOSpline[i] = new TSpline3("FSI_CEX_LOSpline",(TGraph*)(FSI_CEX_LOGraph->At(i)));
         }
 
-        if(FSI_CEX_HIGraph->At(i) != NULL){
+        if(FSI_CEX_HIGraph->At(i)){
             if(((TGraph*)(FSI_CEX_HIGraph->At(i)))->GetN()>1) FSI_CEX_HISpline[i] = new TSpline3("FSI_CEX_HISpline",(TGraph*)(FSI_CEX_HIGraph->At(i)));
         }
 
-        if(FSI_INEL_LOGraph->At(i) != NULL){
+        if(FSI_INEL_LOGraph->At(i)){
             if(((TGraph*)(FSI_INEL_LOGraph->At(i)))->GetN()>1) FSI_INEL_LOSpline[i] = new TSpline3("FSI_INEL_LOSpline",(TGraph*)(FSI_INEL_LOGraph->At(i)));
         }
 
-        if(FSI_INEL_HIGraph->At(i) != NULL){
+        if(FSI_INEL_HIGraph->At(i)){
             if(((TGraph*)(FSI_INEL_HIGraph->At(i)))->GetN()>1) FSI_INEL_HISpline[i] = new TSpline3("FSI_INEL_HISpline",(TGraph*)(FSI_INEL_HIGraph->At(i)));
         }
-		        
+
 		//Next, if we're dealing with a 2013 style file, make those splines.
         if(fileType == 0){
 
-            if(SFGraph->At(i) != NULL){
+            if(SFGraph->At(i)){
                 if(((TGraph*)(SFGraph->At(i)))->GetN()>1) SFSpline[i] = new TSpline3("SFSpline",(TGraph*)(SFGraph->At(i)));
             }
 
-            if(EBGraph->At(i) != NULL){
+            if(EBGraph->At(i)){
                 if(((TGraph*)(EBGraph->At(i)))->GetN()>1) EBSpline[i] = new TSpline3("EBSpline",(TGraph*)(EBGraph->At(i)));
             }
 
-            if(PFGraph->At(i) != NULL){
+            if(PFGraph->At(i)){
                 if(((TGraph*)(PFGraph->At(i)))->GetN()>1) PFSpline[i] = new TSpline3("PFSpline",(TGraph*)(PFGraph->At(i)));
             }
 
-            if(PDDGraph->At(i) != NULL){
+            if(PDDGraph->At(i)){
                 if(((TGraph*)(PDDGraph->At(i)))->GetN()>1) PDDSpline[i] = new TSpline3("PDDSpline",(TGraph*)(PDDGraph->At(i)));
             }
 
-            if(MECGraph->At(i) != NULL){
+            if(MECGraph->At(i)){
                 if(((TGraph*)(MECGraph->At(i)))->GetN()>1) MECSpline[i] = new TSpline3("MECSpline",(TGraph*)(MECGraph->At(i)));
             }
         }
@@ -428,50 +371,50 @@ void WeightFile::MakeSplines(int entry)
         //If it's a 2014 or 2015 style file, make those splines.
         if(fileType == 1 || fileType == 2){
 
-            if(MEC_CGraph->At(i) != NULL){
+            if(MEC_CGraph->At(i)){
                 if(((TGraph*)(MEC_CGraph->At(i)))->GetN()>1) MEC_CSpline[i] = new TSpline3("MEC_CSpline",(TGraph*)(MEC_CGraph->At(i)));
             }
 
-            if(PF_CGraph->At(i) != NULL){
+            if(PF_CGraph->At(i)){
                 if(((TGraph*)(PF_CGraph->At(i)))->GetN()>1) PF_CSpline[i] = new TSpline3("PF_CSpline",(TGraph*)(PF_CGraph->At(i)));
             }
 
-            if(EB_CGraph->At(i) != NULL){
+            if(EB_CGraph->At(i)){
                 if(((TGraph*)(EB_CGraph->At(i)))->GetN()>1) EB_CSpline[i] = new TSpline3("EB_CSpline",(TGraph*)(EB_CGraph->At(i)));
             }
 
-            if(MEC_OGraph->At(i) != NULL){
+            if(MEC_OGraph->At(i)){
                 if(((TGraph*)(MEC_OGraph->At(i)))->GetN()>1) MEC_OSpline[i] = new TSpline3("MEC_OSpline",(TGraph*)(MEC_OGraph->At(i)));
             }
 
-            if(PF_OGraph->At(i) != NULL){
+            if(PF_OGraph->At(i)){
                 if(((TGraph*)(PF_OGraph->At(i)))->GetN()>1) PF_OSpline[i] = new TSpline3("PF_OSpline",(TGraph*)(PF_OGraph->At(i)));
             }
 
-            if(EB_OGraph->At(i) != NULL){
+            if(EB_OGraph->At(i)){
                 if(((TGraph*)(EB_OGraph->At(i)))->GetN()>1) EB_OSpline[i] = new TSpline3("EB_OSpline",(TGraph*)(EB_OGraph->At(i)));
             }
 
-            if(CA5Graph->At(i) != NULL){
+            if(CA5Graph->At(i)){
                 if(((TGraph*)(CA5Graph->At(i)))->GetN()>1) CA5Spline[i] = new TSpline3("CA5Spline",(TGraph*)(CA5Graph->At(i)));
             }
 
-            if(BgSclResGraph->At(i) != NULL){
+            if(BgSclResGraph->At(i)){
                 if(((TGraph*)(BgSclResGraph->At(i)))->GetN()>1) BgSclResSpline[i] = new TSpline3("BgSclResSpline",(TGraph*)(BgSclResGraph->At(i)));
             }
 
-            if(SCCVGraph->At(i) != NULL){
+            if(SCCVGraph->At(i)){
                 if(((TGraph*)(SCCVGraph->At(i)))->GetN()>1) SCCVSpline[i] = new TSpline3("SCCVSpline",(TGraph*)(SCCVGraph->At(i)));
             }
 
-            if(SCCAGraph->At(i) != NULL){
+            if(SCCAGraph->At(i)){
                 if(((TGraph*)(SCCAGraph->At(i)))->GetN()>1) SCCASpline[i] = new TSpline3("SCCASpline",(TGraph*)(SCCAGraph->At(i)));
             }
 
             //We do not want splines for SF_RFG and RPA.  So just leave these
             //entries NULL.
-            
-            if(CCNuEGraph->At(i) != NULL){
+
+            if(CCNuEGraph->At(i)){
                 if(((TGraph*)(CCNuEGraph->At(i)))->GetN()>1) CCNuESpline[i] = new TSpline3("CCNuESpline",(TGraph*)(CCNuEGraph->At(i)));
             }
 
@@ -479,50 +422,50 @@ void WeightFile::MakeSplines(int entry)
         //Finally, if it's a 2016 style file, make those splines
         if(fileType == 3){
 
-            if(MEC_CGraph->At(i) != NULL){
+            if(MEC_CGraph->At(i)){
                 if(((TGraph*)(MEC_CGraph->At(i)))->GetN()>1) MEC_CSpline[i] = new TSpline3("MEC_CSpline",(TGraph*)(MEC_CGraph->At(i)));
             }
 
-            if(PF_CGraph->At(i) != NULL){
+            if(PF_CGraph->At(i)){
                 if(((TGraph*)(PF_CGraph->At(i)))->GetN()>1) PF_CSpline[i] = new TSpline3("PF_CSpline",(TGraph*)(PF_CGraph->At(i)));
             }
 
-            if(MEC_OGraph->At(i) != NULL){
+            if(MEC_OGraph->At(i)){
                 if(((TGraph*)(MEC_OGraph->At(i)))->GetN()>1) MEC_OSpline[i] = new TSpline3("MEC_OSpline",(TGraph*)(MEC_OGraph->At(i)));
             }
 
-            if(PF_OGraph->At(i) != NULL){
+            if(PF_OGraph->At(i)){
                 if(((TGraph*)(PF_OGraph->At(i)))->GetN()>1) PF_OSpline[i] = new TSpline3("PF_OSpline",(TGraph*)(PF_OGraph->At(i)));
             }
 
-            if(CA5Graph->At(i) != NULL){
+            if(CA5Graph->At(i)){
                 if(((TGraph*)(CA5Graph->At(i)))->GetN()>1) CA5Spline[i] = new TSpline3("CA5Spline",(TGraph*)(CA5Graph->At(i)));
             }
 
-            if(BgSclResGraph->At(i) != NULL){
+            if(BgSclResGraph->At(i)){
                 if(((TGraph*)(BgSclResGraph->At(i)))->GetN()>1) BgSclResSpline[i] = new TSpline3("BgSclResSpline",(TGraph*)(BgSclResGraph->At(i)));
             }
 
-            if(SCCVGraph->At(i) != NULL){
+            if(SCCVGraph->At(i)){
                 if(((TGraph*)(SCCVGraph->At(i)))->GetN()>1) SCCVSpline[i] = new TSpline3("SCCVSpline",(TGraph*)(SCCVGraph->At(i)));
             }
 
-            if(SCCAGraph->At(i) != NULL){
+            if(SCCAGraph->At(i)){
                 if(((TGraph*)(SCCAGraph->At(i)))->GetN()>1) SCCASpline[i] = new TSpline3("SCCASpline",(TGraph*)(SCCAGraph->At(i)));
             }
 
             //We do not want splines for SF_RFG and RPA.  So just leave these
             //entries NULL.
-            
-            if(CCNuEGraph->At(i) != NULL){
+
+            if(CCNuEGraph->At(i)){
                 if(((TGraph*)(CCNuEGraph->At(i)))->GetN()>1) CCNuESpline[i] = new TSpline3("CCNuESpline",(TGraph*)(CCNuEGraph->At(i)));
             }
-			
-            if(PDD_CGraph->At(i) != NULL){
+
+            if(PDD_CGraph->At(i)){
                 if(((TGraph*)(PDD_CGraph->At(i)))->GetN()>1) PDD_CSpline[i] = new TSpline3("PDD_CSpline",(TGraph*)(PDD_CGraph->At(i)));
             }
-			
-            if(PDD_OGraph->At(i) != NULL){
+
+            if(PDD_OGraph->At(i)){
                 if(((TGraph*)(PDD_OGraph->At(i)))->GetN()>1) PDD_OSpline[i] = new TSpline3("PDD_OSpline",(TGraph*)(PDD_OGraph->At(i)));
             }
 
@@ -561,11 +504,11 @@ TClonesArray* WeightFile::GetResponseGraph(XsecSysts systPar){
     else if(systPar == SF_RFG) return SF_RFGGraph;
     else if(systPar == RPA) return RPAGraph;
     else if(systPar == CCNuE) return CCNuEGraph;
-	
+
 	//2016 winter additions
     else if(systPar == MEC_shape_C) return PDD_CGraph;
     else if(systPar == MEC_shape_O) return PDD_OGraph;
-	
+
     else return NULL;
 }
 
@@ -597,18 +540,18 @@ TSpline3** WeightFile::GetResponseSpline(XsecSysts systPar){
     else if(systPar == BgSclRes) return BgSclResSpline;
     else if(systPar == SCCV) return SCCVSpline;
     else if(systPar == SCCA) return SCCASpline;
-   
+
     //Even though they are full of NULL entries, return the SF_RFGSpline and
     //RPASpline arrays to preserve structure.
     else if(systPar == SF_RFG) return SF_RFGSpline;
     else if (systPar == RPA) return RPASpline;
 
     else if (systPar == CCNuE) return CCNuESpline;
-    
+
 	//2016 additions
     else if(systPar == MEC_shape_C) return PDD_CSpline;
     else if(systPar == MEC_shape_O) return PDD_OSpline;
-	
+
     else return NULL;
 }
 
