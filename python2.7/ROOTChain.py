@@ -47,6 +47,7 @@ def get(chain_name, file_names, first_num=1, last_num=100):
     Use with RunName.RunName.iter_name()
     """
     chain = ROOTChain(chain_name)
+    # print file_names
     while not ROOTFile(file_names % last_num).valid(verbose=False):
         last_num -= 1
     chain.add_from_files(file_names, first_num, last_num)

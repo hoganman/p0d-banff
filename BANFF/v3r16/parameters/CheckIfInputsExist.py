@@ -42,7 +42,7 @@ def main(argv):
             file_status = file_checker.exists()
         else:
             file_status = 0
-        print '%s   %s   %d ' % (inputkey, file_name, file_status is 1)
+        print '%s   %s   %d ' % (inputkey, file_name, file_status == 1)
 
 
 if __name__ == "__main__":

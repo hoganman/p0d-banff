@@ -15,7 +15,7 @@ from ROOTFile import ROOTFile
 def checkfile(infilename=''):
     """Checks if the file is bad (0) or good (1)"""
     test_file = ROOTFile(infilename)
-    return test_file.status
+    return test_file.valid()
 
 
 def checkfileandexit(infilename):
