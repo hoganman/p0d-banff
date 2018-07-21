@@ -10,12 +10,10 @@
 # executing "make" will generate all libraries and executiables
 
 LIB	:= ${P0DBANFFROOT}/lib
-SRC	:= src
+SRC	:= ${P0DBANFFROOT}/src
 MACROS  := ${P0DBANFFROOT}/macros
-BIN	:= ${P0DBANFFROOT}/bin
 DIC     := ${P0DBANFFROOT}/dict
-APP     := ${P0DBANFFROOT}/app
-# VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC)
+VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC)
 
 EMPTYSTRING :=
 
@@ -55,17 +53,15 @@ ALLCLASSES_CXX := src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.
 ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
 
 # dict.o Object
-# ROOTDICTS := $(foreach obj, $(ALLCLASSES), $(obj)dict.o)
 ROOTDICTS_O := $(subst src, lib, $(ALLCLASSES_HXX:.hxx=dict.o))
-ROOTDICTS_H := $(subst src, lib, $(ALLCLASSES_HXX:.hxx=dict.h))
 # regular C++ .o objects
 # OBJS     := $(foreach obj, $(ALLCLASSES), $(obj).o)
-OBJS     := $(subst src, lib, $(ALLCLASSES:.cxx=.o))
+OBJS     := $(subst src, lib, $(ALLCLASSES_CXX:.cxx=.o))
 
 ##### All our targets#####
 ALLOBJS := $(OBJS) $(ROOTDICTS_O)
 # lib%.so Shared library Objects
-ALLLIBS	:= lib/libP0DBANFF.so
+ALLLIBS	:= libP0DBANFF.so
 # Executables
 ALLEXES :=
 ##### Rules #####
@@ -77,26 +73,22 @@ TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
 all: $(TGT)
 
 ##### compile all the objects "ALLOBJS" #####
-lib/%dict.o: dict/%dict.C
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+lib/%dict.o: src/%.hxx
+	$(ROOTCINT) -f $(subst src, dict, $(<:.hxx=dict.C)) -c $<
+	$(CXX) $(CXXFLAGS) -c $(subst src, dict, $(<:.hxx=dict.C)) -o $@
 
 lib/%.o: src/%.cxx
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 #############################################
 
-##### compile ROOTCINT dictionary #####
-dict/%dict.C: src/%.hxx
-	$(ROOTCINT) -f $@ -c $<
-#############################################
-
 ##########  # master library   #############
-lib/libP0DBANFF.so: $(ALLOBJS)
-	$(LD) $(LDFLAGS) $^ -o $@
+libP0DBANFF.so: $(ALLOBJS)
+	$(LD) $(LDFLAGS) $^ -o lib/$@
 #############################################
 
 #add a rule to clean all generated files from your directory
 clean:
-	$(RM) $(APP)/*pyc
+	$(RM) app/*pyc
 
 distclean:
-	$(RM) $(BIN)/*exe $(LIB)/*o $(SRC)/*.d $(SRC)/*.o ./*.o ./*.d $(DIC)/*dict.* ./*dict.* $(APP)/*pyc lib/*.d
+	$(RM) bin/*exe lib/*o src/*.d src/*.o ./*.o ./*.d dict/*dict.* ./*dict.* app/*pyc lib/*.d
