@@ -26,9 +26,10 @@ inOptions = {
 
 
 SECONDS_BTN_RUN = 10
+SECONDS_BTN_SUBMIT = 16
 csuhpc = -1
 isMC = True
-queueTag = '$' 
+queueTag = '$'
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
@@ -155,6 +156,9 @@ def InitNodes():
     		continue
     	jobsAndSlots = line.split('BIP   ')[1].split('.')[0]
     	jobsAndSlots = jobsAndSlots[0:len(jobsAndSlots)-2].strip().split('/')
+        print line
+        if '-NA-' in line:
+            continue
     	state = line.split('lx-amd64')[1].strip()
     	#reserved = jobsAndSlots[0]
     	#jobs = jobsAndSlots[1]
@@ -267,7 +271,7 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN * 100))
+    # submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN * 100))
     submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
@@ -378,9 +382,8 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        sleepTime = 1
-        print "sleeping for %d seconds till next job sub" % sleepTime
-        time.sleep(sleepTime)  # seconds
+        print "sleeping for %d seconds till next job sub" % SECONDS_BTN_SUBMIT
+        time.sleep(SECONDS_BTN_SUBMIT)  # seconds
 
         #restart list
         del subFileList[0:]

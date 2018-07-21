@@ -40,8 +40,8 @@ QSUBSPLINE = 'python qsubmitter_splines.py'
 
 def main(argv):
     """submits all the qsub python scripts"""
-    # submit_flattree_jobs()
-    submit_spline_jobs()
+    submit_flattree_jobs()
+    # submit_spline_jobs()
 
 
 def submit_flattree_jobs():

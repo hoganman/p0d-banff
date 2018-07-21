@@ -32,8 +32,8 @@ inOptions = {
 #       h_data    The per-job maximum memory limit in bytes.
 #       h_vmem    The same as h_data (if both are set the minimum is used).
 
-SECONDS_BTN_QSUB = 15
-SECONDS_BTN_RUN = 20
+SECONDS_BTN_QSUB = 16
+SECONDS_BTN_RUN = 10
 csuhpc = -1
 queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
