@@ -4,7 +4,7 @@ version v2r14
 manager Tianlu Yuan <tianlu.yuan@colorado.edu>
 author nd280-software@mailman.t2k.org
 
-branches cmt src doc app 
+branches cmt src doc app
 
 use highlandTools * highland2
 use baseTrackerAnalysis * highland2
