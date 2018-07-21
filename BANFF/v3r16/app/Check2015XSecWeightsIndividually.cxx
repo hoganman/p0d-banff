@@ -22,13 +22,13 @@ int main(int argc, char** argv){
     //According to the documentation for ReadParamOverrideFile, the code will
     //definitely use these values of the parameters, ignoring the contents of
     //any other parameters file.
-    else if(argc == 2){
+    //else if(argc == 2){
+    //    std::string paramFile(argv[1]);
+    //    ND::params().ReadParamOverrideFile(paramFile);
+    //}
 
-        std::string paramFile(argv[1]);
-        ND::params().ReadParamOverrideFile(paramFile);
-    }
 
-
+    ND::params().SetReadParamOverrideFilePointPassed();
     //Create the observables that will use.  Store them in an array to pass to
     //the sample.
     //TODO: Make this accessible via a card file instead of manually coding it
@@ -147,7 +147,9 @@ int main(int argc, char** argv){
     //Axes for the histograms.
     //Whether to throw MC statistical errors.
     //Whether to throw statistical errors.
+    std::cout << "throwMCStat" << std::endl;
     bool throwMCStat = ND::params().GetParameterI("BANFF.ThrowToys.ThrowMCStat");
+    std::cout << "throwStat" << std::endl;
     bool throwStat = ND::params().GetParameterI("BANFF.ThrowToys.ThrowStat");
     BANFFBinnedSample* cc0pi = new BANFFBinnedSample("cc0pi", SampleId::kFGD1NuMuCC0Pi, 2, observables, cc0pi_axes, throwMCStat, throwStat);
     BANFFBinnedSample* cc1pi = new BANFFBinnedSample("cc1pi", SampleId::kFGD1NuMuCC1Pi, 2, observables, cc1pi_axes, throwMCStat, throwStat);
@@ -157,6 +159,7 @@ int main(int argc, char** argv){
     BANFFBinnedSample* nuccqe = new BANFFBinnedSample("nuccqe", SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track, 2, observables, nuccqe_axes, throwMCStat, throwStat);
     BANFFBinnedSample* nuccnqe = new BANFFBinnedSample("nuccnqe", SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes, throwMCStat, throwStat);
 
+    std::cout << "BANFFSampleBase" << std::endl;
     BANFFSampleBase** samples = new BANFFSampleBase*[7];
     samples[0] = cc0pi;
     samples[1] = cc1pi;
