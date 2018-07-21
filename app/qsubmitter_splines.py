@@ -25,6 +25,7 @@ inOptions = {
 }
 
 
+SECONDS_BTN_QSUB = 16
 csuhpc = -1
 isMC = True
 queueTag = '$' 
@@ -124,8 +125,6 @@ def GetOutputFromCommand(command,splitBy = ''):
                 out = out.split(splitBy)
         return out
 
-
-
 def InitNodes():
 
     for i in range(1,nNodes+1):
@@ -143,11 +142,13 @@ def InitNodes():
     	queueName = ''
     	if line.find('.q@') == -1:
     		continue
+        if '-NA-' in line:
+            continue
     	index = line.find('@')-1
     	queueName = line[0:line.find('@')]
     	index = line.find('@')
     	while line[index] != ' ':
-    		index += 1	
+    		index += 1
     	index -= 1
     	hostName = line[line.find('@')+1:index+2].strip()
     	if hostName not in nodes.keys():
@@ -266,7 +267,9 @@ def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinut
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(600)\'\n' % (ROOT))
+    # submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(600)\'\n' % (ROOT))
+    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(60)\'\n' % (ROOT))
+    submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
     submission.write('\n')
@@ -372,8 +375,8 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        print "sleeping for 2 seconds till next job sub"
-        time.sleep(2) #seconds
+        print "sleeping for %d seconds till next job sub" % SECONDS_BTN_QSUB
+        time.sleep(SECONDS_BTN_QSUB)  # seconds
 
         #restart list
         del subFileList[0:]
