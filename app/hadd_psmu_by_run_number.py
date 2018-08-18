@@ -2,9 +2,10 @@
 
 """"""
 
+from glob import glob
+import multiprocessing as mp
 import optparse
 import os
-from glob import glob
 import sys
 
 
@@ -26,6 +27,8 @@ If not given, assumes first+999')
                       help='The directory of the input ROOT files')
     parser.add_option('-o', '--output', type='string', dest='output',
                       help='The name of the output ROOT files')
+    parser.add_option('-n', '--threads', type='int', dest='threads',
+                      default=5, help='The number of threads (default=5)')
     return parser
 
 
@@ -35,12 +38,19 @@ def run(command):
     # os.system(command)
 
 
+def create_file(program, input_files, output_file):
+    """Runs the hadd program to create a file"""
+    command = '%s %s %s' % (program, output_file, input_files)
+    run(command)
+
+
 def main(argv):
 
     argv  # prevent non-usage errors in flake8/pep/etc
     parser = add_options()
     options = get_options(parser)
     program = 'hadd'
+    processes = []
 
     for run_num in range(options.first, options.last+1):
         input_files = '%s/*%d*root' % (options.directory, run_num)
@@ -48,8 +58,17 @@ def main(argv):
             continue
         hadd_filename = '%s_%d_hadd.root' % (options.output, run_num)
         hadd_filename = os.path.join(options.directory, hadd_filename)
-        command = '%s %s %s' % (program, hadd_filename, input_files)
-        run(command)
+        processes.append(mp.Process(target=create_file,
+                                    args=(program, input_files, hadd_filename)))
+        running_threads = 0
+        # Run processes
+        for p in processes:
+            p.start()
+            running_threads += 1
+            # Exit the completed processes
+            while running_threads > options.threads:
+                p.join()
+                running_threads -= 1
 
 
 def get_options(parser):
@@ -58,9 +77,13 @@ def get_options(parser):
     if not options.first or not options.output:
         usage(parser)
     if options.first < 0:
+        print 'ERROR: There first number must be > 0'
         usage(parser)
     if not options.last or options.last < 0:
         options.last = options.first + 999
+    if options.threads < 0:
+        print 'ERROR: Number of threads must be > 0'
+        usage(parser)
     return options
 
 
