@@ -4,6 +4,7 @@
 
 import optparse
 import os
+from glob import glob
 import sys
 
 
@@ -41,11 +42,13 @@ def main(argv):
     options = get_options(parser)
     program = 'hadd'
 
-    for run_num in range(options.first, options.second+1):
+    for run_num in range(options.first, options.last+1):
+        input_files = '%s/*%d*root' % (options.directory, run_num)
+        if len(glob(input_files)) == 0:
+            continue
         hadd_filename = '%s_%d_hadd.root' % (options.output, run_num)
         hadd_filename = os.path.join(options.directory, hadd_filename)
-        command = '%s %s %s/*%d*root' % (program, hadd_filename,
-                                         options.directory, run_num)
+        command = '%s %s %s' % (program, hadd_filename, input_files)
         run(command)
 
 
