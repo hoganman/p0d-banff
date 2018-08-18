@@ -1,6 +1,32 @@
 #!/usr/bin/env python2
 
-""""""
+"""
+This program runs the hadd macro on P0D sand muon files
+and merges all the sub runs in the same run number.
+It uses multiprocessing so the hadd process is completed
+faster. If you are NOT using a RAID setup, set the number
+of threads to 1.
+
+In principle, this problem can be used to merge
+sub-runs in the same run into one file
+
+Usage: ./hadd_psumu_by_run_number.py [OPTIONS]
+
+Options:
+  -h, --help            show this help message and exit
+  -f FIRST, --first=FIRST
+                        The first run number in the series
+  -l LAST, --last=LAST  The last run number in series. If not given, assumes
+                        first+999
+  -d DIRECTORY, --directory=DIRECTORY
+                        The directory of the input ROOT files
+  -o OUTPUT, --output=OUTPUT
+                        The name of the output ROOT files
+  -n THREADS, --threads=THREADS
+                        The number of threads (default=5)
+
+Author: Matthew Hogan
+"""
 
 from glob import glob
 import multiprocessing as mp
@@ -35,7 +61,7 @@ If not given, assumes first+999')
 def run(command):
     """run the command by printing it as well"""
     print command
-    # os.system(command)
+    os.system(command)
 
 
 def create_file(program, input_files, output_file):
@@ -60,15 +86,23 @@ def main(argv):
         hadd_filename = os.path.join(options.directory, hadd_filename)
         processes.append(mp.Process(target=create_file,
                                     args=(program, input_files, hadd_filename)))
-        running_threads = 0
-        # Run processes
-        for p in processes:
-            p.start()
-            running_threads += 1
-            # Exit the completed processes
-            while running_threads > options.threads:
-                p.join()
-                running_threads -= 1
+    num_running_threads = 0
+    running_threads = []
+    # Run processes
+    for proc in processes:
+        proc.start()
+        running_threads.append(proc)
+        num_running_threads += 1
+        # Complete the first completed process
+        if num_running_threads > options.threads-1:
+            rp = running_threads[0]
+            rp.join()
+            num_running_threads -= 1
+            # print num_running_threads
+            del running_threads[0]
+    # finish any threads not already finished
+    for rp in running_threads:
+        rp.join()
 
 
 def get_options(parser):
