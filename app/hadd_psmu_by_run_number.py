@@ -76,7 +76,8 @@ def main(argv):
     parser = add_options()
     options = get_options(parser)
     program = 'hadd'
-    processes = []
+    pool = mp.Pool(options.threads)
+    mp_target = create_file
 
     for run_num in range(options.first, options.last+1):
         input_files = '%s/*%d*root' % (options.directory, run_num)
@@ -84,25 +85,11 @@ def main(argv):
             continue
         hadd_filename = '%s_%d_hadd.root' % (options.output, run_num)
         hadd_filename = os.path.join(options.directory, hadd_filename)
-        processes.append(mp.Process(target=create_file,
-                                    args=(program, input_files, hadd_filename)))
-    num_running_threads = 0
-    running_threads = []
-    # Run processes
-    for proc in processes:
-        proc.start()
-        running_threads.append(proc)
-        num_running_threads += 1
-        # Complete the first completed process
-        if num_running_threads > options.threads-1:
-            rp = running_threads[0]
-            rp.join()
-            num_running_threads -= 1
-            # print num_running_threads
-            del running_threads[0]
-    # finish any threads not already finished
-    for rp in running_threads:
-        rp.join()
+        mp_args = (program, input_files, hadd_filename)
+        pool.apply_async(mp_target, args=mp_args)
+
+    pool.close()
+    pool.join()
 
 
 def get_options(parser):

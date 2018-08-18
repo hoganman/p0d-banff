@@ -78,38 +78,21 @@ def main(argv):
     program = 'genP0DTFBOffsets.exe'
 
     inputFile = open(fileList, 'r')
-    processes = []
+    pool = mp.Pool(options.threads)
+    mp_target = iterate_time_offset_calculations
 
     for p0dSandMuFile in iter(inputFile.readline, ''):
         # Remove the full path and .root extension
         startIndex = p0dSandMuFile.rfind('/')+1
         endIndex = p0dSandMuFile.rfind('.')
         p0dSandMuFile_name = p0dSandMuFile[startIndex:endIndex]
-        mp_target = iterate_time_offset_calculations
         mp_args = (program, nIterations, output_prefix, p0dSandMuFile_name)
-        mp_process = mp.Process(target=mp_target, args=mp_args)
+        pool.apply_async(mp_target, args=mp_args)
         processes.append(mp_process)
 
+    pool.close()
+    pool.join()
     inputFile.close()
-
-    num_running_threads = 0
-    running_threads = []
-    # Run processes
-    for proc in processes:
-        proc.start()
-        running_threads.append(proc)
-        num_running_threads += 1
-        # Complete the first completed process
-        if num_running_threads > options.threads-1:
-            rp = running_threads[0]
-            rp.join()
-            num_running_threads -= 1
-            # print num_running_threads
-            del running_threads[0]
-    # finish any threads not already finished
-    for rp in running_threads:
-        rp.join()
-
 
 
 def get_options(parser):
