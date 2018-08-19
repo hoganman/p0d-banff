@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-"""A simple utility to combine the execution of find and grep.
-See the usage function for usage"""
+"""
+A simple utility to combine the execution of find and grep.
+See the usage function for usage
+"""
 
 import sys
 import os
