@@ -21,7 +21,8 @@
 #define DEBUG(X) std::cout << #X << " = " << X << std::endl;
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
 std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
-Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition);
+Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
+inline Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
 AnaTrueParticleB* GetTrueVtxLepton(AnaTrueVertexB* trueVtx, Bool_t absPDG = kTRUE);
 Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 
@@ -812,7 +813,12 @@ if(debug) DEBUG(trueParticle->PDG)
     }
 }
 
-Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger,const TLorentzVector& StartPosition)
+Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition)
+{
+    return (IsWaterP0Dule(tmpGeoManger, StartPosition) % 10) == 1;
+}
+
+Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition)
 {
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -964,9 +970,9 @@ std::vector<std::string> SplitString(const std::string &inString, char SplitBy)
 
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition)
 {
-  thisGeoManger->InitTrack( checkPosition.X(), checkPosition.Y(), checkPosition.Z(), 0, 0, 1); // 0, 0, 1 = the direction vector
-  std::string tmpMCPath = thisGeoManger->GetPath();
-  return ( tmpMCPath );
+    thisGeoManger->InitTrack(checkPosition.X(), checkPosition.Y(), checkPosition.Z(), 0, 0, 1); // 0, 0, 1 = the direction vector
+    std::string tmpMCPath = thisGeoManger->GetPath();
+    return tmpMCPath;
 }
 
 AnaTrueParticleB* GetTrueVtxLepton(AnaTrueVertexB* trueVtx, Bool_t absPDG)
