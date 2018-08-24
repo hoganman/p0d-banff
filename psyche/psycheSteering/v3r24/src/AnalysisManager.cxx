@@ -106,6 +106,8 @@
 #include "p0dNumuCCSelection.hxx"
 // numubar CC Inc P0D -> TPC1
 #include "p0dNumubarCCSelection.hxx"
+//numu bkg in RHC CC Inc  P0D -> TPC1
+#include "p0dNumuBkgInAntiNuModeCCSelection.hxx"
 
 //******************************************************************
 AnalysisManager::AnalysisManager(){
@@ -267,6 +269,8 @@ void AnalysisManager::DefineSelections(){
   sel().AddSelection("kP0DNuMuCC"   ,     "P0D+TPC1 NuMu CC Inclusive" , new p0dNumuCCSelection());
   // P0D+TPC1 numubar CCInc
   sel().AddSelection("kP0DNuMuBarCC",     "P0D+TPC1 NuMuBar CC Inclusive" , new p0dNumubarCCSelection());
+  // P0D+TPC1 numu in RHC CCInc
+  sel().AddSelection("kP0DNuMuBkgInAntiNuModeCC", "P0D+TPC1 NuMu in AntiNuMode CC Inclusive" , new p0dNumuBkgInAntiNuModeCCSelection());
 
   // Set which run range the selections are valid for using the parameters file
   // If this is not called the selections are applied to all run periods
@@ -315,9 +319,11 @@ void AnalysisManager::DefineSelections(){
   sel().SetValidRunPeriods("kTrackerGammaFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerGamma.ValidRunPeriods"));
 
   // P0D+TPC1 Numu CCInc
-  sel().SetValidRunPeriods("kP0DNuMuCC",            ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
-  // P0D+TPC1 Numu CCInc
-  sel().SetValidRunPeriods("kP0DNuMuBarCC",         ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kP0DNuMuCC",                ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods"));
+  // P0D+TPC1 Numubar CCInc
+  sel().SetValidRunPeriods("kP0DNuMuBarCC",             ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods"));
+  // P0D+TPC1 Numu Bkg in RHC CCInc
+  sel().SetValidRunPeriods("kP0DNuMuBkgInAntiNuModeCC", ND::params().GetParameterS("psycheSteering.Selections.P0DNuMuBkgInAntiNuModeCC.ValidRunPeriods"));
 
   // Numu FGD1
   if (!ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC"))
@@ -411,6 +417,8 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kP0DNuMuCC");
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuBarCC"))
     sel().DisableSelection("kP0DNuMuBarCC");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableP0DNuMuBkgInAntiNuModeCC"))
+    sel().DisableSelection("kP0DNuMuBkgInAntiNuModeCC");
 
 
   /*
