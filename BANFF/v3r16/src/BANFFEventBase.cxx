@@ -354,6 +354,7 @@ void BANFFEventBase::SaveTotalWeight(FitParameters* fitParameters, double Q2, in
 		if((paramName == "2p2h_shape_C_nu" || paramName == "2p2h_shape_O_nu") && NuFlavor < 0 ) continue;
 		if((paramName == "2p2h_shape_C_nubar" || paramName == "2p2h_shape_O_nubar") && NuFlavor > 0 ) continue;
 				
+
         //If there is a spline for this XSECRESP parameter, evaluate the spline
         //at the current parameter value.  If it gives a reasonable value (i.e.
         //a number) multiply the total weight by it.
