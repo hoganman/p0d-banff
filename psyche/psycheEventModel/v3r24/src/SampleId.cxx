@@ -83,6 +83,7 @@ std::string SampleId::ConvertSample(SampleEnum sample){
 
     else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
     else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive";
 
     else                                                  ssample = "Unassigned";
 
@@ -166,6 +167,7 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
 
     else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
     else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive";
 
     else                                                  ssample = "Unassigned";
 
