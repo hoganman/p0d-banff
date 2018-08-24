@@ -8,6 +8,7 @@ from os import getenv
 from os.path import join
 import ROOT
 from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem  # TChain
+from ROOT import TPad, TGaxis
 import ROOTChain
 from ROOTHStack import ROOTHStack
 import RunName as RN
@@ -159,8 +160,8 @@ def main(argv):
                 histstack_Enu.x_title = 'True Neutrino Energy'
                 histstack_Enu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
-                make_mc_stack(mc_sample, neutrino_selections, Enu_AnaBins,
-                              histstack_Enu, 'trueE_nu')
+                make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+                                   histstack_Enu, 'trueE_nu')
 
             # TN-328 Momentum
             if DRAW_PMU_TN328:
@@ -169,8 +170,8 @@ def main(argv):
                 histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
                 histstack_pMu_TN328.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, pMu_TN328_AnaBins,
-                           histstack_pMu_TN328, 'recoP_mu_TN328')
+                make_data_mc_stack(smpls, particle_selections, pMu_TN328_AnaBins,
+                                   histstack_pMu_TN328, 'recoP_mu_TN328')
 
             # lepton candidate momentum
             if DRAW_PMU:
@@ -179,8 +180,8 @@ def main(argv):
                 histstack_pMu.x_title = 'Lepton Candidate Momentum'
                 histstack_pMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, pMu_AnaBins,
-                           histstack_pMu, 'recoP_mu_uniform')
+                make_data_mc_stack(smpls, particle_selections, pMu_AnaBins,
+                                   histstack_pMu, 'recoP_mu_uniform')
 
             # TN-328 cos(theta)
             if DRAW_COSTHETAMU_TN328:
@@ -190,8 +191,8 @@ def main(argv):
                 histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_cosThetaMu_TN328,
                                     cosThetaMu_TN328_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, cosThetaMu_TN328_AnaBins,
-                           histstack_cosThetaMu_TN328, 'recocosq_mu_TN328_uniform')
+                make_data_mc_stack(smpls, particle_selections, cosThetaMu_TN328_AnaBins,
+                                   histstack_cosThetaMu_TN328, 'recocosq_mu_TN328_uniform')
 
             # lepton candidate cos(theta)
             if DRAW_COSTHETAMU:
@@ -200,8 +201,8 @@ def main(argv):
                 histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
                 histstack_cosThetaMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, cosThetaMu_AnaBins,
-                           histstack_cosThetaMu, 'recocosq_mu_uniform')
+                make_data_mc_stack(smpls, particle_selections, cosThetaMu_AnaBins,
+                                   histstack_cosThetaMu, 'recocosq_mu_uniform')
 
             # lepton candidate thetaMu
             if DRAW_THETAMU:
@@ -210,8 +211,8 @@ def main(argv):
                 histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
                 histstack_thetaMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, thetaMu_AnaBins,
-                           histstack_thetaMu, 'recothetaMu_mu_uniform')
+                make_data_mc_stack(smpls, particle_selections, thetaMu_AnaBins,
+                                   histstack_thetaMu, 'recothetaMu_mu_uniform')
 
             # lepton p0d position Z
             if DRAW_P0DZ:
@@ -220,8 +221,8 @@ def main(argv):
                 histstack_p0dZ.x_title = 'Vertex Z'
                 histstack_p0dZ.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, p0dZ_AnaBins,
-                           histstack_p0dZ, 'recoZ_mu')
+                make_data_mc_stack(smpls, particle_selections, p0dZ_AnaBins,
+                                   histstack_p0dZ, 'recoZ_mu')
 
             # lepton p0d position X
             if DRAW_P0DX:
@@ -230,8 +231,8 @@ def main(argv):
                 histstack_p0dX.x_title = 'Vertex X'
                 histstack_p0dX.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, p0dX_AnaBins,
-                           histstack_p0dX, 'recoX_mu')
+                make_data_mc_stack(smpls, particle_selections, p0dX_AnaBins,
+                                   histstack_p0dX, 'recoX_mu')
 
             # lepton p0d position Y
             if DRAW_P0DY:
@@ -240,8 +241,8 @@ def main(argv):
                 histstack_p0dY.x_title = 'Vertex Y'
                 histstack_p0dY.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
-                make_stack(smpls, particle_selections, p0dY_AnaBins,
-                           histstack_p0dY, 'recoY_mu')
+                make_data_mc_stack(smpls, particle_selections, p0dY_AnaBins,
+                                   histstack_p0dY, 'recoY_mu')
     del engine
 
 
@@ -301,7 +302,7 @@ class selection_info(object):
         return self.cuts
 
 
-def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
+def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     """
     Take evt_sample (sample) and separate it by
     true_selections (selection_info). The histogram is stored in
@@ -428,6 +429,10 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
         # data_hist.SetMaximum(new_max)
 
     canvas.cd()
+    pad1 = TPad("pad1", "pad1", 0, 0.3, 1, 1.0)
+    pad1.SetBottomMargin(0)
+    pad1.Draw()
+    pad1.cd()
     h_stack.Draw()
     h_total.Draw('SAME')
     data_hist.Draw('SAME E0')
@@ -436,8 +441,33 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     mc_stats.Draw()
 
     canvas.SetFillColor(0)
-    # if(ROOT.gPad.GetPrimitive('TFrame')):
-    #     ROOT.gPad.GetPrimitive('TFrame').SetFillColor(0)
+
+    # Do not draw the Y axis label on the upper plot and redraw a small
+    # axis instead, in order to avoid the first label (0) to be clipped.
+    data_hist.GetYaxis().SetLabelSize(0.)
+    axis = TGaxis(-5, 20, -5, 220, 20, 220, 510, "")
+    axis.SetLabelFont(43)  # Absolute font size in pixel (precision 3)
+    axis.SetLabelSize(15)
+    axis.Draw()
+
+    canvas.cd()  # Go back to the main canvas before defining pad2
+    pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.3)
+    pad2.SetTopMargin(0)
+    pad2.SetBottomMargin(0.2)
+    pad2.SetGridx()  # vertical grid
+    pad2.Draw()
+    pad2.cd()       # pad2 becomes the current pad
+
+    # Define the ratio plot
+    ratio = data_hist.Clone("ratio")
+    ratio.SetLineColor(INTERFACE.cbBlack)
+    ratio.SetMinimum(0.8)   # Define Y ..
+    ratio.SetMaximum(1.35)  # range
+    ratio.Sumw2()
+    ratio.SetStats(0)       # No statistics on lower plot
+    ratio.Divide(h_total)
+    ratio.SetMarkerStyle(21)
+    ratio.Draw("ep")        # Draw the ratio plot
 
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
@@ -460,11 +490,13 @@ def make_stack(evt_sample, true_selections, anaBins, hstack, save_title):
         a_hist.Delete()
     data_hist.Delete()
     legend.Delete()
+    pad1.Close()
+    pad2.Close()
     canvas.Close()
     return
 
 
-def make_mc_stack(mc_sample, true_selections, anaBins, hstack, save_title):
+def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
     """Take samples dictionary (mc_sand_sample) and separate it by
     selection (true_selections). The histogram is stored in
     anaBins (AnaysisBins) with the histogram labels in hstack (ROOTHStack)
