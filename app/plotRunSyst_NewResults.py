@@ -16,20 +16,23 @@ import sys
 # toggle these to draw particular variables
 DRAW_ENU = 0
 DRAW_PMU = 1
+DRAW_THETAMU = 0
 DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
-DRAW_THETAMU = 1
 DRAW_P0DX = 0
 DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # use the TN-208 runs
-TN208_ANALYSIS = 0
+TN208_ANALYSIS = 1
 
 # cut the measured momentum
 USE_MOMENTUM_CUT = 1
 MOMENTUM_CUT_VALUE = '5000.'
+
+# if the user wants to apply an addition set of cuts
+ADDITIONAL_CUTS = None
 
 # Which selection to run
 P0DNUMUCCSELECTION = -1
@@ -575,7 +578,6 @@ def GetMonteCarloSamples():
     """
     RunSyst_New_NEUT_TTREE_name = 'all'
     file_path = getenv('SYSTEMATICSROOT')
-    # file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     NEUTP6B = join(file_path, 'mcp6_Spin_B', 'neut')
     NEUTP6L = join(file_path, 'mcp6_Spin_L', 'neut')
     SAND = join(file_path, 'mcp6_Spin_B', 'sand')
@@ -673,7 +675,6 @@ def GetDATAsamples():
     }
     """
     file_path = getenv('SYSTEMATICSROOT')
-    # file_path = join(getenv('SYSTEMATICSROOT'), 'HMNT_or_HMPT_is_HMT')
     RunSyst_New_DATA_TTREE_name = 'nominal'
     DATAP6M = join(file_path, 'rdp6_Spin_M')
     DATAP6N = join(file_path, 'rdp6_Spin_N')
@@ -749,8 +750,13 @@ def GetNeutrinoSelectionList():
     else:
         print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
         sys.exit(1)
+
+    if ADDITIONAL_CUTS:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, ADDITIONAL_CUTS)
+
     if TN208_ANALYSIS:
         all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+
     if USE_MOMENTUM_CUT:
         all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
@@ -816,7 +822,12 @@ def GetLeptonCandidateSelectionList():
         print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
         sys.exit(1)
 
-    all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+    if ADDITIONAL_CUTS:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, ADDITIONAL_CUTS)
+
+    if TN208_ANALYSIS:
+        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+
     if USE_MOMENTUM_CUT:
         all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
