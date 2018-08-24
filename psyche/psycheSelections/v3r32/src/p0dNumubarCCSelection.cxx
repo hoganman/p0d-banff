@@ -1,4 +1,5 @@
 #include "baseSelection.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "p0dNumubarCCSelection.hxx"
 #include "CutUtils.hxx"
 #include "trackerSelectionUtils.hxx"
@@ -20,13 +21,13 @@ void p0dNumubarCCSelection::DefineSteps(){
     // last "true" means the step sequence is broken if cut is not passed (default is "false")
     AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),         true);
     AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
-    AddStep(StepBase::kAction, "find leading tracks", new FindP0DLeadingTracksAction_p0dNumubarCC());
+    AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction_antinu());
     AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
     AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumubarCC());
     AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
     AddStep(StepBase::kCut,    "pos_mult",            new PositiveMultiplicityCut());
-    AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction_p0dNumubarCC());
-    AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut_p0dNumubarCC(),     true);
+    AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
+    AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
     SetBranchAlias(0,"trunk");
 }
 
@@ -154,29 +155,6 @@ bool FindP0DLeadingTracksAction_p0dNumubarCC::Apply(AnaEventC& event, ToyBoxB& b
   // For this selection the main track is the HMP track
   box.MainTrack = box.HMPtrack;
   return true;
-}
-
-//**************************************************
-bool FindP0DVetoAction_p0dNumubarCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  box->VetoTrack = cutUtils::FindP0DVetoTrack(event);
-
-  return true;
-}
-
-//**************************************************
-bool P0DSelectionVetoCut_p0dNumubarCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-
-  (void)event;
-
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  if (box->VetoTrack)
-    return false;
-
-  return true;
-
 }
 
 //********************************************************************

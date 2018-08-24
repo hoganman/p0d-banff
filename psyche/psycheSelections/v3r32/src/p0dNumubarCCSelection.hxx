@@ -41,18 +41,18 @@ class FindP0DLeadingTracksAction_p0dNumubarCC: public StepBase{
   StepBase* MakeClone(){return new FindP0DLeadingTracksAction_p0dNumubarCC();}
 };
 
-class FindP0DVetoAction_p0dNumubarCC: public StepBase{
- public:
-  using StepBase::Apply;
-  bool Apply(AnaEventC& event, ToyBoxB& box) const;
-  StepBase* MakeClone(){return new FindP0DVetoAction_p0dNumubarCC();}
-};
-
-class P0DSelectionVetoCut_p0dNumubarCC: public StepBase{
- public:
-  using StepBase::Apply;
-  bool Apply(AnaEventC& event, ToyBoxB& box) const;
-  StepBase* MakeClone(){return new P0DSelectionVetoCut_p0dNumubarCC();}
-};
+//class FindP0DVetoAction_p0dNumubarCC: public StepBase{
+// public:
+//  using StepBase::Apply;
+//  bool Apply(AnaEventC& event, ToyBoxB& box) const;
+//  StepBase* MakeClone(){return new FindP0DVetoAction_p0dNumubarCC();}
+//};
+//
+//class P0DSelectionVetoCut_p0dNumubarCC: public StepBase{
+// public:
+//  using StepBase::Apply;
+//  bool Apply(AnaEventC& event, ToyBoxB& box) const;
+//  StepBase* MakeClone(){return new P0DSelectionVetoCut_p0dNumubarCC();}
+//};
 
 #endif

@@ -34,12 +34,14 @@ public:
   StepBase* MakeClone(){return new FillSummaryAction_p0dNumuCC();}
 };
 
+/*
 class FindP0DLeadingTracksAction: public StepBase{
  public:
   using StepBase::Apply;
   bool Apply(AnaEventC& event, ToyBoxB& box) const;
   StepBase* MakeClone(){return new FindP0DLeadingTracksAction();}
 };
+*/
 
 class FindP0DVetoAction: public StepBase{
  public:

@@ -1,9 +1,9 @@
-#include "baseSelection.hxx"
 #include "p0dNumuCCSelection.hxx"
+#include "baseSelection.hxx"
+#include "numuBkgInAntiNuModeCCSelection.hxx"
 #include "CutUtils.hxx"
 #include "trackerSelectionUtils.hxx"
 #include "EventBoxUtils.hxx"
-#include "numuBkgInAntiNuModeCCSelection.hxx"
 
 
 //********************************************************************
@@ -20,11 +20,11 @@ void p0dNumuCCSelection::DefineSteps(){
     // last "true" means the step sequence is broken if cut is not passed (default is "false")
     AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),         true);
     AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
-    AddStep(StepBase::kAction, "find leading tracks", new FindP0DLeadingTracksAction());
+    //AddStep(StepBase::kAction, "find leading tracks", new FindP0DLeadingTracksAction());
+    AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction());
     AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
     AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumuCC());
     AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
-    AddStep(StepBase::kCut,    "neg_mult",            new NegativeMultiplicityCut());
     AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
     AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
     SetBranchAlias(0,"trunk");
@@ -142,20 +142,20 @@ Int_t p0dNumuCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h syst
 }
 
 
-//**************************************************
-bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-
-  // Cast the ToyBox to the appropriate type
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
-
-  trackerSelUtils::FindLeadingTracks(event, box);
-
-  // For this selection the main track is the HMN track
-  box.MainTrack = box.HMNtrack;
-
-  return true;
-}
+////**************************************************
+//bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
+////**************************************************
+//
+//  // Cast the ToyBox to the appropriate type
+//  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
+//
+//  trackerSelUtils::FindLeadingTracks(event, box);
+//
+//  // For this selection the main track is the HMN track
+//  box.MainTrack = box.HMNtrack;
+//
+//  return true;
+//}
 
 //**************************************************
 bool FindP0DVetoAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
