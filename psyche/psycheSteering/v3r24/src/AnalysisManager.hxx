@@ -15,13 +15,13 @@
 typedef std::string SelEnum;
 typedef std::string SystEnum;
 
-/// This class is the Top level interface for the library. 
+/// This class is the Top level interface for the library.
 
 
 class AnalysisManager{
 
 public:
-  
+
   AnalysisManager();
   virtual ~AnalysisManager(){}
 
@@ -67,8 +67,8 @@ public:
   /// Sets the Experiment
   void SetExperiment(Experiment* exp){_exp=exp;}
 
-  /// Process one event. The input is the event. The output is a boolean (return value) 
-  /// telling us whether at least one selection was passes for the current event, and a vector of Weight_hs 
+  /// Process one event. The input is the event. The output is a boolean (return value)
+  /// telling us whether at least one selection was passes for the current event, and a vector of Weight_hs
   /// with the weights for each selection
   bool ProcessEvent(const ToyExperiment& toy, AnaEventB& event, std::vector<Weight_h>& totalWeightSystVector, std::vector<Weight_h>& fluxWeightSystVector);
   bool ProcessEvent(const ToyExperiment& toy, AnaEventB& event, std::vector<Weight_h>& totalWeightSystVector, std::vector<Weight_h>& fluxWeightSystVector, Float_t& POTweight);
@@ -103,25 +103,25 @@ public:
 
   /// Returns The Event with a given index from the array
   AnaEventB* GetEvent(Int_t eventIndex);
-  
+
   /// Returns The next SuperEvent
   AnaSuperEventB* GetNextSuperEvent();
 
   /// Returns The next Event
   AnaEventB* GetNextEvent();
-  
+
   /// Returns the number of entries in the input tree
   UInt_t GetEntries();
-  
+
 
   /// Method to load a given single event, without pre-loading.
-  /// Fill the raw AnaEventB structure. 
-  /// The argument entry (the entry number in the input tree) 
-  /// will be modified inside the method by the specific converter (hence the non-cont reference). 
-  /// The way entry is modified will depend on whether the input file is event based 
-  /// (every call to this method will increment by one the argument entry) or 
-  /// spill based (several events -- one per bunch -- correspond to the same spill, so 
-  /// once the first event in a given spill is read entry number will not be varied 
+  /// Fill the raw AnaEventB structure.
+  /// The argument entry (the entry number in the input tree)
+  /// will be modified inside the method by the specific converter (hence the non-cont reference).
+  /// The way entry is modified will depend on whether the input file is event based
+  /// (every call to this method will increment by one the argument entry) or
+  /// spill based (several events -- one per bunch -- correspond to the same spill, so
+  /// once the first event in a given spill is read entry number will not be varied
   /// until all events in that spill are processed).
   /// Returns whether the event was successfully filled.
   bool LoadEvent(Long64_t& entry);
@@ -141,11 +141,11 @@ public:
 
   void ResetEventsProcessed();
 
-  /// Fill the raw AnaEventB structure and create a AnaSuperEventB from 
-  /// the raw event (all done by InputManagerB calls).  
-  /// The input entry number will be modified internally 
-  /// by the specific converter (hence the non-cont reference) . 
-  /// This will depend on whether the input file is spill based or event based. 
+  /// Fill the raw AnaEventB structure and create a AnaSuperEventB from
+  /// the raw event (all done by InputManagerB calls).
+  /// The input entry number will be modified internally
+  /// by the specific converter (hence the non-cont reference) .
+  /// This will depend on whether the input file is spill based or event based.
   AnaSuperEventB* LoadSuperEvent(Long64_t& evtIndex);
 
   FluxWeighting* GetFluxWeighting(){return _flux;}
@@ -154,7 +154,7 @@ public:
   /// This is important for making sure we do not run the anti-neutrino mode selections
   /// on neutrino mode data
   bool CheckSelectionAgainstRunPeriod(SelectionBase* selec, int RunPeriod);
-  
+
   /// Return the number of preloaded events
   UInt_t GetNPreloadedEvents() const {return _nEventsInArray;}
 
@@ -241,7 +241,7 @@ protected:
 
   /// The POT weight for each MC file loaded into the Analysis Manager
   std::vector<Float_t> _POT_weights;
-  
+
   bool _doFGD1;
   bool _doFGD2;
 
