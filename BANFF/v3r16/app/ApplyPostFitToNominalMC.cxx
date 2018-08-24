@@ -1,6 +1,6 @@
 /*
  * This app is designed to take the post fit result on the flattree+T2KReWeight splines
- *
+ * See Usage function below for how to use the app
 */
 
 #include "psycheInterface/psycheInterface.hxx"
@@ -25,9 +25,9 @@ void Usage(const char* programName)
     cout << programName << " [INPUTS]" << endl;
     cout << endl;
     cout << "INPUTS" << endl;
+    cout << "    -h this message" << endl;
     cout << "    -i path/to/Samples.xml: The path to the XML file containing";
     cout << " sample information" << endl;
-    cout << "    -h this message" << endl;
     cout << "    -o outputFile.root: The name of the output ROOT file" << endl;
     exit(0);
 }
@@ -38,10 +38,6 @@ int main(int argc, char** argv){
 
     std::string outputFileName = "";
     std::string inputFileName = "";
-    //if(argc > 4){
-    //    std::cout << "Too many command line arguments!" << std::endl;
-    //    Usage(argv[0]);
-    //}
 
     for (;;)
     {
@@ -69,7 +65,7 @@ int main(int argc, char** argv){
                Usage(argv[0]);
             }
         }
-    }//end for
+    }//end get options
 
     if(outputFileName.length() < 1)
         Usage(argv[0]);
@@ -81,6 +77,12 @@ int main(int argc, char** argv){
                   << inputFileName.c_str()
                   << " as input file since none was provided!"
                   << std::endl;
+    }
+
+    if(outputFileName.length() < 1)
+    {
+        std::cout << "ERROR: No output name given" << std::endl;
+        Usage(argv[0]);
     }
 
     //If there is 1 command line argument, it is specifying a parameter
@@ -129,7 +131,7 @@ int main(int argc, char** argv){
 
     //For each observable and sample set up the binning used in the fit.
 
-    //Set the binning
+    //Set the samples and binning using a custom XML parsing class
     XMLTools xml(inputFileName.c_str());
     std::map<TString, XMLTools::AttributeMap> samples_attributes = xml.GetAllNodes();
     std::vector<BANFFBinnedSample> banffsamplesVect;
@@ -192,12 +194,13 @@ int main(int argc, char** argv){
                                        observables, axes, throwMCStat,
                                        throwStat);
         banffsamplesVect.push_back(binnedSample);
-    } //end loop over sample attribute
+    } //end loop over samples
 
     Int_t nSamples = banffsamplesVect.size();
     Declare(Form("There are %d samples loaded!", nSamples));
     std::vector<BANFFSampleBase*> samples(nSamples);
     std::vector<BANFFBinnedSample>::iterator binnedSampl_iter;
+    //fill a vector of pointers to the samples
     for(binnedSampl_iter  = banffsamplesVect.begin();
         binnedSampl_iter != banffsamplesVect.end();
         ++binnedSampl_iter
@@ -251,6 +254,8 @@ int main(int argc, char** argv){
     //FitParameters pointer.
     //Whether to load the detector parameters from psyche.
     //Whether to vary the psyche detector parameters.
+    //BANFFInterfaceBase* interface = 0;
+    //interface = new BANFFInterfaceBase(nSamples, &samples[0], fitParameters, "diagnostic_ignore_me.root");
     psycheInterface* interface = 0;
     interface = new psycheInterface(nSamples, &samples[0], fitParameters,
                                     loadDetParams, throwDetParams, "diagnostic_ignore_me.root");
@@ -260,16 +265,18 @@ int main(int argc, char** argv){
     TFile* outFile = new TFile(outputFileName.c_str(),"RECREATE");
     outFile->cd();
 
+    std::cout << "BuildSaveAndResetMCPrediction(\"all\")" << std::endl;
     //Building and save the MC prediction with everything enabled.
     interface->BuildSaveAndResetMCPrediction("all");
 
     outFile->Close();
+    return 0;
 
-    //Garbage collection
-    delete interface;
-    delete fitParameters;
-    delete observables;
-    delete pmu;
-    delete thmu;
+    //Garbage collection causes crashes!?
+    //delete interface;
+    //delete fitParameters;
+    //delete observables;
+    //delete pmu;
+    //delete thmu;
 
 }
