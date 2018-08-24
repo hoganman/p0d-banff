@@ -60,8 +60,8 @@ psycheInterface::psycheInterface(int nSamp, BANFFSampleBase** samp,
 
 psycheInterface::~psycheInterface(){
 
-  delete _man;
-  delete _toyMaker;
+  if(_man) delete _man;
+  if(_toyMaker) delete _toyMaker;
 
   for(int i = 0; i < nSamples; i++)
     if(samples[i])
