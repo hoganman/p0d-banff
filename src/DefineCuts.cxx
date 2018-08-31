@@ -25,8 +25,11 @@ void DefineCuts::SetCuts()
     muMinusSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuCC()));
     muMinusSelection.SetName("#mu^{-} Selection Cut");
 
-    muPlusSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBarCC()));
-    muPlusSelection.SetName("#mu^{+} Selection Cut");
+    muPlusInRHCSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBarInAntiNuModeCC()));
+    muPlusInRHCSelection.SetName("#mu^{+} in RHC Selection Cut");
+
+    muMinusBkgInRHCSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBkgInAntiNuModeCC()));
+    muMinusBkgInRHCSelection.SetName("#mu^{-} Bkg in RHC Selection Cut");
 
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
                                 minFidVolCoords.Z(), "vtxZ", "vtxZ", maxFidVolCoords.Z(),

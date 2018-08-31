@@ -609,7 +609,7 @@ if(debug) DEBUG(trueParticle->PDG)
                             }
                         }
 
-                        if(geoManager && (summary->EventSample == SampleId::kP0DNuMuCC || summary->EventSample == SampleId::kP0DNuMuBarCC))
+                        if(geoManager && (SampleId::IsP0DSelection(summary->EventSample)))
                         {
                             TLorentzVector start = trVtx->Position;
                             Int_t tmp = IsWaterP0Dule(geoManager,start);

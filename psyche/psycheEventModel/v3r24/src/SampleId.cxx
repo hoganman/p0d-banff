@@ -82,8 +82,9 @@ std::string SampleId::ConvertSample(SampleEnum sample){
     else if (sample == kFGD2NuEBkgInAntiNuModeCCOther)    ssample = "FGD2 NuE Bkg In Anti NuMode CCOther";
 
     else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
-    else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive";
     else if (sample == kP0DNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive";
+    else if (sample == kP0DNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive";
 
     else                                                  ssample = "Unassigned";
 
@@ -166,8 +167,9 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
     else if (sample == kFGD2Gamma)                        ssample = "kTrackerGammaFGD2";
 
     else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
-    else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive";
     else if (sample == kP0DNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive";
+    else if (sample == kP0DNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive";
 
     else                                                  ssample = "Unassigned";
 
@@ -267,7 +269,27 @@ SampleId::SampleEnum SampleId::ConvertSample(std::string sample)
     else if( strcmp("kFGD1GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD1GammaInAntiNuMode;
     else if( strcmp("kFGD2GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD2GammaInAntiNuMode;
     else if( strcmp("kP0DNuMuCC",sample.c_str()) == 0) enum_sample = kP0DNuMuCC;
-    else if( strcmp("kP0DNuMuBarCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBarCC;
+    else if( strcmp("kP0DNuMuBarBkgCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBarBkgCC;
+    else if( strcmp("kP0DNuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBkgInAntiNuModeCC;
+    else if( strcmp("kP0DNuMuBarInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBarInAntiNuModeCC;
+
     else enum_sample = kUnassigned;
     return enum_sample;
+}
+
+
+//*********************************************************
+bool SampleId::IsP0DSelection(SampleEnum sample)
+//*********************************************************
+{
+    if(sample == kP0DNuMuCC)
+        return true;
+    else if(sample == kP0DNuMuBarBkgCC)
+        return true;
+    else if(sample == kP0DNuMuBarInAntiNuModeCC)
+        return true;
+    else if(sample == kP0DNuMuBkgInAntiNuModeCC)
+        return true;
+    else
+        return false;
 }

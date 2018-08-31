@@ -20,7 +20,7 @@ void p0dNumuBkgInAntiNuModeCCSelection::DefineSteps(){
     // last "true" means the step sequence is broken if cut is not passed (default is "false")
     AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),         true);
     AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
-    AddStep(StepBase::kAction, "find leading tracks", new FindP0DLeadingTracksAction());
+    AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction());
     AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
     AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumuBkgInAntiNuModeCC());
     AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);

@@ -19,7 +19,9 @@ public:
   
 protected:
 
+  // special enumeration for this systematic
   Int_t GetDetNumber(SubDetId::SubDetEnum det);  
+  //Works for runs 1 - 5 ONLY
   Int_t GetBeamNumber(Int_t runperiod,AnaTrackB *maintrack);
 
 protected:  

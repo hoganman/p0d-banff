@@ -18,13 +18,13 @@ p0dCCQEOOFVSystematics::p0dCCQEOOFVSystematics():EventWeightBase(1){
 
   char dirname[256];
   sprintf(dirname,"%s/data",getenv("P0DNUMUCCQEANALYSISROOT"));
-  
+
   _p0d = new BinnedParams();
   _p0d->SetType(BinnedParams::k1D_SYMMETRIC);
   _p0d->SetName("P0DCCQEOOFV_reco");
   _p0d->Read(dirname);
 
-  _rate = new BinnedParams();  
+  _rate = new BinnedParams();
   _rate->SetType(BinnedParams::k2D_SYMMETRIC);
   _rate->SetName("P0DCCQEOOFV_rate");
   _rate->Read(dirname);
@@ -33,23 +33,26 @@ p0dCCQEOOFVSystematics::p0dCCQEOOFVSystematics():EventWeightBase(1){
   npars += _rate->GetNBins();
   SetNParameters(npars);
     for (int i=0;i<9;i++){
-      if (!_p0d->GetBinValues(i, _reco_corr[i], _reco_error[i],_reco_index[i])) _reco_index[i]=-1; 
+      if (!_p0d->GetBinValues(i, _reco_corr[i], _reco_error[i],_reco_index[i])) _reco_index[i]=-1;
 
       if (_reco_index[i]>=0) _reco_index[i] += _rate->GetNBins();
     }
- 
+
 
 }
 
 //********************************************************************
 Int_t p0dCCQEOOFVSystematics::GetBeamNumber(Int_t runperiod,AnaTrackB *maintrack){
 //********************************************************************
-  if(runperiod==8){
+  // run 5 test apparently
+  if(runperiod==8)
+  {
     if(maintrack->Charge<0)
       return 1;
     else
       return 2;
-  }else
+  }
+  else
     return 0;
 }
 
@@ -74,16 +77,17 @@ Int_t p0dCCQEOOFVSystematics::GetDetNumber(SubDetId::SubDetEnum det){
 
   else
     return 5;
+
 }
 
 //********************************************************************
 Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEventC& eventC, const ToyBoxB& boxB){
 //********************************************************************
 
-    const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC); 
+    const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC);
 
     // Cast the ToyBox to the appropriate type
-    const ToyBoxTracker& box = *static_cast<const ToyBoxTracker*>(&boxB); 
+    const ToyBoxTracker& box = *static_cast<const ToyBoxTracker*>(&boxB);
 
     Weight_h eventWeight=1;
     if (!box.MainTrack) return eventWeight;                     // HMN track should exist
@@ -92,14 +96,14 @@ Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const A
 
     // Get the true vertex position
     Float_t* tvertex = box.MainTrack->GetTrueParticle()->TrueVertex->Position;
-    
-    // if the true vertex is inside the P0D FV this is not OOFV (RETURN EVENTWEIGHT=1)    
+
+    // if the true vertex is inside the P0D FV this is not OOFV (RETURN EVENTWEIGHT=1)
     if(anaUtils::InFiducialVolume(static_cast<SubDetId::SubDetEnum>(box.DetectorFV), tvertex)) return eventWeight;
-        
+
     // Get the true track direction and position
     //Float_t* tdir = box.MainTrack->GetTrueParticle()->Direction;
     //Float_t* pos  = box.MainTrack->GetTrueParticle()->Position;
-    
+
     Float_t* p0d_det_min = DetDef::p0dmin;
     Float_t* p0d_det_max = DetDef::p0dmax;
 
@@ -138,8 +142,8 @@ Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const A
     if(categ>=0 ){
         SubDetId::SubDetEnum detector=anaUtils::GetDetector(tvertex);
         Int_t runPeriod = anaUtils::GetRunPeriod(event.EventInfo.Run);
-   
-        if (!_rate->GetBinValues(GetBeamNumber(runPeriod,box.MainTrack), GetDetNumber(detector), _rate_corr, _rate_error,_rate_index)) _rate_index=-1; 
+
+        if (!_rate->GetBinValues(GetBeamNumber(runPeriod,box.MainTrack), GetDetNumber(detector), _rate_corr, _rate_error,_rate_index)) _rate_index=-1;
 
         if (_reco_index[categ]>=0){
           eventWeight.Systematic *= (1+ _reco_corr[categ] + _reco_error[categ]*toy.GetToyVariations(_index)->Variations[_reco_index[categ]]);

@@ -124,7 +124,8 @@ namespace SampleId{
     kFGD2GammaInAntiNuMode,
     // P0D
     kP0DNuMuCC,
-    kP0DNuMuBarCC,
+    kP0DNuMuBarBkgCC,
+    kP0DNuMuBarInAntiNuModeCC,
     kP0DNuMuBkgInAntiNuModeCC,
     kNSamples
   };
@@ -132,6 +133,7 @@ namespace SampleId{
   std::string ConvertSample(SampleEnum sample);
   std::string ConvertSampleToSelection(SampleEnum sample);
   SampleEnum ConvertSample(std::string sample);
+  bool IsP0DSelection(SampleEnum sample);
 
 }
 
