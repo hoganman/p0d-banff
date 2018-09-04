@@ -25,9 +25,11 @@ namespace DetDef {
 //  Float_t fgd2min[3] = {-932.17,-877.17,1473.95};
 //  Float_t fgd2max[3] = {932.17,987.17,1807.05};
 
-
   Float_t p0dmin[3] = {-1092.79,-1107.39,-3296.48};
   Float_t p0dmax[3] = {1012.45,1130.99,-938.753};
+
+  Float_t p0dToTrackerCorridorMin[3] = {-988, -1020, -3139};
+  Float_t p0dToTrackerCorridorMax[3] = {910, 1010, -900};
 
   //from RECPACK simplified geometry: active DsECal volume
   Float_t dsecalmin[3] = {-1019.97,-1009.97,2855.03};

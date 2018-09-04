@@ -380,30 +380,33 @@ AnaTrackB* cutUtils::FindP0DVetoTrack(const AnaEventC& event){
 }
 
 // AI: I`d prefer this to go into detector definitions!
-
-const double p0dVetoMinLimits[3] = {-988,-1020,-3139};
-const double p0dVetoMaxLimits[3] = {910,1010,-900};
-//"Corridor-" removes 3 most downstream layers
-const double p0dVetoEndMaxZ = -992.156;
+//const double p0dVetoMinLimits[3] = {-988,-1020,-3139};
+//const double p0dVetoMaxLimits[3] = {910,1010,-900};
+////"Corridor-" removes 3 most downstream layers
+//const double p0dVetoEndMaxZ = -992.156;
 
 //***********************************************************************
 bool cutUtils::IsOutsideP0DVetoCorridor(const AnaTrackB& track)
   //***********************************************************************
 {
-  Float_t mom = track.Momentum;
-  if (mom < 0 ) return false;
+  const Float_t mom = track.Momentum;
+  if (mom < 0 )
+      return false;
 
-  if (!track.nP0DSegments) return false;
+  if (!track.nP0DSegments)
+      return false;
 
   AnaP0DParticleB* p0dSegment = track.P0DSegments[0];
 
-  float* start = p0dSegment->PositionStart;
+  const Float_t* start = p0dSegment->PositionStart;
+  using namespace DetDef;
 
-  //Find a track starting outside a volume slightly larger than the P0D WT FV
-  if (start[0] < p0dVetoMinLimits[0] || start[0] > p0dVetoMaxLimits[0] || start[1] < p0dVetoMinLimits[1] || start[1] > p0dVetoMaxLimits[1] || start[2] < p0dVetoMinLimits[2] || start[2] > p0dVetoMaxLimits[2])
-  {
+  //Find a track starting outside a volume slightly larger than the P0D WT FV (See Appendix I of TN-208)
+  if (start[0] < p0dToTrackerCorridorMin[0] || start[0] > p0dToTrackerCorridorMax[0] ||
+      start[1] < p0dToTrackerCorridorMin[1] || start[1] > p0dToTrackerCorridorMax[1] ||
+      start[2] < p0dToTrackerCorridorMin[2] || start[2] > p0dToTrackerCorridorMax[2])
     return true;
-  }
+
   return false;
 }
 
@@ -411,11 +414,16 @@ bool cutUtils::IsOutsideP0DVetoCorridor(const AnaTrackB& track)
 bool cutUtils::IsP0DVetoTrack(const AnaTrackB& track)
   //***********************************************************************
 {
-  if (!IsOutsideP0DVetoCorridor(track)) return false;
+  if (!IsOutsideP0DVetoCorridor(track))
+      return false;
   AnaP0DParticleB* p0dSegment = track.P0DSegments[0];
 
-  float* end = p0dSegment->PositionEnd;
-  if (end[0] >= p0dVetoMinLimits[0] && end[0] <= p0dVetoMaxLimits[0] && end[1] >= p0dVetoMinLimits[1] && end[1] <= p0dVetoMaxLimits[1] && end[2] >= p0dVetoMinLimits[2] && end[2] <= p0dVetoEndMaxZ)
+  const Float_t* end = p0dSegment->PositionEnd;
+
+  using namespace DetDef;
+  if (end[0] >= p0dToTrackerCorridorMin[0] && end[0] <= p0dToTrackerCorridorMax[0] &&
+      end[1] >= p0dToTrackerCorridorMin[1] && end[1] <= p0dToTrackerCorridorMax[1] &&
+      end[2] >= p0dToTrackerCorridorMin[2] && end[2] <= p0dToTrackerCorridorMax[2])
     return true;
 
   return false;

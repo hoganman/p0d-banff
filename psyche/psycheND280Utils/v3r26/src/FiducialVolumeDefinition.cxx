@@ -32,25 +32,25 @@ namespace FVDef {
   Float_t FVdefminP0D[3] = {256.79, 236.39, 327.48};
   Float_t FVdefmaxP0D[3] = {248.45, 261.99, 325.247};
 
-	//BarrelECal FV for stopping point cut 
-	Float_t FVdefminTECALLeft[3]   = { 0.0  , 40.0 , 40.0 };
-	Float_t FVdefmaxTECALLeft[3]   = { 10.0 , 40.0 , 40.0 };
-	Float_t FVdefminTECALRight[3]  = { 10  , 40.0 , 40.0 };
-	Float_t FVdefmaxTECALRight[3]  = { 0.0 , 40.0 , 40.0 };
-	Float_t FVdefminTECALTop[3]    = { 40.0 , 0.0  , 40.0 };
-	Float_t FVdefmaxTECALTop[3]    = { 40.0 , 10.0 , 40.0 };
-	Float_t FVdefminTECALBottom[3] = { 40.0 , 10.0 , 40.0 };
-	Float_t FVdefmaxTECALBottom[3] = { 40.0 , 0.0  , 40.0 };
+  //BarrelECal FV for stopping point cut
+  Float_t FVdefminTECALLeft[3]   = { 0.0  , 40.0 , 40.0 };
+  Float_t FVdefmaxTECALLeft[3]   = { 10.0 , 40.0 , 40.0 };
+  Float_t FVdefminTECALRight[3]  = { 10  , 40.0 , 40.0 };
+  Float_t FVdefmaxTECALRight[3]  = { 0.0 , 40.0 , 40.0 };
+  Float_t FVdefminTECALTop[3]    = { 40.0 , 0.0  , 40.0 };
+  Float_t FVdefmaxTECALTop[3]    = { 40.0 , 10.0 , 40.0 };
+  Float_t FVdefminTECALBottom[3] = { 40.0 , 10.0 , 40.0 };
+  Float_t FVdefmaxTECALBottom[3] = { 40.0 , 0.0  , 40.0 };
 
-	//SMRD FV for stopping point cut 
-	Float_t FVdefminSMRDLeft[3]   = { 0.0  , 0.0 , 125.0 };
-	Float_t FVdefmaxSMRDLeft[3]   = { 60.0 , 0.0 , 125.0 };
-	Float_t FVdefminSMRDRight[3]  = { 60.0 , 0.0 , 125.0 };
-	Float_t FVdefmaxSMRDRight[3]  = { 0.0  , 0.0 , 125.0 };
-	Float_t FVdefminSMRDTop[3]    = { 0.0 , 0.0  , 125.0 };
-	Float_t FVdefmaxSMRDTop[3]    = { 0.0 , 60.0 , 125.0 };
-	Float_t FVdefminSMRDBottom[3] = { 0.0 , 60.0 , 125.0 };
-	Float_t FVdefmaxSMRDBottom[3] = { 0.0 , 0.0  , 125.0 };
+  //SMRD FV for stopping point cut
+  Float_t FVdefminSMRDLeft[3]   = { 0.0  , 0.0 , 125.0 };
+  Float_t FVdefmaxSMRDLeft[3]   = { 60.0 , 0.0 , 125.0 };
+  Float_t FVdefminSMRDRight[3]  = { 60.0 , 0.0 , 125.0 };
+  Float_t FVdefmaxSMRDRight[3]  = { 0.0  , 0.0 , 125.0 };
+  Float_t FVdefminSMRDTop[3]    = { 0.0 , 0.0  , 125.0 };
+  Float_t FVdefmaxSMRDTop[3]    = { 0.0 , 60.0 , 125.0 };
+  Float_t FVdefminSMRDBottom[3] = { 0.0 , 60.0 , 125.0 };
+  Float_t FVdefmaxSMRDBottom[3] = { 0.0 , 0.0  , 125.0 };
 
   //**********************************
   void DumpFV(){

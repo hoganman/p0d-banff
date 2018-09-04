@@ -29,6 +29,12 @@ namespace DetDef {
   /// Maximum of the P0D det. See definition in AnalysisUtils.cxx for default value.
   extern Float_t p0dmax[3];
 
+  /// Minimum of the P0D-to-TPC1 accepted corridor. Tracks outside this corridor are veto'd.
+  extern Float_t p0dToTrackerCorridorMin[3];
+
+  /// Max of the P0D-to-TPC1 accepted corridor. Tracks outside this corridor are veto'd.
+  extern Float_t p0dToTrackerCorridorMax[3];
+
   /// Minimum of the DsECal det. See definition in AnalysisUtils.cxx for default value.
   extern Float_t dsecalmin[3];
 

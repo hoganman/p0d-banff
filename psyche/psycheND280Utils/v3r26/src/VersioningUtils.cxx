@@ -38,8 +38,7 @@ void versionUtils::DumpProductions(){
 std::string versionUtils::Extension(bool useProdExt){
 //**************************************************
 
-
-  // Extension base of the production 
+  // Extension base of the production
   std::string prodExt="";
   if (useProdExt){
     if (versionUtils::prod6_systematics)

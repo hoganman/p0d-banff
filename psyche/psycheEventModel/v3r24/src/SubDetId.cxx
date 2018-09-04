@@ -11,9 +11,9 @@ const unsigned long SubDetId::DetMask[] = {
     1<<SubDetId::kP0D,
     1<<SubDetId::kDSECAL,
     1<<SubDetId::kTopTECAL,
-    1<<SubDetId::kBottomTECAL, 
-    1<<SubDetId::kLeftTECAL, 
-    1<<SubDetId::kRightTECAL, 
+    1<<SubDetId::kBottomTECAL,
+    1<<SubDetId::kLeftTECAL,
+    1<<SubDetId::kRightTECAL,
     1<<SubDetId::kTopPECAL,
     1<<SubDetId::kBottomPECAL,
     1<<SubDetId::kLeftPECAL,
@@ -22,6 +22,9 @@ const unsigned long SubDetId::DetMask[] = {
     1<<SubDetId::kBottomSMRD,
     1<<SubDetId::kLeftSMRD,
     1<<SubDetId::kRightSMRD,
+    1<<SubDetId::kUSECal,
+    1<<SubDetId::kP0DWT,
+    1<<SubDetId::kCECal,
     1<<SubDetId::kInvalidSubdetector,
     1<<SubDetId::kTPC     | SubDetId::MakeMask(SubDetId::kTPC3,       SubDetId::kTPC1),
     1<<SubDetId::kFGD     | SubDetId::MakeMask(SubDetId::kFGD2,       SubDetId::kFGD1),
@@ -147,6 +150,21 @@ bool SubDetId::IsSMRDDetector(SubDetId::SubDetEnum det){
 
 bool SubDetId::IsP0DDetector(SubDetId::SubDetEnum det){
   return (det ==kP0D);
+}
+
+bool SubDetId::IsP0DWTDetector(SubDetId::SubDetEnum det)
+{
+    return det == kP0DWT;
+}
+
+bool SubDetId::IsUSECalDetector(SubDetId::SubDetEnum det)
+{
+    return det == kUSECal;
+}
+
+bool SubDetId::IsCECalDetector(SubDetId::SubDetEnum det)
+{
+    return det == kCECal;
 }
 
 bool SubDetId::HasTECALDetector(unsigned long BitField){

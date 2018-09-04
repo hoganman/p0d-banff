@@ -3,11 +3,13 @@
 
 #include "BasicTypes.hxx"
 
+const UInt_t NMAXDETMASKS = 31;
+
 class SubDetId {
 
     private:
         /// Bit mask array to select different subdetectors and systems
-        const static unsigned long DetMask[28];
+        const static unsigned long DetMask[NMAXDETMASKS];
 
         /// Method to make detector bit masks
         static unsigned long MakeMask(int msb, int lsb) {return (((1<<(((msb)-(lsb))+1))-1)<<(lsb));}
@@ -42,6 +44,9 @@ class SubDetId {
             kBottomSMRD,
             kLeftSMRD,
             kRightSMRD,
+	    kUSECal, // P0D up stream ECal
+	    kP0DWT, // P0D water target
+	    kCECal, // P0D central ECal
             kInvalidSubdetector,
             kTPC,
             kFGD,
@@ -90,8 +95,17 @@ class SubDetId {
         /// Check if a detector enumeration refers to a SMRD or not
         static bool IsSMRDDetector(SubDetId::SubDetEnum det);
 
-        /// Check if a detector enumeration refers to a SMRDP0D or not
+        /// Check if a detector enumeration refers to P0D or not
         static bool IsP0DDetector(SubDetId::SubDetEnum det);
+
+        /// Check if a detector enumeration refers to P0D WT or not
+        static bool IsP0DWTDetector(SubDetId::SubDetEnum det);
+
+        /// Check if a detector enumeration refers to P0D Upstream ECal or not
+        static bool IsUSECalDetector(SubDetId::SubDetEnum det);
+
+        /// Check if a detector enumeration refers to P0D Central ECal or not
+        static bool IsCECalDetector(SubDetId::SubDetEnum det);
 
         /// Check if a detector enumeration refers to a ECAL or not
         static bool IsECALDetector(SubDetId::SubDetEnum det);
