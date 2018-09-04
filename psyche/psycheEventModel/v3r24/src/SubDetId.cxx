@@ -1,4 +1,6 @@
 #include "SubDetId.hxx"
+#include "DetectorDefinition.hxx"
+#include "FiducialVolumeDefinition.hxx"
 #include <iostream>
 #include <bitset>
 
@@ -152,19 +154,42 @@ bool SubDetId::IsP0DDetector(SubDetId::SubDetEnum det){
   return (det ==kP0D);
 }
 
-bool SubDetId::IsP0DWTDetector(SubDetId::SubDetEnum det)
+bool SubDetId::IsP0DWTDetector(SubDetId::SubDetEnum det, Float_t* position)
 {
-    return det == kP0DWT;
+    if(det == kP0D && position)
+    {
+	if (position[2] < (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]) &&
+	    position[2] > (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2])
+	   )
+	    return true;
+    }
+    if (det == kP0DWT)
+	return true;
+    return false;
 }
 
-bool SubDetId::IsUSECalDetector(SubDetId::SubDetEnum det)
+bool SubDetId::IsUSECalDetector(SubDetId::SubDetEnum det, Float_t* position)
 {
-    return det == kUSECal;
+    if(det == kP0D && position)
+    {
+	if(position[2] < (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2]))
+	    return true;
+    }
+    if (det == kUSECal)
+	return true;
+    return false;
 }
 
-bool SubDetId::IsCECalDetector(SubDetId::SubDetEnum det)
+bool SubDetId::IsCECalDetector(SubDetId::SubDetEnum det, Float_t* position)
 {
-    return det == kCECal;
+    if(det == kP0D && position)
+    {
+	if (position[2] > (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]))
+	    return true;
+    }
+    if (det == kCECal)
+	return true;
+    return false;
 }
 
 bool SubDetId::HasTECALDetector(unsigned long BitField){

@@ -99,13 +99,13 @@ class SubDetId {
         static bool IsP0DDetector(SubDetId::SubDetEnum det);
 
         /// Check if a detector enumeration refers to P0D WT or not
-        static bool IsP0DWTDetector(SubDetId::SubDetEnum det);
+        static bool IsP0DWTDetector(SubDetId::SubDetEnum det, Float_t* position = NULL);
 
         /// Check if a detector enumeration refers to P0D Upstream ECal or not
-        static bool IsUSECalDetector(SubDetId::SubDetEnum det);
+        static bool IsUSECalDetector(SubDetId::SubDetEnum det, Float_t* position = NULL);
 
         /// Check if a detector enumeration refers to P0D Central ECal or not
-        static bool IsCECalDetector(SubDetId::SubDetEnum det);
+        static bool IsCECalDetector(SubDetId::SubDetEnum det, Float_t* position = NULL);
 
         /// Check if a detector enumeration refers to a ECAL or not
         static bool IsECALDetector(SubDetId::SubDetEnum det);
