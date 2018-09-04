@@ -4,47 +4,58 @@
 #include "EventWeightBase.hxx"
 #include "BinnedParams.hxx"
 
+const UInt_t NMAXP0DOOFVSYSTEMATICSBINS = 9;
+
 class p0dCCQEOOFVSystematics: public EventWeightBase {
 public:
-  
+
   using EventWeightBase::ComputeWeight;
   p0dCCQEOOFVSystematics();
-  
-  virtual ~p0dCCQEOOFVSystematics() {
-    delete _p0d;
-    delete _rate;
+
+  virtual ~p0dCCQEOOFVSystematics()
+  {
+    if (_p0d)  delete _p0d;  _p0d = NULL;
+    if (_rate) delete _rate; _rate = NULL;
   }
-  
+
+  ///
   Weight_h ComputeWeight(const ToyExperiment& toy, const AnaEventC& event, const ToyBoxB& box);
-  
+
 protected:
 
-  // special enumeration for this systematic
-  Int_t GetDetNumber(SubDetId::SubDetEnum det);  
-  //Works for runs 1 - 5 ONLY
-  Int_t GetBeamNumber(Int_t runperiod,AnaTrackB *maintrack);
+  ///
+  void Initialize();
 
-protected:  
+  ///
+  Int_t GetDetNumber(const SubDetId::SubDetEnum& det) const;
 
-  /// Mean of the rate correction
-  Float_t _rate_corr;  
+  ///
+  Int_t GetBeamNumber(const Int_t& runperiod,AnaTrackB* maintrack) const;
 
-  /// Uncertainty on the rate correction
-  Float_t _rate_error;  
+protected:
 
-  /// Mean of the reco eff  correction
-  Float_t _reco_corr[9];  
+  /// Mean of the reco correction
+  Float_t _reco_corr;
 
-  /// Uncertainty on the reco eff  correction
-  Float_t _reco_error[9];  
+  /// Uncertainty on the reco correction
+  Float_t _reco_error;
 
-  //Index for rate corrections
-  Int_t _rate_index;
-      
-  //Index for reco corrections
-  Int_t _reco_index[9];
-  
+  /// Mean of the rate eff correction
+  Float_t _rate_corr[NMAXP0DOOFVSYSTEMATICSBINS];
+
+  /// Uncertainty on the rate eff correction
+  Float_t _rate_error[NMAXP0DOOFVSYSTEMATICSBINS];
+
+  /// Index for rate corrections
+  Int_t _rate_index[NMAXP0DOOFVSYSTEMATICSBINS];
+
+  /// Index for reco corrections
+  Int_t _reco_index;
+
+  /// The OOFV reco systematic param
   BinnedParams* _p0d;
+
+  /// The OOFV other sub-detector rates systematic param
   BinnedParams* _rate;
 
 };
