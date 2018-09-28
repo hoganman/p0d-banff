@@ -48,16 +48,14 @@ if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ] || [ $ISENSHPCQUEUEN
 fi
 
 if [ $HOSTNAME == $HEP ]; then
-    export SOFTWARE=/home/mhogan/software/nd280_v11r31p15
+    export SOFTWARE=/home/mhogan/software/nd280_v11r31p35
     export ND280=$SOFTWARE
     export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
     export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
     export GOPATH=/home/mhogan/go:/Raid/home/mhogan/go
-    export IRODSROOT=/Raid/software/t2k/irods-legacy/iRODS
-    # export CMTVERSION=v1r20p20081118
-    export CMTVERSION=v1r26p20140131
+    export CMTVERSION=v1r20p20081118
     export CMTROOT=${SOFTWARE}/CMT/$CMTVERSION
-    export ND280VERSION=v11r31p15
+    export ND280VERSION=v11r31p35
     export ROOTVERSION=v5r34p09n04
 fi
 
