@@ -13,14 +13,11 @@ P0DOOFVSystematics::P0DOOFVSystematics() : EventWeightBase(1)
 //********************************************************************
 {
 
-  UInt_t npars = 0;
-  _p0d = new BinnedParams("P0DOOFV_reco", BinnedParams::k1D_SYMMETRIC, versionUtils::Extension(false));
-  npars += _p0d->GetNBins();
+  _p0d = new BinnedParams("P0DOOFV_reco", BinnedParams::k1D_SYMMETRIC);
 
-  _rate = new BinnedParams("P0DOOFV_rate", BinnedParams::k2D_SYMMETRIC, versionUtils::Extension(false));
-  npars += _rate->GetNBins();
+  _rate = new BinnedParams("P0DOOFV_rate", BinnedParams::k2D_SYMMETRIC);
 
-  SetNParameters(npars);
+  SetNParameters(_p0d->GetNBins() + _rate->GetNBins());
 
   for (UInt_t i = 0; i < NMAXP0DOOFVSYSTEMATICSBINS; i++)
   {
@@ -103,24 +100,24 @@ Weight_h P0DOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEv
 
     // if the true vertex is inside the P0D FV this is not OOFV (RETURN EVENTWEIGHT=1)
     if(anaUtils::InFiducialVolume(static_cast<SubDetId::SubDetEnum>(box.DetectorFV), tvertex))
-	return eventWeight;
-
-    const Float_t Zmin_p0d_fv = DetDef::p0dmin[2] + FVDef::FVdefminP0D[2];
-    const Float_t Zmax_p0d_fv = DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2];
+        return eventWeight;
 
     //const SubDetId::SubDetEnum detector = static_cast<const SubDetId::SubDetEnum>(anaUtils::GetDetector(tvertex));
     const SubDetId::SubDetEnum detector = anaUtils::GetDetector(tvertex);
 
     Int_t categ =-1;
-    //In P0D CEcal.
-    if (SubDetId::IsP0DDetector(detector) && tvertex[2] > Zmax_p0d_fv)
-      categ = 0;
-    //In P0D US ECal
-    else if (SubDetId::IsP0DDetector(detector) && tvertex[2] < Zmin_p0d_fv)
-      categ = 1;
-    //In P0D WT
-    else if (SubDetId::IsP0DDetector(detector))
-      categ = 2;
+    if(SubDetId::IsP0DDetector(detector))
+    {
+        //In P0D CEcal.
+        if(tvertex[2] > DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2])
+            categ = 0;
+        //In P0D US ECal
+        else if(tvertex[2] < DetDef::p0dmin[2] + FVDef::FVdefminP0D[2])
+            categ = 1;
+        //In P0D WT
+        else
+            categ = 2;
+    }
     else if (SubDetId::IsFGDDetector(detector))
       categ = 3;
     else if (SubDetId::IsECALDetector(detector))
@@ -134,28 +131,29 @@ Weight_h P0DOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEv
     else if (SubDetId::IsTPCDetector(detector))
       categ = 6;
 
-    if(categ >= 0){
+    if(categ >= 0)
+    {
 
         const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC);
         if (!_p0d->GetBinValues(GetBeamNumber(anaUtils::GetRunPeriod(event.EventInfo.Run), box.MainTrack),
-		                GetDetNumber(detector),
-				_reco_corr, _reco_error, _reco_index)
-    	   )
-	{
+                                GetDetNumber(detector),
+                                _reco_corr, _reco_error, _reco_index)
+           )
+        {
             _reco_index=-1;
-	}
+        }
 
         // eval the other detector rate OOFV contribution
         if (_rate_index[categ] >= 0)
         {
-          eventWeight.Systematic *= 1 + _rate_corr[categ] + _rate_error[categ] * toy.GetToyVariations(_index)->Variations[_rate_index[categ]];
+          eventWeight.Systematic *= 1 + _rate_corr[categ] + (_rate_error[categ] * toy.GetToyVariations(_index)->Variations[_rate_index[categ]]);
           eventWeight.Correction *= 1 + _rate_corr[categ];
         }
 
         // eval the P0D reco OOFV contribution
         if (_reco_index >= 0)
         {
-          eventWeight.Systematic *= 1 + _reco_corr + _reco_error * toy.GetToyVariations(_index)->Variations[_reco_index];
+          eventWeight.Systematic *= 1 + _reco_corr + _reco_error * (toy.GetToyVariations(_index)->Variations[_reco_index]);
           eventWeight.Correction *= 1 + _reco_corr;
         }
     }

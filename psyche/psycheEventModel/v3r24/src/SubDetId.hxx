@@ -44,9 +44,9 @@ class SubDetId {
             kBottomSMRD,
             kLeftSMRD,
             kRightSMRD,
-	    kUSECal, // P0D up stream ECal
-	    kP0DWT, // P0D water target
-	    kCECal, // P0D central ECal
+            //kUSECal, // P0D up stream ECal
+            //kP0DWT, // P0D water target
+            //kCECal, // P0D central ECal
             kInvalidSubdetector,
             kTPC,
             kFGD,

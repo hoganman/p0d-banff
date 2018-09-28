@@ -1,4 +1,4 @@
-#include "p0dNumuCCSelection.hxx"
+#include "p0dWaterNumuBkgInAntiNuModeCCSelection.hxx"
 #include "baseSelection.hxx"
 #include "numuBkgInAntiNuModeCCSelection.hxx"
 #include "CutUtils.hxx"
@@ -7,13 +7,13 @@
 
 
 //********************************************************************
-p0dNumuCCSelection::p0dNumuCCSelection(bool forceBreak): SelectionBase(forceBreak, EventBoxId::kEventBoxTracker) {
+p0dWaterNumuBkgInAntiNuModeCCSelection::p0dWaterNumuBkgInAntiNuModeCCSelection(bool forceBreak): SelectionBase(forceBreak, EventBoxId::kEventBoxTracker) {
 //********************************************************************
 
 }
 
 //********************************************************************
-void p0dNumuCCSelection::DefineSteps(){
+void p0dWaterNumuBkgInAntiNuModeCCSelection::DefineSteps(){
 //********************************************************************
 
     // Cuts must be added in the right order
@@ -22,15 +22,16 @@ void p0dNumuCCSelection::DefineSteps(){
     AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
     AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction());
     AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
-    AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dNumuCC());
+    AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dWaterNumuBkgInAntiNuModeCC());
     AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
+    AddStep(StepBase::kCut,    "neg_mult",            new NegativeMultiplicityCut());
     AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
     AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
     SetBranchAlias(0,"trunk");
 }
 
 //**************************************************
-void p0dNumuCCSelection::InitializeEvent(AnaEventC& eventC){
+void p0dWaterNumuBkgInAntiNuModeCCSelection::InitializeEvent(AnaEventC& eventC){
 //**************************************************
 
   AnaEventB& event = *static_cast<AnaEventB*>(&eventC);
@@ -47,24 +48,25 @@ void p0dNumuCCSelection::InitializeEvent(AnaEventC& eventC){
 }
 
 //********************************************************************
-void p0dNumuCCSelection::DefineDetectorFV(){
+void p0dWaterNumuBkgInAntiNuModeCCSelection::DefineDetectorFV(){
 //********************************************************************
 
   SetDetectorFV(SubDetId::kP0D);
+
 }
 
 //********************************************************************
-bool p0dNumuCCSelection::FillEventSummary(AnaEventC& event, Int_t allCutsPassed[]){
+bool p0dWaterNumuBkgInAntiNuModeCCSelection::FillEventSummary(AnaEventC& event, Int_t allCutsPassed[]){
 //********************************************************************
 
     if(allCutsPassed[0]){
-        static_cast<AnaEventSummaryB*>(event.Summary)->EventSample = SampleId::kP0DNuMuCC;
+        static_cast<AnaEventSummaryB*>(event.Summary)->EventSample = SampleId::kP0DWaterNuMuBkgInAntiNuModeCC;
     }
     return (static_cast<AnaEventSummaryB*>(event.Summary)->EventSample != SampleId::kUnassigned);
 }
 
 //**************************************************
-Int_t p0dNumuCCSelection::GetRelevantRecObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const{
+Int_t p0dWaterNumuBkgInAntiNuModeCCSelection::GetRelevantRecObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const{
 //**************************************************
 
   (void)branch;
@@ -108,7 +110,7 @@ Int_t p0dNumuCCSelection::GetRelevantRecObjectGroupsForSystematic(SystId_h systI
 }
 
 //**************************************************
-Int_t p0dNumuCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const{
+Int_t p0dWaterNumuBkgInAntiNuModeCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const{
 //**************************************************
 
   (void)branch;
@@ -140,47 +142,8 @@ Int_t p0dNumuCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h syst
   return ngroups;
 }
 
-
-////**************************************************
-//bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-////**************************************************
-//
-//  // Cast the ToyBox to the appropriate type
-//  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
-//
-//  trackerSelUtils::FindLeadingTracks(event, box);
-//
-//  // For this selection the main track is the HMN track
-//  box.MainTrack = box.HMNtrack;
-//
-//  return true;
-//}
-
-//**************************************************
-bool FindP0DVetoAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  box->VetoTrack = cutUtils::FindP0DVetoTrack(event);
-
-  return true;
-}
-
-//**************************************************
-bool P0DSelectionVetoCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-
-  (void)event;
-
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  if (box->VetoTrack)
-    return false;
-
-  return true;
-
-}
-
 //********************************************************************
-bool FillSummaryAction_p0dNumuCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
+bool FillSummaryAction_p0dWaterNumuBkgInAntiNuModeCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //********************************************************************
 
     // Cast the ToyBox to the appropriate type
@@ -188,11 +151,11 @@ bool FillSummaryAction_p0dNumuCC::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 
     if(!box.MainTrack) return 1;
 
-    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DNuMuCC] = box.MainTrack;
+    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = box.MainTrack;
     for(int i = 0; i < 4; ++i){
-        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DNuMuCC][i] = box.MainTrack->PositionStart[i];
+        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC][i] = box.MainTrack->PositionStart[i];
     }
-    if(box.MainTrack->GetTrueParticle()) static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DNuMuCC] = box.MainTrack->GetTrueParticle()->TrueVertex;
+    if(box.MainTrack->GetTrueParticle()) static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = box.MainTrack->GetTrueParticle()->TrueVertex;
 
     return true;
 }

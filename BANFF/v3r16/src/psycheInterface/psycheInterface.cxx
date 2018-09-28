@@ -44,7 +44,7 @@ psycheInterface::psycheInterface(int nSamp, BANFFSampleBase** samp,
 
 
     _man->sel().DumpSelections();
-    
+
     //If loading detector parameters was requested, do so now.
     if ( loadDetParms ) {
         LoadDetectorParameters(varyDetParms);
@@ -66,16 +66,16 @@ psycheInterface::~psycheInterface(){
   for(int i = 0; i < nSamples; i++)
     if(samples[i])
       delete samples[i];
-  
+
   for(int i = 0; i < nDataEvents; i++)
     if(dataEvents[i])
       delete dataEvents[i];
-  
+
 
   for(int i = 0; i < nMCEvents; i++)
     if(mcEvents[i])
       delete mcEvents[i];
-  
+
   delete fitParameters;
   delete sumTree;
   dataFiles.clear();
@@ -118,7 +118,7 @@ void psycheInterface::LoadEvents()
         for( unsigned int i = 0; i < (it->second).size(); i++ ) {
           sampleGroups[sgi]->AddDataSample(new DataSample((it->second)[i]));
         }
-        
+
         //Now, for the same run period, add all the MC files.
         for ( unsigned int i = 0; i < mcFiles[it->first].size(); i++ ) {
           sampleGroups[sgi]->AddMCSample(((mcFiles[it->first])[i]).first,

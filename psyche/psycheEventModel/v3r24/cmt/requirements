@@ -7,6 +7,7 @@ author nd280-software@mailman.t2k.org
 branches cmt src doc dict
 
 use psycheCore * psyche
+use psycheND280Utils * psyche
 
 
 # Build methods to include.

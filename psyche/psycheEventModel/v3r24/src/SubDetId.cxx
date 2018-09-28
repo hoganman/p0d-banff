@@ -24,9 +24,9 @@ const unsigned long SubDetId::DetMask[] = {
     1<<SubDetId::kBottomSMRD,
     1<<SubDetId::kLeftSMRD,
     1<<SubDetId::kRightSMRD,
-    1<<SubDetId::kUSECal,
-    1<<SubDetId::kP0DWT,
-    1<<SubDetId::kCECal,
+    //1<<SubDetId::kUSECal,
+    //1<<SubDetId::kP0DWT,
+    //1<<SubDetId::kCECal,
     1<<SubDetId::kInvalidSubdetector,
     1<<SubDetId::kTPC     | SubDetId::MakeMask(SubDetId::kTPC3,       SubDetId::kTPC1),
     1<<SubDetId::kFGD     | SubDetId::MakeMask(SubDetId::kFGD2,       SubDetId::kFGD1),
@@ -98,9 +98,9 @@ void SubDetId::SetDetectorSystemFields(unsigned long &BitField){
             else if (i >= SubDetId::kDSECAL && i <= SubDetId::kRightPECAL){
                 SetDetectorUsed(BitField, SubDetId::kECAL);
                 //TECal
-                if (i >= SubDetId::kTopTECAL && i <= SubDetId::kRightTECAL) SetDetectorUsed(BitField, SubDetId::kTECAL); 
+                if (i >= SubDetId::kTopTECAL && i <= SubDetId::kRightTECAL) SetDetectorUsed(BitField, SubDetId::kTECAL);
                 //PECal
-                else if(i >= SubDetId::kTopPECAL && i <= SubDetId::kRightPECAL) SetDetectorUsed(BitField, SubDetId::kPECAL); 
+                else if(i >= SubDetId::kTopPECAL && i <= SubDetId::kRightPECAL) SetDetectorUsed(BitField, SubDetId::kPECAL);
             }
             //SMRD
             else if (i >= SubDetId::kTopSMRD && i <= SubDetId::kRightSMRD) SetDetectorUsed(BitField, SubDetId::kSMRD);
@@ -154,43 +154,43 @@ bool SubDetId::IsP0DDetector(SubDetId::SubDetEnum det){
   return (det ==kP0D);
 }
 
-bool SubDetId::IsP0DWTDetector(SubDetId::SubDetEnum det, Float_t* position)
-{
-    if(det == kP0D && position)
-    {
-	if (position[2] < (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]) &&
-	    position[2] > (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2])
-	   )
-	    return true;
-    }
-    if (det == kP0DWT)
-	return true;
-    return false;
-}
-
-bool SubDetId::IsUSECalDetector(SubDetId::SubDetEnum det, Float_t* position)
-{
-    if(det == kP0D && position)
-    {
-	if(position[2] < (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2]))
-	    return true;
-    }
-    if (det == kUSECal)
-	return true;
-    return false;
-}
-
-bool SubDetId::IsCECalDetector(SubDetId::SubDetEnum det, Float_t* position)
-{
-    if(det == kP0D && position)
-    {
-	if (position[2] > (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]))
-	    return true;
-    }
-    if (det == kCECal)
-	return true;
-    return false;
-}
+//bool SubDetId::IsP0DWTDetector(SubDetId::SubDetEnum det, Float_t* position)
+//{
+//    if(det == kP0D && position)
+//    {
+//	if (position[2] < (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]) &&
+//	    position[2] > (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2])
+//	   )
+//	    return true;
+//    }
+//    if (det == kP0DWT)
+//	return true;
+//    return false;
+//}
+//
+//bool SubDetId::IsUSECalDetector(SubDetId::SubDetEnum det, Float_t* position)
+//{
+//    if(det == kP0D && position)
+//    {
+//	if(position[2] < (DetDef::p0dmin[2] + FVDef::FVdefminP0D[2]))
+//	    return true;
+//    }
+//    if (det == kUSECal)
+//	return true;
+//    return false;
+//}
+//
+//bool SubDetId::IsCECalDetector(SubDetId::SubDetEnum det, Float_t* position)
+//{
+//    if(det == kP0D && position)
+//    {
+//	if (position[2] > (DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2]))
+//	    return true;
+//    }
+//    if (det == kCECal)
+//	return true;
+//    return false;
+//}
 
 bool SubDetId::HasTECALDetector(unsigned long BitField){
   if(BitField & DetMask[SubDetId::kTECAL]) return true;
@@ -208,7 +208,7 @@ bool SubDetId::HasSMRDDetector(unsigned long BitField){
 }
 
 SubDetId::SubDetEnum SubDetId::GetSubdetectorEnum(unsigned long BitField){
- 
+
     BitField = BitField & MakeMask(SubDetId::kRightSMRD, SubDetId::kFGD1);
     int nBits = NumberOfSetBits(BitField);
     if(nBits!=1){

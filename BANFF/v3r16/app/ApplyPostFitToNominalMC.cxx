@@ -14,7 +14,7 @@
 #include "XMLTools.hxx"
 #include <sstream>
 
-inline void Declare(const char* str)
+inline void Declare(const char* const str)
 {
     std::cout << str << std::endl;
 }
@@ -98,21 +98,21 @@ int main(int argc, char** argv){
 
     ND::params().SetReadParamOverrideFilePointPassed();
     Declare("Loading parameters!");
-    bool throwMCStat              = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
-    bool throwStat                = ND::params().GetParameterI("BANFF.RunFit.ThrowStat");
-    bool loadXSecParams           = ND::params().GetParameterI("BANFF.RunFit.LoadXSecParams");
-    bool loadObsNormParams        = ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams");
-    bool loadFluxParams           = ND::params().GetParameterI("BANFF.ThrowToys.LoadFluxParams");
-    bool throwXSecParams          = ND::params().GetParameterI("BANFF.ThrowToys.ThrowXSecParams");
-    bool loadNuModeFluxParams     = ND::params().GetParameterI("BANFF.ThrowToys.LoadNuModeFluxParams");
-    bool loadAntiNuModeFluxParams = ND::params().GetParameterI("BANFF.ThrowToys.LoadAntiNuModeFluxParams");
-    bool throwFluxParams          = ND::params().GetParameterI("BANFF.ThrowToys.ThrowFluxParams");
-    bool throwObsNormParams       = ND::params().GetParameterI("BANFF.ThrowToys.ThrowObsNormParams");
-    bool loadDetParams            = ND::params().GetParameterI("BANFF.ThrowToys.LoadDetParams");
-    bool throwDetParams           = ND::params().GetParameterI("BANFF.ThrowToys.ThrowDetParams");
-    std::string fluxInputFile     = ND::params().GetParameterS("BANFF.FluxInputFile");
-    std::string xSecInputFile     = ND::params().GetParameterS("BANFF.XSecInputFile");
-    std::string obsNormInputFile  = ND::params().GetParameterS("BANFF.ObsNormInputFile");
+    const bool throwMCStat              = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
+    const bool throwStat                = ND::params().GetParameterI("BANFF.RunFit.ThrowStat");
+    const bool loadXSecParams           = ND::params().GetParameterI("BANFF.RunFit.LoadXSecParams");
+    const bool loadObsNormParams        = ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams");
+    const bool loadFluxParams           = ND::params().GetParameterI("BANFF.ThrowToys.LoadFluxParams");
+    const bool throwXSecParams          = ND::params().GetParameterI("BANFF.ThrowToys.ThrowXSecParams");
+    const bool loadNuModeFluxParams     = ND::params().GetParameterI("BANFF.ThrowToys.LoadNuModeFluxParams");
+    const bool loadAntiNuModeFluxParams = ND::params().GetParameterI("BANFF.ThrowToys.LoadAntiNuModeFluxParams");
+    const bool throwFluxParams          = ND::params().GetParameterI("BANFF.ThrowToys.ThrowFluxParams");
+    const bool throwObsNormParams       = ND::params().GetParameterI("BANFF.ThrowToys.ThrowObsNormParams");
+    const bool loadDetParams            = ND::params().GetParameterI("BANFF.ThrowToys.LoadDetParams");
+    const bool throwDetParams           = ND::params().GetParameterI("BANFF.ThrowToys.ThrowDetParams");
+    const std::string fluxInputFile     = ND::params().GetParameterS("BANFF.FluxInputFile");
+    const std::string xSecInputFile     = ND::params().GetParameterS("BANFF.XSecInputFile");
+    const std::string obsNormInputFile  = ND::params().GetParameterS("BANFF.ObsNormInputFile");
 
     const std::string pBinsEdges = "pBinsEdges";
     const std::string ctBinsEdges = "ctBinsEdges";

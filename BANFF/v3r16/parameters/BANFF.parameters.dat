@@ -23,15 +23,15 @@ If nue's are the only thing you care about...
 
 The flux input file, which contains the information about the flux parameters
 and their covariance.
-< BANFF.FluxInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/flux_covariance_banff_13av1.1.root >
+< BANFF.FluxInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/flux_covariance_banff_13av1.1.root >
 
 The XSec input file, which contains the information about the xsec parameters
 and their covariance.
-< BANFF.XSecInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained.root >
+< BANFF.XSecInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained.root >
 
 The Observable Normalization parameters input file, which contains information
 about those parameters and their covariance.
-< BANFF.ObsNormInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/obsNorm_2015_v3.root >
+< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/obsNorm_2015_v3.root >
 
 Whether to apply an additional scaling factor to the MC POT.  Would typically
 only use this if wanted to scale MC to a desired POT to check fit performance.
@@ -44,7 +44,7 @@ The desired POT to scale the MC to.
 Whether to use the lower memory version of spline storage.  Only available for
 performing a fit.  There may be unexpected behaviour including but not limited
 to crashing if this is set to true for toy throwing.
-< BANFF.UseLowMemoryVersion = 0 >
+< BANFF.UseLowMemoryVersion = 1 >
 
 ==================================================
 Parameters that affect the toy throwing code.
@@ -132,7 +132,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = AsimovFit2015Reproduction.root >
+< BANFF.RunFit.OutputFile = DataFit.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >

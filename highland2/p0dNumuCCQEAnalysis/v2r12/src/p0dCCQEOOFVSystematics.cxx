@@ -19,10 +19,10 @@ p0dCCQEOOFVSystematics::p0dCCQEOOFVSystematics() : EventWeightBase(1)
   Char_t dirname[256];
   sprintf(dirname,"%s/data",getenv("P0DNUMUCCQEANALYSISROOT"));
   UInt_t npars = 0;
-  _p0d = new BinnedParams("P0DCCQEOOFV_reco", BinnedParams::k1D_SYMMETRIC, versionUtils::Extension(false));
+  _p0d = new BinnedParams("P0DCCQEOOFV_reco", BinnedParams::k1D_SYMMETRIC);
   npars += _p0d->GetNBins();
 
-  _rate = new BinnedParams("P0DCCQEOOFV_rate", BinnedParams::k2D_SYMMETRIC, versionUtils::Extension(false));
+  _rate = new BinnedParams("P0DCCQEOOFV_rate", BinnedParams::k2D_SYMMETRIC);
   npars += _rate->GetNBins();
 
   SetNParameters(npars);

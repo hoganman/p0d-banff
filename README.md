@@ -23,10 +23,14 @@ Using head of nd280Psyche while using frozen versions of HL2.
  * Changed the parameters file to save P0D in the pre-selection (aka save into the FlatTree)
 
 # psycheSelections
- * Added a mu-plus selection identical to the mu-minus selection (HMNT -> HMPT)
+ * Replaced p0dNuMuCCSelection with p0dWaterNuMuCCSelection. In addition an water-out (air) completementary selection, there are now numubar bkg in RHC, numubar in RHC, and numu bkg in RHC. The highest momentum postive track replaces the highest momentum negative track for numubar. In RHC specifically, an additional cut requires that the main track be the highest momentum track.
 
 # psycheSteering
  * Added more branches to `RunSyst_New.exe`
+ * Added to AnalysisManager the new p0d Selections
+
+# psycheND280AnalysisUtils
+ * Added the eight selections to SampleId
 
     SOFTWARE                      BRANCH       REPO
     _____________________________ ____________ __________________________________________________________
