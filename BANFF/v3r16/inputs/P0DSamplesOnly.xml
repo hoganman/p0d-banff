@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<main>
+    <Binning>
+        <p0d_numu_ccinc>
+            <pBinsEdges attr="0.,400.,500.,700.,900.,2500.,5000."/>
+            <pBinsEdgesN attr="7"/>
+            <ctBinsEdges attr="0.0,+0.6,+0.7,+0.8,+0.85,+0.90,+0.925,+0.95,+0.975,+1.0"/>
+            <ctBinsEdgesN attr="10"/>
+            <SampleId attr="kP0DNuMuCC"/>
+        </p0d_numu_ccinc>
+    </Binning>
+</main>

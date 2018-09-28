@@ -3,58 +3,70 @@
 #include "BasicUtils.hxx"
 #include "SubDetId.hxx"
 #include "FiducialVolumeDefinition.hxx"
-#include "VersioningUtils.hxx"
+#include "SystematicUtils.hxx"
 #include "ToyBoxTracker.hxx"
 
-
-const double p0d_fv_minz = -2969;
-const double p0d_fv_maxz = -1264;
+const Float_t p0d_fv_minz = -2969;
+const Float_t p0d_fv_maxz = -1264;
 
 //********************************************************************
-p0dCCQEOOFVSystematics::p0dCCQEOOFVSystematics():EventWeightBase(1){
+p0dCCQEOOFVSystematics::p0dCCQEOOFVSystematics() : EventWeightBase(1)
 //********************************************************************
+{
 
   _name = "P0DCCQEOOFV";
 
-  char dirname[256];
+  Char_t dirname[256];
   sprintf(dirname,"%s/data",getenv("P0DNUMUCCQEANALYSISROOT"));
-  
-  _p0d = new BinnedParams();
-  _p0d->SetType(BinnedParams::k1D_SYMMETRIC);
-  _p0d->SetName("P0DCCQEOOFV_reco");
-  _p0d->Read(dirname);
+  UInt_t npars = 0;
+  _p0d = new BinnedParams("P0DCCQEOOFV_reco", BinnedParams::k1D_SYMMETRIC);
+  npars += _p0d->GetNBins();
 
-  _rate = new BinnedParams();  
-  _rate->SetType(BinnedParams::k2D_SYMMETRIC);
-  _rate->SetName("P0DCCQEOOFV_rate");
-  _rate->Read(dirname);
-  int npars = 0;
-  npars = _p0d->GetNBins();
+  _rate = new BinnedParams("P0DCCQEOOFV_rate", BinnedParams::k2D_SYMMETRIC);
   npars += _rate->GetNBins();
-  SetNParameters(npars);
-    for (int i=0;i<9;i++){
-      if (!_p0d->GetBinValues(i, _reco_corr[i], _reco_error[i],_reco_index[i])) _reco_index[i]=-1; 
 
-      if (_reco_index[i]>=0) _reco_index[i] += _rate->GetNBins();
-    }
- 
+  SetNParameters(npars);
+
+  for (UInt_t i = 0; i < NMAXP0DOOFVSYSTEMATICSBINS; i++)
+  {
+    if (!_rate->GetBinValues(i, _rate_corr[i], _rate_error[i], _rate_index[i]))
+      _rate_index[i] = -1;
+
+    if (_rate_index[i] >= 0)
+      _rate_index[i] += _p0d->GetNBins();
+  }
 
 }
 
 //********************************************************************
-Int_t p0dCCQEOOFVSystematics::GetBeamNumber(Int_t runperiod,AnaTrackB *maintrack){
+void p0dCCQEOOFVSystematics::Initialize()
 //********************************************************************
-  if(runperiod==8){
-    if(maintrack->Charge<0)
+{
+  systUtils::AddBinnedParamsOffsetToSystematic(*this, *_rate, _rate->GetNBins());
+  systUtils::AddBinnedParamsOffsetToSystematic(*this, *_p0d, _p0d->GetNBins());
+}
+
+//********************************************************************
+Int_t p0dCCQEOOFVSystematics::GetBeamNumber(const Int_t& runperiod, AnaTrackB* maInt_track) const
+//********************************************************************
+{
+  // FHC
+  if(!anaUtils::IsRHC(runperiod))
+    return 0;
+  // RHC
+  else
+  {
+    // NUMU BKG
+    if(maInt_track->Charge < 0)
       return 1;
+    // ANTINUMU
     else
       return 2;
-  }else
-    return 0;
+  }
 }
 
 //********************************************************************
-Int_t p0dCCQEOOFVSystematics::GetDetNumber(SubDetId::SubDetEnum det){
+Int_t p0dCCQEOOFVSystematics::GetDetNumber(const SubDetId::SubDetEnum& det) const {
 //********************************************************************
 
   if(SubDetId::IsP0DDetector(det))
@@ -71,46 +83,38 @@ Int_t p0dCCQEOOFVSystematics::GetDetNumber(SubDetId::SubDetEnum det){
     return 3;
   else if(SubDetId::IsTPCDetector(det))
     return 4;
-
   else
     return 5;
+
 }
 
 //********************************************************************
-Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEventC& eventC, const ToyBoxB& boxB){
+Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEventC& eventC, const ToyBoxB& boxB)
 //********************************************************************
-
-    const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC); 
-
+{
     // Cast the ToyBox to the appropriate type
-    const ToyBoxTracker& box = *static_cast<const ToyBoxTracker*>(&boxB); 
+    const ToyBoxTracker& box = *static_cast<const ToyBoxTracker*>(&boxB);
 
     Weight_h eventWeight=1;
-    if (!box.MainTrack) return eventWeight;                     // HMN track should exist
-    if (!box.MainTrack->GetTrueParticle()) return eventWeight;          // True track associated to HMN track should exist
-    if (!box.MainTrack->GetTrueParticle()->TrueVertex) return eventWeight;  // True vertex associated to HMN track should exist
+    if (!box.MainTrack)
+        return eventWeight; // HMN track should exist
+    if (!box.MainTrack->GetTrueParticle())
+        return eventWeight; // True track associated to HMN track should exist
+    if (!box.MainTrack->GetTrueParticle()->TrueVertex)
+        return eventWeight; // True vertex associated to HMN track should exist
 
     // Get the true vertex position
-    Float_t* tvertex = box.MainTrack->GetTrueParticle()->TrueVertex->Position;
-    
-    // if the true vertex is inside the P0D FV this is not OOFV (RETURN EVENTWEIGHT=1)    
-    if(anaUtils::InFiducialVolume(static_cast<SubDetId::SubDetEnum>(box.DetectorFV), tvertex)) return eventWeight;
-        
-    // Get the true track direction and position
-    //Float_t* tdir = box.MainTrack->GetTrueParticle()->Direction;
-    //Float_t* pos  = box.MainTrack->GetTrueParticle()->Position;
-    
-    Float_t* p0d_det_min = DetDef::p0dmin;
-    Float_t* p0d_det_max = DetDef::p0dmax;
+    const Float_t* const tvertex = box.MainTrack->GetTrueParticle()->TrueVertex->Position;
 
+    // if the true vertex is inside the P0D FV this is not OOFV (RETURN EVENTWEIGHT=1)
+    if(anaUtils::InFiducialVolume(static_cast<SubDetId::SubDetEnum>(box.DetectorFV), tvertex))
+	return eventWeight;
 
-    double Zmin_p0d_fv,Zmax_p0d_fv;
-    p0d_det_min = DetDef::p0dmin;
-    p0d_det_max = DetDef::p0dmax;
-    Zmin_p0d_fv = p0d_fv_minz;
-    Zmax_p0d_fv = p0d_fv_maxz;
+    const Float_t Zmin_p0d_fv = DetDef::p0dmin[2] + FVDef::FVdefminP0D[2];
+    const Float_t Zmax_p0d_fv = DetDef::p0dmax[2] - FVDef::FVdefmaxP0D[2];
 
-    const SubDetId::SubDetEnum detector = static_cast<const SubDetId::SubDetEnum>(anaUtils::GetDetector(tvertex));
+    //const SubDetId::SubDetEnum detector = static_cast<const SubDetId::SubDetEnum>(anaUtils::GetDetector(tvertex));
+    const SubDetId::SubDetEnum detector = anaUtils::GetDetector(tvertex);
 
     Int_t categ =-1;
     //In P0D CEcal.
@@ -135,26 +139,34 @@ Weight_h p0dCCQEOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const A
     else if (SubDetId::IsTPCDetector(detector))
       categ = 6;
 
-    if(categ>=0 ){
-        SubDetId::SubDetEnum detector=anaUtils::GetDetector(tvertex);
-        Int_t runPeriod = anaUtils::GetRunPeriod(event.EventInfo.Run);
-   
-        if (!_rate->GetBinValues(GetBeamNumber(runPeriod,box.MainTrack), GetDetNumber(detector), _rate_corr, _rate_error,_rate_index)) _rate_index=-1; 
+    if(categ >= 0){
 
-        if (_reco_index[categ]>=0){
-          eventWeight.Systematic *= (1+ _reco_corr[categ] + _reco_error[categ]*toy.GetToyVariations(_index)->Variations[_reco_index[categ]]);
-          eventWeight.Correction *= (1+ _reco_corr[categ]);
-        }
-        if (_rate_index>=0){
-          eventWeight.Systematic *= (1+ _rate_corr + _rate_error*toy.GetToyVariations(_index)->Variations[_rate_index]);
-          eventWeight.Correction *= (1+ _rate_corr);
+        const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC);
+        if (!_p0d->GetBinValues(GetBeamNumber(anaUtils::GetRunPeriod(event.EventInfo.Run), box.MainTrack),
+		                GetDetNumber(detector),
+				_reco_corr, _reco_error, _reco_index)
+    	   )
+	{
+            _reco_index=-1;
+	}
+
+        // eval the other detector rate OOFV contribution
+        if (_rate_index[categ] >= 0)
+        {
+          eventWeight.Systematic *= 1 + _rate_corr[categ] + _rate_error[categ] * toy.GetToyVariations(_index)->Variations[_rate_index[categ]];
+          eventWeight.Correction *= 1 + _rate_corr[categ];
         }
 
+        // eval the P0D reco OOFV contribution
+        if (_reco_index >= 0)
+        {
+          eventWeight.Systematic *= 1 + _reco_corr + _reco_error * toy.GetToyVariations(_index)->Variations[_reco_index];
+          eventWeight.Correction *= 1 + _reco_corr;
+        }
     }
 
-
-    if (eventWeight.Systematic < 0) eventWeight.Systematic = 0;
+    if (eventWeight.Systematic < 0)
+        eventWeight.Systematic = 0;
 
     return eventWeight;
 }
-

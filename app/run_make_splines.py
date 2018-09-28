@@ -27,7 +27,7 @@ MCMIN = '300'
 DATAMIN = '120'
 OUTPUTBASE = '/physics/home/mhogan'
 FLATTREEBASE = os.getenv('FLATTREEROOT')
-SPLINEBASE = OUTPUTBASE+'/splines'
+SPLINEBASE = os.getenv('SPLINEROOT')
 NEUT_6B = 'mcp6_Spin_B/neut'
 NEUT_6L = 'mcp6_Spin_L/neut'
 SAND = 'mcp6_Spin_B/sand'
@@ -261,7 +261,7 @@ def submit_spline_mc():
     sand_fhc_sp_mc = make_qsub_spline_mc(RN.SANDFHC, SAND)
     sand_rhc_sp_mc = make_qsub_spline_mc(RN.SANDRHC, SAND)
 
-    run2w_sp_mc.run(ShellCommand.IN_BKG)
+    run2w_sp_mc.run(not ShellCommand.IN_BKG)
     run2a_sp_mc.run(not ShellCommand.IN_BKG)
     run3b_sp_mc.run(not ShellCommand.IN_BKG)
     run3c_sp_mc.run(not ShellCommand.IN_BKG)
@@ -292,7 +292,7 @@ def submit_spline_data():
     run6e_sp_data = make_qsub_spline_data(RN.RUN6EDATA, DATA_6M)
     run7b_sp_data = make_qsub_spline_data(RN.RUN7BDATA, DATA_6N)
 
-    run2w_sp_data.run(ShellCommand.IN_BKG)
+    run2w_sp_data.run(not ShellCommand.IN_BKG)
     run2a_sp_data.run(not ShellCommand.IN_BKG)
     run3b_sp_data.run(not ShellCommand.IN_BKG)
     run3c_sp_data.run(not ShellCommand.IN_BKG)

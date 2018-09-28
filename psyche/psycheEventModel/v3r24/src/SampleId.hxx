@@ -122,15 +122,26 @@ namespace SampleId{
     kFGD1GammaInAntiNuMode,
     // FGD2
     kFGD2GammaInAntiNuMode,
-    // P0D
-    kP0DNuMuCC,
-    kP0DNuMuBarCC,
+
+    // P0D, water in
+    kP0DWaterNuMuCC,
+    kP0DWaterNuMuBarBkgCC,
+    kP0DWaterNuMuBarInAntiNuModeCC,
+    kP0DWaterNuMuBkgInAntiNuModeCC,
+
+    // P0D, water-out
+    kP0DAirNuMuCC,
+    kP0DAirNuMuBarBkgCC,
+    kP0DAirNuMuBarInAntiNuModeCC,
+    kP0DAirNuMuBkgInAntiNuModeCC,
+
     kNSamples
   };
 
-  std::string ConvertSample(SampleEnum sample);
-  std::string ConvertSampleToSelection(SampleEnum sample);
-  SampleEnum ConvertSample(std::string sample);
+  std::string ConvertSample(const SampleEnum& sample);
+  std::string ConvertSampleToSelection(const SampleEnum& sample);
+  SampleEnum ConvertSample(const std::string& sample);
+  bool IsP0DSelection(const SampleEnum& sample);
 
 }
 

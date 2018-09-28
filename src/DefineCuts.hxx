@@ -22,7 +22,9 @@ public:
     ///Passes the mu- selection
     TCut muMinusSelection;
     ///Passes the mu+ selection
-    TCut muPlusSelection;
+    TCut muPlusInRHCSelection;
+    ///
+    TCut muMinusBkgInRHCSelection;
     ///In the reconstructed P0D fiducial volume
     TCut FV;
     ///In the true P0D fiducial volume

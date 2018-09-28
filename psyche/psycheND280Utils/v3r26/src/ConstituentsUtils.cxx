@@ -425,6 +425,15 @@ bool anaUtils::InDetVolume(SubDetId::SubDetEnum det, const Float_t* pos){
         case SubDetId::kP0D:
             return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, null, null);
             break;
+        //case SubDetId::kUSECal:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, null, null);
+        //    break;
+        //case SubDetId::kP0DWT:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, null, null);
+        //    break;
+        //case SubDetId::kCECal:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, null, null);
+        //    break;
         case SubDetId::kECAL:
             return (
                     anaUtils::InFiducialVolume(SubDetId::kTopTECAL, pos, null, null) ||
@@ -513,10 +522,6 @@ bool anaUtils::InDetVolume(SubDetId::SubDetEnum det, const Float_t* pos){
 bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos){
 //**************************************************
 
-
-    
-
-
     Float_t null[3] = {0.,0.,0.};
     switch(det){
         case SubDetId::kFGD:
@@ -547,6 +552,15 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos){
         case SubDetId::kP0D:
             return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, FVDef::FVdefminP0D, FVDef::FVdefmaxP0D);
             break;
+        //case SubDetId::kUSECal:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, FVDef::FVdefminP0D, FVDef::FVdefmaxP0D);
+        //    break;
+        //case SubDetId::kP0DWT:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, FVDef::FVdefminP0D, FVDef::FVdefmaxP0D);
+        //    break;
+        //case SubDetId::kCECal:
+        //    return anaUtils::InFiducialVolume(SubDetId::kP0D, pos, FVDef::FVdefminP0D, FVDef::FVdefmaxP0D);
+        //    break;
         case SubDetId::kECAL:
             return (
                     anaUtils::InFiducialVolume(SubDetId::kTopTECAL, pos, null, null) ||
@@ -689,7 +703,34 @@ bool anaUtils::InFiducialVolume(SubDetId::SubDetEnum det, const Float_t* pos, co
                     pos[2] < DetDef::p0dmax[2]-FVdefmax[2])
                 return true;
             break;
-            //DsECal (Ecal)
+        //case SubDetId::kUSECal:
+        //    if (pos[0] > DetDef::p0dmin[0]+FVdefmin[0] &&
+        //            pos[0] < DetDef::p0dmax[0]-FVdefmax[0] &&
+        //            pos[1] > DetDef::p0dmin[1]+FVdefmin[1] &&
+        //            pos[1] < DetDef::p0dmax[1]-FVdefmax[1] &&
+        //            pos[2] > DetDef::p0dmin[2]+FVdefmin[2] &&
+        //            pos[2] < DetDef::p0dmax[2]-FVdefmax[2])
+        //        return true;
+        //    break;
+        //case SubDetId::kP0DWT:
+        //    if (pos[0] > DetDef::p0dmin[0]+FVdefmin[0] &&
+        //            pos[0] < DetDef::p0dmax[0]-FVdefmax[0] &&
+        //            pos[1] > DetDef::p0dmin[1]+FVdefmin[1] &&
+        //            pos[1] < DetDef::p0dmax[1]-FVdefmax[1] &&
+        //            pos[2] > DetDef::p0dmin[2]+FVdefmin[2] &&
+        //            pos[2] < DetDef::p0dmax[2]-FVdefmax[2])
+        //        return true;
+        //    break;
+        //case SubDetId::kCECal:
+        //    if (pos[0] > DetDef::p0dmin[0]+FVdefmin[0] &&
+        //            pos[0] < DetDef::p0dmax[0]-FVdefmax[0] &&
+        //            pos[1] > DetDef::p0dmin[1]+FVdefmin[1] &&
+        //            pos[1] < DetDef::p0dmax[1]-FVdefmax[1] &&
+        //            pos[2] > DetDef::p0dmin[2]+FVdefmin[2] &&
+        //            pos[2] < DetDef::p0dmax[2]-FVdefmax[2])
+        //        return true;
+        //    break;
+        //DsECal (Ecal)
         case SubDetId::kDSECAL:
             if (pos[0] > DetDef::dsecalmin[0]+FVdefmin[0] &&
                     pos[0] < DetDef::dsecalmax[0]-FVdefmax[0] &&

@@ -91,4 +91,4 @@ application Check2015XSecWeightsIndividually ../app/Check2015XSecWeightsIndividu
 # application ProcessToysForErrorBandPlots ../app/ProcessToysForErrorBandPlots.cxx
 # application ThrowToys2014OfficialPlotBinning ../app/ThrowToys2014OfficialPlotBinning.cxx
 # application RunJointFit2015 ../app/RunJointFit2015.cxx
-
+application RunP0DFitOnly ../app/RunP0DFitOnly.cxx

@@ -25,7 +25,8 @@ if [ $HOSTNAME == $TA50D ]; then
     export PYTHONPATH=.:$HOME:$HOME/bin:$PYTHONPATH
     export IRODSROOT=
     export GOPATH=/home/mhogan/go
-    export CMTVERSION=v1r26p20140131
+    #export CMTVERSION=v1r26p20140131
+    export CMTVERSION=v1r20p20081118
     export CMTROOT=${ND280}/CMT/$CMTVERSION
     export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p34n00

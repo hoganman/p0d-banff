@@ -123,15 +123,26 @@ public:
         kFGD2GammaInAntiNuMode,
         // P0D
         kP0DNuMuCC,
-        kP0DNuMuBarCC,
+        kP0DNuMuBarBkgCC,
+        kP0DNuMuBarInAntiNuModeCC,
+        kP0DNuMuBkgInAntiNuModeCC,
         kNSamples
     };
 
     SampleId::SampleEnum GetP0DNuMuCCEnum() const {return kP0DNuMuCC;}
-    SampleId::SampleEnum GetP0DNuMuBarCCEnum() const {return kP0DNuMuBarCC;}
+    SampleId::SampleEnum GetP0DNuMuBarBkgCCEnum() const {return kP0DNuMuBarBkgCC;}
+    SampleId::SampleEnum GetP0DNuMuBkgInAntiNuModeCCEnum() const {return kP0DNuMuBkgInAntiNuModeCC;}
+    SampleId::SampleEnum GetP0DNuMuBarInAntiNuModeCCEnum() const {return kP0DNuMuBarInAntiNuModeCC;}
 
     UInt_t GetP0DNuMuCC() const {return static_cast<UInt_t>(GetP0DNuMuCCEnum());}
-    UInt_t GetP0DNuMuBarCC() const {return static_cast<UInt_t>(GetP0DNuMuBarCCEnum());}
+    UInt_t GetP0DNuMuBarBkgCC() const {return static_cast<UInt_t>(GetP0DNuMuBarBkgCCEnum());}
+    UInt_t GetP0DNuMuBarInAntiNuModeCC() const {return static_cast<UInt_t>(GetP0DNuMuBarInAntiNuModeCCEnum());}
+    UInt_t GetP0DNuMuBkgInAntiNuModeCC() const {return static_cast<UInt_t>(GetP0DNuMuBkgInAntiNuModeCCEnum());}
+
+    Bool_t IsP0DFHCSample(SampleId::SampleEnum testEnum) const;
+    Bool_t IsP0DRHCSample(SampleId::SampleEnum testEnum) const;
+    Bool_t IsP0DFHCSample(Int_t testInt) const {return IsP0DFHCSample(static_cast<SampleId::SampleEnum>(testInt));};
+    Bool_t IsP0DRHCSample(Int_t testInt) const {return IsP0DRHCSample(static_cast<SampleId::SampleEnum>(testInt));};
 
     ClassDef(SampleId, 1)
 

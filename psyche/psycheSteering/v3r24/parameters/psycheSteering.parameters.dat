@@ -30,16 +30,24 @@ Parameters to control Selections
 
 FGD1
  < psycheSteering.Selections.EnableTrackerNumuCC                       = 0 >
- < psycheSteering.Selections.EnableTrackerNumuCCMultiPi                = 1 >
+
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerNumuCCMultiPi                = 0 >
+
  < psycheSteering.Selections.EnableTrackerNumuCC4pi                    = 0 >
  < psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi             = 0 >
 
  < psycheSteering.Selections.EnableTrackerAntiNumuCC                   = 0 >
- < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack         = 1 >
+
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack         = 0 >
+
  < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi            = 0 >
 
  < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCC           = 0 >
- < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack = 1 >
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack = 0 >
+
  < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi    = 0 >
 
  < psycheSteering.Selections.EnableTrackerNuECC                        = 0 >
@@ -48,17 +56,26 @@ FGD1
 
 FGD2
  < psycheSteering.Selections.EnableTrackerNumuCCFGD2                       = 0 >
- < psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2                = 1 >
+
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2                = 0 >
+
  < psycheSteering.Selections.EnableTrackerNumuCC4piFGD2                    = 0 >
  < psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2             = 0 >
 
 
  < psycheSteering.Selections.EnableTrackerAntiNumuCCFGD2                   = 0 >
- < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2         = 1 >
+
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2         = 0 >
+
  < psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2            = 0 >
 
  < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCFGD2           = 0 >
- < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2 = 1 >
+
+ BANFF 2017 = 1
+ < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2 = 0 >
+
  < psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2    = 0 >
 
  < psycheSteering.Selections.EnableTrackerNuECCFGD2                        = 0 >
@@ -66,8 +83,14 @@ FGD2
  < psycheSteering.Selections.EnableTrackerGammaFGD2                        = 0 >
 
  [MH] P0D+TPC1
- < psycheSteering.Selections.EnableP0DNuMuCC                               = 1 >
- < psycheSteering.Selections.EnableP0DNuMuBarCC                            = 1 >
+ < psycheSteering.Selections.EnableNuMuCCP0DWater                          = 1 >
+ < psycheSteering.Selections.EnableNuMubarBkgCCP0DWater                    = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 0 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 0 >
+ < psycheSteering.Selections.EnableNuMuCCP0DAir                            = 1 >
+ < psycheSteering.Selections.EnableNuMubarBkgCCP0DAir                      = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 0 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 0 >
 
 Parameter to control which run periods selectionsare valid for.
 Look at AnalysisUtils.cxx to find run period numbering - Run period 8 = run 5 anti-neutrino data/MC
@@ -91,9 +114,22 @@ List valid runs using a comma separated string
  < psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
  < psycheSteering.Selections.TrackerGamma.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
 
- [MH] P0D
- < psycheSteering.Selections.P0DNuMuCC.ValidRunPeriods        = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
- < psycheSteering.Selections.P0DNuMuBarCC.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
+ [MH] P0D Numu mode, Water
+ < psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods                = 0,1,5,7,16,17 >
+ < psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods          = 0,1,5,7,16,17 >
+
+ [MH] P0D Numu mode, Air
+ < psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods                  = 2,3,4,6,13,14,18 >
+ < psycheSteering.Selections.NuMubarBkgCCP0DAir.ValidRunPeriods            = 2,3,4,6,13,14,18 >
+
+ [MH] P0D Anti-Numu mode, Water
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DWater.ValidRunPeriods = 8,15 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DWater.ValidRunPeriods = 8,15 >
+
+ [MH] P0D Anti-Numu mode, Air
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods = 9,10,11,12 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods = 9,10,11,12 >
+
 
 By default EventSummary class is created and filled when the selection is passed. But this might be necessary also for events not passing the selection
 The user can force the EventSummary to be filled always.

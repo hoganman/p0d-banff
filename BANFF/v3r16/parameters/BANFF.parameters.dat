@@ -4,7 +4,7 @@ Parameters that give the location of various input files available.
 
 For specifying the location of the text file that breaks the input files down
 into run periods for loading.
-< BANFF.InputFileList = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/run_periods.txt >
+< BANFF.InputFileList = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/run_periods.txt >
 
 Doesnt fit
 < BANFF.SavePrefitAndExit = 0 >
@@ -23,15 +23,15 @@ If nue's are the only thing you care about...
 
 The flux input file, which contains the information about the flux parameters
 and their covariance.
-< BANFF.FluxInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/flux_covariance_banff_13av1.1.root >
+< BANFF.FluxInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/flux_covariance_banff_13av1.1.root >
 
 The XSec input file, which contains the information about the xsec parameters
 and their covariance.
-< BANFF.XSecInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained.root >
+< BANFF.XSecInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained.root >
 
 The Observable Normalization parameters input file, which contains information
 about those parameters and their covariance.
-< BANFF.ObsNormInputFile = /physics/home/mhogan/software/t2k-software/BANFF/v3r16/inputs/obsNorm_2015_v3.root >
+< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/obsNorm_2015_v3.root >
 
 Whether to apply an additional scaling factor to the MC POT.  Would typically
 only use this if wanted to scale MC to a desired POT to check fit performance.
@@ -132,7 +132,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = AsimovFit2015Reproduction.root >
+< BANFF.RunFit.OutputFile = DataFit.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >

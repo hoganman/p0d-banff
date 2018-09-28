@@ -769,28 +769,34 @@ int main(int argc, char** argv){
     //Specify to fit them.
     if(ND::params().GetParameterI("BANFF.RunFit.LoadFluxParams"))
     {
+        std::cout << "Load flux parameters" << std::endl;
         fitParameters->LoadFluxParametersFromFile(
                 ND::params().GetParameterS("BANFF.FluxInputFile"),
                 ND::params().GetParameterI("BANFF.RunFit.LoadNuModeFluxParams"),
                 ND::params().GetParameterI("BANFF.RunFit.LoadAntiNuModeFluxParams"),
                 ND::params().GetParameterI("BANFF.RunFit.FitFluxParams"));
+        std::cout << "DONE loading flux parameters" << std::endl;
     }
 
     //Load the XSec Parameters and specify to fit them
     if(ND::params().GetParameterI("BANFF.RunFit.LoadXSecParams"))
     {
+        std::cout << "Load XSec parameters" << std::endl;
         fitParameters->LoadXSecParametersFromFile(
                 ND::params().GetParameterS("BANFF.XSecInputFile"),
                 ND::params().GetParameterI("BANFF.RunFit.FitXSecParams"));
+        std::cout << "Done loading XSec parameters" << std::endl;
     }
 
     //Load the ObsNorm parameters, and specify to fit them.
     if(ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams"))
     {
+        std::cout << "Load ObsNorm parameters" << std::endl;
         fitParameters->LoadObsNormParametersFromFile(
                 ND::params().GetParameterS("BANFF.ObsNormInputFile"),
                 nSamples, samples,
                 ND::params().GetParameterI("BANFF.RunFit.FitObsNormParams"));
+        std::cout << "DONE loading ObsNorm parameters" << std::endl;
     }
 
     //We can save pre-fit information to a file here, since everything that has
@@ -799,8 +805,8 @@ int main(int argc, char** argv){
     //undecomposed variable.
 
     std::string outputName = ND::params().GetParameterS("BANFF.RunFit.OutputFile");
-    std::string PsycheVersion = anaUtils::GetSoftwareVersionFromPath((std::string)getenv("ND280PSYCHEROOT"));
-    outputName = PsycheVersion+"_"+outputName;
+    //std::string PsycheVersion = anaUtils::GetSoftwareVersionFromPath((std::string)getenv("ND280PSYCHEROOT"));
+    //outputName = PsycheVersion+"_"+outputName;
 
     if(Do4PiFHC)
         outputName = "CC4PiFHC_"+outputName;

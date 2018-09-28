@@ -17,15 +17,15 @@ ND280BeamBunching bunching;
 Int_t anaUtils::GetRunPeriod(Int_t run, Int_t subrun){
   //**************************************************
 
-  if      (             run<6000)   return 0;//run1  water                
-  else if (run>=6462  && run<7664)  return 1;//run2  water                
-  else if (run>=7665  && run<7755)  return 2;//run2  air                  
-  else if (run>=8000  && run<8550)  return 3;//run3b air => mc associated to be the one of run2                  
-  else if (run>=8550  && run<8800)  return 4;//run3c air                  
-  else if (run>=8983  && run<9414)  return 5;//run4  water                
-  else if (run>=9426  && run<9800)  return 6;//run4  air                  
+  if      (             run<6000)   return 0;//run1  water
+  else if (run>=6462  && run<7664)  return 1;//run2  water
+  else if (run>=7665  && run<7755)  return 2;//run2  air
+  else if (run>=8000  && run<8550)  return 3;//run3b air => mc associated to be the one of run2
+  else if (run>=8550  && run<8800)  return 4;//run3c air
+  else if (run>=8983  && run<9414)  return 5;//run4  water
+  else if (run>=9426  && run<9800)  return 6;//run4  air
   else if ((run>=10252 && run<10334)              //                    + 10252_10 to 10333
-      || (run>=10519 && run<10522)) return 7;//run5  water         + 10518_28 to 10521_13             
+      || (run>=10519 && run<10522)) return 7;//run5  water         + 10518_28 to 10521_13
   else if (run>=10334 && run<10518) return 8;//run5  water (ANTINU) up to 10334_11 to 10518_9
   else if (run == 10518){
     if(subrun < 10) return 8; //run5  water (ANTINU)
@@ -34,7 +34,7 @@ Int_t anaUtils::GetRunPeriod(Int_t run, Int_t subrun){
   else if (run>=10828 && run<10954) return 13; //run6  air
   else if (run == 10954){
     if(subrun > -1 && subrun < 10) return 13; //run6  air
-    else return 9; // run6b  air (ANTINU) 
+    else return 9; // run6b  air (ANTINU)
   }
   else if (run>=10955 && run<11240) return 9;//run6b  air (ANTINU)
   else if (run>=11305 && run<11443) return 13; //run6  air
@@ -45,48 +45,48 @@ Int_t anaUtils::GetRunPeriod(Int_t run, Int_t subrun){
     if(subrun < 7) return 12;//run6e  air (ANTINU)
     else return 14; //run6  air
   }
-  else if(run>=12080 && run<12556) return 15; //run7b water (ANTINU) 
+  else if(run>=12080 && run<12556) return 15; //run7b water (ANTINU)
   else if(run>=12563 && run<12590) return 16; //run7c water
 
-  else if(run>=12683 && run<13159) return 17; //run8 water  
+  else if(run>=12683 && run<13159) return 17; //run8 water
   else if(run>=13160 && run<13740) return 18; //run8 air
 
   //  NEUT
-  else if (run>=90110000 && run<=90119999) return 0;  //run1 water          
-  else if (run>=90210000 && run<=90219999) return 1;  //run2 water          
-  else if (run>=90200000 && run<=90209999) return 2;  //run2 air            
-  else if (run>=90300000 && run<=90300015) return 3;  //run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542             
-  else if (run>=90300016 && run<=90300110) return 4;  //run3c air separated based on the pot of data            
-  else if (run>=90410000 && run<=90419999) return 5;  //run4 water          
-  else if (run>=90400000 && run<=90409999) return 6;  //run4 air            
+  else if (run>=90110000 && run<=90119999) return 0;  //run1 water
+  else if (run>=90210000 && run<=90219999) return 1;  //run2 water
+  else if (run>=90200000 && run<=90209999) return 2;  //run2 air
+  else if (run>=90300000 && run<=90300015) return 3;  //run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
+  else if (run>=90300016 && run<=90300110) return 4;  //run3c air separated based on the pot of data
+  else if (run>=90410000 && run<=90419999) return 5;  //run4 water
+  else if (run>=90400000 && run<=90409999) return 6;  //run4 air
   else if (run>=80510000 && run<=80519999) return 8;  //run5 antinu-water
   else if (run>=80600000 && run<=80600159) return 9;  //run6b antinu-air
   else if (run>=80600160 && run<=80600219) return 10; //run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
   else if (run>=80600220 && run<=80600299) return 11; //run6d antinu-air
   else if (run>=80600300 && run<=80600399) return 12; //run6e antinu-air
-  else if (run>=80730000 && run<=80730119) return 15; //run7b antinu-water 
+  else if (run>=80730000 && run<=80730119) return 15; //run7b antinu-water
   else if (run>=90830000 && run<=90830095) return 17; //run8 water
-  else if (run>=90820000 && run<=90820129) return 18; //run8 air 
-  else if (run>=90820130 && run<=90829999) return 18; //run8 air - set this as default, to catch any files that are not currently at TRIUMF 
-  
+  else if (run>=90820000 && run<=90820129) return 18; //run8 air
+  else if (run>=90820130 && run<=90829999) return 18; //run8 air - set this as default, to catch any files that are not currently at TRIUMF
+
   else if (run>=80307000 && run<=80307999) return 8;  //sand muons antinu
   else if (run>=90307000 && run<=90307999) return 4;  //sand muons neut
   else if (run>=92307000 && run<=92307999) return 4;  //sand muons old neut
 
   // GENIE
-  else if (run>=91110000 && run<=91119999) return 0;  //run1 water   
-  else if (run>=91210000 && run<=91219999) return 1;  //run2 water          
-  else if (run>=91200000 && run<=91209999) return 2;  //run2 air            
-  else if (run>=91300000 && run<=91300015) return 3;  //run3 air separated based on the pot of data (run3b/(run3b+run3c)=0.13542             
-  else if (run>=91300016 && run<=91300110) return 4;  //run3 air separated based on the pot of data (run3b/(run3b+run3c)=0.13542            
-  else if (run>=91410000 && run<=91419999) return 5;  //run4 water          
-  else if (run>=91400000 && run<=91409999) return 6;  //run4 air            
+  else if (run>=91110000 && run<=91119999) return 0;  //run1 water
+  else if (run>=91210000 && run<=91219999) return 1;  //run2 water
+  else if (run>=91200000 && run<=91209999) return 2;  //run2 air
+  else if (run>=91300000 && run<=91300015) return 3;  //run3 air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
+  else if (run>=91300016 && run<=91300110) return 4;  //run3 air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
+  else if (run>=91410000 && run<=91419999) return 5;  //run4 water
+  else if (run>=91400000 && run<=91409999) return 6;  //run4 air
   else if (run>=81510000 && run<=81519999) return 8;  //run5 antinu-water
   else if (run>=81600000 && run<=81600186) return 9;  //run6b antinu-air
   else if (run>=81600187 && run<=81600260) return 10; //run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
   else if (run>=81600261 && run<=81600369) return 11; //run6d antinu-air
   else if (run>=81600370 && run<=81600490) return 12; //run6e antinu-air
-  else if (run>=81710000 && run<=81710124) return 15; //run7b antinu-water 
+  else if (run>=81710000 && run<=81710124) return 15; //run7b antinu-water
   else if (run>=91810000 && run<=91810095) return 17; //run8 water
   else if (run>=91800000 && run<=91800129) return 18; //run8 air
   else if (run>=91800130 && run<=91800999) return 18; //run8 air - set this as default, to catch any files that are not currently at TRIUMF
@@ -129,19 +129,19 @@ bool anaUtils::IsRHC(int run){
 
 //*****************************************************************************
 int anaUtils::GetFGDMichelElectrons(const AnaEventB& event, const SubDetId::SubDetEnum det, AnaFgdTimeBinB** arr, bool prod5Cut){
-  //*****************************************************************************  
+  //*****************************************************************************
 
   int nSel = 0;
 
   Int_t ibunch = event.Bunch;
 
-  Float_t selTime = bunching.GetBunchCentralTime(event, ibunch); 
+  Float_t selTime = bunching.GetBunchCentralTime(event, ibunch);
   if(selTime < 0) return 0;
 
-  Float_t numWidthsReqInSorting = 4; 
-  Float_t binBunchWidth = 25.; 
+  Float_t numWidthsReqInSorting = 4;
+  Float_t binBunchWidth = 25.;
   Float_t binTimeOffsetToBunch = -13.;
-  Float_t minRecBinQ = 0.; 
+  Float_t minRecBinQ = 0.;
   Int_t minHitsFGD1 = 6;
   Int_t minHitsFGD2 = 5;
 
@@ -159,7 +159,7 @@ int anaUtils::GetFGDMichelElectrons(const AnaEventB& event, const SubDetId::SubD
 
     AnaFgdTimeBinB *FgdTimeBin = event.FgdTimeBins[i];
 
-    if( det == SubDetId::kFGD1 && FgdTimeBin->NHits[0] == 0 ) continue; 
+    if( det == SubDetId::kFGD1 && FgdTimeBin->NHits[0] == 0 ) continue;
     if( det == SubDetId::kFGD2 && FgdTimeBin->NHits[1] == 0 ) continue;
     if( det == SubDetId::kFGD  && FgdTimeBin->NHits[0] == 0 && FgdTimeBin->NHits[1] == 0 ) continue;
 
@@ -168,7 +168,7 @@ int anaUtils::GetFGDMichelElectrons(const AnaEventB& event, const SubDetId::SubD
     bool inBunch = false;
 
     for( UInt_t k = 0 ; k < bunching.GetNBunches(event); k++ ){
-      Float_t time =  bunching.GetBunchCentralTime(event, k); 
+      Float_t time =  bunching.GetBunchCentralTime(event, k);
       if( TMath::Abs( binTime - time ) < numWidthsReqInSorting*binBunchWidth )  inBunch = true;
     }
 
@@ -188,7 +188,7 @@ int anaUtils::GetFGDMichelElectrons(const AnaEventB& event, const SubDetId::SubD
     nSel++;
   }
 
-  return nSel; 
+  return nSel;
 }
 
 
@@ -215,8 +215,8 @@ int anaUtils::GetFGDMichelElectrons(const AnaEventB& event, const SubDetId::SubD
 //   if(!event.Summary->EventSample) return false;
 
 //   if((event.Summary->EventSample   >= SampleId::kFGD2NuMuCC
-//       && event.Summary->EventSample<= SampleId::kFGD2NuMuCCOther) || 
-//      (event.Summary->EventSample   >= SampleId::kFGD2AntiNuMuCC 
+//       && event.Summary->EventSample<= SampleId::kFGD2NuMuCCOther) ||
+//      (event.Summary->EventSample   >= SampleId::kFGD2AntiNuMuCC
 //       && event.Summary->EventSample<= SampleId::kFGD2AntiNuMuCCNTracks) ||
 //      (event.Summary->EventSample    >= SampleId::kFGD2NuMuBkgInAntiNuModeCC
 //       && event.Summary->EventSample <= SampleId::kFGD2NuMuBkgInAntiNuModeCCnQE))
@@ -526,7 +526,7 @@ Float_t anaUtils::ComputeInversePT(const AnaDetCrossingB &cross, bool entrance) 
 
   Float_t p = entrance ? GetEntranceMomentum(cross): GetExitMomentum(cross);
 
-  if (p <= 0) return -999; 
+  if (p <= 0) return -999;
 
   Float_t ut = entrance ? sqrt(1-pow(cross.EntranceMomentum[0]/p,2)) :
     sqrt(1-pow(cross.ExitMomentum[0]/p,2));
@@ -556,7 +556,7 @@ Float_t anaUtils::ComputeMomentumFromInversePTFlip(const AnaParticleB &part, Flo
   //********************************************************************
 
   if (PTinv==0) return -999;
-  Float_t pt = 1/PTinv;  
+  Float_t pt = 1/PTinv;
   Float_t u_t = sqrt(1-pow(part.DirectionEnd[0],2));
   if (u_t==0) return -999;
 

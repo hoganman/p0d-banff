@@ -2,7 +2,7 @@
 #include <cstring>
 
 //*********************************************************
-std::string SampleId::ConvertSample(SampleEnum sample){
+std::string SampleId::ConvertSample(const SampleEnum& sample){
 //*********************************************************
 
     std::string ssample="";
@@ -81,8 +81,15 @@ std::string SampleId::ConvertSample(SampleEnum sample){
     else if (sample == kFGD2NuEBkgInAntiNuModeCC0Pi)      ssample = "FGD2 NuE Bkg In Anti NuMode CC0Pi";
     else if (sample == kFGD2NuEBkgInAntiNuModeCCOther)    ssample = "FGD2 NuE Bkg In Anti NuMode CCOther";
 
-    else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
-    else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DWaterNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive, P0D Water-In";
+    else if (sample == kP0DWaterNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D Water-In";
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive, P0D Water-In";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive, P0D Water-In";
+
+    else if (sample == kP0DAirNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive, P0D Water-Out";
+    else if (sample == kP0DAirNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D Water-Out";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive, P0D Water-Out";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive, P0D Water-Out";
 
     else                                                  ssample = "Unassigned";
 
@@ -91,7 +98,7 @@ std::string SampleId::ConvertSample(SampleEnum sample){
 
 
 //*********************************************************
-std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
+std::string SampleId::ConvertSampleToSelection(const SampleEnum& sample){
 //*********************************************************
 
     //These should be the same as what is used to initialize selection names in
@@ -164,8 +171,15 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
     else if (sample == kFGD1Gamma)                        ssample = "kTrackerGamma";
     else if (sample == kFGD2Gamma)                        ssample = "kTrackerGammaFGD2";
 
-    else if (sample == kP0DNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive";
-    else if (sample == kP0DNuMuBarCC)                     ssample = "P0D+TPC1 NuMubar CC Inclusive";
+    else if (sample == kP0DWaterNuMuCC)                        ssample = "kNuMuCCP0DWater";
+    else if (sample == kP0DWaterNuMuBarBkgCC)                  ssample = "kNuMubarBkgCCP0DWater";
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)         ssample = "kNuMuBkgInAntiNuModeCCP0DWater";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)         ssample = "kNuMubarInAntiNuModeCCP0DWater";
+
+    else if (sample == kP0DAirNuMuCC)                        ssample = "kNuMuCCP0DAir";
+    else if (sample == kP0DAirNuMuBarBkgCC)                  ssample = "kNuMubarBkgCCP0DAir";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)         ssample = "kNuMuBkgInAntiNuModeCCP0DAir";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)         ssample = "kNuMubarInAntiNuModeCCP0DAir";
 
     else                                                  ssample = "Unassigned";
 
@@ -173,7 +187,7 @@ std::string SampleId::ConvertSampleToSelection(SampleEnum sample){
 }
 
 //*********************************************************
-SampleId::SampleEnum SampleId::ConvertSample(std::string sample)
+SampleId::SampleEnum SampleId::ConvertSample(const std::string& sample)
 //*********************************************************
 {
     SampleEnum enum_sample = kUnassigned;
@@ -264,8 +278,34 @@ SampleId::SampleEnum SampleId::ConvertSample(std::string sample)
     else if( strcmp("kFGD2Gamma",sample.c_str()) == 0) enum_sample = kFGD2Gamma;
     else if( strcmp("kFGD1GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD1GammaInAntiNuMode;
     else if( strcmp("kFGD2GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD2GammaInAntiNuMode;
-    else if( strcmp("kP0DNuMuCC",sample.c_str()) == 0) enum_sample = kP0DNuMuCC;
-    else if( strcmp("kP0DNuMuBarCC",sample.c_str()) == 0) enum_sample = kP0DNuMuBarCC;
+
+    else if( strcmp("kP0DWaterNuMuCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuCC;
+    else if( strcmp("kP0DWaterNuMuBarBkgCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBarBkgCC;
+    else if( strcmp("kP0DWaterNuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBkgInAntiNuModeCC;
+    else if( strcmp("kP0DWaterNuMuBarInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBarInAntiNuModeCC;
+
+    else if( strcmp("kP0DAirNuMuCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuCC;
+    else if( strcmp("kP0DAirNuMuBarBkgCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBarBkgCC;
+    else if( strcmp("kP0DAirNuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBkgInAntiNuModeCC;
+    else if( strcmp("kP0DAirNuMuBarInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBarInAntiNuModeCC;
+
     else enum_sample = kUnassigned;
     return enum_sample;
+}
+
+
+//*********************************************************
+bool SampleId::IsP0DSelection(const SampleEnum& sample)
+//*********************************************************
+{
+    if(sample == kP0DAirNuMuCC || sample == kP0DWaterNuMuCC)
+        return true;
+    else if(sample == kP0DAirNuMuBarBkgCC || sample == kP0DWaterNuMuBarBkgCC)
+        return true;
+    else if(sample == kP0DAirNuMuBarInAntiNuModeCC || sample == kP0DWaterNuMuBarInAntiNuModeCC)
+        return true;
+    else if(sample == kP0DAirNuMuBkgInAntiNuModeCC || sample == kP0DWaterNuMuBkgInAntiNuModeCC)
+        return true;
+    else
+        return false;
 }

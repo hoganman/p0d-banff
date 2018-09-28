@@ -56,7 +56,8 @@ void BANFFInterfaceBase::ParseInputFiles(){
     //Add the file and the run period to the fileName/RunPeriod pair.
     ifstream inputFile(file_list.c_str(), std::ios::in);
 
-    std::cout << inputFile << std::endl;
+    std::cout << "Reading in input file " << file_list.c_str() << std::endl;
+    std::cout << "inputFile = " << inputFile << std::endl;
 
     if (!inputFile) {
         std::cerr << "Cannot open input file '" << file_list << "'. Exit!" << std::endl;
