@@ -79,6 +79,7 @@ export LD_LIBRARY_PATH=${P0DBANFFROOT}/lib:${P0DBANFFROOT}/dict:${P0DBANFFROOT}:
 
 APP=${P0DBANFFROOT}/app
 export PYTHONPATH=$APP:$P0DBANFFROOT/python2.7:${PYTHONPATH}
+PATH=$PATH:$APP
 
 #source ${P0DBANFFROOT}/nd280Highland2/$HIGHLAND2VERSION/cmt/setup.sh
 source ${P0DBANFFROOT}/highland2/highlandIO/v2r22/cmt/setup.sh

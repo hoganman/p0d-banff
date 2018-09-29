@@ -8,8 +8,12 @@
 
 """
 
-from sys import exit
+from sys import exit, argv
 from ROOTFile import ROOTFile
+
+
+def Usage():
+    print 'CheckFilePython path/to/input/file.root'
 
 
 def checkfile(infilename=''):
@@ -22,3 +26,14 @@ def checkfileandexit(infilename):
     """Exits with 0 if bad ROOT file or 1 if it is good"""
     status = checkfile(infilename)
     exit(status)
+
+
+def main(argv):
+    if len(argv) == 1:
+        checkfileandexit(argv[0])
+    else:
+        Usage()
+
+
+if __name__ == '__main__':
+    main(argv[1:])

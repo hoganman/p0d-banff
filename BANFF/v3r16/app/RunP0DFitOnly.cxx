@@ -64,29 +64,37 @@ int main(int argc, char** argv){
 
     //For each observable and sample set up the binning used in the fit.
 
-    //Set the binning for the CCp0d_water_inc sample.
-    Int_t npbins_p0d_water_inc = 6;
-    Double_t pbins_p0d_water_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
-    Int_t nctbins_p0d_water_inc = 6;
-    Double_t ctbins_p0d_water_inc[7] = {0.0,+0.6,+0.8,+0.90,+0.95,+0.975,+1.0};
+    //Set the binning for the CCp0d_inc sample.
+    Int_t npbins_p0d_inc = 6;
+    Double_t pbins_p0d_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
+    Int_t nctbins_p0d_inc = 6;
+    Double_t ctbins_p0d_inc[7] = {0.0,+0.6,+0.8,+0.90,+0.95,+0.975,+1.0};
 
-    TAxis* pAxis_p0d_water_inc = new TAxis(npbins_p0d_water_inc, pbins_p0d_water_inc);
-    TAxis* thAxis_p0d_water_inc = new TAxis(nctbins_p0d_water_inc, ctbins_p0d_water_inc);
-    TAxis** ccp0d_water_inc_axes = new TAxis*[2];
-    ccp0d_water_inc_axes[0] = pAxis_p0d_water_inc;
-    ccp0d_water_inc_axes[1] = thAxis_p0d_water_inc;
+    TAxis* pAxis_p0d_inc = new TAxis(npbins_p0d_inc, pbins_p0d_inc);
+    TAxis* thAxis_p0d_inc = new TAxis(nctbins_p0d_inc, ctbins_p0d_inc);
+    TAxis** p0d_water_numuccinc_axes = new TAxis*[2];
+    p0d_water_numuccinc_axes[0] = pAxis_p0d_inc;
+    p0d_water_numuccinc_axes[1] = thAxis_p0d_inc;
 
-    //Set the binning for the CCp0d_air_inc sample.
-    Int_t npbins_p0d_air_inc = 6;
-    Double_t pbins_p0d_air_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
-    Int_t nctbins_p0d_air_inc = 6;
-    Double_t ctbins_p0d_air_inc[7] = {0.0,+0.6,+0.8,+0.90,+0.95,+0.975,+1.0};
+    TAxis** p0d_air_numuccinc_axes = new TAxis*[2];
+    p0d_air_numuccinc_axes[0] = new TAxis(*pAxis_p0d_inc);
+    p0d_air_numuccinc_axes[1] = new TAxis(*thAxis_p0d_inc);
 
-    TAxis* pAxis_p0d_air_inc = new TAxis(npbins_p0d_air_inc, pbins_p0d_air_inc);
-    TAxis* thAxis_p0d_air_inc = new TAxis(nctbins_p0d_air_inc, ctbins_p0d_air_inc);
-    TAxis** ccp0d_air_inc_axes = new TAxis*[2];
-    ccp0d_air_inc_axes[0] = pAxis_p0d_air_inc;
-    ccp0d_air_inc_axes[1] = thAxis_p0d_air_inc;
+    TAxis** p0d_water_numubarRHCccinc_axes = new TAxis*[2];
+    p0d_water_numubarRHCccinc_axes[0] = new TAxis(*pAxis_p0d_inc);
+    p0d_water_numubarRHCccinc_axes[1] = new TAxis(*thAxis_p0d_inc);
+
+    TAxis** p0d_air_numubarRHCccinc_axes = new TAxis*[2];
+    p0d_air_numubarRHCccinc_axes[0] = new TAxis(*pAxis_p0d_inc);
+    p0d_air_numubarRHCccinc_axes[1] = new TAxis(*thAxis_p0d_inc);
+
+    TAxis** p0d_water_numuRHCccinc_axes = new TAxis*[2];
+    p0d_water_numuRHCccinc_axes[0] = new TAxis(*pAxis_p0d_inc);
+    p0d_water_numuRHCccinc_axes[1] = new TAxis(*thAxis_p0d_inc);
+
+    TAxis** p0d_air_numuRHCccinc_axes = new TAxis*[2];
+    p0d_air_numuRHCccinc_axes[0] = new TAxis(*pAxis_p0d_inc);
+    p0d_air_numuRHCccinc_axes[1] = new TAxis(*thAxis_p0d_inc);
 
     //Create the samples.
     //Supply the:
@@ -100,14 +108,22 @@ int main(int argc, char** argv){
     bool throwMCStat = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
     bool throwStat = ND::params().GetParameterI("BANFF.RunFit.ThrowStat");
 
-    int nSamples = 2;
+    int nSamples = 6;
     // // FHC Numu selections
-    BANFFBinnedSample* fhc_p0d_water_numuccinc = new BANFFBinnedSample("fhc_p0d_water_numuccinc", SampleId::kP0DWaterNuMuCC, 2, observables, ccp0d_water_inc_axes, throwMCStat, throwStat);
-    BANFFBinnedSample* fhc_p0d_air_numuccinc = new BANFFBinnedSample("fhc_p0d_air_numuccinc", SampleId::kP0DAirNuMuCC, 2, observables, ccp0d_air_inc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* fhc_p0d_water_numuccinc = new BANFFBinnedSample("fhc_p0d_water_numuccinc", SampleId::kP0DWaterNuMuCC, 2, observables, p0d_water_numuccinc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* fhc_p0d_air_numuccinc = new BANFFBinnedSample("fhc_p0d_air_numuccinc", SampleId::kP0DAirNuMuCC, 2, observables, p0d_air_numuccinc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* rhc_p0d_water_numubarccinc = new BANFFBinnedSample("rhc_p0d_water_numubarccinc", SampleId::kP0DWaterNuMuBarInAntiNuModeCC, 2, observables, p0d_air_numubarRHCccinc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* rhc_p0d_air_numubarccinc = new BANFFBinnedSample("rhc_p0d_air_numubarccinc", SampleId::kP0DAirNuMuBarInAntiNuModeCC, 2, observables, p0d_air_numubarRHCccinc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* rhc_p0d_water_numubkgccinc = new BANFFBinnedSample("rhc_p0d_water_numubkgccinc", SampleId::kP0DWaterNuMuBkgInAntiNuModeCC, 2, observables, p0d_air_numuRHCccinc_axes, throwMCStat, throwStat);
+    BANFFBinnedSample* rhc_p0d_air_numubkgccinc = new BANFFBinnedSample("rhc_p0d_air_numubkgccinc", SampleId::kP0DAirNuMuBkgInAntiNuModeCC, 2, observables, p0d_air_numuRHCccinc_axes, throwMCStat, throwStat);
 
     BANFFSampleBase** samples = new BANFFSampleBase*[nSamples];
     samples[0] = fhc_p0d_water_numuccinc;
     samples[1] = fhc_p0d_air_numuccinc;
+    samples[2] = rhc_p0d_water_numubarccinc;
+    samples[3] = rhc_p0d_air_numubarccinc;
+    samples[4] = rhc_p0d_water_numubkgccinc;
+    samples[5] = rhc_p0d_air_numubkgccinc;
 
     //With the samples ready, now define the parameters that are going to be
     //considered.

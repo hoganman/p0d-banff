@@ -1,7 +1,9 @@
 #ifndef p0dAirNumuBkgInAntiNuModeCCSelection_h
 #define p0dAirNumuBkgInAntiNuModeCCSelection_h
 
-#include "p0dAirNumuCCSelection.hxx"
+#include "SelectionBase.hxx"
+#include "numuCCSelection.hxx"
+#include "EventBoxUtils.hxx"
 
 class p0dAirNumuBkgInAntiNuModeCCSelection: public SelectionBase{
 public:

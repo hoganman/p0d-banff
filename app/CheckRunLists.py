@@ -70,19 +70,20 @@ def check_run_list_file(run_list_filename):
 
 def main(argv):
     """Check both P6 MCP and RDP unless a file/directory is given"""
+    if len(argv) == 0:
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6B))  # runs 2-4
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6BANTI))  # runs 5-6
+        check_directory_run_lists(os.path.join(RUNLISTS, MCP6LANTI))  # run 7
+        check_directory_run_lists(os.path.join(RUNLISTS, RDP6M))  # runs 2-7
     if len(argv) == 1:
-        check_directory_run_lists(os.path.join(RUNLISTS, MCP6B)) # runs 2-4
-        check_directory_run_lists(os.path.join(RUNLISTS, MCP6BANTI)) # runs 5-6
-        check_directory_run_lists(os.path.join(RUNLISTS, MCP6LANTI)) # run 7
-        check_directory_run_lists(os.path.join(RUNLISTS, RDP6M)) # runs 2-7
-    if len(argv) == 2:
-        if ReadTextFile(argv[1]).exists():
-            check_run_list_file(argv[1])
-        elif Directory(argv[1]).exists():
-            check_directory_run_lists(argv[1])
+        filename = argv[0]
+        if ReadTextFile(filename).exists():
+            check_run_list_file(filename)
+        elif Directory(filename).exists():
+            check_directory_run_lists(filename)
         else:
-            print 'ERROR: file or directory %s does NOT exist' % (argv[1])
+            print 'ERROR: file or directory %s does NOT exist' % (filename)
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main(sys.argv[1:])

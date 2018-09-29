@@ -11,7 +11,6 @@ public:
   virtual ~p0dAirNumuCCSelection(){}
 
   //========= These are mandatory functions ==================
-
   void DefineSteps();
   void DefineDetectorFV();
   ToyBoxB* MakeToyBox() {return new ToyBoxTracker();}
@@ -22,8 +21,6 @@ public:
 
   Int_t GetRelevantRecObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
   Int_t GetRelevantTrueObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
-
-
   //==========================================================
 };
 
