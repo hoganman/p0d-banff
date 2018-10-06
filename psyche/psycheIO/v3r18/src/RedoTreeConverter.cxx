@@ -605,9 +605,9 @@ void RedoTreeConverter::DefineBranches(){
 
   anaUtils::ConfigureTreeBranch(fChain, "sNTrueVertices", &sNTrueVertices, &b_sNTrueVertices);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexID", sTrueVertexID, &b_sTrueVertexID);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxIndex", sTrueVertexRooVtxIndex, &b_sTrueVertexRooVtxIndex);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxIndex", sTrueVertexRooVtxIndex, &b_sTrueVertexRooVtxIndex);
   //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexRooVtxEntry", sTrueVertexRooVtxEntry, &b_sTrueVertexRooVtxEntry);
-  //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexReacCode", sTrueVertexReacCode, &b_sTrueVertexReacCode);
+  anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexReacCode", sTrueVertexReacCode, &b_sTrueVertexReacCode);
   //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNTrueParticles", sTrueVertexNTrueParticles, &b_sTrueVertexNTrueParticles);
   //    anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexNBaryons", sTrueVertexNBaryons, &b_sTrueVertexNBaryons);
   anaUtils::ConfigureTreeBranch(fChain, "sTrueVertexBunch", sTrueVertexBunch, &b_sTrueVertexBunch);
@@ -1965,10 +1965,11 @@ void RedoTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertex){
   vertex->ID = sTrueVertexID[ivtx];
   vertex->NuPDG = sTrueVertexNuPDG[ivtx];
   vertex->NuEnergy = sTrueVertexNuEnergy[ivtx];
-  anaUtils::CopyArray(sTrueVertexNuDir[ivtx], vertex->NuDir, 3);
   vertex->Q2 = sTrueVertexQ2[ivtx];
+  vertex->ReactionCode = sTrueVertexReacCode[ivtx];
 
   anaUtils::CopyArray(sTrueVertexPosition[ivtx], vertex->Position, 4);
+  anaUtils::CopyArray(sTrueVertexNuDir[ivtx], vertex->NuDir, 3);
 
   vertex->Bunch    = sTrueVertexBunch[ivtx];
 

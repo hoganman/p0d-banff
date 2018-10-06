@@ -1,4 +1,4 @@
-#define RUNP0DFITONLY_CXX
+#define RUNP0DFITONLY_WITHRHC_CXX
 
 #include "psycheInterface/psycheInterface.hxx"
 #include "BANFFSample/BANFFBinnedSample.hxx"
@@ -65,20 +65,20 @@ int main(int argc, char** argv){
     //For each observable and sample set up the binning used in the fit.
 
     //Set the binning for the CCp0d_water_inc sample.
-    Int_t npbins_p0d_water_inc = 8;
-    Double_t pbins_p0d_water_inc[9] = {0.,450.,700.,1100.,1600.,2200.,3000.,4000.,5000.};
-    Int_t nctbins_p0d_water_inc = 5;
-    Double_t ctbins_p0d_water_inc[6] = {0.0,+0.8,+0.90,+0.955,+0.985,1};
+    Int_t npbins_p0d_water_inc = 6;
+    Double_t pbins_p0d_water_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
+    Int_t nctbins_p0d_water_inc = 6;
+    Double_t ctbins_p0d_water_inc[7] = {0.0,+0.6,+0.8,+0.90,+0.95,+0.975,+1.0};
     TAxis* pAxis_p0d_water_inc  = new TAxis(npbins_p0d_water_inc, pbins_p0d_water_inc);
     TAxis* thAxis_p0d_water_inc = new TAxis(nctbins_p0d_water_inc, ctbins_p0d_water_inc);
     TAxis** p0d_water_numuccinc_axes = new TAxis*[2];
     p0d_water_numuccinc_axes[0] = pAxis_p0d_water_inc;
     p0d_water_numuccinc_axes[1] = thAxis_p0d_water_inc;
 
-    Int_t npbins_p0d_air_inc = 8;
-    Double_t pbins_p0d_air_inc[9] = {0.,450.,700.,1100.,1600.,2200.,3000.,4000.,5000.};
-    Int_t nctbins_p0d_air_inc = 5;
-    Double_t ctbins_p0d_air_inc[6] = {0.0,+0.8,+0.90,+0.955,+0.985,1};
+    Int_t npbins_p0d_air_inc = 6;
+    Double_t pbins_p0d_air_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
+    Int_t nctbins_p0d_air_inc = 6;
+    Double_t ctbins_p0d_air_inc[7] = {0.0,+0.6,+0.8,+0.90,+0.95,+0.975,+1.0};
     TAxis* pAxis_p0d_air_inc  = new TAxis(npbins_p0d_air_inc, pbins_p0d_air_inc);
     TAxis* thAxis_p0d_air_inc = new TAxis(nctbins_p0d_air_inc, ctbins_p0d_air_inc);
     TAxis** p0d_air_numuccinc_axes = new TAxis*[2];
@@ -152,11 +152,13 @@ int main(int argc, char** argv){
 
     int nSamples = 0;
     BANFFSampleBase** samples = new BANFFSampleBase*[nSamples];
-
     samples[nSamples++] = fhc_p0d_water_numuccinc;
+    samples[nSamples++] = rhc_p0d_water_numubarccinc;
+    samples[nSamples++] = rhc_p0d_water_numubkgccinc;
     samples[nSamples++] = fhc_p0d_air_numuccinc;
-    //samples[nSamples++] = rhc_p0d_air_numubarccinc;
-    //samples[nSamples++] = rhc_p0d_air_numubkgccinc;
+    samples[nSamples++] = rhc_p0d_air_numubarccinc;
+    samples[nSamples++] = rhc_p0d_air_numubkgccinc;
+;
     //With the samples ready, now define the parameters that are going to be
     //considered.
     //TODO: Again, maybe some of this can be moved to a backend?

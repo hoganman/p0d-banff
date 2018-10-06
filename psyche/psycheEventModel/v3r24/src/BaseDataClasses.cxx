@@ -618,6 +618,7 @@ AnaTrueVertexB::AnaTrueVertexB():AnaTrueObjectC(){
 
     TrueParticles = NULL;
     nTrueParticles = 0;
+    ReactionCode = 0;
 
     TrueParticlesVect.clear();
 }

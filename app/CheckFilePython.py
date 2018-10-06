@@ -13,6 +13,7 @@ from ROOTFile import ROOTFile
 
 
 def Usage():
+    print 'Usage:'
     print 'CheckFilePython path/to/input/file.root'
 
 
@@ -25,6 +26,10 @@ def checkfile(infilename=''):
 def checkfileandexit(infilename):
     """Exits with 0 if bad ROOT file or 1 if it is good"""
     status = checkfile(infilename)
+    if status == ROOTFile.IS_GOOD:
+        print 'The file "%s" is good!' % (infilename)
+    else:
+        print 'The file "%s" is bad!' % (infilename)
     exit(status)
 
 

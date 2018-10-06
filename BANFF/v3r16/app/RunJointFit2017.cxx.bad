@@ -27,7 +27,7 @@ int main(int argc, char** argv){
         std::string paramFile(argv[1]);
         ND::params().ReadParamOverrideFile(paramFile);
     }
-    
+
     ND::params().SetReadParamOverrideFilePointPassed();
 
     //Create the observables we will use.
@@ -84,7 +84,7 @@ int main(int argc, char** argv){
       ctbins_0pi[18] =  0.99;
       ctbins_0pi[19] =  1.0;
     }
-    
+
     TAxis* pAxis_0pi = new TAxis(npbins_0pi, pbins_0pi);
     TAxis* thAxis_0pi = new TAxis(nctbins_0pi, ctbins_0pi);
     TAxis** cc0pi_axes = new TAxis*[2];
@@ -262,7 +262,7 @@ int main(int argc, char** argv){
     TAxis** nuccbkgOth_axes = new TAxis*[2];
     nuccbkgOth_axes[0] = pAxis_nuccbkgOth;
     nuccbkgOth_axes[1] = thAxis_nuccbkgOth;
-    
+
     //Anti-numu CCQE selection in anti-neutrino beam mode.
     Int_t npbins_anuccqe = 10;
     Double_t pbins_anuccqe[11] = {0., 400., 500., 600., 700., 800., 900., 1100., 1400., 2000., 10000.};
@@ -314,7 +314,7 @@ int main(int argc, char** argv){
     TAxis** nuccnqe_axes = new TAxis*[2];
     nuccnqe_axes[0] = pAxis_nuccnqe;
     nuccnqe_axes[1] = thAxis_nuccnqe;
-    
+
     //FHC nue
     int npbins_nue = 6;
     double pbins_nue[7] = {200., 400., 600., 800., 1000., 1500., 30000.};
@@ -376,7 +376,7 @@ int main(int argc, char** argv){
     gamma_fhc_axes[0] = pAxis_gamma_fhc;
     gamma_fhc_axes[1] = thAxis_gamma_fhc;
 
-    
+
     //RHC gamma
     int npbins_gamma_rhc = 5;
     double pbins_gamma_rhc[6] = {200., 400., 600., 800., 1000., 30000.};
@@ -401,15 +401,15 @@ int main(int argc, char** argv){
     bool throwMCStat = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
     bool throwStat = ND::params().GetParameterI("BANFF.RunFit.ThrowStat");
 
-    // // FHC Numu selections 
+    // // FHC Numu selections
     BANFFBinnedSample* fhc_fgd1_numucc0pi;
     BANFFBinnedSample* fhc_fgd1_numucc1pi;
     BANFFBinnedSample* fhc_fgd1_numuccOth;
     BANFFBinnedSample* fhc_fgd2_numucc0pi;
     BANFFBinnedSample* fhc_fgd2_numucc1pi;
     BANFFBinnedSample* fhc_fgd2_numuccOth;
-      
-    // FHC Nue selections 
+
+    // FHC Nue selections
     BANFFBinnedSample* fhc_fgd1_nuecc;
     BANFFBinnedSample* fhc_fgd1_anuecc;
     BANFFBinnedSample* fhc_fgd1_gamma;
@@ -418,7 +418,7 @@ int main(int argc, char** argv){
     BANFFBinnedSample* fhc_fgd2_anuecc;
     BANFFBinnedSample* fhc_fgd2_gamma;
 
-    // RHC Nue selections 
+    // RHC Nue selections
     BANFFBinnedSample* rhc_fgd1_nuecc;
     BANFFBinnedSample* rhc_fgd1_anuecc;
     BANFFBinnedSample* rhc_fgd1_gamma;
@@ -427,7 +427,7 @@ int main(int argc, char** argv){
     BANFFBinnedSample* rhc_fgd2_anuecc;
     BANFFBinnedSample* rhc_fgd2_gamma;
 
-    // RHC Numu Multi Pi selections 
+    // RHC Numu Multi Pi selections
     BANFFBinnedSample* rhc_fgd1_numucc0pi;
     BANFFBinnedSample* rhc_fgd1_numucc1pi;
     BANFFBinnedSample* rhc_fgd1_numuccOth;
@@ -436,7 +436,7 @@ int main(int argc, char** argv){
     BANFFBinnedSample* rhc_fgd2_numucc1pi;
     BANFFBinnedSample* rhc_fgd2_numuccOth;
 
-    // RHC ANumu Multi Pi selections 
+    // RHC ANumu Multi Pi selections
     BANFFBinnedSample* rhc_fgd1_anumucc0pi;
     BANFFBinnedSample* rhc_fgd1_anumucc1pi;
     BANFFBinnedSample* rhc_fgd1_anumuccOth;
@@ -445,78 +445,85 @@ int main(int argc, char** argv){
     BANFFBinnedSample* rhc_fgd2_anumucc1pi;
     BANFFBinnedSample* rhc_fgd2_anumuccOth;
 
-    // RHC ANumu Multi Track selections 
+    // RHC ANumu Multi Track selections
     BANFFBinnedSample* rhc_fgd1_anuccqe;
     BANFFBinnedSample* rhc_fgd1_anuccnqe;
 
     BANFFBinnedSample* rhc_fgd2_anuccqe;
     BANFFBinnedSample* rhc_fgd2_anuccnqe;
 
-    // RHC Numu Multi Track selections 
+    // RHC Numu Multi Track selections
     BANFFBinnedSample* rhc_fgd1_nuccqe;
     BANFFBinnedSample* rhc_fgd1_nuccnqe;
 
     BANFFBinnedSample* rhc_fgd2_nuccqe;
-    BANFFBinnedSample* rhc_fgd2_nuccnqe;  
+    BANFFBinnedSample* rhc_fgd2_nuccnqe;
 
-    int nSample = 6;
+    int nSamples = 6;
     bool DoNue        = (bool)ND::params().GetParameterI("BANFF.DoNueSelections");
     bool DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
     bool DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
 
-    if(!Do4PiFHC && !DoOnlyNue){
+    if(!Do4PiFHC && !DoOnlyNue)
+    {
       std::cout << "---------------------------------" << std::endl;
       std::cout << "Applying FHC CCMultiPI selections" << std::endl;
       std::cout << "---------------------------------" << std::endl;
 
       // Some idiot proof check...
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi")     == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 0){
-	std::cout << "FHC MultiPi is not activated in psycheSteering!" << std::endl;
-	exit(1);
+      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi") == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 0)
+      {
+          std::cout << "FHC MultiPi is not activated in psycheSteering!" << std::endl;
+          exit(1);
       }
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 1){
-	std::cout << "FHC 4Pi is activated in psycheSteering!" << std::endl;
-	exit(1);
+      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi") == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 1)
+      {
+          std::cout << "FHC 4Pi is activated in psycheSteering!" << std::endl;
+          exit(1);
       }
-         
+
       fhc_fgd1_numucc0pi= new BANFFBinnedSample("fhc_fgd1_numucc0pi", SampleId::kFGD1NuMuCC0Pi,   2, observables, cc0pi_axes, throwMCStat, throwStat);
-      fhc_fgd1_numucc1pi= new BANFFBinnedSample("fhc_fgd1_numucc1pi", SampleId::kFGD1NuMuCC1Pi,   2, observables, cc1pi_axes, throwMCStat, throwStat);					      
+      fhc_fgd1_numucc1pi= new BANFFBinnedSample("fhc_fgd1_numucc1pi", SampleId::kFGD1NuMuCC1Pi,   2, observables, cc1pi_axes, throwMCStat, throwStat);
       fhc_fgd1_numuccOth= new BANFFBinnedSample("fhc_fgd1_numuccOth", SampleId::kFGD1NuMuCCOther, 2, observables, ccnpi_axes, throwMCStat, throwStat);
-                                                                                                                                                 
+
       fhc_fgd2_numucc0pi= new BANFFBinnedSample("fhc_fgd2_numucc0pi", SampleId::kFGD2NuMuCC0Pi,   2, observables, cc0pi_axes, throwMCStat, throwStat);
       fhc_fgd2_numucc1pi= new BANFFBinnedSample("fhc_fgd2_numucc1pi", SampleId::kFGD2NuMuCC1Pi,   2, observables, cc1pi_axes, throwMCStat, throwStat);
       fhc_fgd2_numuccOth= new BANFFBinnedSample("fhc_fgd2_numuccOth", SampleId::kFGD2NuMuCCOther, 2, observables, ccnpi_axes, throwMCStat, throwStat);
 
 
-    }else if(!DoOnlyNue){
+    }
+    else if(!DoOnlyNue)
+    {
       std::cout << "-----------------------------" << std::endl;
       std::cout << "Applying CC4Pi FHC selections" << std::endl;
       std::cout << "-----------------------------" << std::endl;
 
       // Some idiot proof check...
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 1){
-	std::cout << "FHC MultiPi is activated in psycheSteering!" << std::endl;
-	exit(1);
+      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi") == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 1)
+      {
+          std::cout << "FHC MultiPi is activated in psycheSteering!" << std::endl;
+          exit(1);
       }
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi")     == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 0){
-	std::cout << "FHC 4Pi is not activated in psycheSteering!" << std::endl;
-	exit(1);
+      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi") == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 0)
+      {
+          std::cout << "FHC 4Pi is not activated in psycheSteering!" << std::endl;
+          exit(1);
       }
       fhc_fgd1_numucc0pi= new BANFFBinnedSample("fhc_fgd1_numucc0pi", SampleId::kFGD1NuMuCC0Pi,   2, observables, cc0pi_axes, throwMCStat, throwStat);
       fhc_fgd1_numucc1pi= new BANFFBinnedSample("fhc_fgd1_numucc1pi", SampleId::kFGD1NuMuCC1Pi,   2, observables, cc1pi_axes, throwMCStat, throwStat);
       fhc_fgd1_numuccOth= new BANFFBinnedSample("fhc_fgd1_numuccOth", SampleId::kFGD1NuMuCCOther, 2, observables, ccnpi_axes, throwMCStat, throwStat);
-                                                                                                                                                 
+
       fhc_fgd2_numucc0pi= new BANFFBinnedSample("fhc_fgd2_numucc0pi", SampleId::kFGD2NuMuCC0Pi,   2, observables, cc0pi_axes, throwMCStat, throwStat);
       fhc_fgd2_numucc1pi= new BANFFBinnedSample("fhc_fgd2_numucc1pi", SampleId::kFGD2NuMuCC1Pi,   2, observables, cc1pi_axes, throwMCStat, throwStat);
       fhc_fgd2_numuccOth= new BANFFBinnedSample("fhc_fgd2_numuccOth", SampleId::kFGD2NuMuCCOther, 2, observables, ccnpi_axes, throwMCStat, throwStat);
-      
     }
-										 
-    if(DoNue){
+
+    if(DoNue)
+    {
       std::cout << "-----------------------" << std::endl;
       std::cout << "Applying nue selections" << std::endl;
       std::cout << "-----------------------" << std::endl;
@@ -537,196 +544,222 @@ int main(int argc, char** argv){
       rhc_fgd2_anuecc = new BANFFBinnedSample("rhc_fgd2_anuecc", SampleId::kFGD2AntiNuECC,                  2, observables, anue_axes,       throwMCStat, throwStat);
       rhc_fgd2_gamma  = new BANFFBinnedSample("rhc_fgd2_gamma",  SampleId::kFGD2GammaInAntiNuMode,          2, observables, gamma_rhc_axes,  throwMCStat, throwStat);
 
-      nSample=nSample+12;
-      
+      nSamples = nSamples + 12;
+
       // Some idiot proof check...
       if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC")         == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma")         == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2")     == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 0 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2")     == 0){
-	std::cout << "Nue not activated in psycheSteering!" << std::endl;
-	exit(1);
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma")         == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2")     == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 0 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2")     == 0)
+      {
+          std::cout << "Nue not activated in psycheSteering!" << std::endl;
+          exit(1);
       }
-    }else{
+    }
+    else
+    {
       // Some idiot proof check...
       if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC")         == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma")         == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2")     == 1){
-	std::cout << "Nue is activated in psycheSteering!" << std::endl;
-	exit(1);
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma")         == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2")     == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 1 ||
+         ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2")     == 1)
+      {
+          std::cout << "Nue is activated in psycheSteering!" << std::endl;
+          exit(1);
       }
     }
-    if(!DoOnlyNue){
-      if(DoMultiPiRHC){
-	std::cout << "------------------------------" << std::endl;
-	std::cout << "Applying RHCMultiPi selections" << std::endl;
-	std::cout << "------------------------------" << std::endl;
-	
-	rhc_fgd1_numucc0pi  = new BANFFBinnedSample("rhc_fgd1_numucc0pi",  SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi,   2, observables, nuccbkg0pi_axes, throwMCStat, throwStat);
-	rhc_fgd1_numucc1pi  = new BANFFBinnedSample("rhc_fgd1_numucc1pi",  SampleId::kFGD1NuMuBkgInAntiNuModeCC1Pi,   2, observables, nuccbkg1pi_axes, throwMCStat, throwStat);
-	rhc_fgd1_numuccOth  = new BANFFBinnedSample("rhc_fgd1_numuccOth",  SampleId::kFGD1NuMuBkgInAntiNuModeCCOther, 2, observables, nuccbkgOth_axes, throwMCStat, throwStat);
-	
-	rhc_fgd1_anumucc0pi = new BANFFBinnedSample("rhc_fgd1_anumucc0pi", SampleId::kFGD1AntiNuMuCC0Pi,              2, observables, anucc0pi_axes,   throwMCStat, throwStat);
-	rhc_fgd1_anumucc1pi = new BANFFBinnedSample("rhc_fgd1_anumucc1pi", SampleId::kFGD1AntiNuMuCC1Pi,              2, observables, anucc1pi_axes,   throwMCStat, throwStat);
-	rhc_fgd1_anumuccOth = new BANFFBinnedSample("rhc_fgd1_anumuccOth", SampleId::kFGD1AntiNuMuCCOther,            2, observables, anuccOth_axes,   throwMCStat, throwStat);
-	
-	rhc_fgd2_numucc0pi  = new BANFFBinnedSample("rhc_fgd2_numucc0pi",  SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi,   2, observables, nuccbkg0pi_axes, throwMCStat, throwStat);
-	rhc_fgd2_numucc1pi  = new BANFFBinnedSample("rhc_fgd2_numucc1pi",  SampleId::kFGD2NuMuBkgInAntiNuModeCC1Pi,   2, observables, nuccbkg1pi_axes, throwMCStat, throwStat);
-	rhc_fgd2_numuccOth  = new BANFFBinnedSample("rhc_fgd2_numuccOth",  SampleId::kFGD2NuMuBkgInAntiNuModeCCOther, 2, observables, nuccbkgOth_axes, throwMCStat, throwStat);
-	
-	rhc_fgd2_anumucc0pi = new BANFFBinnedSample("rhc_fgd2_anumucc0pi", SampleId::kFGD2AntiNuMuCC0Pi,              2, observables, anucc0pi_axes,   throwMCStat, throwStat);
-	rhc_fgd2_anumucc1pi = new BANFFBinnedSample("rhc_fgd2_anumucc1pi", SampleId::kFGD2AntiNuMuCC1Pi,              2, observables, anucc1pi_axes,   throwMCStat, throwStat);
-	rhc_fgd2_anumuccOth = new BANFFBinnedSample("rhc_fgd2_anumuccOth", SampleId::kFGD2AntiNuMuCCOther,            2, observables, anuccOth_axes,   throwMCStat, throwStat);
-	
-	nSample=nSample+12;
-	
-	// Some idiot proof check...
-	if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 0){
-	  std::cout << "MultiPi RHC not activated in psycheSteering!" << std::endl;
-	  exit(1);
-	}
-	// Some idiot proof check...
-	if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 1){
-	  std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
-	  exit(1);
-	}
-      }else{
-	std::cout << "--------------------------------" << std::endl;
-	std::cout << "Applying RHCMultiTrack selection" << std::endl;
-	std::cout << "--------------------------------" << std::endl;
-	
-	rhc_fgd1_anuccqe  = new BANFFBinnedSample("rhc_fgd1_anucc1tr", SampleId::kFGD1AntiNuMuCC1Track,             2, observables, anuccqe_axes,  throwMCStat, throwStat);
-	rhc_fgd1_anuccnqe = new BANFFBinnedSample("rhc_fgd1_anuccntr", SampleId::kFGD1AntiNuMuCCNTracks,            2, observables, anuccnqe_axes, throwMCStat, throwStat);
-	
-	rhc_fgd1_nuccqe   = new BANFFBinnedSample("rhc_fgd1_nucc1tr",  SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track,  2, observables, nuccqe_axes,   throwMCStat, throwStat);
-	rhc_fgd1_nuccnqe  = new BANFFBinnedSample("rhc_fgd1_nuccntr",  SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes,  throwMCStat, throwStat);
-	
-	rhc_fgd2_anuccqe  = new BANFFBinnedSample("rhc_fgd2_anucc1tr", SampleId::kFGD2AntiNuMuCC1Track,             2, observables, anuccqe_axes,  throwMCStat, throwStat);
-	rhc_fgd2_anuccnqe = new BANFFBinnedSample("rhc_fgd2_anuccntr", SampleId::kFGD2AntiNuMuCCNTracks,            2, observables, anuccnqe_axes, throwMCStat, throwStat);
-	
-	rhc_fgd2_nuccqe   = new BANFFBinnedSample("rhc_fgd2_nucc1tr",  SampleId::kFGD2NuMuBkgInAntiNuModeCC1Track,  2, observables, nuccqe_axes,   throwMCStat, throwStat);
-	rhc_fgd2_nuccnqe  = new BANFFBinnedSample("rhc_fgd2_nuccntr",  SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes,  throwMCStat, throwStat);
-	
-	nSample=nSample+8;
-	
-	// Some idiot proof check...
-	if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 1 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 1){
-	  std::cout << "MultiPi RHC is activated in psycheSteering!" << std::endl;
-	  exit(1);
-	}
-	// Some idiot proof check...
-	if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 0 ||
-	   ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 0){
-	  std::cout << "MultiTrack RHC not activated in psycheSteering!" << std::endl;
-	  exit(1);
-	}
-      }
-    }else{ // ONLY NUE SELECTIONS
-      nSample=12;
-      // Some idiot proof check...
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 1){
-	std::cout << "MultiPi RHC is activated in psycheSteering!" << std::endl;
-	exit(1);
-      }
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 1){
-	std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
-	exit(1);
-      }
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 1){
-	std::cout << "FHC MultiPi is activated in psycheSteering!" << std::endl;
-	exit(1);
-      }
-      if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi")     == 1 ||
-	 ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 1){
-	std::cout << "FHC CC4pi multiPi is activated in psycheSteering!" << std::endl;
-	exit(1);
-      }
+    if(!DoOnlyNue)
+    {
+        if(DoMultiPiRHC)
+        {
+            std::cout << "------------------------------" << std::endl;
+            std::cout << "Applying RHCMultiPi selections" << std::endl;
+            std::cout << "------------------------------" << std::endl;
+
+            rhc_fgd1_numucc0pi  = new BANFFBinnedSample("rhc_fgd1_numucc0pi",  SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi,   2, observables, nuccbkg0pi_axes, throwMCStat, throwStat);
+            rhc_fgd1_numucc1pi  = new BANFFBinnedSample("rhc_fgd1_numucc1pi",  SampleId::kFGD1NuMuBkgInAntiNuModeCC1Pi,   2, observables, nuccbkg1pi_axes, throwMCStat, throwStat);
+            rhc_fgd1_numuccOth  = new BANFFBinnedSample("rhc_fgd1_numuccOth",  SampleId::kFGD1NuMuBkgInAntiNuModeCCOther, 2, observables, nuccbkgOth_axes, throwMCStat, throwStat);
+
+            rhc_fgd1_anumucc0pi = new BANFFBinnedSample("rhc_fgd1_anumucc0pi", SampleId::kFGD1AntiNuMuCC0Pi,              2, observables, anucc0pi_axes,   throwMCStat, throwStat);
+            rhc_fgd1_anumucc1pi = new BANFFBinnedSample("rhc_fgd1_anumucc1pi", SampleId::kFGD1AntiNuMuCC1Pi,              2, observables, anucc1pi_axes,   throwMCStat, throwStat);
+            rhc_fgd1_anumuccOth = new BANFFBinnedSample("rhc_fgd1_anumuccOth", SampleId::kFGD1AntiNuMuCCOther,            2, observables, anuccOth_axes,   throwMCStat, throwStat);
+
+            rhc_fgd2_numucc0pi  = new BANFFBinnedSample("rhc_fgd2_numucc0pi",  SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi,   2, observables, nuccbkg0pi_axes, throwMCStat, throwStat);
+            rhc_fgd2_numucc1pi  = new BANFFBinnedSample("rhc_fgd2_numucc1pi",  SampleId::kFGD2NuMuBkgInAntiNuModeCC1Pi,   2, observables, nuccbkg1pi_axes, throwMCStat, throwStat);
+            rhc_fgd2_numuccOth  = new BANFFBinnedSample("rhc_fgd2_numuccOth",  SampleId::kFGD2NuMuBkgInAntiNuModeCCOther, 2, observables, nuccbkgOth_axes, throwMCStat, throwStat);
+
+            rhc_fgd2_anumucc0pi = new BANFFBinnedSample("rhc_fgd2_anumucc0pi", SampleId::kFGD2AntiNuMuCC0Pi,              2, observables, anucc0pi_axes,   throwMCStat, throwStat);
+            rhc_fgd2_anumucc1pi = new BANFFBinnedSample("rhc_fgd2_anumucc1pi", SampleId::kFGD2AntiNuMuCC1Pi,              2, observables, anucc1pi_axes,   throwMCStat, throwStat);
+            rhc_fgd2_anumuccOth = new BANFFBinnedSample("rhc_fgd2_anumuccOth", SampleId::kFGD2AntiNuMuCCOther,            2, observables, anuccOth_axes,   throwMCStat, throwStat);
+
+            nSamples = nSamples + 12;
+
+            // Some idiot proof check...
+            if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 0)
+            {
+                std::cout << "MultiPi RHC not activated in psycheSteering!" << std::endl;
+                exit(1);
+            }
+            // Some idiot proof check...
+            if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 1)
+            {
+                std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            std::cout << "--------------------------------" << std::endl;
+            std::cout << "Applying RHCMultiTrack selection" << std::endl;
+            std::cout << "--------------------------------" << std::endl;
+
+            rhc_fgd1_anuccqe  = new BANFFBinnedSample("rhc_fgd1_anucc1tr", SampleId::kFGD1AntiNuMuCC1Track,             2, observables, anuccqe_axes,  throwMCStat, throwStat);
+            rhc_fgd1_anuccnqe = new BANFFBinnedSample("rhc_fgd1_anuccntr", SampleId::kFGD1AntiNuMuCCNTracks,            2, observables, anuccnqe_axes, throwMCStat, throwStat);
+
+            rhc_fgd1_nuccqe   = new BANFFBinnedSample("rhc_fgd1_nucc1tr",  SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track,  2, observables, nuccqe_axes,   throwMCStat, throwStat);
+            rhc_fgd1_nuccnqe  = new BANFFBinnedSample("rhc_fgd1_nuccntr",  SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes,  throwMCStat, throwStat);
+
+            rhc_fgd2_anuccqe  = new BANFFBinnedSample("rhc_fgd2_anucc1tr", SampleId::kFGD2AntiNuMuCC1Track,             2, observables, anuccqe_axes,  throwMCStat, throwStat);
+            rhc_fgd2_anuccnqe = new BANFFBinnedSample("rhc_fgd2_anuccntr", SampleId::kFGD2AntiNuMuCCNTracks,            2, observables, anuccnqe_axes, throwMCStat, throwStat);
+
+            rhc_fgd2_nuccqe   = new BANFFBinnedSample("rhc_fgd2_nucc1tr",  SampleId::kFGD2NuMuBkgInAntiNuModeCC1Track,  2, observables, nuccqe_axes,   throwMCStat, throwStat);
+            rhc_fgd2_nuccnqe  = new BANFFBinnedSample("rhc_fgd2_nuccntr",  SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks, 2, observables, nuccnqe_axes,  throwMCStat, throwStat);
+
+            nSamples = nSamples + 8;
+
+            // Some idiot proof check...
+            if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 1 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 1)
+            {
+                std::cout << "MultiPi RHC is activated in psycheSteering!" << std::endl;
+                exit(1);
+            }
+            // Some idiot proof check...
+            if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 0 ||
+               ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 0)
+            {
+                std::cout << "MultiTrack RHC not activated in psycheSteering!" << std::endl;
+                exit(1);
+            }
+        }
+    }
+    // ONLY NUE SELECTIONS
+    else
+    {
+        nSamples = 12;
+        // Some idiot proof check...
+        if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 1)
+        {
+            std::cout << "MultiPi RHC is activated in psycheSteering!" << std::endl;
+            exit(1);
+        }
+        if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 1)
+        {
+            std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
+            exit(1);
+        }
+        if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi")     == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 1)
+        {
+            std::cout << "FHC MultiPi is activated in psycheSteering!" << std::endl;
+            exit(1);
+        }
+        if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPi")     == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCC4piMultiPiFGD2") == 1)
+        {
+            std::cout << "FHC CC4pi multiPi is activated in psycheSteering!" << std::endl;
+            exit(1);
+        }
     }
 
-    BANFFSampleBase** samples = new BANFFSampleBase*[nSample];
+    BANFFSampleBase** samples = new BANFFSampleBase*[nSamples];
     int iSample = 0;
-    if(!DoOnlyNue){
-      samples[iSample++] = fhc_fgd1_numucc0pi;
-      samples[iSample++] = fhc_fgd1_numucc1pi;
-      samples[iSample++] = fhc_fgd1_numuccOth;
-      
-      samples[iSample++] = fhc_fgd2_numucc0pi;
-      samples[iSample++] = fhc_fgd2_numucc1pi;
-      samples[iSample++] = fhc_fgd2_numuccOth;
-    }
-    
-    if(DoNue){
-      samples[iSample++] = fhc_fgd1_nuecc;
-      samples[iSample++] = fhc_fgd1_anuecc;
-      samples[iSample++] = fhc_fgd1_gamma;
-      
-      samples[iSample++] = rhc_fgd1_nuecc;
-      samples[iSample++] = rhc_fgd1_anuecc;
-      samples[iSample++] = rhc_fgd1_gamma;
-      
-      samples[iSample++] = fhc_fgd2_nuecc;
-      samples[iSample++] = fhc_fgd2_anuecc; 
-      samples[iSample++] = fhc_fgd2_gamma;
+    if(!DoOnlyNue)
+    {
+        samples[iSample++] = fhc_fgd1_numucc0pi;
+        samples[iSample++] = fhc_fgd1_numucc1pi;
+        samples[iSample++] = fhc_fgd1_numuccOth;
 
-      samples[iSample++] = rhc_fgd2_nuecc;
-      samples[iSample++] = rhc_fgd2_anuecc;
-      samples[iSample++] = rhc_fgd2_gamma; 
+        samples[iSample++] = fhc_fgd2_numucc0pi;
+        samples[iSample++] = fhc_fgd2_numucc1pi;
+        samples[iSample++] = fhc_fgd2_numuccOth;
     }
-    if(!DoOnlyNue){
-      if(DoMultiPiRHC){
-	samples[iSample++] = rhc_fgd1_numucc0pi;
-	samples[iSample++] = rhc_fgd1_numucc1pi;
-	samples[iSample++] = rhc_fgd1_numuccOth;
-	
-	samples[iSample++] = rhc_fgd1_anumucc0pi; 
-	samples[iSample++] = rhc_fgd1_anumucc1pi;
-	samples[iSample++] = rhc_fgd1_anumuccOth;
-	
-	samples[iSample++] = rhc_fgd2_numucc0pi;
-	samples[iSample++] = rhc_fgd2_numucc1pi;
-	samples[iSample++] = rhc_fgd2_numuccOth;
-	
-	samples[iSample++] = rhc_fgd2_anumucc0pi;
-	samples[iSample++] = rhc_fgd2_anumucc1pi;
-	samples[iSample++] = rhc_fgd2_anumuccOth;
-	
-      }else{
-	samples[iSample++] = rhc_fgd1_anuccqe;
-	samples[iSample++] = rhc_fgd1_anuccnqe;
-	
-	samples[iSample++] = rhc_fgd1_nuccqe;
-	samples[iSample++] = rhc_fgd1_nuccnqe;
-	
-	samples[iSample++] = rhc_fgd2_anuccqe;
-	samples[iSample++] = rhc_fgd2_anuccnqe;
-	
-	samples[iSample++] = rhc_fgd2_nuccqe;
-	samples[iSample++] = rhc_fgd2_nuccnqe;
-      }
+
+    if(DoNue)
+    {
+        samples[iSample++] = fhc_fgd1_nuecc;
+        samples[iSample++] = fhc_fgd1_anuecc;
+        samples[iSample++] = fhc_fgd1_gamma;
+
+        samples[iSample++] = rhc_fgd1_nuecc;
+        samples[iSample++] = rhc_fgd1_anuecc;
+        samples[iSample++] = rhc_fgd1_gamma;
+
+        samples[iSample++] = fhc_fgd2_nuecc;
+        samples[iSample++] = fhc_fgd2_anuecc;
+        samples[iSample++] = fhc_fgd2_gamma;
+
+        samples[iSample++] = rhc_fgd2_nuecc;
+        samples[iSample++] = rhc_fgd2_anuecc;
+        samples[iSample++] = rhc_fgd2_gamma;
     }
+    if(!DoOnlyNue)
+    {
+        if(DoMultiPiRHC)
+        {
+            samples[iSample++] = rhc_fgd1_numucc0pi;
+            samples[iSample++] = rhc_fgd1_numucc1pi;
+            samples[iSample++] = rhc_fgd1_numuccOth;
+
+            samples[iSample++] = rhc_fgd1_anumucc0pi;
+            samples[iSample++] = rhc_fgd1_anumucc1pi;
+            samples[iSample++] = rhc_fgd1_anumuccOth;
+
+            samples[iSample++] = rhc_fgd2_numucc0pi;
+            samples[iSample++] = rhc_fgd2_numucc1pi;
+            samples[iSample++] = rhc_fgd2_numuccOth;
+
+            samples[iSample++] = rhc_fgd2_anumucc0pi;
+            samples[iSample++] = rhc_fgd2_anumucc1pi;
+            samples[iSample++] = rhc_fgd2_anumuccOth;
+
+        }
+        else
+        {
+            samples[iSample++] = rhc_fgd1_anuccqe;
+            samples[iSample++] = rhc_fgd1_anuccnqe;
+
+            samples[iSample++] = rhc_fgd1_nuccqe;
+            samples[iSample++] = rhc_fgd1_nuccnqe;
+
+            samples[iSample++] = rhc_fgd2_anuccqe;
+            samples[iSample++] = rhc_fgd2_anuccnqe;
+
+            samples[iSample++] = rhc_fgd2_nuccqe;
+            samples[iSample++] = rhc_fgd2_nuccnqe;
+        }
+    }
+
     //With the samples ready, now define the parameters that are going to be
     //considered.
     //TODO: Again, maybe some of this can be moved to a backend?
@@ -734,23 +767,36 @@ int main(int argc, char** argv){
 
     //Load the Flux Parameters.
     //Specify to fit them.
-    if(ND::params().GetParameterI("BANFF.RunFit.LoadFluxParams")){
-      fitParameters->LoadFluxParametersFromFile(ND::params().GetParameterS("BANFF.FluxInputFile"), 
-                                                ND::params().GetParameterI("BANFF.RunFit.LoadNuModeFluxParams"),
-                                                ND::params().GetParameterI("BANFF.RunFit.LoadAntiNuModeFluxParams"),
-                                                ND::params().GetParameterI("BANFF.RunFit.FitFluxParams"));
+    if(ND::params().GetParameterI("BANFF.RunFit.LoadFluxParams"))
+    {
+        std::cout << "Load flux parameters" << std::endl;
+        fitParameters->LoadFluxParametersFromFile(
+                ND::params().GetParameterS("BANFF.FluxInputFile"),
+                ND::params().GetParameterI("BANFF.RunFit.LoadNuModeFluxParams"),
+                ND::params().GetParameterI("BANFF.RunFit.LoadAntiNuModeFluxParams"),
+                ND::params().GetParameterI("BANFF.RunFit.FitFluxParams"));
+        std::cout << "DONE loading flux parameters" << std::endl;
     }
-    
+
     //Load the XSec Parameters and specify to fit them
-    if(ND::params().GetParameterI("BANFF.RunFit.LoadXSecParams")){
-      fitParameters->LoadXSecParametersFromFile(ND::params().GetParameterS("BANFF.XSecInputFile"),
-						ND::params().GetParameterI("BANFF.RunFit.FitXSecParams"));
+    if(ND::params().GetParameterI("BANFF.RunFit.LoadXSecParams"))
+    {
+        std::cout << "Load XSec parameters" << std::endl;
+        fitParameters->LoadXSecParametersFromFile(
+                ND::params().GetParameterS("BANFF.XSecInputFile"),
+                ND::params().GetParameterI("BANFF.RunFit.FitXSecParams"));
+        std::cout << "Done loading XSec parameters" << std::endl;
     }
-    
-    //Load the ObsNorm parameters, and specify to fit them. 
-    if(ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams")){
-      fitParameters->LoadObsNormParametersFromFile(ND::params().GetParameterS("BANFF.ObsNormInputFile"), nSample, samples,
-                                                   ND::params().GetParameterI("BANFF.RunFit.FitObsNormParams"));
+
+    //Load the ObsNorm parameters, and specify to fit them.
+    if(ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams"))
+    {
+        std::cout << "Load ObsNorm parameters" << std::endl;
+        fitParameters->LoadObsNormParametersFromFile(
+                ND::params().GetParameterS("BANFF.ObsNormInputFile"),
+                nSamples, samples,
+                ND::params().GetParameterI("BANFF.RunFit.FitObsNormParams"));
+        std::cout << "DONE loading ObsNorm parameters" << std::endl;
     }
 
     //We can save pre-fit information to a file here, since everything that has
@@ -761,121 +807,127 @@ int main(int argc, char** argv){
     std::string outputName = ND::params().GetParameterS("BANFF.RunFit.OutputFile");
     //std::string PsycheVersion = anaUtils::GetSoftwareVersionFromPath((std::string)getenv("ND280PSYCHEROOT"));
     //outputName = PsycheVersion+"_"+outputName;
-      
+
     if(Do4PiFHC)
-      outputName = "CC4PiFHC_"+outputName;
+        outputName = "CC4PiFHC_"+outputName;
     if(DoNue)
-      outputName = "NuE_"+outputName;
-    if(!DoOnlyNue){
-      if(DoMultiPiRHC){
-	outputName = "MultiPiRHC_"+outputName;
-      }else{
-	outputName = "MultiTrackRHC_"+outputName;
-      }
-    }else{
-      outputName = "ONLY"+outputName;
+        outputName = "NuE_"+outputName;
+    if(!DoOnlyNue)
+    {
+        if(DoMultiPiRHC)
+            outputName = "MultiPiRHC_"+outputName;
+        else
+            outputName = "MultiTrackRHC_"+outputName;
     }
-    if(ND::params().GetParameterI("BANFF.SavePrefitParamsAndExit")){
-      
-      TFile* preFitFile = new TFile(("prefit_"+outputName).c_str(),"RECREATE");
-      preFitFile->cd();
-      fitParameters->WriteResults(0, true, false);
-      preFitFile->Close();
-      exit(0);
+    else
+        outputName = "ONLY"+outputName;
+
+    if(ND::params().GetParameterI("BANFF.SavePrefitParamsAndExit"))
+    {
+        TFile* preFitFile = new TFile(("prefit_"+outputName).c_str(),"RECREATE");
+        preFitFile->cd();
+        fitParameters->WriteResults(0, true, false);
+        preFitFile->Close();
+        exit(0);
     }
 
     //Now that all parameters are added, flag the flux and FSI parameters for
     //decomposition.
-    for(int i = 0; i < fitParameters->GetNumbSysts(); i++){
+    for(int i = 0; i < fitParameters->GetNumbSysts(); i++)
+    {
 
-        if(fitParameters->GetParamType(i)==FLUX){
+        if(fitParameters->GetParamType(i)==FLUX)
             fitParameters->SetDecompose(i,1);
-        }
 
-        if(fitParameters->GetParamName(i).find("FSI")!=std::string::npos){
+        if(fitParameters->GetParamName(i).find("FSI")!=std::string::npos)
+        {
             std::cout << "Decompose " << fitParameters->GetParamName(i) << std::endl;
             fitParameters->SetDecompose(i,1);
         }
-
     }
 
     //Create the psyche interface.  Do not load in or vary the detector
     //parameters from psyche.
     //NB: Although there are program parameters for this, it is something that
     //would never be done.
-    
+
     std::string diagnostic_name = "diagnostic_" + outputName;
 
-    psycheInterface* interface = new psycheInterface(nSample, samples, fitParameters, false, false, diagnostic_name);
-
+    psycheInterface* interface = new psycheInterface(nSamples, samples, fitParameters, false, false, diagnostic_name);
 
     //Create the fitter that we want, and pass it the interface and the name of
     //the output file.
     Minuit2LikelihoodFit* fitter = new Minuit2LikelihoodFit(interface, outputName);
-    
+
     //If requested in the program parameters file, fit to the data loaded in by
     //psyche.
-    if(ND::params().GetParameterI("BANFF.RunFit.FitData")){
+    if(ND::params().GetParameterI("BANFF.RunFit.FitData"))
+    {
 
         fitter->outputFile->cd();
         interface->BuildData();
         interface->BuildNominalMC();
 
-        for(int si = 0; si < interface->nSamples; si++){
-
+        for(int si = 0; si < interface->nSamples; si++)
+        {
             std::string dataName = interface->samples[si]->name + "_data";
             std::string mcName   = interface->samples[si]->name + "_prefit";
             samples[si]->SaveData(dataName);
             samples[si]->SaveNominalMC(mcName);
-
         }
-	if(ND::params().GetParameterI("BANFF.SavePrefitAndExit")) exit(0);
+
+        if(ND::params().GetParameterI("BANFF.SavePrefitAndExit"))
+            exit(0);
+
         fitter->InitializeParameters();
         fitter->DoFit();
     }
 
     //Otherwise, if the nominal MC flag is set, build the nominal MC then use
     //it as the data to fit.
-    else if(ND::params().GetParameterI("BANFF.RunFit.FitNominalMC")){
+    else if(ND::params().GetParameterI("BANFF.RunFit.FitNominalMC"))
+    {
 
         fitter->outputFile->cd();
         interface->BuildNominalMC();
 
-        for(int si = 0; si < interface->nSamples; si++){
-
+        for(int si = 0; si < interface->nSamples; si++)
+        {
             samples[si]->UseNominalMCAsData();
             std::string dataName = interface->samples[si]->name + "_data";
             std::string mcName   = interface->samples[si]->name + "_prefit";
             samples[si]->SaveData(dataName);
             samples[si]->SaveNominalMC(mcName);
         }
-	if(ND::params().GetParameterI("BANFF.SavePrefitAndExit")) exit(0);
+
+        if(ND::params().GetParameterI("BANFF.SavePrefitAndExit"))
+            exit(0);
+
         fitter->InitializeParameters();
         fitter->DoFit();
-
-
     }
 
     //Otherwise, fit to a number of toy MC histgorams in a file specified in
     //the program parameters file.
     //Taking advantage of this allows performing multiple validation fits
     //without having to spend time reloading the MC.
-    else{
-
+    else
+    {
         //Set up the file containing the data.
         TFile* toyFile = new TFile((ND::params().GetParameterS("BANFF.RunFit.ToyFile")).c_str());
 
         //Loop over the toys.
-        for(int i = ND::params().GetParameterI("BANFF.RunFit.FirstToyToFit"); i < ND::params().GetParameterI("BANFF.RunFit.FirstToyToFit") + ND::params().GetParameterI("BANFF.RunFit.NToysToFit"); i++){
+        for(int i = ND::params().GetParameterI("BANFF.RunFit.FirstToyToFit");
+                i < ND::params().GetParameterI("BANFF.RunFit.FirstToyToFit") + ND::params().GetParameterI("BANFF.RunFit.NToysToFit");
+                i++)
+        {
 
-            
             fitter->outputFile->cd();
             interface->BuildNominalMC();
 
-
             //Loop over the samples.
-            for(int si = 0; si < interface->nSamples; si++){
-
+            for(int si = 0; si < interface->nSamples; si++)
+            {
                 std::stringstream histoStream;
                 histoStream << samples[si]->name << "_predMC_" << i;
 
@@ -887,19 +939,16 @@ int main(int argc, char** argv){
                 std::string mcName = interface->samples[si]->name + "_prefit";
                 samples[si]->SaveData(dataName);
                 samples[si]->SaveNominalMC(mcName);
-
             }
-	    if(ND::params().GetParameterI("BANFF.SavePrefitAndExit")) exit(0);
+            if(ND::params().GetParameterI("BANFF.SavePrefitAndExit"))
+                exit(0);
             fitter->InitializeParameters();
 
             //DoFit has an internal counter that will automatically iterate the
             //names of the fit output to fit multiple toys and save the output
             //to the same file..
             fitter->DoFit();
-
         }
-
-
 
         toyFile->Close();
     }

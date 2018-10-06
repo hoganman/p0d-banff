@@ -158,6 +158,8 @@ class AnaTrueVertexB: public AnaTrueObjectC{
   /// interrogate this object
   unsigned long Detector;
 
+  Int_t ReactionCode;
+
 };
 
 /// Representation of a true Monte Carlo trajectory/particle.

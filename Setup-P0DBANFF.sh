@@ -66,6 +66,7 @@ fi
 #################################################
 
 source $P0DBANFFROOT/SetupBase.sh
+export PODBANFFROOT=$P0DBANFFROOT
 
 export HIGHLAND2VERSION=v2r22
 export BANFFVERSION=v3r16

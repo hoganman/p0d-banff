@@ -247,6 +247,8 @@ int main(int argc, char **argv){
     Int_t tLeptonParentPDG = kIntInit;
     Int_t tLeptonGParentPDG = kIntInit;
     Double_t tLeptonMomentum = kDoubleInit;
+    Double_t tLeptonCosTheta = kDoubleInit;
+    Double_t tLeptonPhi = kDoubleInit;
     Int_t tOnWaterTarget = kIntInit;
     Double_t tLeptonPositionX = kDoubleInit;
     Double_t tLeptonPositionY = kDoubleInit;
@@ -255,6 +257,7 @@ int main(int argc, char **argv){
     Double_t tVtxY = kDoubleInit;
     Double_t tVtxZ = kDoubleInit;
 
+    Int_t tReactionCode = kIntInit;
     Double_t tNu = kDoubleInit;
     Double_t tYbj = kDoubleInit;
     Double_t tW2 = kDoubleInit;
@@ -370,6 +373,8 @@ int main(int argc, char **argv){
         tree->Branch("tLeptonParentPDG", &tLeptonParentPDG, "tLeptonParentPDG/I");
         tree->Branch("tLeptonGParentPDG", &tLeptonGParentPDG, "tLeptonGParentPDG/I");
         tree->Branch("tLeptonMomentum", &tLeptonMomentum, "tLeptonMomentum/D");
+        tree->Branch("tLeptonCosTheta", &tLeptonCosTheta, "tLeptonCosTheta/D");
+        tree->Branch("tLeptonPhi", &tLeptonPhi, "tLeptonPhi/D");
         tree->Branch("vtxX" ,&vtxX ,"vtxX/D");
         tree->Branch("vtxY" ,&vtxY ,"vtxY/D");
         tree->Branch("vtxZ" ,&vtxZ ,"vtxZ/D");
@@ -382,7 +387,7 @@ int main(int argc, char **argv){
         tree->Branch("tVtxX",&tVtxX,"tVtxX/D");
         tree->Branch("tVtxY",&tVtxY,"tVtxY/D");
         tree->Branch("tVtxZ",&tVtxZ,"tVtxZ/D");
-
+        tree->Branch("tReactionCode",&tReactionCode,"tReactionCode/I");
         tree->Branch("tW2", &tW2, "tW2/D");
         tree->Branch("tQ2", &tQ2, "tQ2/D");
         tree->Branch("tXbj", &tXbj, "tXbj/D");
@@ -501,6 +506,8 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tLeptonParentPDG  = kDoubleInit;
             tLeptonGParentPDG = kDoubleInit;
             tLeptonMomentum   = kDoubleInit;
+            tLeptonCosTheta   = kDoubleInit;
+            tLeptonPhi        = kDoubleInit;
             LeptonPositionX = kDoubleInit;
             LeptonPositionY = kDoubleInit;
             LeptonPositionZ = kDoubleInit;
@@ -510,6 +517,7 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tVtxX = kDoubleInit;
             tVtxY = kDoubleInit;
             tVtxZ = kDoubleInit;
+            tReactionCode = kIntInit;
             tW2   = kDoubleInit;
             tQ2   = kDoubleInit;
             tNu   = kDoubleInit;
@@ -580,6 +588,7 @@ if(debug) DEBUG(trueParticle->PDG)
                         tVtxX = trVtx->Position[0];
                         tVtxY = trVtx->Position[1];
                         tVtxZ = trVtx->Position[2];
+                        tReactionCode = trVtx->ReactionCode;
                         TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID;
                         TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
                         TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );
@@ -592,6 +601,10 @@ if(debug) DEBUG(trueParticle->PDG)
                         AnaTrueParticleB* trLepton = GetTrueVtxLepton(trVtx);
                         if(trLepton)
                         {
+                            tLeptonMomentum = trLepton->Momentum;
+                            const TVector3 tDirection(trLepton->Direction);
+                            tLeptonCosTheta = tDirection.CosTheta();
+                            tLeptonPhi = tDirection.Phi();
                             tLeptonMomentum = trLepton->Momentum;
                             const Double_t Mmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trLepton->PDG));
                             if(Mmu > 0)
@@ -771,13 +784,13 @@ if(debug) DEBUG(trueParticle->PDG)
     }
 
     inputFile = new TFile(inputFileName.c_str(), "READ");
-    if((Bool_t)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx") && inputFile->Get("NRooTrackerVtx"))
-    {
-        std::cout << "Copying the NRooTrackerVtx Tree" << std::endl;
-        RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
-        outfile->cd();
-        RTV->CloneTree()->Write();
-    }
+    //if((Bool_t)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx") && inputFile->Get("NRooTrackerVtx"))
+    //{
+    //    std::cout << "Copying the NRooTrackerVtx Tree" << std::endl;
+    //    RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
+    //    outfile->cd();
+    //    RTV->CloneTree()->Write();
+    //}
 
     TTree* header = NULL;
     if(inputFile->Get("header"))
