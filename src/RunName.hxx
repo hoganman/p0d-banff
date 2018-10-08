@@ -25,14 +25,14 @@ public:
     TString uppercaseName;
     TString properName;
 
-    TString LowerUpperPathJoin(const TString &prepend = "") const
+    TString LowerUpperPathJoin(const TString &prepend = getenv("P0DBANFFROOT")) const
     {
         if(prepend.Length() > 0)
             return prepend + "/" + lowercaseName + "/" + uppercaseName;
         return lowercaseName + "/" + uppercaseName;
     }
 
-    inline TString iter_name(const TString &prepend = "") const
+    inline TString iter_name(const TString &prepend = getenv("P0DBANFFROOT")) const
     {
         return LowerUpperPathJoin(prepend) + "_%d.root";
     }

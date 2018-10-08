@@ -14,10 +14,10 @@ public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts(){}
 
-    Bool_t IsSandCut(TCut cut);
+    //Bool_t IsSandCut(TCut cut);
 
-    TCut AndTCuts(TCut cutA, TCut cutB) const;
-    TCut AndTCuts(TCut cutA, TString cutB) const {return AndTCuts(cutA, TCut(cutB.Data()));}
+    TCut AndTCuts(const TCut &cutA, const TCut &cutB) const;
+    TCut AndTCuts(const TCut &cutA, const TString &cutB) const {return AndTCuts(cutA, TCut(cutB.Data()));}
 
     ///Passes the mu- selection
     TCut muMinusSelection;
@@ -76,8 +76,6 @@ public:
     TVector3 maxFidVolTN208Coords;
     TVector3 minSandCoords;
     TVector3 maxSandCoords;
-
-
 
 protected:
     void SetCuts();

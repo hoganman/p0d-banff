@@ -22,13 +22,16 @@ void DefineCuts::SetCuts()
     minSandCoords.SetXYZ(-10000., -10000., -280.e+3);  // in mm
     maxSandCoords.SetXYZ(+10000., +10000., -3500.);  // in mm
 
-    muMinusSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuCC()));
+    muMinusSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+                samples.GetP0DWaterNuMuCC(), samples.GetP0DAirNuMuCC()));
     muMinusSelection.SetName("#mu^{-} Selection Cut");
 
-    muPlusInRHCSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBarInAntiNuModeCC()));
+    muPlusInRHCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+                samples.GetP0DWaterNuMuBarInAntiNuModeCC(), samples.GetP0DAirNuMuBarInAntiNuModeCC()));
     muPlusInRHCSelection.SetName("#mu^{+} in RHC Selection Cut");
 
-    muMinusBkgInRHCSelection = TCut(TString::Format("SelectionNom==%d", samples.GetP0DNuMuBkgInAntiNuModeCC()));
+    muMinusBkgInRHCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+                samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()));
     muMinusBkgInRHCSelection.SetName("#mu^{-} Bkg in RHC Selection Cut");
 
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
@@ -137,7 +140,7 @@ void DefineCuts::SetCuts()
 }
 
 //**************************************************
-TCut DefineCuts::AndTCuts(TCut cutA, TCut cutB) const
+TCut DefineCuts::AndTCuts(const TCut &cutA, const TCut &cutB) const
 //**************************************************
 {
     TCut cutAandB = cutA && cutB;
