@@ -4,8 +4,6 @@
 #include "EventBoxTracker.hxx"
 #include <iostream>
 
-const bool debug = false;
-
 //********************************************************************
 P0DELossScaleSystematics::P0DELossScaleSystematics():EventVariationBase(1),BinnedParams(){
 //********************************************************************
@@ -18,7 +16,7 @@ P0DELossScaleSystematics::P0DELossScaleSystematics():EventVariationBase(1),Binne
   sprintf(dirname,"%s/data",getenv("PSYCHESYSTEMATICSROOT"));
   BinnedParams::Read(dirname);
   //  BinnedParams::Print();
-  if (debug){
+#ifdef DEBUG
     std::cout <<"Nbins: "<<GetNBins();
     for (int i = 0 ; i < GetNBins(); i++)
     {
@@ -27,8 +25,7 @@ P0DELossScaleSystematics::P0DELossScaleSystematics():EventVariationBase(1),Binne
       std::cout<<"Mean, sigma = "<<mean<<" "<<sigma<<std::endl;
 
     }
-
-  }
+#endif
 }
 
 //********************************************************************
@@ -70,12 +67,12 @@ void P0DELossScaleSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
     Float_t p0dlength = p0d->Length;
     Float_t p0dEloss = p0d->ELoss;
     Float_t scale, scaleError;
-    if (p0dEloss < 0 ) continue;
+    if (p0dEloss < 0 )
+        continue;
 #ifdef DEBUG
       std::cout << "Toy variation: "<<toy.GetToyVariations(_index)->Variations[0]<<std::endl;
 
       std::cout << "p0 = " << p << std::endl;
-//      std::cout << "TPC1 Mom = "<<track_pt->TrackerMomentum<<std::endl;
       std::cout <<"P0D Length: "<<p0dlength<<std::endl;
       std::cout <<"P0D Eloss: "<<p0dEloss<<std::endl;
       std::cout <<"Getting bin values:"<<std::endl;
@@ -90,7 +87,7 @@ void P0DELossScaleSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
       std::cout << "Scale = "<<scale<<" Scale Err = " <<scaleError<<std::endl;
 #endif
     // Apply the momentum scale factor
-    p += (scale +scaleError*toy.GetToyVariations(_index)->Variations[0])*(p0dEloss);
+    p += (scale + scaleError * toy.GetToyVariations(_index)->Variations[0]) * p0dEloss;
 
 #ifdef DEBUG
     std::cout << "p = " << p << std::endl;
@@ -102,18 +99,20 @@ void P0DELossScaleSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
 bool P0DELossScaleSystematics::UndoSystematic(AnaEventC& event){
 //********************************************************************
 
-  SystBoxB* box = GetSystBox(event);
-  // Get the relevant tracks for this systematic
-  AnaRecObjectC** tracks = box->RelevantRecObjects;
+    SystBoxB* box = GetSystBox(event);
+    // Get the relevant tracks for this systematic
+    AnaRecObjectC** tracks = box->RelevantRecObjects;
 
-  for (Int_t itrk=0;itrk<box->nRelevantRecObjects;itrk++){
-    AnaTrackB* track = static_cast<AnaTrackB*>(tracks[itrk]);
-    if(!track->Original) continue;
+    for (Int_t itrk=0;itrk<box->nRelevantRecObjects;itrk++)
+    {
+        AnaTrackB* track = static_cast<AnaTrackB*>(tracks[itrk]);
+        if(!track->Original)
+          continue;
 
-    // Go back to the corrected momentum
-    track->Momentum = track->GetOriginalTrack()->Momentum;
-  }
+        // Go back to the corrected momentum
+        track->Momentum = track->GetOriginalTrack()->Momentum;
+    }
 
-  // Don't reset the spill to corrected
-  return false;
+    // Don't reset the spill to corrected
+    return false;
 }

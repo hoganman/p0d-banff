@@ -276,7 +276,7 @@ void P0DBANFFInterface::RandomSleep(Int_t nSeconds, Int_t seed) const
 }
 
 //**************************************************
-Bool_t P0DBANFFInterface::CheckFile(TString fileName) const
+Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 //**************************************************
 {
     Bool_t status = kFALSE;

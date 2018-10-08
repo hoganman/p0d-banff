@@ -12,16 +12,16 @@
 /// specified by the user.
 class P0DELossResolSystematics : public EventVariationBase, public BinnedParams {
   public:
-  
+
    /// Instantiate the momentum scale systematic. nbins bins for the PDF. scale and scaleError describe
    /// the Gaussian distribution from which the shift in momentum is chosen.
    P0DELossResolSystematics();
-  
+
    virtual ~P0DELossResolSystematics() {}
-  
+
    /// Apply the systematic
    virtual void Apply(const ToyExperiment& toy, AnaEventC& event);
-  
+
    /// Undo  the systematic variations done by ApplyVariation. This is faster than resetting the full Spill
    virtual bool UndoSystematic(AnaEventC& event);
 };

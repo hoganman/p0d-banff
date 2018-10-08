@@ -121,28 +121,48 @@ public:
         kFGD1GammaInAntiNuMode,
         // FGD2
         kFGD2GammaInAntiNuMode,
-        // P0D
-        kP0DNuMuCC,
-        kP0DNuMuBarBkgCC,
-        kP0DNuMuBarInAntiNuModeCC,
-        kP0DNuMuBkgInAntiNuModeCC,
+
+        // P0D, water in
+        kP0DWaterNuMuCC,
+        kP0DWaterNuMuBarBkgCC,
+        kP0DWaterNuMuBarInAntiNuModeCC,
+        kP0DWaterNuMuBkgInAntiNuModeCC,
+
+        // P0D, water-out
+        kP0DAirNuMuCC,
+        kP0DAirNuMuBarBkgCC,
+        kP0DAirNuMuBarInAntiNuModeCC,
+        kP0DAirNuMuBkgInAntiNuModeCC,
         kNSamples
     };
 
-    SampleId::SampleEnum GetP0DNuMuCCEnum() const {return kP0DNuMuCC;}
-    SampleId::SampleEnum GetP0DNuMuBarBkgCCEnum() const {return kP0DNuMuBarBkgCC;}
-    SampleId::SampleEnum GetP0DNuMuBkgInAntiNuModeCCEnum() const {return kP0DNuMuBkgInAntiNuModeCC;}
-    SampleId::SampleEnum GetP0DNuMuBarInAntiNuModeCCEnum() const {return kP0DNuMuBarInAntiNuModeCC;}
+    SampleId::SampleEnum GetP0DWaterNuMuCCEnum() const {return kP0DWaterNuMuCC;}
+    SampleId::SampleEnum GetP0DWaterNuMuBarBkgCCEnum() const {return kP0DWaterNuMuBarBkgCC;}
+    SampleId::SampleEnum GetP0DWaterNuMuBkgInAntiNuModeCCEnum() const {return kP0DWaterNuMuBkgInAntiNuModeCC;}
+    SampleId::SampleEnum GetP0DWaterNuMuBarInAntiNuModeCCEnum() const {return kP0DWaterNuMuBarInAntiNuModeCC;}
+    SampleId::SampleEnum GetP0DAirNuMuCCEnum() const {return kP0DAirNuMuCC;}
+    SampleId::SampleEnum GetP0DAirNuMuBarBkgCCEnum() const {return kP0DAirNuMuBarBkgCC;}
+    SampleId::SampleEnum GetP0DAirNuMuBkgInAntiNuModeCCEnum() const {return kP0DAirNuMuBkgInAntiNuModeCC;}
+    SampleId::SampleEnum GetP0DAirNuMuBarInAntiNuModeCCEnum() const {return kP0DAirNuMuBarInAntiNuModeCC;}
 
-    UInt_t GetP0DNuMuCC() const {return static_cast<UInt_t>(GetP0DNuMuCCEnum());}
-    UInt_t GetP0DNuMuBarBkgCC() const {return static_cast<UInt_t>(GetP0DNuMuBarBkgCCEnum());}
-    UInt_t GetP0DNuMuBarInAntiNuModeCC() const {return static_cast<UInt_t>(GetP0DNuMuBarInAntiNuModeCCEnum());}
-    UInt_t GetP0DNuMuBkgInAntiNuModeCC() const {return static_cast<UInt_t>(GetP0DNuMuBkgInAntiNuModeCCEnum());}
+    Int_t GetP0DWaterNuMuCC() const {return GetP0DWaterNuMuCCEnum();}
+    Int_t GetP0DWaterNuMuBarBkgCC() const {return GetP0DWaterNuMuBarBkgCCEnum();}
+    Int_t GetP0DWaterNuMuBarInAntiNuModeCC() const {return GetP0DWaterNuMuBarInAntiNuModeCCEnum();}
+    Int_t GetP0DWaterNuMuBkgInAntiNuModeCC() const {return GetP0DWaterNuMuBkgInAntiNuModeCCEnum();}
+    Int_t GetP0DAirNuMuCC() const {return GetP0DAirNuMuCCEnum();}
+    Int_t GetP0DAirNuMuBarBkgCC() const {return GetP0DAirNuMuBarBkgCCEnum();}
+    Int_t GetP0DAirNuMuBarInAntiNuModeCC() const {return GetP0DAirNuMuBarInAntiNuModeCCEnum();}
+    Int_t GetP0DAirNuMuBkgInAntiNuModeCC() const {return GetP0DAirNuMuBkgInAntiNuModeCCEnum();}
 
-    Bool_t IsP0DFHCSample(SampleId::SampleEnum testEnum) const;
-    Bool_t IsP0DRHCSample(SampleId::SampleEnum testEnum) const;
-    Bool_t IsP0DFHCSample(Int_t testInt) const {return IsP0DFHCSample(static_cast<SampleId::SampleEnum>(testInt));};
-    Bool_t IsP0DRHCSample(Int_t testInt) const {return IsP0DRHCSample(static_cast<SampleId::SampleEnum>(testInt));};
+    Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DWaterSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DAirSample(const SampleId::SampleEnum &testEnum) const;
+
+    Bool_t IsP0DFHCSample(const Int_t &testInt) const {return IsP0DFHCSample(static_cast<SampleId::SampleEnum>(testInt));};
+    Bool_t IsP0DRHCSample(const Int_t &testInt) const {return IsP0DRHCSample(static_cast<SampleId::SampleEnum>(testInt));};
+    Bool_t IsP0DWaterSample(const Int_t &testInt) const {return IsP0DWaterSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DAirSample(const Int_t &testInt) const {return IsP0DAirSample(static_cast<SampleId::SampleEnum>(testInt));}
 
     ClassDef(SampleId, 1)
 

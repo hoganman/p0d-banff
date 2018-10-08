@@ -41,7 +41,7 @@ class ROOTChain(p0dbanff.p0dbanff):
                 self.add_from_file(file_name)
 
 
-def get(chain_name, file_names, first_num=1, last_num=100):
+def get_all_from_to(chain_name, file_names, first_num=1, last_num=100):
     """
     A dirty method to get a TChain from many numbered files
     Use with RunName.RunName.iter_name()

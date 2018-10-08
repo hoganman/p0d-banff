@@ -4,8 +4,6 @@
 #include "EventBoxTracker.hxx"
 #include <iostream>
 
-const bool debug = false;
-
 //********************************************************************
 P0DELossResolSystematics::P0DELossResolSystematics():EventVariationBase(1),BinnedParams(){
 //********************************************************************
@@ -18,17 +16,16 @@ P0DELossResolSystematics::P0DELossResolSystematics():EventVariationBase(1),Binne
   sprintf(dirname,"%s/data",getenv("PSYCHESYSTEMATICSROOT"));
   BinnedParams::Read(dirname);
   //  BinnedParams::Print();
-  if (debug){
-    std::cout <<"Nbins: "<<GetNBins();
-    for (int i = 0 ; i < GetNBins(); i++)
-    {
-      Float_t mean,sigma;
-      GetParametersForBin(i,mean,sigma);
-      std::cout<<"Mean, sigma = "<<mean<<" "<<sigma<<std::endl;
-
-    }
+#ifdef DEBUG
+  std::cout <<"Nbins: "<<GetNBins();
+  for (int i = 0 ; i < GetNBins(); i++)
+  {
+    Float_t mean, sigma;
+    GetParametersForBin(i,mean,sigma);
+    std::cout<<"Mean, sigma = "<<mean<<" "<<sigma<<std::endl;
 
   }
+#endif
 }
 
 //********************************************************************
@@ -37,20 +34,21 @@ void P0DELossResolSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
 
   (void)event;
 
-
   // Get the relevant tracks for this systematic
   //AnaTrackB** tracks = box.RelevantRecObjects;
 
   SystBoxB* box = GetSystBox(event);
   // Nothing to do If there are no relevant tracks
-  if (box->nRelevantRecObjects == 0) return;
+  if (box->nRelevantRecObjects == 0)
+      return;
+
 #ifdef DEBUG
   std::cout << "P0DELossResolsystematics::Apply()"<<std::endl;
-
 #endif
 
   // loop over the relevant tracks for this systematic
-  for (Int_t itrk=0;itrk<box->nRelevantRecObjects;itrk++){
+  for (Int_t itrk=0;itrk<box->nRelevantRecObjects;itrk++)
+  {
 #ifdef DEBUG
     std::cout <<"Track "<< itrk << std::endl;
 #endif
@@ -65,7 +63,21 @@ void P0DELossResolSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
     if (track->GetTrueParticle()->nDetCrossings < 2)
         continue;
     AnaP0DParticleB* p0d = (AnaP0DParticleB*)track->P0DSegments[0];
+    AnaTPCParticleB* tpcParticle = NULL;
+    for(Int_t tpc_seg_index = 0; tpc_seg_index < track->nTPCSegments; ++tpc_seg_index)
+    {
+        AnaTPCParticleB* test_tpcParticle = track->TPCSegments[tpc_seg_index];
+        if(SubDetId::GetDetectorUsed(test_tpcParticle->Detector, SubDetId::kTPC1))
+        {
+            tpcParticle = track->TPCSegments[tpc_seg_index];
+            break;
+        }
+    }
 
+    if(!tpcParticle)
+    {
+        std::cout << "P0DELossResolsystematics::Warning Could not find a TPC1 track" << std::endl;
+    }
     // Get a reference to the momentum to be varied
     Float_t& p = track->Momentum;
     Float_t trueMomentum = track->GetTrueParticle()->Momentum;
@@ -81,22 +93,18 @@ void P0DELossResolSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
 
     Float_t scale, scaleError;
 
-
-    if (p0dEloss > p)
+    if (p0dEloss > p || p0dEloss < 0 || p < 0)
         continue;
 
 #ifdef DEBUG
       std::cout << "Toy variation: " << toy.GetToyVariations(_index)->Variations[0] << std::endl;
-
       std::cout << "p0 = " << p << std::endl;
-//      std::cout << "TPC1 mom = "<<track_pt->TrackerMomentum<<std::endl;
       std::cout <<"P0D Length: "<<p0dlength<<std::endl;
       std::cout <<"True P0D loss: "<<trueP0dEloss<<std::endl;
       std::cout <<"P0D Loss: "<<p0dEloss<<std::endl;
       std::cout <<"Entrance Position: "<<cross->EntrancePosition[0]<<" "<<cross->EntrancePosition[1]<<" "<<cross->EntrancePosition[2]<<std::endl;
       std::cout <<"In TPC1? "<< anaUtils::InDetVolume(SubDetId::kTPC1,cross->EntrancePosition)<<std::endl;
 #endif
-
 
     if (!GetBinValues(p0dlength,scale,scaleError))
         continue;

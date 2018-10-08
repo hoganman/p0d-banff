@@ -7,11 +7,10 @@ A script that makes histogram of the resulting TTree from
 from os import getenv
 from os.path import join
 import ROOT
-from ROOT import TH1D, TH2D, THStack, TCanvas, TLegend, gSystem  # TChain
+from ROOT import THStack, TCanvas, TLegend, gSystem  # TChain
 from ROOT import TPad, TGaxis, TLine
 import ROOTChain
 from ROOTHStack import ROOTHStack
-import RunName as RN
 import sys
 
 # toggle these to draw particular variables
@@ -170,12 +169,12 @@ def main(argv):
         for smpls in mc_data_sample_dict.values():
             mc_sample = smpls[mc_data_sample_dict_MC_key]['Magnet']
             # avoid making empty plots
-            if sampleIds.IsP0DFHCSample(SELECTION) and not mc_sample.is_FHC:
+            if sampleIds.IsP0DFHCSample(SELECTION) and not mc_sample.CPPCLASS.is_FHC:
                 continue
-            if sampleIds.IsP0DRHCSample(SELECTION) and mc_sample.is_FHC:
+            if sampleIds.IsP0DRHCSample(SELECTION) and mc_sample.CPPCLASS.is_FHC:
                 continue
-            data_pot_exponent = INTERFACE.GetExponentBase10(mc_sample.data_pot)
-            data_pot_mantissa = INTERFACE.GetMantissaBase10(mc_sample.data_pot,
+            data_pot_exponent = INTERFACE.GetExponentBase10(mc_sample.CPPCLASS.data_pot)
+            data_pot_mantissa = INTERFACE.GetMantissaBase10(mc_sample.CPPCLASS.data_pot,
                                                             data_pot_exponent)
             pot_str = '%.2f #times 10^{%d} PoT' % (data_pot_mantissa,
                                                    data_pot_exponent)
@@ -280,55 +279,48 @@ class sample(object):
     def __init__(self, chain, plot_title, save_title):
         """set titles and input chain. plot_title put in legend
            save_title used when saved to file"""
-        self.chain = chain
-        self.plot_title = plot_title
-        self.save_title = save_title
-        self.scale = 1
-        self.data_pot = 1
-        self.is_FHC = True
+        self.CPPClass = ROOT.PlottingSample(chain, plot_title, save_title)
 
     def __str__(self):
-        return self.plot_title
+        return self.CPPClass.plotTitle
 
     def getTChain(self):
         """returns the TChain"""
-        return self.chain
+        return self.CPPClass.GetTChain()
 
-    def make_H1D(self, hist_save_title, var, n_bins, low, high, cuts=''):
-        """create TH1 and return it"""
-        if len(var) < 1:
-            return None
-        hist_name = 'h1d%s_%s' % (hist_save_title, self.save_title)
-        hist = TH1D(hist_name, '', n_bins, low, high)
-        self.chain.Draw('%s>>%s' % (var, hist_name), cuts, 'goff')
-        if self.scale != 1:
-            hist.Scale(self.scale)
-        return hist
+    # def make_H1D(self, hist_save_title, var, n_bins, low, high, cuts=''):
+    #     """create TH1 and return it"""
+    #     if len(var) < 1:
+    #         return None
+    #     hist_name = 'h1d%s_%s' % (hist_save_title, self.save_title)
+    #     hist = TH1D(hist_name, '', n_bins, low, high)
+    #     self.chain.Draw('%s>>%s' % (var, hist_name), cuts, 'goff')
+    #     if self.CPPCLASS.scale != 1:
+    #         hist.Scale(self.CPPCLASS.scale)
+    #     return hist
 
-    def make_H2D(self, hist_save_title, varX, n_binsX, lowX, highX,
-                 varY, n_binsY, lowY, highY, cuts=''):
-        """create TH2 and return it"""
-        if len(varX) < 1 or len(varY) < 1:
-            return None
-        hist_name = 'h2d%s_%s' % (hist_save_title, self.save_title)
-        hist = TH2D(hist_name, '', n_binsX, lowX, highX,
-                    n_binsY, lowY, highY)
-        self.chain.Draw('%s:%s>>%s' % (varY, varX, hist_name), cuts, 'goff')
-        if self.scale != 1:
-            hist.Scale(self.scale)
-        return hist
+    # def make_H2D(self, hist_save_title, varX, n_binsX, lowX, highX,
+    #              varY, n_binsY, lowY, highY, cuts=''):
+    #     """create TH2 and return it"""
+    #     if len(varX) < 1 or len(varY) < 1:
+    #         return None
+    #     hist_name = 'h2d%s_%s' % (hist_save_title, self.save_title)
+    #     hist = TH2D(hist_name, '', n_binsX, lowX, highX,
+    #                 n_binsY, lowY, highY)
+    #     self.chain.Draw('%s:%s>>%s' % (varY, varX, hist_name), cuts, 'goff')
+    #     if self.CPPCLASS.scale != 1:
+    #         hist.Scale(self.CPPCLASS.scale)
+    #     return hist
 
 
 class selection_info(object):
     """store the name, cuts, and legend labels for a selection"""
 
     def __init__(self, name, cuts, legend_label):
-        self.name = name
-        self.cuts = cuts
-        self.legend_label = legend_label
+        self.CPPClass = ROOT.PottingSelection_Info(name, cuts, legend_label)
 
     def __str__(self):
-        return self.cuts
+        return self.CPPClass.cuts
 
 
 def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title):
@@ -361,8 +353,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     # Data hist fill
     anaBins.Sumw2(True)
     full_selection = true_selections[0]
-    tmp_save_name = '%s_%s' % (save_title, full_selection.name)
-    nEntries = data_sample.getTChain().Draw(plot_var, full_selection.cuts, 'goff')
+    tmp_save_name = '%s_%s' % (save_title, full_selection.CPPClass.name)
+    nEntries = data_sample.getTChain().Draw(plot_var, full_selection.CPPClass.cuts, 'goff')
     v1 = data_sample.getTChain().GetV1()
     for entry_in_draw in range(nEntries):
         anaBins.Fill(v1[entry_in_draw])
@@ -402,7 +394,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
                 anaBins.DivideByBinWidth()
             mc_hist = anaBins.GetTH1DClone('mc_h1d_%s_%s' % (tmp_save_name,
                                                              mc_sample.save_title))
-            mc_hist.Scale(mc_sample.scale)
+            mc_hist.Scale(mc_sample.CPPCLASS.scale)
 
         else:
             sand_nEntries = sand_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
@@ -413,7 +405,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
                 anaBins.DivideByBinWidth()
             mc_hist = anaBins.GetTH1DClone('sand_h1d_%s_%s' % (tmp_save_name,
                                                                sand_sample.save_title))
-            mc_hist.Scale(sand_sample.scale)
+            mc_hist.Scale(sand_sample.CPPCLASS.scale)
 
         INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
                               STACK_COLORS[index])
@@ -589,19 +581,18 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
     plot_var = hstack.plot_var
 
     hists = list()
-    # full_selection = true_selections[0]
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
-        tmp_save_name = '%s_%s' % (save_title, a_selection.name)
-        nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+        tmp_save_name = '%s_%s' % (save_title, a_selection.CPPClass.name)
+        nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.CPPClass.cuts, 'goff')
         v1 = mc_sample.getTChain().GetV1()
         for entry_in_draw in range(nEntries):
             anaBins.Fill(v1[entry_in_draw])
-        a_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name, mc_sample.save_title))
+        a_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name, mc_sample.CPPClass.saveTitle))
         INTERFACE.PrettyUpTH1(a_hist, hstack.x_title, hstack.y_title,
                               BLACK, STACK_COLORS[index])
         legend.AddEntry(a_hist, a_selection.legend_label, 'f')
-        a_hist.Scale(mc_sample.scale)
+        a_hist.Scale(mc_sample.CPPCLASS.scale)
         hists.append(a_hist)
         anaBins.Reset()
 
@@ -684,66 +675,66 @@ def GetMonteCarloSamples():
     SAND = join(file_path, 'mcp6_Spin_B', 'sand')
     T2K = ROOT.TotalPOT()
 
-    chn_NEUTRun2Air = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN2A.iter_name(NEUTP6B))
-    chn_NEUTRun2Wtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN2W.iter_name(NEUTP6B))
-    chn_NEUTRun3bAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN3B.iter_name(NEUTP6B))
-    chn_NEUTRun3cAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN3C.iter_name(NEUTP6B))
-    chn_NEUTRun4Air = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN4A.iter_name(NEUTP6B))
-    chn_NEUTRun4Wtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN4W.iter_name(NEUTP6B))
-    chn_NEUTRun5cWtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN5C.iter_name(NEUTP6B))
-    chn_NEUTRun6bAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN6B.iter_name(NEUTP6B))
-    chn_NEUTRun6cAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN6C.iter_name(NEUTP6B))
-    chn_NEUTRun6dAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN6D.iter_name(NEUTP6B))
-    chn_NEUTRun6eAir = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN6E.iter_name(NEUTP6B))
-    chn_NEUTRun7bWtr = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.RUN7B.iter_name(NEUTP6L))
+    chn_NEUTRun2Air = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN2A.iter_name(NEUTP6B))
+    chn_NEUTRun2Wtr = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN2W.iter_name(NEUTP6B))
+    chn_NEUTRun3bAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN3B.iter_name(NEUTP6B))
+    chn_NEUTRun3cAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN3C.iter_name(NEUTP6B))
+    chn_NEUTRun4Air = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN4A.iter_name(NEUTP6B))
+    chn_NEUTRun4Wtr = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN4W.iter_name(NEUTP6B))
+    chn_NEUTRun5cWtr = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN5C.iter_name(NEUTP6B))
+    chn_NEUTRun6bAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN6B.iter_name(NEUTP6B))
+    chn_NEUTRun6cAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN6C.iter_name(NEUTP6B))
+    chn_NEUTRun6dAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN6D.iter_name(NEUTP6B))
+    chn_NEUTRun6eAir = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN6E.iter_name(NEUTP6B))
+    chn_NEUTRun7bWtr = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.RUN7B.iter_name(NEUTP6L))
 
-    chn_SANDRun3AirFHC = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.SANDFHC.iter_name(SAND))
-    chn_SANDRun3AirRHC = ROOTChain.get(RunSyst_New_NEUT_TTREE_name, RN.SANDRHC.iter_name(SAND))
+    chn_SANDRun3AirFHC = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.SANDFHC.iter_name(SAND))
+    chn_SANDRun3AirRHC = ROOTChain.get_all_from_to(RunSyst_New_NEUT_TTREE_name, ROOT.T2KDataMC.SANDRHC.iter_name(SAND))
 
     # FHC, P0D water-in
     chn_FHC_Wtr = chn_NEUTRun4Wtr
     FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' Water-In', 'fhc_water')
     FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' Water-In, Sand', 'fhc_water_sand')
-    FHC_Wtr_Snd.is_FHC = True
-    FHC_Wtr.is_FHC = True
+    FHC_Wtr_Snd.CPPCLASS.is_FHC = True
+    FHC_Wtr.CPPCLASS.is_FHC = True
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_NEUTRun2Wtr)
-        FHC_Wtr.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCWaterMC()
-        FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
-        FHC_Wtr_Snd.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCAirSandMC()
+        FHC_Wtr.CPPCLASS.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCWaterMC()
+        FHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTFHCWaterData()
+        FHC_Wtr_Snd.CPPCLASS.scale = T2K.GetPOTFHCWaterData()/T2K.GetPOTFHCAirSandMC()
     else:
-        FHC_Wtr.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTRun4WaterMC()
-        FHC_Wtr.data_pot = T2K.GetPOTRun4WaterData()
-        FHC_Wtr_Snd.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTFHCAirSandMC()
+        FHC_Wtr.CPPCLASS.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTRun4WaterMC()
+        FHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRun4WaterData()
+        FHC_Wtr_Snd.CPPCLASS.scale = T2K.GetPOTRun4WaterData()/T2K.GetPOTFHCAirSandMC()
 
     # FHC, P0D water-out
     if not TN208_ANALYSIS:
         chn_FHC_Air = chn_NEUTRun4Air
         FHC_Air = sample(chn_FHC_Air, SELECTIONDICT[SELECTION] + ' Water-Out', 'fhc_air')
         FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONDICT[SELECTION] + ' Water-Out, Sand', 'fhc_air_sand')
-        FHC_Air.is_FHC = True
-        FHC_Air_Snd.is_FHC = True
+        FHC_Air.CPPCLASS.is_FHC = True
+        FHC_Air_Snd.CPPCLASS.is_FHC = True
         chn_FHC_Air.Add(chn_NEUTRun3bAir)
         chn_FHC_Air.Add(chn_NEUTRun3cAir)
         chn_FHC_Air.Add(chn_NEUTRun2Air)
-        FHC_Air.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirMC()
-        FHC_Air.data_pot = T2K.GetPOTFHCAirData()
-        FHC_Air_Snd.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirSandMC()
+        FHC_Air.CPPCLASS.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirMC()
+        FHC_Air.CPPCLASS.data_pot = T2K.GetPOTFHCAirData()
+        FHC_Air_Snd.CPPCLASS.scale = T2K.GetPOTFHCAirData()/T2K.GetPOTFHCAirSandMC()
 
     # RHC, P0D water-in
     chn_RHC_Wtr = chn_NEUTRun5cWtr
     RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' Water-In, Sand', 'rhc_water_sand')
     RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' Water-In', 'rhc_water')
-    RHC_Wtr.is_FHC = False
+    RHC_Wtr.CPPCLASS.is_FHC = False
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_NEUTRun7bWtr)
-        RHC_Wtr.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
-        RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
-        RHC_Wtr_Snd.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCAirSandMC()
+        RHC_Wtr.CPPCLASS.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCWaterMC()
+        RHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRHCWaterData()
+        RHC_Wtr_Snd.CPPCLASS.scale = T2K.GetPOTRHCWaterData()/T2K.GetPOTRHCAirSandMC()
     else:
-        RHC_Wtr.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRun5cWaterMC()
-        RHC_Wtr.data_pot = T2K.GetPOTRun5cWaterData()
-        RHC_Wtr_Snd.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRHCAirSandMC()
+        RHC_Wtr.CPPCLASS.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRun5cWaterMC()
+        RHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRun5cWaterData()
+        RHC_Wtr_Snd.CPPCLASS.scale = T2K.GetPOTRun5cWaterData()/T2K.GetPOTRHCAirSandMC()
 
     # RHC, P0D water-out
     if not TN208_ANALYSIS:
@@ -752,12 +743,12 @@ def GetMonteCarloSamples():
         chn_RHC_Air.Add(chn_NEUTRun6dAir)
         chn_RHC_Air.Add(chn_NEUTRun6eAir)
         RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' Water-Out', 'rhc_air')
-        RHC_Air.is_FHC = False
-        RHC_Air.data_pot = T2K.GetPOTRHCAirData()
-        RHC_Air.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
+        RHC_Air.CPPCLASS.is_FHC = False
+        RHC_Air.CPPCLASS.data_pot = T2K.GetPOTRHCAirData()
+        RHC_Air.CPPCLASS.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirMC()
         RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONDICT[SELECTION] + ' Water-Out, Sand', 'rhc_air_sand')
-        RHC_Air_Snd.is_FHC = False
-        RHC_Air_Snd.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirSandMC()
+        RHC_Air_Snd.CPPCLASS.is_FHC = False
+        RHC_Air_Snd.CPPCLASS.scale = T2K.GetPOTRHCAirData()/T2K.GetPOTRHCAirSandMC()
 
     all_samples = {
             'FHC_Wtr': {'Magnet': FHC_Wtr, 'Sand': FHC_Wtr_Snd},
@@ -787,26 +778,26 @@ def GetDATAsamples():
     DATAP6M = join(file_path, 'rdp6_Spin_M')
     DATAP6N = join(file_path, 'rdp6_Spin_N')
     T2K = ROOT.TotalPOT()
-    chn_DATARun2Air = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN2ADATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun2Wtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN2WDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun3bAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN3BDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun3cAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN3CDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun4Air = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN4ADATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun4Wtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN4WDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun5cWtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN5CDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun6bAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN6BDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun6cAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN6CDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun6dAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN6DDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun6eAir = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN6EDATA.iter_name(DATAP6M), 1, 10)
-    chn_DATARun7bWtr = ROOTChain.get(RunSyst_New_DATA_TTREE_name, RN.RUN7BDATA.iter_name(DATAP6N), 1, 10)
+    chn_DATARun2Air = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN2ADATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun2Wtr = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN2WDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun3bAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN3BDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun3cAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN3CDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun4Air = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN4ADATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun4Wtr = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN4WDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun5cWtr = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN5CDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun6bAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN6BDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun6cAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN6CDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun6dAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN6DDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun6eAir = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN6EDATA.iter_name(DATAP6M), 1, 10)
+    chn_DATARun7bWtr = ROOTChain.get_all_from_to(RunSyst_New_DATA_TTREE_name, ROOT.T2KDataMC.RUN7BDATA.iter_name(DATAP6N), 1, 10)
 
     chn_FHC_Wtr = chn_DATARun4Wtr
     FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONDICT[SELECTION] + ' FHC Water', 'fhc_water')
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_DATARun2Wtr)
-        FHC_Wtr.data_pot = T2K.GetPOTFHCWaterData()
+        FHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTFHCWaterData()
     else:
-        FHC_Wtr.data_pot = T2K.GetPOTRun4WaterData()
+        FHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRun4WaterData()
 
     if not TN208_ANALYSIS:
         chn_FHC_Air = chn_DATARun4Air
@@ -814,15 +805,15 @@ def GetDATAsamples():
         chn_FHC_Air.Add(chn_DATARun3bAir)
         chn_FHC_Air.Add(chn_DATARun3cAir)
         chn_FHC_Air.Add(chn_DATARun2Air)
-        FHC_Air.data_pot = T2K.GetPOTFHCAirData()
+        FHC_Air.CPPCLASS.data_pot = T2K.GetPOTFHCAirData()
 
     chn_RHC_Wtr = chn_DATARun5cWtr
     RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONDICT[SELECTION] + ' RHC Water', 'rhc_water')
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_DATARun7bWtr)
-        RHC_Wtr.data_pot = T2K.GetPOTRHCWaterData()
+        RHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRHCWaterData()
     else:
-        RHC_Wtr.data_pot = T2K.GetPOTRun5cWaterData()
+        RHC_Wtr.CPPCLASS.data_pot = T2K.GetPOTRun5cWaterData()
 
     if not TN208_ANALYSIS:
         chn_RHC_Air = chn_DATARun6bAir
@@ -830,7 +821,7 @@ def GetDATAsamples():
         chn_RHC_Air.Add(chn_DATARun6dAir)
         chn_RHC_Air.Add(chn_DATARun6eAir)
         RHC_Air = sample(chn_RHC_Air, SELECTIONDICT[SELECTION] + ' RHC Air', 'rhc_air')
-        RHC_Air.data_pot = T2K.GetPOTRHCAirData()
+        RHC_Air.CPPCLASS.data_pot = T2K.GetPOTRHCAirData()
 
     all_samples = {
             'FHC_Wtr': FHC_Wtr,

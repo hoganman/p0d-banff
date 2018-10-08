@@ -11,6 +11,7 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "THStack.h"
+#include "RunName.hxx"
 #include "TROOT.h"
 
 ///The primary way that the user interacts within ROOT and pyROOT
@@ -25,7 +26,7 @@ public:
 
     ///Read in a TFile and check the status of the file contents
     ///If the file is good, return kTRUE;
-    Bool_t CheckFile(TString fileName) const;
+    static Bool_t CheckFile(TString fileName);
 
     ///Have ROOT sleep for time in seconds
     ///The time is between zero (0) and "scale" seconds.
@@ -196,7 +197,6 @@ protected:
 
     TStyle* P0DBANFFStyle;
     std::map<Int_t, Int_t> pdgColorCodes;
-
 public:
 
     ClassDef(P0DBANFFInterface,1)

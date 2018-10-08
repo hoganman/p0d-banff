@@ -96,8 +96,8 @@ inline const Bool_t SortParametersByEdges(OneDimParameters p1,
         OneDimParameters p2);
 
 //return the one-sided (RHS) probability
-inline const Double_t ProbNormal_c(const Double_t& x, const Double_t& sigma=1,
-        const Double_t& x0=0);
+inline const Double_t ProbNormal_c(const Double_t& x,
+        const Double_t& sigma=1, const Double_t& x0=0);
 
 inline const Double_t alphaParameter(const Double_t& highRange,
         const Double_t& lowRange, const Double_t& fitSigma);
@@ -112,6 +112,8 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         Double_t recoLowValue, Double_t recoHighValue, TCut cuts,
         Int_t limitEntries);
 
+void GetAllMC(TChain* const chain);
+
 
 inline const Double_t CalculateSystematicError(const Double_t& alpha);
 
@@ -120,25 +122,26 @@ void CalculateErrors(const TH1D* hist, const Edge& lowEdge, const Edge& upEdge,
         Double_t& alpha);
 
 
-//void oneDimResidualsWithSpecialErrorTreatment(const string recoPlotVar, const string histRefNameAndBins, const string histRefName, const TCut cuts, const string truePlotVar, const string xAxisTitle = "X var [Units]", const Bool_t truePlotVarIsAResidual = false, const string outputName = "", const Int_t limitEntries = -1){
+void oneDimResidualsWithSpecialErrorTreatment(const Int_t sampleID,
+        const string recoPlotVar, const string histRefNameAndBins,
+        const string histRefName, const TCut cuts, const string truePlotVar,
+        const string xAxisTitle = "X var [Units]",
+        const Bool_t truePlotVarIsAResidual = false,
+        const string outputName = "", const Double_t lowestBinEdge = -1,
+        const Double_t highestBinEdge = -1, const Long64_t limitEntries = -1)
+{
 
-void oneDimResidualsWithSpecialErrorTreatment(const Int_t files, const string recoPlotVar, const string histRefNameAndBins, const string histRefName, const TCut cuts, const string truePlotVar, const string xAxisTitle = "X var [Units]", const Bool_t truePlotVarIsAResidual = false, const string outputName = "", const Double_t lowestBinEdge = -1, const Double_t highestBinEdge = -1, const Long64_t limitEntries = -1){
-
+  TChain* const FT = new TChain("all");
+  GetAllMC(FT);
   gROOT->SetBatch(1);
-  const Long64_t nEntries = limitEntries <= 0 ? FT->GetEntries() : nEntries = limitEntries;
+  const Long64_t nEntries = limitEntries <= 0 ? FT->GetEntries() : limitEntries;
 
-  if(limitEntries == -1){
-    nEntries = FT->GetEntries();
-  }
-  else{
-    nEntries = limitEntries;
-  }
   TCut allCuts;
   if(cuts.GetTitle()){
     allCuts =  allCuts&&cuts;
   }
   const TCut allCutsCopy = allCuts;
-  POTweight = 1;
+  const Double_t POTweight = 1;
 
   FT->SetEventList(0);
   FT->Draw(">>eList",allCutsCopy);
