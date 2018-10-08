@@ -40,22 +40,14 @@ public:
     RunName RUN6EDATA;
     RunName RUN7BDATA;
 
-    inline TChain* GetAllDataChainsFrom(const TString &DataTreeName, const TString &path) const
-    {
-        return GetAllChainsFrom(DataTreeName, path, 1, 10);
-    }
-
-    inline TChain* GetAllMCChainsFrom(const TString &MCTreeName, const TString &path) const
-    {
-        return GetAllChainsFrom(MCTreeName, path, 1, 100);
-    }
+    TString NEUT6B;
+    TString NEUT6L;
+    TString DATA6M;
+    TString DATA6N;
 
 protected:
-    void Init();
 
-    TChain* GetAllChainsFrom(const TString &ChainName,
-            const TString &FileNamePath, Int_t firstNum,
-            Int_t lastNum) const;
+    void Init();
 
 ClassDef(T2KDataMC, 1)
 
