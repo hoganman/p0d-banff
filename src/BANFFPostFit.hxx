@@ -7,6 +7,10 @@
 #include "TVectorT.h"
 #include "TMatrixT.h"
 #include "TAxis.h"
+#include "THn.h"
+#include "TCanvas.h"
+#include <map>
+#include "P0DBANFFInterface.hxx"
 
 class BANFFPostFit : public TObject
 {
@@ -41,6 +45,10 @@ public:
     TAxis* Get_SK_ANuMode_NuE_bins()    {return sk_anumode_nue_bins;}
     TAxis* Get_SK_ANuMode_NuEbar_bins() {return sk_anumode_nueb_bins;}
 
+    THnT<double>* GetTHn(const TString &name) const;
+
+    TCanvas* GetDataPrefitMCWithProjection(const TString &name, const Int_t &projection) const;
+
     void Dump(TString prefit_cov_csv="", TString postfit_cov_csv="");
 
 protected:
@@ -70,6 +78,8 @@ protected:
     UInt_t nSKANuModeNueBarBins;
 
     void Init();
+
+    std::map< TString, THnT<double>* > AllHistograms;
 
 public:
     ClassDef(BANFFPostFit,1)

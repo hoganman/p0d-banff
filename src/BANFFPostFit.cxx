@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include <iostream>
 #include <map>
+#include <algorithm>
 ClassImp(BANFFPostFit)
 
 //**************************************************
@@ -31,23 +32,10 @@ BANFFPostFit::~BANFFPostFit()
 void BANFFPostFit::SetFile(TString inputFileName)
 //**************************************************
 {
-    Init();
     inputFile = TFile::Open(inputFileName);
     if(!inputFile)
         return;
-    param_list = static_cast<TObjArray*>(inputFile->Get("param_list"));
-    prefit_params = static_cast<TVectorT<Double_t>*>(inputFile->Get("prefit_params"));
-    prefit_cov = static_cast<TMatrixT<Double_t>*>(inputFile->Get("prefit_cov"));
-    postfit_params = static_cast<TVectorT<Double_t>*>(inputFile->Get("postfit_params"));
-    postfit_cov = static_cast<TMatrixT<Double_t>*>(inputFile->Get("postfit_cov"));
-    sk_numode_numu_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_numu_bins"));
-    sk_numode_numub_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_numub_bins"));
-    sk_numode_nue_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_nue_bins"));
-    sk_numode_nueb_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_nueb_bins"));
-    sk_anumode_numu_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_numu_bins"));
-    sk_anumode_numub_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_numub_bins"));
-    sk_anumode_nue_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_nue_bins"));
-    sk_anumode_nueb_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_nueb_bins"));
+    Init();
 }
 
 
@@ -55,8 +43,6 @@ void BANFFPostFit::SetFile(TString inputFileName)
 void BANFFPostFit::Init()
 //**************************************************
 {
-
-    inputFile = NULL;
     param_list = NULL;
     prefit_params = NULL;
     prefit_cov = NULL;
@@ -71,14 +57,80 @@ void BANFFPostFit::Init()
     sk_anumode_nue_bins = NULL;
     sk_anumode_nueb_bins = NULL;
 
-    nSKNuModeNuMuBins =     sk_numode_numu_bins->GetNbins();
-    nSKNuModeNuMuBarBins =  sk_numode_numub_bins->GetNbins();
-    SKNuModeNueBins =       sk_numode_nue_bins->GetNbins();
-    nSKNuModeNueBarBins =   sk_numode_nueb_bins->GetNbins();
-    nSKANuModeNuMuBins =    sk_anumode_numu_bins->GetNbins();
-    nSKANuModeNuMuBarBins = sk_anumode_numub_bins->GetNbins();
-    nSKANuModeNueBins =     sk_anumode_nue_bins->GetNbins();
-    nSKANuModeNueBarBins =  sk_anumode_nueb_bins->GetNbins();
+    nSKNuModeNuMuBins = 0;
+    nSKNuModeNuMuBarBins = 0;
+    SKNuModeNueBins = 0;
+    nSKNuModeNueBarBins = 0;
+    nSKANuModeNuMuBins = 0;
+    nSKANuModeNuMuBarBins = 0;
+    nSKANuModeNueBins = 0;
+    nSKANuModeNueBarBins = 0;
+    AllHistograms.clear();
+
+    if(!inputFile)
+        return;
+
+    if(inputFile->Get("param_list"))
+        param_list = static_cast<TObjArray*>(inputFile->Get("param_list"));
+    if(inputFile->Get("prefit_params"))
+        prefit_params = static_cast<TVectorT<Double_t>*>(inputFile->Get("prefit_params"));
+    if(inputFile->Get("prefit_cov"))
+        prefit_cov = static_cast<TMatrixT<Double_t>*>(inputFile->Get("prefit_cov"));
+    if(inputFile->Get("postfit_params"))
+        postfit_params = static_cast<TVectorT<Double_t>*>(inputFile->Get("postfit_params"));
+    if(inputFile->Get("postfit_cov"))
+        postfit_cov = static_cast<TMatrixT<Double_t>*>(inputFile->Get("postfit_cov"));
+    if(inputFile->Get("sk_numode_numu_bins"))
+    {
+        sk_numode_numu_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_numu_bins"));
+        nSKNuModeNuMuBins =     sk_numode_numu_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_numode_numub_bins"))
+    {
+        sk_numode_numub_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_numub_bins"));
+        nSKNuModeNuMuBarBins =  sk_numode_numub_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_numode_nue_bins"))
+    {
+        sk_numode_nue_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_nue_bins"));
+        SKNuModeNueBins =       sk_numode_nue_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_numode_nueb_bins"))
+    {
+        sk_numode_nueb_bins = static_cast<TAxis*>(inputFile->Get("sk_numode_nueb_bins"));
+        nSKNuModeNueBarBins =   sk_numode_nueb_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_anumode_numu_bins"))
+    {
+        sk_anumode_numu_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_numu_bins"));
+        nSKANuModeNuMuBins =    sk_anumode_numu_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_anumode_numub_bins"))
+    {
+        sk_anumode_numub_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_numub_bins"));
+        nSKANuModeNuMuBarBins = sk_anumode_numub_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_anumode_nue_bins"))
+    {
+        sk_anumode_nue_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_nue_bins"));
+        nSKANuModeNueBins =     sk_anumode_nue_bins->GetNbins();
+    }
+    if(inputFile->Get("sk_anumode_nueb_bins"))
+    {
+        sk_anumode_nueb_bins = static_cast<TAxis*>(inputFile->Get("sk_anumode_nueb_bins"));
+        nSKANuModeNueBarBins =  sk_anumode_nueb_bins->GetNbins();
+    }
+
+    const TList* keys = inputFile->GetListOfKeys();
+    for(Int_t keyIndex = 0; keyIndex < keys->GetSize(); ++keyIndex)
+    {
+        const TString name = keys->At(keyIndex)->GetName();
+        if(name.Contains("rxnPredMC") || name.Contains("_prefit") || name.Contains("_data"))
+        {
+            TObject* searchObject = P0DBANFFInterface::FindObjectInFileByName(inputFile, name);
+            AllHistograms[name] = static_cast< THnT<double>* >(searchObject);
+        }
+    }
 
 }
 
@@ -174,4 +226,56 @@ void BANFFPostFit::Dump(TString prefit_cov_csv, TString postfit_cov_csv)
         printf("%s has been created!\n", postfit_cov_csv.Data());
     }
 
+}
+
+
+//**************************************************
+THnT<double>* BANFFPostFit::GetTHn(const TString &name) const
+//**************************************************
+{
+    std::map< TString, THnT<double>* >::const_iterator it = AllHistograms.find(name);
+    if(it == AllHistograms.end())
+    {
+        std::cout << "Unable to find " << name.Data() << std::endl;
+        return NULL;
+    }
+    return it->second;
+}
+
+
+//**************************************************
+TCanvas* BANFFPostFit::GetDataPrefitMCWithProjection(const TString &name, const Int_t &projection) const
+//**************************************************
+{
+    const TString prefitName = name + "_prefit";
+    THnT<double>* prefit = GetTHn(prefitName);
+    if(!prefit)
+    {
+        std::cout << "Unable to get prefit for " << name.Data() << std::endl;
+        return NULL;
+    }
+    const TString dataName = name + "_data";
+    THnT<double>* data = GetTHn(dataName);
+    if(!data)
+    {
+        std::cout << "Unable to get prefit for " << name.Data() << std::endl;
+        return NULL;
+    }
+    TH1D* prefit_1D = static_cast<TH1D*>(prefit->Projection(projection)->Clone(TString::Format("hPrefit_%s", prefitName.Data())));
+    prefit_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
+    prefit_1D->SetLineWidth(3);
+    TH1D* data_1D = static_cast<TH1D*>(data->Projection(projection, "E")->Clone(TString::Format("hData_%s", dataName.Data())));
+    data_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
+    data_1D->SetLineWidth(3);
+    data_1D->SetMarkerStyle(P0DBANFFInterface::kDataMarkerStyle);
+    prefit_1D->SetMinimum(0);
+    data_1D->SetMinimum(0);
+    const Double_t max = 1.1 * std::max(prefit_1D->GetMaximum(), data_1D->GetMaximum());
+    prefit_1D->SetMaximum(max);
+    data_1D->SetMaximum(max);
+    TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
+    canvas->cd();
+    prefit_1D->Draw();
+    data_1D->Draw("same");
+    return canvas;
 }

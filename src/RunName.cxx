@@ -13,7 +13,7 @@ TChain* RunName::GetAllChainsFrom(const TString &ChainName,
     TChain* chain = new TChain(ChainName.Data());
     const TString formatBuffer = iter_name(FileNamePath);
     TString testFileName = TString::Format(formatBuffer, lastNum);
-    while(P0DBANFFInterface::CheckFile(testFileName) != P0DBANFFInterface::GoodFile)
+    while(!P0DBANFFInterface::IsGoodFile(testFileName))
     {
         lastNum -= 1;
         testFileName = TString::Format(formatBuffer, lastNum);
@@ -25,7 +25,7 @@ TChain* RunName::GetAllChainsFrom(const TString &ChainName,
     }
     for(Int_t iterIndex = firstNum; iterIndex <= lastNum; ++iterIndex)
     {
-        testFileName = TString::Format(FileNamePath, iterIndex);
+        testFileName = TString::Format(formatBuffer, iterIndex);
         chain->Add(testFileName.Data());
     }
     return chain;

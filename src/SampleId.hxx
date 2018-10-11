@@ -9,7 +9,6 @@ class SampleId : public TObject{
 public:
     SampleId(){}
     virtual ~SampleId(){}
-
     enum SampleEnum {
         kUnassigned,
         // FGD1
@@ -133,6 +132,7 @@ public:
         kP0DAirNuMuBarBkgCC,
         kP0DAirNuMuBarInAntiNuModeCC,
         kP0DAirNuMuBkgInAntiNuModeCC,
+
         kNSamples
     };
 
@@ -154,15 +154,21 @@ public:
     Int_t GetP0DAirNuMuBarInAntiNuModeCC() const {return GetP0DAirNuMuBarInAntiNuModeCCEnum();}
     Int_t GetP0DAirNuMuBkgInAntiNuModeCC() const {return GetP0DAirNuMuBkgInAntiNuModeCCEnum();}
 
-    Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const;
-    Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DNuMuSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DNuMuBkgSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DNuMuBkgInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const;
+    Bool_t IsP0DNuMuBarInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DWaterSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DAirSample(const SampleId::SampleEnum &testEnum) const;
+    inline Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum)||IsP0DNuMuBkgSample(testEnum);}
+    inline Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuBkgInAntiNuModeSample(testEnum)||IsP0DNuMuBarInAntiNuModeSample(testEnum);}
 
-    Bool_t IsP0DFHCSample(const Int_t &testInt) const {return IsP0DFHCSample(static_cast<SampleId::SampleEnum>(testInt));};
-    Bool_t IsP0DRHCSample(const Int_t &testInt) const {return IsP0DRHCSample(static_cast<SampleId::SampleEnum>(testInt));};
-    Bool_t IsP0DWaterSample(const Int_t &testInt) const {return IsP0DWaterSample(static_cast<SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DAirSample(const Int_t &testInt) const {return IsP0DAirSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DNuMuSample(const Int_t &testInt) const {return IsP0DNuMuSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DNuMuBkgSample(const Int_t &testInt) const {return IsP0DNuMuBkgSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DNuMuBkgInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBkgInAntiNuModeSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DNuMuBarInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBarInAntiNuModeSample(static_cast<SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DWaterSample(const Int_t &testInt) const {return IsP0DWaterSample(static_cast<const SampleId::SampleEnum>(testInt));}
+    Bool_t IsP0DAirSample(const Int_t &testInt) const {return IsP0DAirSample(static_cast<const SampleId::SampleEnum>(testInt));}
 
     ClassDef(SampleId, 1)
 

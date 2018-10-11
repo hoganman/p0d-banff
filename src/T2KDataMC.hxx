@@ -44,6 +44,7 @@ public:
     TString NEUT6L;
     TString DATA6M;
     TString DATA6N;
+    TString SAND6B;
 
 protected:
 

@@ -279,7 +279,7 @@ void P0DBANFFInterface::RandomSleep(Int_t nSeconds, Int_t seed) const
 Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 //**************************************************
 {
-    Bool_t status = kFALSE;
+    Bool_t status = BadFile;
     TString copy(fileName);
     if(fileName.Contains('/'))
     {
@@ -301,21 +301,21 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName)
     {
         TFile* const f = TFile::Open(copy);
         if(!f)
-            status = kFALSE;
+            status = BadFile;
         else if(!f->IsOpen())
-            status = false;
+            status = BadFile;
         else if(f->IsRaw())
-            status  = false;
+            status  = BadFile;
         else if(!f->IsBinary())
-            status =  false;
+            status =  BadFile;
         else if(!f->GetListOfKeys()->GetSize())
-            status =  false;
+            status =  BadFile;
         else if(f->IsZombie())
-            status =  false;
+            status =  BadFile;
         else if(f->TestBit(TFile::kRecovered))
-            status =  false;
+            status =  BadFile;
         else
-            status = kTRUE;
+            status = GoodFile;
         f->Close();
     }
     return status;
@@ -452,7 +452,7 @@ std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
 
 //**************************************************
 TObject* P0DBANFFInterface::FindObjectInFileByName(TFile* inFile,
-    const TString& name_search) const
+    const TString& name_search)
 //**************************************************
 {
     TObject* result = inFile->Get(name_search.Data());

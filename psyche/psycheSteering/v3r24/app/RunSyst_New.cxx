@@ -188,8 +188,8 @@ int main(int argc, char **argv){
         // Print the steps for the different selections
         if (debug>0)
         {
-            _man.sel().GetSelection("kP0DNuMuCC")->DumpSteps();
-            _man.sel().GetSelection("kP0DNuMuBarCC")->DumpSteps();
+            _man.sel().GetSelection("kNuMuCCP0DWater")->DumpSteps();
+            _man.sel().GetSelection("kNuMuCCP0DAir")->DumpSteps();
             _man.syst().DumpVariationSystematics();
             _man.syst().DumpWeightSystematics();
         }
@@ -541,6 +541,7 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
                 passednom = _man.ProcessEvent(*event);
             }
 
+if(debug) std::cout << "passednom = " << passednom << std::endl;
             if(passednom)
             {
 if(debug) std::cout << "passednom = " << passednom << std::endl;
@@ -595,8 +596,7 @@ if(debug) DEBUG(trueParticle->PDG)
                         tQ2 = summary->TrueVertex[summary->EventSample]->Q2;
 
                         TVector3 nu3Mom(trVtx->NuDir[0], trVtx->NuDir[1], trVtx->NuDir[2]);
-                        nu3Mom *= TrueEnuNom;
-
+                        nu3Mom.SetMag(TrueEnuNom);
 
                         AnaTrueParticleB* trLepton = GetTrueVtxLepton(trVtx);
                         if(trLepton)

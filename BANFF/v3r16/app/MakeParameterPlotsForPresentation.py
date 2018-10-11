@@ -66,7 +66,7 @@ postfitHist.SetBinError(119,postfitHist.GetBinError(119)*0.83333333333)
 
 histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux","SK ANuMode Flux","FSI","XSec"]
 paramRange = [[0,24],[25,49],[50,74],[75,99],[100,105],[106,130]]
-yRange = [[0.80,1.2],[0.80,1.2],[0.80,1.2],[0.80,1.2],[-1.0,1.2],[-0.5,2.05]]
+yRange = [[0.40,1.6],[0.40,1.6],[0.40,1.6],[0.40,1.6],[-1.0,1.2],[-0.5,2.05]]
 binLabels = []
 for i in xrange(0, postfit_params.GetNrows()):
     binLabels.append("")

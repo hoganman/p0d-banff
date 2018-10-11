@@ -9,9 +9,12 @@ void T2KDataMC::Init()
 {
     NEUT6B = "mcp6_Spin_B/neut";
     NEUT6L = "mcp6_Spin_L/neut";
+    SAND6B = "mcp6_Spin_B/sand";
     DATA6M = "rdp6_Spin_M";
     DATA6N = "rdp6_Spin_N";
 
+    SANDFHC = RunName("run3-air_FHC", "Run3_Air_FHC", SAND6B, kTRUE);
+    SANDRHC = RunName("run3-air_RHC", "Run3_Air_RHC", SAND6B, kTRUE);
     RUN2W = RunName("run2-water", "Run2_Water", NEUT6B, kTRUE);
     RUN2A = RunName("run2-air", "Run2_Air", NEUT6B, kTRUE);
     RUN3B = RunName("run3b-air", "Run3b_Air", NEUT6B, kTRUE);
@@ -23,9 +26,7 @@ void T2KDataMC::Init()
     RUN6C = RunName("run6c-air", "Run6c_Air", NEUT6B, kTRUE);
     RUN6D = RunName("run6d-air", "Run6d_Air", NEUT6B, kTRUE);
     RUN6E = RunName("run6e-air", "Run6e_Air", NEUT6B, kTRUE);
-    RUN7B = RunName("run7b-water", "Run7b_Water", NEUT6B, kTRUE);
-    SANDFHC = RunName("run3-air_FHC", "Run3_Air_FHC", NEUT6B, kTRUE);
-    SANDRHC = RunName("run3-air_RHC", "Run3_Air_RHC", NEUT6L, kTRUE);
+    RUN7B = RunName("run7b-water", "Run7b_Water", NEUT6L, kTRUE);
 
     RUN2WDATA = RunName("run2-water", "Run2_Water_data", DATA6M, kFALSE);
     RUN2ADATA = RunName("run2-air", "Run2_Air_data", DATA6M, kFALSE);

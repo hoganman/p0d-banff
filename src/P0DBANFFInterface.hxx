@@ -25,9 +25,12 @@ public:
     void LoadColorBlindPalette(Int_t nColors=5) const;
 
     ///Read in a TFile and check the status of the file contents
-    ///If the file is good, return kTRUE;
+    ///If the file is good, return GoodFile == kTRUE;
     static Bool_t CheckFile(TString fileName);
-
+    static inline Bool_t IsGoodFile(TString fileName)
+    {
+        return CheckFile(fileName) == GoodFile;
+    }
     ///Have ROOT sleep for time in seconds
     ///The time is between zero (0) and "scale" seconds.
     ///For scale == 10, then ROOT will sleep between 0 to 10 seconds
@@ -101,9 +104,10 @@ public:
     Int_t GetExponentBase10(Double_t arg) const;
     Double_t GetMantissaBase10(Double_t arg, Int_t exp=9999) const;
 
+    static TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search);
+
 protected:
 
-    TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search) const;
     void SetPDGColorCodes();
 
 public:
@@ -153,6 +157,8 @@ public:
     static const Int_t kcbMutedWine = 130;
     static const Int_t kcbMutedPurple = 131;
     static const Int_t kcbMutedGrey = 132;
+
+    static const Int_t kDataMarkerStyle = 21;
 
 protected:
 

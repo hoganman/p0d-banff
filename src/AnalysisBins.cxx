@@ -1,10 +1,10 @@
 #define ANALYSISBINS_CXX
 
 #include"AnalysisBins.hxx"
+ClassImp(AnalysisBins)
 #include"TMath.h"
 #include"TF1.h"
 #include<iostream>
-ClassImp(AnalysisBins)
 
 //**************************************************
 void AnalysisBins::Init()
@@ -34,7 +34,7 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
     {
         printf("ERROR: Unable to create AnalysisBins");
         printf("       nEntries = 0!");
-	return;
+        return;
     }
     binningName = name;
     binEdges.resize(nEntries);
@@ -65,7 +65,7 @@ AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t 
     {
         printf("ERROR: Unable to create AnalysisBins");
         printf("       nEntries = 0!");
-	return;
+        return;
     }
     binningName = name;
     binEdges.resize(nEntries);
@@ -89,7 +89,7 @@ AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOver
     {
         printf("ERROR: Unable to create AnalysisBins");
         printf("       NULL TH1D ptr in constructor");
-	return;
+        return;
     }
     hist = new TH1D(*template_hist);
     nBins = hist->GetNbinsX();
@@ -156,7 +156,7 @@ TH1D* AnalysisBins::VaryPoisson()
     // for each bin, throw a random number determined by bin content
     for(Int_t bin = 1; bin <= nBins; ++bin)
     {
-	// this is the mean for a poisson throw
+        // this is the mean for a poisson throw
         const Double_t mean = hist->GetBinContent(bin);
         Char_t buffer[100];
         sprintf(buffer, "TMath::Poisson(x, %f)", mean);

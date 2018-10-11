@@ -55,7 +55,7 @@ public:
     ///Identical to the TH1::DrawCopy() method
     void DrawCopy(TString options="") {if(hist) hist->DrawCopy(options.Data());}
 
-    ///Draws a 3x1 TCanvas with each histogram 
+    ///Draws a 3x1 TCanvas with each histogram
     TCanvas* DrawAll(TString twoDimOptions, TString oneDimOptions);
 
     ///Clone the AnalysisBins histogram
