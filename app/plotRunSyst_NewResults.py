@@ -89,38 +89,50 @@ def main(argv):
     mc_data_sample_dict_MC_key = 'MC'
     mc_data_sample_dict_DATA_key = 'DATA'
 
-    for current_sel in SELECTIONLABELSDICT.keys():
+    for current_sampleID in SELECTIONLABELSDICT.keys():
         global SELECTION, SELECTIONSAVENAME
-        SELECTION = current_sel
-        if SELECTION == SAMPLEIDS.GetP0DWaterNuMuCC() and not RUNP0DWATERNUMUCCSELECTION:
+        SELECTION = current_sampleID
+        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuCC() and \
+                not RUNP0DWATERNUMUCCSELECTION:
             continue
-        if SELECTION == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() and not RUNP0DWATERNUMUBARINANTINUMODECCSELECTION:
+        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() \
+                and not RUNP0DWATERNUMUBARINANTINUMODECCSELECTION:
             continue
-        if SELECTION == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC() and not RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION:
+        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC() \
+                and not RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION:
             continue
-        if SELECTION == SAMPLEIDS.GetP0DAirNuMuCC() and not RUNP0DAIRNUMUCCSELECTION:
+        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuCC() and \
+                not RUNP0DAIRNUMUCCSELECTION:
             continue
-        if SELECTION == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC() and not RUNP0DAIRNUMUBARINANTINUMODECCSELECTION:
+        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC() and \
+                not RUNP0DAIRNUMUBARINANTINUMODECCSELECTION:
             continue
-        if SELECTION == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC() and not RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION:
+        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC() and \
+                not RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION:
             continue
 
-        mc_samples_dict = GetMonteCarloSamples()
-        data_samples_dict = GetDATAsamples()
-        SELECTIONSAVENAME = SELECTIONSAVENAMEDICT[SELECTION]
+        mc_samples_dict = GetMonteCarloSamples(current_sampleID)
+        data_samples_dict = GetDATAsamples(current_sampleID)
+        SELECTIONSAVENAME = SELECTIONSAVENAMEDICT[current_sampleID]
 
         mc_data_sample_dict = dict()
         for sample_name in mc_samples_dict.keys():
-            if TN208_ANALYSIS and ('Air' in sample_name or 'Water-Out' in sample_name):
+            if TN208_ANALYSIS and \
+                    ('Air' in sample_name or 'Water-Out' in sample_name):
                 continue
-            if TN208_ANALYSIS and SELECTION == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() and 'FHC' in sample_name:
+            if TN208_ANALYSIS and current_sampleID \
+                    == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() and \
+                    'FHC' in sample_name:
                 continue
-            if TN208_ANALYSIS and SELECTION == SAMPLEIDS.GetP0DWaterNuMuCC() and 'RHC' in sample_name:
+            if TN208_ANALYSIS and \
+                    current_sampleID == SAMPLEIDS.GetP0DWaterNuMuCC() and \
+                    'RHC' in sample_name:
                 continue
-            if TN208_ANALYSIS and SELECTION == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC():
+            if TN208_ANALYSIS and current_sampleID \
+                    == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC():
                 continue
             # These store the Chains for numu_FHC numu_RHC, numubar_FHC, and numubar_RHC
-            mc_data_sample_dict[sample_name] =\
+            mc_data_sample_dict[sample_name] = \
                 {
                     mc_data_sample_dict_MC_key: mc_samples_dict[sample_name],
                     mc_data_sample_dict_DATA_key: data_samples_dict[sample_name]
@@ -134,20 +146,28 @@ def main(argv):
         for smpls in mc_data_sample_dict.values():
             mc_sample = smpls[mc_data_sample_dict_MC_key]['Magnet']
             # avoid making empty plots
-            if SAMPLEIDS.IsP0DFHCSample(SELECTION) and not mc_sample.CPPClass.is_FHC:
+            if SAMPLEIDS.IsP0DFHCSample(current_sampleID) and \
+                    not mc_sample.CPPClass.is_FHC:
                 continue
-            if SAMPLEIDS.IsP0DRHCSample(SELECTION) and mc_sample.CPPClass.is_FHC:
+            if SAMPLEIDS.IsP0DRHCSample(current_sampleID) and \
+                    mc_sample.CPPClass.is_FHC:
                 continue
-            if SAMPLEIDS.IsP0DWaterSample(SELECTION) and ('Air' in mc_sample.CPPClass.plotTitle or 'Water-Out' in mc_sample.CPPClass.plotTitle):
+            if SAMPLEIDS.IsP0DWaterSample(current_sampleID) and \
+                    ('Air' in mc_sample.CPPClass.plotTitle or
+                        'Water-Out' in mc_sample.CPPClass.plotTitle):
                 continue
-            if SAMPLEIDS.IsP0DAirSample(SELECTION) and not ('Air' in mc_sample.CPPClass.plotTitle or 'Water-Out' in mc_sample.CPPClass.plotTitle):
+            if SAMPLEIDS.IsP0DAirSample(current_sampleID) and not \
+                    ('Air' in mc_sample.CPPClass.plotTitle or
+                        'Water-Out' in mc_sample.CPPClass.plotTitle):
                 continue
             print mc_sample.CPPClass.plotTitle
-            data_pot_exponent = INTERFACE.GetExponentBase10(mc_sample.CPPClass.data_pot)
-            data_pot_mantissa = INTERFACE.GetMantissaBase10(mc_sample.CPPClass.data_pot,
-                                                            data_pot_exponent)
-            pot_str = '%.2f #times 10^{%d} PoT' % (data_pot_mantissa,
-                                                   data_pot_exponent)
+            data_pot_exponent = INTERFACE.\
+                GetExponentBase10(mc_sample.CPPClass.data_pot)
+            data_pot_mantissa = INTERFACE.\
+                GetMantissaBase10(mc_sample.CPPClass.data_pot,
+                                  data_pot_exponent)
+            pot_str_fmt = '%.2f #times 10^{%d} PoT'
+            pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
             # neutrino energy
@@ -166,9 +186,11 @@ def main(argv):
                 histstack_pMu_TN328.plot_var = 'LeptonMomNom'
                 histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
                 histstack_pMu_TN328.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, pMu_TN328_AnaBins,
-                                   histstack_pMu_TN328, 'recoP_mu_TN328')
+                ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins,
+                                    pot_str)
+                make_data_mc_stack(smpls, particle_selections,
+                                   pMu_TN328_AnaBins, histstack_pMu_TN328,
+                                   'recoP_mu_TN328')
 
             # lepton candidate momentum
             if DRAW_PMU:
@@ -188,8 +210,10 @@ def main(argv):
                 histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_cosThetaMu_TN328,
                                     cosThetaMu_TN328_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, cosThetaMu_TN328_AnaBins,
-                                   histstack_cosThetaMu_TN328, 'recocosq_mu_TN328_uniform')
+                make_data_mc_stack(smpls, particle_selections,
+                                   cosThetaMu_TN328_AnaBins,
+                                   histstack_cosThetaMu_TN328,
+                                   'recocosq_mu_TN328_uniform')
 
             # lepton candidate cos(theta)
             if DRAW_COSTHETAMU:
@@ -197,14 +221,17 @@ def main(argv):
                 histstack_cosThetaMu.plot_var = 'LeptonCosNom'
                 histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
                 histstack_cosThetaMu.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, cosThetaMu_AnaBins,
-                                   histstack_cosThetaMu, 'recocosq_mu_uniform')
+                ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins,
+                                    pot_str)
+                make_data_mc_stack(smpls, particle_selections,
+                                   cosThetaMu_AnaBins, histstack_cosThetaMu,
+                                   'recocosq_mu_uniform')
 
             # lepton candidate thetaMu
             if DRAW_THETAMU:
                 histstack_thetaMu = ROOTHStack()
-                histstack_thetaMu.plot_var = 'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
+                histstack_thetaMu.plot_var = \
+                    'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
                 histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
                 histstack_thetaMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
@@ -257,30 +284,6 @@ class sample(object):
         """returns the TChain"""
         return self.CPPClass.GetTChain()
 
-    # def make_H1D(self, hist_save_title, var, n_bins, low, high, cuts=''):
-    #     """create TH1 and return it"""
-    #     if len(var) < 1:
-    #         return None
-    #     hist_name = 'h1d%s_%s' % (hist_save_title, self.save_title)
-    #     hist = TH1D(hist_name, '', n_bins, low, high)
-    #     self.chain.Draw('%s>>%s' % (var, hist_name), cuts, 'goff')
-    #     if self.CPPClass.scale != 1:
-    #         hist.Scale(self.CPPClass.scale)
-    #     return hist
-
-    # def make_H2D(self, hist_save_title, varX, n_binsX, lowX, highX,
-    #              varY, n_binsY, lowY, highY, cuts=''):
-    #     """create TH2 and return it"""
-    #     if len(varX) < 1 or len(varY) < 1:
-    #         return None
-    #     hist_name = 'h2d%s_%s' % (hist_save_title, self.save_title)
-    #     hist = TH2D(hist_name, '', n_binsX, lowX, highX,
-    #                 n_binsY, lowY, highY)
-    #     self.chain.Draw('%s:%s>>%s' % (varY, varX, hist_name), cuts, 'goff')
-    #     if self.CPPClass.scale != 1:
-    #         hist.Scale(self.CPPClass.scale)
-    #     return hist
-
 
 class selection_info(object):
     """store the name, cuts, and legend labels for a selection"""
@@ -305,7 +308,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     data_sample = evt_sample['DATA']
     coords = ROOT.CanvasCoordinates()
 
-    save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
+    save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title,
+                            mc_sample.CPPClass.saveTitle)
     canvas = TCanvas("canvas", "", 800, 600)
     legend = TLegend(coords.Legend_RHS_X1, coords.Legend_RHS_Y1,
                      coords.Legend_RHS_X2, coords.Legend_RHS_Y2,
@@ -323,14 +327,17 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     anaBins.Sumw2(True)
     full_selection = true_selections[0]
     tmp_save_name = '%s_%s' % (save_title, full_selection.CPPClass.name)
-    nEntries = data_sample.getTChain().Draw(plot_var, full_selection.CPPClass.cuts, 'goff')
+    nEntries = data_sample.getTChain().Draw(plot_var,
+                                            full_selection.CPPClass.cuts,
+                                            'goff')
     v1 = data_sample.getTChain().GetV1()
     for entry_in_draw in range(nEntries):
         anaBins.Fill(v1[entry_in_draw])
     if anaBins.GetDivideByBinWidth():
         print 'WARNING:', anaBins.GetName(), 'dividing by bin width'
         anaBins.DivideByBinWidth(True)
-    data_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name, data_sample.CPPClass.saveTitle))
+    data_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name,
+                                     data_sample.CPPClass.saveTitle))
     data_hist.SetMarkerStyle(INTERFACE.kDataMarkerStyle)
     INTERFACE.PrettyUpTH1(data_hist, hstack.x_title, hstack.y_title,
                           BLACK, BLACK)
@@ -354,26 +361,33 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         tmp_save_name = '%s_%s' % (save_title, a_selection.CPPClass.name)
         mc_hist = None
 
-        if not ROOT.TString(a_selection.CPPClass.cuts.GetName()).Contains('Sand'):
+        if not ROOT.TString(a_selection.CPPClass.cuts.GetName()).\
+                Contains('Sand'):
             mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.CPPClass.cuts, 'goff')
             mc_v1 = mc_sample.getTChain().GetV1()
             for entry_in_draw in range(mc_nEntries):
                 anaBins.Fill(mc_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
-            mc_hist = anaBins.GetTH1DClone('mc_h1d_%s_%s' % (tmp_save_name,
-                                                             mc_sample.CPPClass.saveTitle))
+            name_fmt = 'mc_h1d_%s_%s'
+            mc_hist = anaBins.GetTH1DClone(
+                    name_fmt % (tmp_save_name, mc_sample.CPPClass.saveTitle))
             mc_hist.Scale(mc_sample.CPPClass.scale)
 
         else:
-            sand_nEntries = sand_sample.getTChain().Draw(plot_var, a_selection.CPPClass.cuts, 'goff')
+            sandTChain = sand_sample.getTChain()
+            sand_nEntries = sandTChain.Draw(plot_var,
+                                            a_selection.CPPClass.cuts,
+                                            'goff')
             sand_v1 = sand_sample.getTChain().GetV1()
             for entry_in_draw in range(sand_nEntries):
                 anaBins.Fill(sand_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
-            mc_hist = anaBins.GetTH1DClone('sand_h1d_%s_%s' % (tmp_save_name,
-                                                               sand_sample.CPPClass.saveTitle))
+            name_fmt = 'sand_h1d_%s_%s'
+            mc_hist = anaBins.GetTH1DClone(
+                    name_fmt % (tmp_save_name,
+                                sand_sample.CPPClass.saveTitle))
             mc_hist.Scale(sand_sample.CPPClass.scale)
 
         INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
@@ -618,7 +632,7 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
     return
 
 
-def GetMonteCarloSamples():
+def GetMonteCarloSamples(sampleID):
     """
     Get a dictionary of the NEUT MC samples broken down by horn current and
     P0D water stataus. In addition, the sample scale is set according to POT
@@ -652,8 +666,8 @@ def GetMonteCarloSamples():
 
     # FHC, P0D water-in
     chn_FHC_Wtr = chn_NEUTRun4Wtr
-    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONLABELSDICT[SELECTION] + ' Water-In', 'fhc_water')
-    FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONLABELSDICT[SELECTION] + ' Water-In, Sand', 'fhc_water_sand')
+    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'fhc_water')
+    FHC_Wtr_Snd = sample(chn_SANDRun3AirFHC, SELECTIONLABELSDICT[sampleID] + ' Water-In, Sand', 'fhc_water_sand')
     FHC_Wtr_Snd.CPPClass.is_FHC = True
     FHC_Wtr.CPPClass.is_FHC = True
     if not TN208_ANALYSIS:
@@ -669,8 +683,8 @@ def GetMonteCarloSamples():
     # FHC, P0D water-out
     if not TN208_ANALYSIS:
         chn_FHC_Air = chn_NEUTRun4Air
-        FHC_Air = sample(chn_FHC_Air, SELECTIONLABELSDICT[SELECTION] + ' Water-Out', 'fhc_air')
-        FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONLABELSDICT[SELECTION] + ' Water-Out, Sand', 'fhc_air_sand')
+        FHC_Air = sample(chn_FHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'fhc_air')
+        FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONLABELSDICT[sampleID] + ' Water-Out, Sand', 'fhc_air_sand')
         FHC_Air.CPPClass.is_FHC = True
         FHC_Air_Snd.CPPClass.is_FHC = True
         chn_FHC_Air.Add(chn_NEUTRun3bAir)
@@ -682,8 +696,8 @@ def GetMonteCarloSamples():
 
     # RHC, P0D water-in
     chn_RHC_Wtr = chn_NEUTRun5cWtr
-    RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONLABELSDICT[SELECTION] + ' Water-In, Sand', 'rhc_water_sand')
-    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONLABELSDICT[SELECTION] + ' Water-In', 'rhc_water')
+    RHC_Wtr_Snd = sample(chn_SANDRun3AirRHC, SELECTIONLABELSDICT[sampleID] + ' Water-In, Sand', 'rhc_water_sand')
+    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'rhc_water')
     RHC_Wtr.CPPClass.is_FHC = False
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_NEUTRun7bWtr)
@@ -701,11 +715,11 @@ def GetMonteCarloSamples():
         chn_RHC_Air.Add(chn_NEUTRun6cAir)
         chn_RHC_Air.Add(chn_NEUTRun6dAir)
         chn_RHC_Air.Add(chn_NEUTRun6eAir)
-        RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[SELECTION] + ' Water-Out', 'rhc_air')
+        RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'rhc_air')
         RHC_Air.CPPClass.is_FHC = False
         RHC_Air.CPPClass.data_pot = T2KPOT.GetPOTRHCAirData()
         RHC_Air.CPPClass.scale = T2KPOT.GetPOTRHCAirData()/T2KPOT.GetPOTRHCAirMC()
-        RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONLABELSDICT[SELECTION] + ' Water-Out, Sand', 'rhc_air_sand')
+        RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONLABELSDICT[sampleID] + ' Water-Out, Sand', 'rhc_air_sand')
         RHC_Air_Snd.CPPClass.is_FHC = False
         RHC_Air_Snd.CPPClass.scale = T2KPOT.GetPOTRHCAirData() / T2KPOT.GetPOTRHCAirSandMC()
 
@@ -720,7 +734,7 @@ def GetMonteCarloSamples():
     return all_samples
 
 
-def GetDATAsamples():
+def GetDATAsamples(sampleID):
     """
     Get a dictionary of the data samples broken down by horn current and
     P0D water stataus
@@ -749,7 +763,7 @@ def GetDATAsamples():
     chn_DATARun7bWtr = T2KDATAMC.RUN7BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
 
     chn_FHC_Wtr = chn_DATARun4Wtr
-    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONLABELSDICT[SELECTION] + ' Water-In', 'fhc_water')
+    FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'fhc_water')
     FHC_Wtr.CPPClass.is_FHC = True
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_DATARun2Wtr)
@@ -759,7 +773,7 @@ def GetDATAsamples():
 
     if not TN208_ANALYSIS:
         chn_FHC_Air = chn_DATARun4Air
-        FHC_Air = sample(chn_FHC_Air, SELECTIONLABELSDICT[SELECTION] + ' Water-Out', 'fhc_air')
+        FHC_Air = sample(chn_FHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'fhc_air')
         FHC_Air.CPPClass.data_pot = T2KPOT.GetPOTFHCAirData()
         FHC_Air.CPPClass.is_FHC = True
         chn_FHC_Air.Add(chn_DATARun3bAir)
@@ -767,7 +781,7 @@ def GetDATAsamples():
         chn_FHC_Air.Add(chn_DATARun2Air)
 
     chn_RHC_Wtr = chn_DATARun5cWtr
-    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONLABELSDICT[SELECTION] + ' Water-In', 'rhc_water')
+    RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'rhc_water')
     RHC_Wtr.CPPClass.is_FHC = False
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_DATARun7bWtr)
@@ -780,7 +794,7 @@ def GetDATAsamples():
         chn_RHC_Air.Add(chn_DATARun6cAir)
         chn_RHC_Air.Add(chn_DATARun6dAir)
         chn_RHC_Air.Add(chn_DATARun6eAir)
-        RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[SELECTION] + ' Water-Out', 'rhc_air')
+        RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'rhc_air')
         RHC_Air.CPPClass.data_pot = T2KPOT.GetPOTRHCAirData()
         RHC_Air.CPPClass.is_FHC = False
 
@@ -795,7 +809,7 @@ def GetDATAsamples():
     return all_samples
 
 
-def GetNeutrinoSelectionList():
+def GetNeutrinoSelectionList(sampleID):
     """
     Get a list of the selections (selection_info) for the neutrino species
     """
@@ -803,11 +817,11 @@ def GetNeutrinoSelectionList():
     cut = ROOT.DefineCuts()
     all_nom_sel_cut = None
 
-    if SAMPLEIDS.IsP0DNuMuSample(SELECTION):
+    if SAMPLEIDS.IsP0DNuMuSample(sampleID):
         all_nom_sel_cut = cut.muMinusSelection
-    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(SELECTION):
+    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(sampleID):
         all_nom_sel_cut = cut.muMinusBkgInRHCSelection
-    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(SELECTION):
+    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(sampleID):
         all_nom_sel_cut = cut.muPlusInRHCSelection
     else:
         print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
@@ -869,17 +883,17 @@ def GetNeutrinoSelectionList():
     return neutrino_selections
 
 
-def GetLeptonCandidateSelectionList():
+def GetLeptonCandidateSelectionList(sampleID):
     """Make a list of lepton candidate cuts by particle"""
 
     cut = ROOT.DefineCuts()
     all_nom_sel_cut = None
 
-    if SAMPLEIDS.IsP0DNuMuSample(SELECTION):
+    if SAMPLEIDS.IsP0DNuMuSample(sampleID):
         all_nom_sel_cut = cut.muMinusSelection
-    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(SELECTION):
+    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(sampleID):
         all_nom_sel_cut = cut.muMinusBkgInRHCSelection
-    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(SELECTION):
+    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(sampleID):
         all_nom_sel_cut = cut.muPlusInRHCSelection
     else:
         print 'ERROR: unable to determine sample in GetLeptonCandidateSelectionList'

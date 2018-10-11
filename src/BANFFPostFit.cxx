@@ -156,7 +156,7 @@ void BANFFPostFit::Dump(TString prefit_cov_csv, TString postfit_cov_csv)
     //UInt_t nBins_per_axis[n_axes] = {nSKNuModeNuMuBins,nSKNuModeNuMuBarBins,SKNuModeNueBins,nSKNuModeNueBarBins,nSKANuModeNuMuBins,nSKANuModeNuMuBarBins,nSKANuModeNueBins,nSKANuModeNueBarBins};
     TString names[n_axes] = {"sk_numode_numu_bins" , "sk_numode_numub_bins" , "sk_numode_nue_bins" , "sk_numode_nueb_bins" , "sk_anumode_numu_bins" , "sk_anumode_numub_bins" , "sk_anumode_nue_bins", "sk_anumode_nueb_bins"};
 
-    for(UInt_t axis_index = 0; axis_index < n_axes; ++axis_index)
+    for(Int_t axis_index = 0; axis_index < n_axes; ++axis_index)
     {
         TAxis* const axis = axes[axis_index];
         const TString name = names[axis_index];

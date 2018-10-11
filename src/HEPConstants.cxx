@@ -103,10 +103,260 @@ void HEPConstants::Init()
     kDeltaPlusMass     = 1232 * MeV;
     kDeltaPlusPlusMass = 1232 * MeV;
 
+    // ***** NEU CHARGED CURRENT *****
+    // -- ELASTIC --
+    kNEUTNu_CCQE = 1; // NEU,N --> LEPTON-,P
+    kNEUTNu_2p2h = 2; // NEU,N+X --> LEPTON-,P+X  (X=(N or P))
+
+    // -- SINGLE PI FROM DELTA RESONANCE --
+    kNEUTNuP_CC1PiPlusP = 11; // NEU,P --> LEPTON-,P,PI+
+    kNEUTNuN_CC1PiZeroP = 12; // NEU,N --> LEPTON-,P,PI0
+    kNEUTNuN_CC1PiPlusN = 13; // NEU,N --> LEPTON-,N,PI+
+    kNEUTNuO_CC1PiPlusO = 16; // NEU,O(16) --> LEPTON-,O(16),PI+
+
+    // -- SINGLE GAMMA FROM DELTA RESONANCE --
+    kNEUTNuN_CC1GammaP = 17; // NEU,N --> LEPTON-,P,GAMMA
+
+    // -- MULTI PI (1.3 < W < 2.0 GeV) --
+    kNEUTNu_CCMultiPi = 21; // NEU,(N OR P) --> LEPTON-,(N OR P),MULTI PI
+
+    // -- SINGLE ETA FROM DELTA RESONANCE --
+    kNEUTNuN_CC1EtaZeroP = 22; // NEU,N --> LEPTON-,P,ETA0
+
+    // -- SINGLE K FROM DELTA RESONANCE --
+    kNEUTNuN_CC1KaPlusLambda = 23; // NEU,N --> LEPTON-,LAMBDA,K+
+
+    // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
+    kNEUTNu_CCDIS =  46; // NEU,(N OR P) --> NEU,(N OR P),MESONS
+
+    // ***** NEU NEUTAL CURRENT *****
+    // -- NC: SINGLE PI FROM DELTA RESONANCE --
+    kNEUTNuN_NC1PiZeroN = 31; // NEU,N --> NEU,N,PI0
+    kNEUTNuP_NC1PiZeroP = 32; // NEU,P --> NEU,P,PI0
+    kNEUTNuN_NC1PiMinusP = 33; // NEU,N --> NEU,P,PI-
+    kNEUTNuP_NC1PiPlusN = 34; // NEU,P --> NEU,N,PI+
+
+    kNEUTNuO_NC1PiZeroO = 36; // NEU,O(16) --> NEU,O(16),PI0
+
+    // -- SINGLE GAMMA FROM DELTA RESONANCE --
+    kNEUTNuN_NC1GammaN = 38; // NEU,N --> NEU,N,GAMMA
+    kNEUTNuP_NC1GammaP = 39; // NEU,P --> NEU,P,GAMMA
+
+    // -- MULTI PI (1.3 GeV < W < 2.0 GeV) --
+    kNEUTNu_NCMultiPi = 41; // NEU,(N OR P) --> NEU,(N OR P),MULTI PI
+
+    // -- SINGLE ETA FROM DELTA RESONANCE --
+    kNEUTNuN_NC1EtaZeroN = 42; // NEU,N --> NEU,N,ETA0
+    kNEUTNuP_NC1EtaZeroP = 43; // NEU,P --> NEU,P,ETA0
+
+    // -- SINGLE  K  FROM DELTA RESONANCE --
+    kNEUTNuN_NC1KaZeroLambda = 44; // NEU,N --> NEU,LAMBDA,K0
+    kNEUTNuP_NC1KaPlusLambda = 45; // NEU,P --> NEU,LAMBDA,K+
+
+    // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
+    kNEUTNu_NCDIS = 46; // NEU,(N OR P) --> NEU,(N OR P),MESONS
+
+    // -- ELASTIC --
+    kNEUTNuP_NCQE = 51; // NEU,P --> NEU,P
+    kNEUTNuN_NCQE = 52; // NEU,N --> NEU,N
+
+
+    // ***** NEUBAR CHARGED CURRENT *****
+    // -- ELASTIC --
+    kNEUTAntiNu_CCQE = -1; // NEUBAR,N --> LEPTON-,P
+    kNEUTAntiNu_2p2h = -2; // NEUBAR,N+X --> LEPTON-,P+X  (X=(N or P))
+
+    // -- SINGLE PI FROM DELTA RESONANCE --
+    kNEUTAntiNuP_CC1PiPlusP = -11; // NEUBAR,P --> LEPTON-,P,PI+
+    kNEUTAntiNuN_CC1PiZeroP = -12; // NEUBAR,N --> LEPTON-,P,PI0
+    kNEUTAntiNuN_CC1PiPlusN = -13; // NEUBAR,N --> LEPTON-,N,PI+
+    kNEUTAntiNuO_CC1PiPlusO = -16; // NEUBAR,O(16) --> LEPTON-,O(16),PI+
+
+    // -- SINGLE GAMMA FROM DELTA RESONANCE --
+    kNEUTAntiNuN_CC1GammaP = -17; // NEUBAR,N --> LEPTON-,P,GAMMA
+
+    // -- MULTI PI (1.3 < W < 2.0 GeV) --
+    kNEUTAntiNu_CCMultiPi = -21; // NEUBAR,(N OR P) --> LEPTON-,(N OR P),MULTI PI
+
+    // -- SINGLE ETA FROM DELTA RESONANCE --
+    kNEUTAntiNuN_CC1EtaZeroP = -22; // NEUBAR,N --> LEPTON-,P,ETA0
+
+    // -- SINGLE K FROM DELTA RESONANCE --
+    kNEUTAntiNuN_CC1KaPlusLambda = -23; // NEUBAR,N --> LEPTON-,LAMBDA,K+
+
+    // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
+    kNEUTAntiNu_CCDIS = - 46; // NEUBAR,(N OR P) --> NEUBAR,(N OR P),MESONS
+
+    // ***** NEUBAR NEUTAL CURRENT *****
+    // -- NC: SINGLE PI FROM DELTA RESONANCE --
+    kNEUTAntiNuN_NC1PiZeroN = -31; // NEUBAR,N --> NEUBAR,N,PI0
+    kNEUTAntiNuP_NC1PiZeroP = -32; // NEUBAR,P --> NEUBAR,P,PI0
+    kNEUTAntiNuN_NC1PiMinusP = -33; // NEUBAR,N --> NEUBAR,P,PI-
+    kNEUTAntiNuP_NC1PiPlusN = -34; // NEUBAR,P --> NEUBAR,N,PI+
+
+    kNEUTAntiNuO_NC1PiZeroO = -36; // NEUBAR,O(16) --> NEUBAR,O(16),PI0
+
+    // -- SINGLE GAMMA FROM DELTA RESONANCE --
+    kNEUTAntiNuN_NC1GammaN = -38; // NEUBAR,N --> NEUBAR,N,GAMMA
+    kNEUTAntiNuP_NC1GammaP = -39; // NEUBAR,P --> NEUBAR,P,GAMMA
+
+    // -- MULTI PI (1.3 GeV < W < 2.0 GeV) --
+    kNEUTAntiNu_NCMultiPi = -41; // NEUBAR,(N OR P) --> NEUBAR,(N OR P),MULTI PI
+
+    // -- SINGLE ETA FROM DELTA RESONANCE --
+    kNEUTAntiNuN_NC1EtaZeroN = -42; // NEUBAR,N --> NEUBAR,N,ETA0
+    kNEUTAntiNuP_NC1EtaZeroP = -43; // NEUBAR,P --> NEUBAR,P,ETA0
+
+    // -- SINGLE  K  FROM DELTA RESONANCE --
+    kNEUTAntiNuN_NC1KaZeroLambda = -44; // NEUBAR,N --> NEUBAR,LAMBDA,K0
+    kNEUTAntiNuP_NC1KaPlusLambda = -45; // NEUBAR,P --> NEUBAR,LAMBDA,K+
+
+    // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
+    kNEUTAntiNu_NCDIS = -46; // NEUBAR,(N OR P) --> NEUBAR,(N OR P),MESONS
+
+    // -- ELASTIC --
+    kNEUTAntiNuP_NCQE = -51; // NEUBAR,P --> NEUBAR,P
+    kNEUTAntiNuN_NCQE = -52; // NEUBAR,N --> NEUBAR,N
+
 }
 
 //**************************************************
-Double_t HEPConstants::Convert(TString unit) const {
+Bool_t HEPConstants::IsNEUTCodeNuCCQE(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTNu_CCQE || code == kNEUTNu_2p2h;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuCC1Pi(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    if(code == kNEUTNuP_CC1PiPlusP) return kTRUE; //11 : NEU,P --> LEPTON-,P,PI+
+    if(code == kNEUTNuN_CC1PiZeroP) return kTRUE; //12 : NEU,N --> LEPTON-,P,PI0
+    if(code == kNEUTNuN_CC1PiPlusN) return kTRUE; //13 : NEU,N --> LEPTON-,N,PI+
+    if(code == kNEUTNuO_CC1PiPlusO) return kTRUE; //16 : NEU,O(16) --> LEPTON-,O(16),PI+
+    return kFALSE;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuCCNPi(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTNu_CCMultiPi;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuCC1KaOrEta(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTNuN_CC1KaPlusLambda || kNEUTNuN_CC1EtaZeroP;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuCCDIS(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTNu_CCDIS;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuNC(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code >= kNEUTNuN_NC1PiZeroN;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuCCQE(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTAntiNu_CCQE || code == kNEUTAntiNu_2p2h;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuCC1Pi(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    if(code == kNEUTAntiNuP_CC1PiPlusP) return kTRUE;
+    if(code == kNEUTAntiNuN_CC1PiZeroP) return kTRUE;
+    if(code == kNEUTAntiNuN_CC1PiPlusN) return kTRUE;
+    if(code == kNEUTAntiNuO_CC1PiPlusO) return kTRUE;
+    return kFALSE;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuCCNPi(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTAntiNu_CCMultiPi;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuCC1KaOrEta(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTAntiNuN_CC1KaPlusLambda || kNEUTAntiNuN_CC1EtaZeroP;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuCCDIS(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code == kNEUTAntiNu_CCDIS;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuNC(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code <= kNEUTAntiNuN_NC1PiZeroN;
+}
+
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeNuAny(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code >= kNEUTNu_CCQE;
+}
+
+//**************************************************
+Bool_t HEPConstants::IsNEUTCodeAntiNuAny(const Int_t &code) const
+//**************************************************
+{
+    if(!IsValidNEUTCode(code))
+        return kFALSE;
+    return code <= kNEUTAntiNu_CCQE;
+}
+
+//**************************************************
+Double_t HEPConstants::Convert(const TString &unit) const {
 //**************************************************
     ConversionMap::const_iterator iter = convert.find(unit);
     if(iter != convert.end())
@@ -123,30 +373,11 @@ HEPConstants::~HEPConstants()
 }
 
 //**************************************************
-inline Double_t HEPConstants::ConvertKineticEToMomentum(Double_t kinE, Double_t mass) const
+Double_t HEPConstants::LoopOnParticles(const Int_t &pdg, const Int_t& returnIndex) const
 //**************************************************
 {
-    return std::sqrt((kinE + mass) * (kinE + mass) - (mass * mass));
-}
-
-//**************************************************
-inline Double_t HEPConstants::ConvertMomentumToKineticE(Double_t mom, Double_t mass) const
-//**************************************************
-{
-    return sqrt(mom * mom + mass * mass) - mass;
-}
-
-//**************************************************
-inline Double_t HEPConstants::ConvertMomentumToEnergy(Double_t mom, Double_t mass) const
-//**************************************************
-{
-    return sqrt(mom * mom + mass * mass);
-}
-
-//**************************************************
-Double_t HEPConstants::LoopOnParticles(Int_t pdg, const Int_t& returnIndex) const
-//**************************************************
-{
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     //----------------------------------------------
     //first the most frequent particles
     if (pdg == kMuMinusPDG      ) return (returnIndex == MASSINDEX) ? kMuMinusMass      : -1.0;
@@ -184,23 +415,29 @@ Double_t HEPConstants::LoopOnParticles(Int_t pdg, const Int_t& returnIndex) cons
 }
 
 //**************************************************
-Double_t HEPConstants::GetParticleMass(Int_t pdg) const
+Double_t HEPConstants::GetParticleMass(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return -9999;
     return LoopOnParticles(pdg, MASSINDEX);
 }
 
 //**************************************************
-Double_t HEPConstants::GetParticleCharge(Int_t pdg) const
+Double_t HEPConstants::GetParticleCharge(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return -9999;
     return LoopOnParticles(pdg, CHARGEINDEX);
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleLepton(Int_t pdg) const
+Bool_t HEPConstants::IsParticleLepton(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     const Int_t abspdg = abs(pdg);
     //if not any of these leptons, then NOT a lepton
     if(abspdg != kElectronPDG &&
@@ -215,9 +452,11 @@ Bool_t HEPConstants::IsParticleLepton(Int_t pdg) const
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleMeson(Int_t pdg) const
+Bool_t HEPConstants::IsParticleMeson(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(pdg != kKaMinusPDG &&
        pdg != kRho770MinusPDG &&
        pdg != kPiMinusPDG &&
@@ -237,9 +476,11 @@ Bool_t HEPConstants::IsParticleMeson(Int_t pdg) const
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleBaryon(Int_t pdg) const
+Bool_t HEPConstants::IsParticleBaryon(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(pdg != kNeutronPDG &&
        pdg != kProtonPDG &&
        pdg != kLambdaZeroPDG
@@ -249,9 +490,11 @@ Bool_t HEPConstants::IsParticleBaryon(Int_t pdg) const
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleHadron(Int_t pdg) const
+Bool_t HEPConstants::IsParticleHadron(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(IsParticleBaryon(pdg))
         return kTRUE;
     if(IsParticleMeson(pdg))
@@ -260,32 +503,36 @@ Bool_t HEPConstants::IsParticleHadron(Int_t pdg) const
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleNeutral(Int_t pdg) const
+Bool_t HEPConstants::IsParticleNeutral(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(GetParticleCharge(pdg) == 0.)
         return kTRUE;
     return kFALSE;
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticle(Int_t pdgA, Int_t pdgB) const
+inline Bool_t HEPConstants::IsParticle(const Int_t &pdgA, Int_t pdgB) const
 //**************************************************
 {
     return pdgA == pdgB ? kTRUE : kFALSE;
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleAbs(Int_t pdgA, Int_t pdgB) const
+inline Bool_t HEPConstants::IsParticleAbs(const Int_t &pdgA, Int_t pdgB) const
 //**************************************************
 {
     return std::abs(pdgA)==std::abs(pdgB) ? kTRUE : kFALSE;
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleMuon(Int_t pdg, Double_t charge) const
+Bool_t HEPConstants::IsParticleMuon(const Int_t &pdg, Double_t charge) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(charge == 0)
         return IsParticleAbs(pdg, kMuMinusPDG);
     else if(charge == 1)
@@ -297,9 +544,11 @@ Bool_t HEPConstants::IsParticleMuon(Int_t pdg, Double_t charge) const
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleChargedPion(Int_t pdg, Double_t charge) const
+Bool_t HEPConstants::IsParticleChargedPion(const Int_t &pdg, Double_t charge) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     if(charge == 0)
         return IsParticleAbs(pdg, kPiPlusPDG);
     else if(charge == 1)
@@ -311,66 +560,84 @@ Bool_t HEPConstants::IsParticleChargedPion(Int_t pdg, Double_t charge) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiPlus(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticlePiPlus(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kPiPlusPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiMinus(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticlePiMinus(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kPiMinusPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiZero(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticlePiZero(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticleAbs(pdg, kPiZeroPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleElectron(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticleElectron(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kElectronPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePositron(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticlePositron(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kPositronPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleGamma(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticleGamma(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticleAbs(pdg, kGammaPDG);
 }
 
 //**************************************************
-Bool_t HEPConstants::IsParticleEM(Int_t pdg) const
+Bool_t HEPConstants::IsParticleEM(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticleElectron(pdg) ||
            IsParticleGamma(pdg) ||
            IsParticlePositron(pdg);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleProton(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticleProton(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kProtonPDG);
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleNeutron(Int_t pdg) const
+inline Bool_t HEPConstants::IsParticleNeutron(const Int_t &pdg) const
 //**************************************************
 {
+    if(!IsValidParticle(pdg))
+        return kFALSE;
     return IsParticle(pdg, kNeutronPDG);
 }
