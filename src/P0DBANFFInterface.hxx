@@ -159,6 +159,10 @@ public:
     static const Int_t kcbMutedGrey = 132;
 
     static const Int_t kDataMarkerStyle = 21;
+    static const Int_t kThickDashedLineStyle = 9;
+    static const Int_t kDashedLineStyle = 7;
+    static const Int_t kDottedLineStyle = 2;
+    static const Int_t kSolidLineStyle = 1;
 
 protected:
 

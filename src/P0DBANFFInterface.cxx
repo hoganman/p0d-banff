@@ -64,8 +64,8 @@ P0DBANFFInterface::P0DBANFFInterface()
     TGaxis::SetMaxDigits(3);
     P0DBANFFStyle->SetOptStat("i");
     P0DBANFFStyle->SetStatFormat("10g");
-    P0DBANFFStyle->SetTitleXSize(0.055);
-    P0DBANFFStyle->SetTitleYSize(0.055);
+    P0DBANFFStyle->SetTitleXSize(0.045);
+    P0DBANFFStyle->SetTitleYSize(0.045);
     P0DBANFFStyle->SetStripDecimals(kFALSE);
     P0DBANFFStyle->SetOptTitle(kFALSE);
     P0DBANFFStyle->SetEndErrorSize(4);

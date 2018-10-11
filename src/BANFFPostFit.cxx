@@ -1,10 +1,12 @@
 #define BANFFPOSTFIT_CXX
 
-#include "BANFFPostFit.hxx"
 #include "stdio.h"
 #include <iostream>
 #include <map>
 #include <algorithm>
+#include "TLegend.h"
+#include "CanvasCoordinates.hxx"
+#include "BANFFPostFit.hxx"
 ClassImp(BANFFPostFit)
 
 //**************************************************
@@ -125,7 +127,7 @@ void BANFFPostFit::Init()
     for(Int_t keyIndex = 0; keyIndex < keys->GetSize(); ++keyIndex)
     {
         const TString name = keys->At(keyIndex)->GetName();
-        if(name.Contains("rxnPredMC") || name.Contains("_prefit") || name.Contains("_data"))
+        if(name.Contains("rxnPredMC") || name.Contains("_prefit") || name.Contains("_data") || name.Contains("_postfit"))
         {
             TObject* searchObject = P0DBANFFInterface::FindObjectInFileByName(inputFile, name);
             AllHistograms[name] = static_cast< THnT<double>* >(searchObject);
@@ -244,7 +246,9 @@ THnT<double>* BANFFPostFit::GetTHn(const TString &name) const
 
 
 //**************************************************
-TCanvas* BANFFPostFit::GetDataPrefitMCWithProjection(const TString &name, const Int_t &projection) const
+TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
+        const Int_t &projection, const Double_t &normalizeBinsBy,
+        const TString &xAxisTitle, const TString &units) const
 //**************************************************
 {
     const TString prefitName = name + "_prefit";
@@ -261,21 +265,71 @@ TCanvas* BANFFPostFit::GetDataPrefitMCWithProjection(const TString &name, const 
         std::cout << "Unable to get prefit for " << name.Data() << std::endl;
         return NULL;
     }
+    const TString postfitName = name + "_postfit_0_0";
+    THnT<double>* postfit = GetTHn(postfitName);
+    if(!postfit)
+    {
+        std::cout << "Unable to get postfit for " << name.Data() << std::endl;
+        return NULL;
+    }
+
     TH1D* prefit_1D = static_cast<TH1D*>(prefit->Projection(projection)->Clone(TString::Format("hPrefit_%s", prefitName.Data())));
-    prefit_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
-    prefit_1D->SetLineWidth(3);
+    TH1D* postfit_1D = static_cast<TH1D*>(postfit->Projection(projection)->Clone(TString::Format("hPostfit_%s", postfitName.Data())));
     TH1D* data_1D = static_cast<TH1D*>(data->Projection(projection, "E")->Clone(TString::Format("hData_%s", dataName.Data())));
+    if( normalizeBinsBy > 0 )
+    {
+        for(Int_t bin = 1; bin <= prefit_1D->GetXaxis()->GetNbins(); ++bin)
+        {
+            gStyle->SetOptStat(0000);
+            Double_t prefit_binContent = prefit_1D->GetBinContent(bin);
+            prefit_binContent *= normalizeBinsBy / prefit_1D->GetXaxis()->GetBinWidth(bin);
+            prefit_1D->SetBinContent(bin, prefit_binContent);
+            Double_t data_binContent = data_1D->GetBinContent(bin);
+            data_binContent *= normalizeBinsBy / data_1D->GetXaxis()->GetBinWidth(bin);
+            data_1D->SetBinContent(bin, data_binContent);
+            Double_t postfit_binContent = postfit_1D->GetBinContent(bin);
+            postfit_binContent *= normalizeBinsBy / postfit_1D->GetXaxis()->GetBinWidth(bin);
+            postfit_1D->SetBinContent(bin, postfit_binContent);
+        }
+    }
+
+    prefit_1D->SetLineColor(P0DBANFFInterface::kcbSky);
+    postfit_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
     data_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
+
+    prefit_1D->SetLineWidth(3);
+    postfit_1D->SetLineWidth(3);
     data_1D->SetLineWidth(3);
+
     data_1D->SetMarkerStyle(P0DBANFFInterface::kDataMarkerStyle);
-    prefit_1D->SetMinimum(0);
+    prefit_1D->SetLineStyle(P0DBANFFInterface::kDashedLineStyle);
+    postfit_1D->SetLineStyle(P0DBANFFInterface::kSolidLineStyle);
+
     data_1D->SetMinimum(0);
-    const Double_t max = 1.1 * std::max(prefit_1D->GetMaximum(), data_1D->GetMaximum());
-    prefit_1D->SetMaximum(max);
+
+    Double_t max = std::max(prefit_1D->GetMaximum(), postfit_1D->GetMaximum());
+    max = 1.1 * std::max(max, data_1D->GetMaximum());
+
     data_1D->SetMaximum(max);
+    if(xAxisTitle.Length() > 0 && units.Length() > 0)
+    {
+        data_1D->GetXaxis()->SetTitle(xAxisTitle + " [" + units + "]");
+        data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f %s)", normalizeBinsBy, units.Data()));
+    }
+
     TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
     canvas->cd();
-    prefit_1D->Draw();
-    data_1D->Draw("same");
+    data_1D->Draw();
+    postfit_1D->Draw("samehist");
+    prefit_1D->Draw("samehist");
+    CanvasCoordinates coords;
+    TLegend* legend = new TLegend(coords.Legend_RHS_X1, coords.Legend_RHS_Y1, coords.Legend_RHS_X2, coords.Legend_RHS_Y2, name);
+    legend->AddEntry(data_1D, "Data", "LPE");
+    legend->AddEntry(prefit_1D, "Prefit", "L");
+    legend->AddEntry(postfit_1D, "Postfit", "L");
+    legend->Draw();
+    legend->SetLineColor(0);
+    legend->SetBorderSize(0);
+    legend->SetFillStyle(0);
     return canvas;
 }
