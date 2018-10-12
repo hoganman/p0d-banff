@@ -16,7 +16,7 @@ import sys
 DRAW_ENU = 0
 DRAW_PMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 1
+DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
@@ -24,10 +24,10 @@ DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # Display the ratio of Data/MC below histogram
-SHOW_RATIO_PLOT_BELOW = True
+SHOW_RATIO_PLOT_BELOW = 1
 
 # use the TN-208 runs
-TN208_ANALYSIS = True
+TN208_ANALYSIS = 1
 
 # cut the measured momentum
 USE_MOMENTUM_CUT = 0
@@ -73,12 +73,12 @@ def main(argv):
     LoadSampleIDs()
 
     binningLocation = '%s/config/Binning.xml' % p0dbanffroot
-    cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
-    # cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
+    # cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
+    cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
     pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, XML)
-    pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
-    # pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
+    # pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
+    pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
     cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, XML)
     thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, XML)
     p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, XML)
@@ -139,8 +139,8 @@ def main(argv):
                 }
 
         # these store how to break down the samples by particles or other grouping
-        neutrino_selections = GetNeutrinoSelectionList()
-        particle_selections = GetLeptonCandidateSelectionList()
+        neutrino_selections = GetNeutrinoSelectionList(current_sampleID)
+        particle_selections = GetLeptonCandidateSelectionList(current_sampleID)
 
         # loop over sample classes
         for smpls in mc_data_sample_dict.values():
