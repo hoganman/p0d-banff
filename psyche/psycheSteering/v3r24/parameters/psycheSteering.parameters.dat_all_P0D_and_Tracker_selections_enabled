@@ -85,11 +85,11 @@ FGD2
 
  [MH] P0D+TPC1
  < psycheSteering.Selections.EnableNuMuCCP0DWater                          = 1 >
- < psycheSteering.Selections.EnableNuMubarBkgCCP0DWater                    = 1 >
+ < psycheSteering.Selections.EnableNuMubarBkgCCP0DWater                    = 0 >
  < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 1 >
  < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 1 >
  < psycheSteering.Selections.EnableNuMuCCP0DAir                            = 1 >
- < psycheSteering.Selections.EnableNuMubarBkgCCP0DAir                      = 1 >
+ < psycheSteering.Selections.EnableNuMubarBkgCCP0DAir                      = 0 >
  < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 1 >
  < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 1 >
 

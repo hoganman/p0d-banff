@@ -454,8 +454,11 @@ int main(int argc, char **argv){
                 event = _man.GetEvent(entry);
             else
                 event = static_cast<AnaEventB*>((_man.LoadSuperEvent(entry))->Event);
-
 if(debug) std::cout << "got event" << std::endl;
+            //for(Int_t vertexIndex = 0; vertexIndex < event->nTrueVertices; ++vertexIndex)
+            //{
+            //    std::cout << "Test reacCode =" << event->TrueVertices[vertexIndex]->ReacCode << std::endl;
+            //}
 
             // Fill the EventBox
             if (!preload)
@@ -555,7 +558,7 @@ if(debug) std::cout << "There are " << nParticles  << " particles in this event"
                 EventNumber = eventInfo->Event;
 
                 AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
-                if(!summary || !summary->EventSample)
+                if(!summary)
                     continue;
 if(debug) DEBUG(summary->EventSample)
                 RooVertexIndex = summary->RooVertexIndex[summary->EventSample];
@@ -583,13 +586,30 @@ if(debug) DEBUG(trueParticle->PDG)
                         tLeptonPositionY = trStart.Y();
                         tLeptonPositionZ = trStart.Z();
                     }
-                    trVtx = static_cast<AnaTrueVertexB*>(summary->TrueVertex[summary->EventSample]);
+                    trVtx = summary->TrueVertex[summary->EventSample];
                     if(trVtx)
                     {
                         tVtxX = trVtx->Position[0];
                         tVtxY = trVtx->Position[1];
                         tVtxZ = trVtx->Position[2];
-                        tReactionCode = trVtx->ReactionCode;
+                        //std::cout << "trVtxZ = " << tVtxZ << std::endl;
+                        //std::cout << "trVtx->ReacCode = " << trVtx->ReacCode << std::endl;
+                        tReactionCode = trVtx->ReacCode;
+                        /*
+                        if(std::abs(tReactionCode) > 100 || TMath::Floor(tReactionCode) == 0)
+                        {
+                            std::cout << "There are " << event->nTrueVertices << " associated with this event " << std::endl;
+                            for(Int_t vertexIndex = 0; vertexIndex < event->nTrueVertices; ++vertexIndex)
+                            {
+                                if(std::fabs(event->TrueVertices[vertexIndex]->Position[2] - tVtxZ) < 1)
+                                {
+                                    if(event->TrueVertices[vertexIndex] == trVtx)
+                                        continue;
+                                    std::cout << "Bad NEUT code! Trying now to use " << event->TrueVertices[vertexIndex]->ReacCode << std::endl;
+                                }
+                            }
+                        }
+                        */
                         TrueVertexIDNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID;
                         TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
                         TrueNuPDGNom    = (Int_t)   (summary->TrueVertex[summary->EventSample]->NuPDG   );

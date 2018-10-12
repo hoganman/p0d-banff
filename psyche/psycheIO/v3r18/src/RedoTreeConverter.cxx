@@ -1245,15 +1245,33 @@ void RedoTreeConverter::FillEventInfo(AnaEventB* event){
   bool filled = false;
   if (_prevEvent){
     if (sEvt == _prevEvent->EventInfo.Event){
+        //std::cout << "Pre-Copy" << std::endl;
     // Don't copy bunch info but clone truth
       event->Copy(*_prevEvent, false);
+      /*
+        std::cout << "Post-Copy" << std::endl;
+            for(Int_t vertexIndex = 0; vertexIndex < event->nTrueVertices; ++vertexIndex)
+            {
+                std::cout << "Test reacCode =" << event->TrueVertices[vertexIndex]->ReacCode << std::endl;
+            }
+            */
       filled = true;
     }
   }
 // otherwise this is a new spill and everything should be filled
   if (!filled)
+  {
+      //std::cout << "Pre-FillEventSpillInfo" << std::endl;
     FillEventSpillInfo(event);
-
+    /*
+      std::cout << "Post-FillEventSpillInfo" << std::endl;
+            for(Int_t vertexIndex = 0; vertexIndex < event->nTrueVertices; ++vertexIndex)
+            {
+                std::cout << "Test reacCode =" << event->TrueVertices[vertexIndex]->ReacCode << std::endl;
+            }
+            */
+  }
+ 
 // Now we fill the Bunch info
   event->Bunch = Bunch;
   event->Weight = Weight;
@@ -1275,7 +1293,6 @@ void RedoTreeConverter::FillEventInfo(AnaEventB* event){
     event->Vertices[event->nVertices] = vertex;
     event->nVertices++;
   }
-
 }
 
 //*****************************************************************************
@@ -1966,9 +1983,10 @@ void RedoTreeConverter::FillTrueVertexInfo(int ivtx, AnaTrueVertexB* vertex){
   vertex->NuPDG = sTrueVertexNuPDG[ivtx];
   vertex->NuEnergy = sTrueVertexNuEnergy[ivtx];
   vertex->Q2 = sTrueVertexQ2[ivtx];
-  vertex->ReactionCode = sTrueVertexReacCode[ivtx];
+  vertex->ReacCode = sTrueVertexReacCode[ivtx];
 
   anaUtils::CopyArray(sTrueVertexPosition[ivtx], vertex->Position, 4);
+  //std::cout << "The input reaction code is " << vertex->ReacCode << " with true Z = " << vertex->Position[2] << std::endl;;
   anaUtils::CopyArray(sTrueVertexNuDir[ivtx], vertex->NuDir, 3);
 
   vertex->Bunch    = sTrueVertexBunch[ivtx];

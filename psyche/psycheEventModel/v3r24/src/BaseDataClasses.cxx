@@ -618,7 +618,7 @@ AnaTrueVertexB::AnaTrueVertexB():AnaTrueObjectC(){
 
     TrueParticles = NULL;
     nTrueParticles = 0;
-    ReactionCode = 0;
+    ReacCode = 0;
 
     TrueParticlesVect.clear();
 }
@@ -1593,6 +1593,13 @@ void AnaEventB::Copy(const AnaEventC& eventC, bool copyBunchInfo, bool cloneTrut
     for (Int_t i=0;i<event.nTrueVertices;i++){
         if (cloneTruth){
             TrueVertices[nTrueVertices] = event.TrueVertices[i]->Clone();
+            //std::cout << "PrevEvent TrueVerticies ReacCode=" << event.TrueVertices[i]->ReacCode << std::endl;
+            TrueVertices[nTrueVertices]->NuDir[0] = event.TrueVertices[i]->NuDir[0];
+            TrueVertices[nTrueVertices]->NuDir[1] = event.TrueVertices[i]->NuDir[1];
+            TrueVertices[nTrueVertices]->NuDir[2] = event.TrueVertices[i]->NuDir[2];
+            TrueVertices[nTrueVertices]->Q2 = event.TrueVertices[i]->Q2;
+            TrueVertices[nTrueVertices]->ReacCode = event.TrueVertices[i]->ReacCode;
+            //std::cout << "CopyEvent TrueVerticies ReacCode=" << TrueVertices[nTrueVertices]->ReacCode << std::endl;
             // must clear particles since we need to redo the links below
             TrueVertices[nTrueVertices]->nTrueParticles = 0;
             nTrueVertices++;

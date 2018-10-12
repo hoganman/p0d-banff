@@ -138,6 +138,9 @@ class AnaTrueVertexB: public AnaTrueObjectC{
   /// The true Q2 of the event
   Float_t Q2;
 
+  /// The true NEUT reaction code of the event
+  Int_t ReacCode;
+
   /// The position the true interaction happened at.
   Float_t Position[4];
 
@@ -157,8 +160,6 @@ class AnaTrueVertexB: public AnaTrueObjectC{
   /// See SubDetId.hxx for the detector enumerations used to
   /// interrogate this object
   unsigned long Detector;
-
-  Int_t ReactionCode;
 
 };
 
