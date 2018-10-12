@@ -7,6 +7,7 @@
 #include "TLegend.h"
 #include "CanvasCoordinates.hxx"
 #include "BANFFPostFit.hxx"
+#include "TGaxis.h"
 ClassImp(BANFFPostFit)
 
 //**************************************************
@@ -247,8 +248,7 @@ THnT<double>* BANFFPostFit::GetTHn(const TString &name) const
 
 //**************************************************
 TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
-        const Int_t &projection, const Double_t &normalizeBinsBy,
-        const TString &xAxisTitle, const TString &units) const
+        const Int_t &projection, const Double_t &normalizeBinsBy ) const
 //**************************************************
 {
     const TString prefitName = name + "_prefit";
@@ -270,11 +270,10 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     if(!postfit)
     {
         std::cout << "Unable to get postfit for " << name.Data() << std::endl;
-        return NULL;
     }
 
     TH1D* prefit_1D = static_cast<TH1D*>(prefit->Projection(projection)->Clone(TString::Format("hPrefit_%s", prefitName.Data())));
-    TH1D* postfit_1D = static_cast<TH1D*>(postfit->Projection(projection)->Clone(TString::Format("hPostfit_%s", postfitName.Data())));
+    TH1D* postfit_1D = postfit ? static_cast<TH1D*>(postfit->Projection(projection)->Clone(TString::Format("hPostfit_%s", postfitName.Data()))) : NULL;
     TH1D* data_1D = static_cast<TH1D*>(data->Projection(projection, "E")->Clone(TString::Format("hData_%s", dataName.Data())));
     if( normalizeBinsBy > 0 )
     {
@@ -287,49 +286,122 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
             Double_t data_binContent = data_1D->GetBinContent(bin);
             data_binContent *= normalizeBinsBy / data_1D->GetXaxis()->GetBinWidth(bin);
             data_1D->SetBinContent(bin, data_binContent);
+            if(!postfit)
+               continue;
             Double_t postfit_binContent = postfit_1D->GetBinContent(bin);
             postfit_binContent *= normalizeBinsBy / postfit_1D->GetXaxis()->GetBinWidth(bin);
             postfit_1D->SetBinContent(bin, postfit_binContent);
         }
     }
-
     prefit_1D->SetLineColor(P0DBANFFInterface::kcbSky);
-    postfit_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
     data_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
 
     prefit_1D->SetLineWidth(3);
-    postfit_1D->SetLineWidth(3);
     data_1D->SetLineWidth(3);
 
     data_1D->SetMarkerStyle(P0DBANFFInterface::kDataMarkerStyle);
     prefit_1D->SetLineStyle(P0DBANFFInterface::kDashedLineStyle);
-    postfit_1D->SetLineStyle(P0DBANFFInterface::kSolidLineStyle);
 
     data_1D->SetMinimum(0);
 
-    Double_t max = std::max(prefit_1D->GetMaximum(), postfit_1D->GetMaximum());
-    max = 1.1 * std::max(max, data_1D->GetMaximum());
+    Double_t max = std::max(prefit_1D->GetMaximum(), data_1D->GetMaximum());
+    max = postfit_1D ? 1.1 * std::max(max, postfit_1D->GetMaximum()) : 1.1 * max;
 
     data_1D->SetMaximum(max);
-    if(xAxisTitle.Length() > 0 && units.Length() > 0)
+    prefit_1D->SetMaximum(max);
+    if(projection == 0)
     {
-        data_1D->GetXaxis()->SetTitle(xAxisTitle + " [" + units + "]");
-        data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f %s)", normalizeBinsBy, units.Data()));
+        if(normalizeBinsBy > 0)
+            data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f MeV/c)", normalizeBinsBy));
+        else
+            data_1D->GetYaxis()->SetTitle("Events/bin");
+    }
+    if(projection == 1)
+    {
+        data_1D->GetXaxis()->SetTitle("Muon cos(#theta)");
+        if(normalizeBinsBy > 0)
+            data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f)", normalizeBinsBy));
+        else
+            data_1D->GetYaxis()->SetTitle("Events/bin");
     }
 
     TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
-    canvas->cd();
+
+    TPad* pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+    pad1->SetBottomMargin(0);
+    pad1->Draw();
+    pad1->cd();
     data_1D->Draw();
-    postfit_1D->Draw("samehist");
     prefit_1D->Draw("samehist");
-    CanvasCoordinates coords;
+    const CanvasCoordinates coords;
     TLegend* legend = new TLegend(coords.Legend_RHS_X1, coords.Legend_RHS_Y1, coords.Legend_RHS_X2, coords.Legend_RHS_Y2, name);
     legend->AddEntry(data_1D, "Data", "LPE");
     legend->AddEntry(prefit_1D, "Prefit", "L");
-    legend->AddEntry(postfit_1D, "Postfit", "L");
-    legend->Draw();
     legend->SetLineColor(0);
     legend->SetBorderSize(0);
     legend->SetFillStyle(0);
+
+    if(postfit_1D)
+    {
+        postfit_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
+        postfit_1D->SetLineStyle(P0DBANFFInterface::kSolidLineStyle);
+        postfit_1D->SetLineWidth(3);
+        postfit_1D->SetMaximum(max);
+        legend->AddEntry(postfit_1D, "Postfit", "L");
+        postfit_1D->Draw("samehist");
+    }
+    legend->Draw();
+
+    //Do not draw the Y axis label on the upper plot and redraw a small
+    //axis instead, in order to avoid the first label (0) to be clipped.
+    TGaxis* axis = new TGaxis(-5, 20, -5, 220, 20, 220, 510, "");
+    axis->Draw();
+
+    canvas->cd();
+    TPad* pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0.2);
+    pad2->SetGridx();  // vertical grid
+    pad2->SetGridy();  // horizontal grid
+    pad2->Draw();
+    pad2->cd();      // pad2 becomes the current pad
+    pad2->SetBottomMargin(0.3);
+
+    // Define the ratio plot
+    TH1D* data_prefit_ratio = static_cast<TH1D*>(data_1D->Clone(TString::Format("data_prefit_ratio_%s", name.Data())));
+    data_prefit_ratio->SetLineColor(P0DBANFFInterface::kcbBlack);
+    data_prefit_ratio->Divide(prefit_1D);
+    const Double_t data_prefit_ratio_max_bin = data_prefit_ratio->GetMaximumBin();
+    const Double_t data_prefit_ratio_min_bin = data_prefit_ratio->GetMinimumBin();
+    data_prefit_ratio->SetMaximum(std::min(1.5, 1.1*(data_prefit_ratio->GetBinContent(data_prefit_ratio_max_bin)+data_prefit_ratio->GetBinError(data_prefit_ratio_max_bin))));  // range
+    data_prefit_ratio->SetMinimum(std::max(0.5, 0.9*(data_prefit_ratio->GetBinContent(data_prefit_ratio_min_bin)-data_prefit_ratio->GetBinError(data_prefit_ratio_min_bin))));  // range
+    data_prefit_ratio->SetStats(0);       // No statistics on lower plot
+    data_prefit_ratio->SetMarkerStyle(P0DBANFFInterface::kDataMarkerStyle);
+
+    TLine* line = new TLine(data_prefit_ratio->GetXaxis()->GetBinLowEdge(1), 1, data_prefit_ratio->GetXaxis()->GetBinUpEdge(data_prefit_ratio->GetXaxis()->GetNbins()), 1);
+    line->SetLineWidth(3);
+    line->SetLineStyle(9);
+    line->SetLineColor(P0DBANFFInterface::kcbBlue);
+    data_prefit_ratio->Draw("ep");       // Draw the ratio plot
+    line->Draw();
+    data_prefit_ratio->Draw("ep same");   // Draw the ratio plot
+
+    // Y axis ratio plot settings
+    data_prefit_ratio->GetYaxis()->SetTitle("Data/MC");
+    data_prefit_ratio->GetYaxis()->SetNdivisions(505);
+    data_prefit_ratio->GetYaxis()->SetLabelSize(3*prefit_1D->GetYaxis()->GetLabelSize());
+    data_prefit_ratio->GetYaxis()->SetTitleOffset(0.2);
+    data_prefit_ratio->GetYaxis()->SetTitleSize(0.2);
+
+    // X axis ratio plot settings
+    if(projection == 0)
+        data_prefit_ratio->GetXaxis()->SetTitle("Muon Momentum [MeV/c]");
+    if(projection == 1)
+        data_prefit_ratio->GetXaxis()->SetTitle("Muon cos(#theta)");
+    data_prefit_ratio->GetXaxis()->SetTitleOffset(prefit_1D->GetXaxis()->GetTitleOffset());
+    data_prefit_ratio->GetXaxis()->SetTitleSize(0.15);
+    data_prefit_ratio->GetXaxis()->SetLabelSize(3* prefit_1D->GetXaxis()->GetLabelSize());
+    //data_prefit_ratio->GetXaxis()->SetLabelSize(15);
+
     return canvas;
 }

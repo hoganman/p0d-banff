@@ -48,8 +48,7 @@ public:
     THnT<double>* GetTHn(const TString &name) const;
 
     TCanvas* GetDataPrePostfitMCWithProjection(const TString &name,
-            const Int_t &projection, const Double_t &normalizeBinsBy = 0,
-            const TString &xAxisTitle = "", const TString &units = "") const;
+            const Int_t &projection, const Double_t &normalizeBinsBy = 0) const;
 
     void Dump(TString prefit_cov_csv="", TString postfit_cov_csv="");
 
