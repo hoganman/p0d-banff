@@ -4,12 +4,10 @@
 /* A set of TCuts to be used with the RunSyst_New TTrees
  */
 
-#include "TObject.h"
-#include "TCut.h"
 #include "TVector3.h"
-#include <vector>
 #include "SampleId.hxx"
 #include "PlottingSelectionInfo.hxx"
+#include <vector>
 #if defined(__CINT__) || defined(__MAKECINT__)
 #pragma link C++ nestedclasses;
 #pragma link C++ class PlottingSelectionInfo+;
@@ -21,8 +19,6 @@ class DefineCuts : public TObject {
 public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts();
-
-    //Bool_t IsSandCut(TCut cut);
 
     ///Passes the mu- selection
     TCut muMinusSelection;
@@ -118,13 +114,10 @@ public:
     static const UInt_t NMAXNEUTRINOSELECTIONS = 7;
     static const UInt_t NMAXNEUTSELECTIONS = 9;
 
-    PlottingSelectionInfo* GetParticleSelection(const Int_t &index) const {return ParticleSelections[index];}
-    PlottingSelectionInfo* GetNeutrinoSelection(const Int_t &index) const {return NeutrinoSelections[index];}
-    PlottingSelectionInfo* GetNEUTSelection(const Int_t &index) const {return NEUTSelections[index];}
-
     std::vector<PlottingSelectionInfo*> ParticleSelections;
     std::vector<PlottingSelectionInfo*> NeutrinoSelections;
-    std::vector<PlottingSelectionInfo*> NEUTSelections;
+    std::vector<PlottingSelectionInfo*> NEUTNuSelections;
+    std::vector<PlottingSelectionInfo*> NEUTAntiNuSelections;
 
     void FillParticleSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
@@ -134,6 +127,42 @@ public:
 
     void FillNEUTNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
+
+    void FillNEUTAntiNuSelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
+
+    ///These methods are PyROOT friendly
+    PlottingSelectionInfo* GetParticleSelection(const UInt_t &index) const {return ParticleSelections[index];}
+    PlottingSelectionInfo* GetNeutrinoSelection(const UInt_t &index) const {return NeutrinoSelections[index];}
+    PlottingSelectionInfo* GetNEUTNuSelection(const UInt_t &index) const {return NEUTNuSelections[index];}
+    PlottingSelectionInfo* GetNEUTAntiSelection(const UInt_t &index) const {return NEUTAntiNuSelections[index];}
+
+    ///These methods are NOT PyROOT friendly (CRASHES!)
+    PlottingSelectionInfo** FillAndGetParticleSelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillParticleSelections(name, title, sampleID, additionalCuts);
+        return &ParticleSelections[0];
+    }
+    PlottingSelectionInfo** FillAndGetNeutrinoSelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillNeutrinoSelections(name, title, sampleID, additionalCuts);
+        return &NeutrinoSelections[0];
+    }
+    PlottingSelectionInfo** FillAndGetNEUTNuSelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillNEUTNuSelections(name, title, sampleID, additionalCuts);
+        return &NEUTNuSelections[0];
+    }
+    PlottingSelectionInfo** FillAndGetNEUTAntiNuSelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillNEUTAntiNuSelections(name, title, sampleID, additionalCuts);
+        return &NEUTAntiNuSelections[0];
+    }
+
 
 protected:
     void SetCuts();

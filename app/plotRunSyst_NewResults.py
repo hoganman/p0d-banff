@@ -8,7 +8,7 @@ from os import getenv
 from os.path import join
 import ROOT
 from ROOT import THStack, TCanvas, TLegend, gSystem  # TChain
-from ROOT import TPad, TGaxis, TLine
+from ROOT import TPad, TGaxis, TLine, TCut
 from ROOTHStack import ROOTHStack
 import sys
 
@@ -61,6 +61,8 @@ SAMPLEIDS = None
 T2KPOT = None
 T2KDATAMC = None
 XML = None
+HEPCONSTANTS = None
+CUTS = None
 
 
 def main(argv):
@@ -306,13 +308,12 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     mc_sample = evt_sample['MC']['Magnet']
     sand_sample = evt_sample['MC']['Sand']
     data_sample = evt_sample['DATA']
-    coords = ROOT.CanvasCoordinates()
 
     save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title,
                             mc_sample.CPPClass.saveTitle)
     canvas = TCanvas("canvas", "", 800, 600)
-    legend = TLegend(coords.Legend_RHS_X1, coords.Legend_RHS_Y1,
-                     coords.Legend_RHS_X2, coords.Legend_RHS_Y2,
+    legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
+                     COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
     legend.SetFillStyle(0)
     legend.SetLineColor(0)
@@ -347,8 +348,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         legend.AddEntry(data_hist, 'DATA', 'LPE')
     anaBins.Reset()
     anaBins.Sumw2(False)
-    data_stats = TLegend(coords.PaveStats_Data_X1, coords.PaveStats_Data_Y1,
-                         coords.PaveStats_Data_X2, coords.PaveStats_Data_Y2,
+    data_stats = TLegend(COORDS.PaveStats_Data_X1, COORDS.PaveStats_Data_Y1,
+                         COORDS.PaveStats_Data_X2, COORDS.PaveStats_Data_Y2,
                          'Integral %d' % data_hist.Integral())
     data_stats.SetBorderSize(1)
     data_stats.SetFillColor(0)
@@ -407,8 +408,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.Add(a_hist)
         h_total.Add(a_hist)
 
-    mc_stats = TLegend(coords.PaveStats_MC_X1, coords.PaveStats_MC_Y1,
-                       coords.PaveStats_MC_X2, coords.PaveStats_MC_Y2,
+    mc_stats = TLegend(COORDS.PaveStats_MC_X1, COORDS.PaveStats_MC_Y1,
+                       COORDS.PaveStats_MC_X2, COORDS.PaveStats_MC_Y2,
                        'Integral %.2f' % h_total.Integral())
     mc_stats.SetBorderSize(1)
     mc_stats.SetFillColor(0)
@@ -544,12 +545,10 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
     anaBins (AnaysisBins) with the histogram labels in hstack (ROOTHStack)
     Saved as save_title.root
     """
-    coords = ROOT.CanvasCoordinates()
-
     save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
     canvas = TCanvas("canvas", "", 800, 600)
-    legend = TLegend(coords.Legend_RHS_X1, coords.Legend_RHS_Y1,
-                     coords.Legend_RHS_X2, coords.Legend_RHS_Y2,
+    legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
+                     COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
     legend.SetFillStyle(0)
     legend.SetLineColor(0)
@@ -813,72 +812,20 @@ def GetNeutrinoSelectionList(sampleID):
     """
     Get a list of the selections (selection_info) for the neutrino species
     """
-
-    cut = ROOT.DefineCuts()
-    all_nom_sel_cut = None
-
-    if SAMPLEIDS.IsP0DNuMuSample(sampleID):
-        all_nom_sel_cut = cut.muMinusSelection
-    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(sampleID):
-        all_nom_sel_cut = cut.muMinusBkgInRHCSelection
-    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(sampleID):
-        all_nom_sel_cut = cut.muPlusInRHCSelection
-    else:
-        print 'ERROR: unable to determine sample in GetNeutrinoSelectionList'
-        sys.exit(1)
-
-    if ADDITIONAL_CUTS:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, ADDITIONAL_CUTS)
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+        more_cuts += CUTS.FVTN208
 
     if USE_MOMENTUM_CUT:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    # all neutrinos
-    all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
-                                 'P0D numuCC-inclusive')
-
-    # muon neutrinos
-    numu_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuMu)
-    if TN208_ANALYSIS:
-        numu_cc_sel_cut = cut.AndTCuts(numu_cc_sel_cut, cut.tFVTN208)
-    numu_cc_sel = selection_info('numu_cc_sel', numu_cc_sel_cut,
-                                 '#nu_{#mu}')
-
-    # muon antineutrinos
-    numubar_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuMubar)
-    if TN208_ANALYSIS:
-        numubar_cc_sel_cut = cut.AndTCuts(numubar_cc_sel_cut, cut.tFVTN208)
-    numubar_cc_sel = selection_info('numubar_cc_sel', numubar_cc_sel_cut,
-                                    '#bar{#nu}_{#mu}')
-
-    # nue and nuebars
-    nuenuebar_cc_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuEs)
-    if TN208_ANALYSIS:
-        nuenuebar_cc_sel_cut = cut.AndTCuts(nuenuebar_cc_sel_cut, cut.tFVTN208)
-    nuenuebar_cc_sel = selection_info('nuenuebar_cc_sel', nuenuebar_cc_sel_cut,
-                                      '#nu_{e} + #bar{#nu}_{e}')
-
-    # other particles
-    other_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParOther)
-    if TN208_ANALYSIS:
-        other_sel_cut = cut.AndTCuts(other_sel_cut, cut.tFVTN208)
-    other_sel = selection_info('other_sel', other_sel_cut, 'other')
-
-    # OOFV but NOT sand
-    offv_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tOOFV)
-    if TN208_ANALYSIS:
-        offv_sel_cut = cut.AndTCuts(offv_sel_cut, cut.tOOFVTN208)
-    offv_sel = selection_info('offv_sel', offv_sel_cut, 'OOFV')
-
-    # Sand neutrino
-    sand_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tParNuSand)
-    sand_sel = selection_info('sand_sel', sand_sel_cut, 'Sand')
-
-    neutrino_selections = [all_nom_sel, numu_cc_sel, numubar_cc_sel,
-                           nuenuebar_cc_sel, other_sel, offv_sel, sand_sel]
+    CUTS.FillNeutrinoSelections('nom_sel', SAMPLEIDS.GetLabel(sampleID), sampleID, more_cuts)
+    neutrino_selections = list()
+    for index in range(0, CUTS.NMAXNEUTRINOESELECTIONS):
+        neutrino_selections.append(CUTS.GetNeurinoSelection(index))
 
     return neutrino_selections
 
@@ -886,32 +833,20 @@ def GetNeutrinoSelectionList(sampleID):
 def GetLeptonCandidateSelectionList(sampleID):
     """Make a list of lepton candidate cuts by particle"""
 
-    cut = ROOT.DefineCuts()
-    all_nom_sel_cut = ROOT.TCut()
-
-    if SAMPLEIDS.IsP0DNuMuSample(sampleID):
-        all_nom_sel_cut = cut.muMinusSelection
-    elif SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(sampleID):
-        all_nom_sel_cut = cut.muMinusBkgInRHCSelection
-    elif SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(sampleID):
-        all_nom_sel_cut = cut.muPlusInRHCSelection
-    else:
-        print 'ERROR: unable to determine sample in GetLeptonCandidateSelectionList'
-        sys.exit(1)
-
-    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == ROOT.TCut:
-        all_nom_sel_cut += ADDITIONAL_CUTS
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        all_nom_sel_cut += cut.FVTN208
+        more_cuts += CUTS.FVTN208
 
     if USE_MOMENTUM_CUT:
-        all_nom_sel_cut += ROOT.TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    cut.FillParticleSelections('nom_sel', all_nom_sel_cut, 'P0D numuCC-inclusive')
+    CUTS.FillParticleSelections('nom_sel', SAMPLEIDS.GetLabel(sampleID), sampleID, more_cuts)
     particle_selections = list()
-    for index in range(0, cut.NMAXPARTICLESELECTIONS):
-        particle_selections.append(cut.GetParticleSelection(index))
+    for index in range(0, CUTS.NMAXPARTICLESELECTIONS):
+        particle_selections.append(CUTS.GetParticleSelection(index))
     return particle_selections
 
 
@@ -923,8 +858,7 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     if len(anaBins.GetUnits()) < 1:
         return
     units = anaBins.GetUnits()
-    hepconstants = ROOT.HEPConstants()
-    hstack.plot_var += '*%f' % hepconstants.Convert(units)
+    hstack.plot_var += '*%f' % HEPCONSTANTS.Convert(units)
     hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
         y_title = 'Events / %s / %s'
@@ -940,7 +874,8 @@ def LoadP0DBANFF():
     if not (loadStatus == 1 or loadStatus == 0):
         print "Unable to load libP0DBANFF.so. gSystem.Load(\"libP0DBANFF\") returned", loadStatus
         sys.exit(1)
-    global INTERFACE, SAMPLEIDS, T2KPOT, T2KDATAMC, XML
+    global INTERFACE, SAMPLEIDS, T2KPOT, T2KDATAMC
+    global XML, HEPCONSTANTS, CUTS, COORDS
     try:
         INTERFACE = ROOT.P0DBANFFInterface()
         INTERFACE.SetBatch(True)
@@ -948,7 +883,10 @@ def LoadP0DBANFF():
         SAMPLEIDS = ROOT.SampleId()
         T2KPOT = ROOT.TotalPOT()
         T2KDATAMC = ROOT.T2KDataMC()
+        HEPCONSTANTS = ROOT.HEPConstants()
         XML = ROOT.XMLTools()
+        CUTS = ROOT.DefineCuts()
+        COORDS = ROOT.CanvasCoordinates()
     except Exception as exc:
         print type(exc)
         print "unable to load libP0DBANFF.so"

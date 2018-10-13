@@ -144,6 +144,7 @@ public:
     SampleId::SampleEnum GetP0DAirNuMuBarBkgCCEnum() const {return kP0DAirNuMuBarBkgCC;}
     SampleId::SampleEnum GetP0DAirNuMuBkgInAntiNuModeCCEnum() const {return kP0DAirNuMuBkgInAntiNuModeCC;}
     SampleId::SampleEnum GetP0DAirNuMuBarInAntiNuModeCCEnum() const {return kP0DAirNuMuBarInAntiNuModeCC;}
+    inline const SampleId::SampleEnum Convert(const Int_t& input) const {return static_cast<SampleId::SampleEnum>(input);}
 
     Int_t GetP0DWaterNuMuCC() const {return GetP0DWaterNuMuCCEnum();}
     Int_t GetP0DWaterNuMuBarBkgCC() const {return GetP0DWaterNuMuBarBkgCCEnum();}
@@ -163,7 +164,6 @@ public:
     inline Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum)||IsP0DNuMuBkgSample(testEnum);}
     inline Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuBkgInAntiNuModeSample(testEnum)||IsP0DNuMuBarInAntiNuModeSample(testEnum);}
 
-    inline const SampleId::SampleEnum Convert(const Int_t& input) const {return static_cast<SampleId::SampleEnum>(input);}
     Bool_t IsP0DNuMuSample(const Int_t &testInt) const {return IsP0DNuMuSample(Convert(testInt));}
     Bool_t IsP0DNuMuBkgSample(const Int_t &testInt) const {return IsP0DNuMuBkgSample(Convert(testInt));}
     Bool_t IsP0DNuMuBkgInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBkgInAntiNuModeSample(Convert(testInt));}

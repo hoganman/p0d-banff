@@ -65,10 +65,10 @@ Bool_t SampleId::IsP0DAirSample(const SampleId::SampleEnum &testEnum) const
 const char* SampleId::GetLabelName(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
-    if(testEnum == GetP0DWaterNuMuCCEnum())                return "#nu_{#mu} in FHC,"     ;
+    if(testEnum == GetP0DWaterNuMuCCEnum())                return "#nu_{#mu} in FHC"     ;
     if(testEnum == GetP0DWaterNuMuBarInAntiNuModeCCEnum()) return "#bar{#nu}_{#mu} in RHC";
     if(testEnum == GetP0DWaterNuMuBkgInAntiNuModeCCEnum()) return "#nu_{#mu} Bkg in RHC"  ;
-    if(testEnum == GetP0DAirNuMuCCEnum())                  return "#nu_{#mu} in FHC,"     ;
+    if(testEnum == GetP0DAirNuMuCCEnum())                  return "#nu_{#mu} in FHC"     ;
     if(testEnum == GetP0DAirNuMuBarInAntiNuModeCCEnum())   return "#bar{#nu}_{#mu} in RHC";
     if(testEnum == GetP0DAirNuMuBkgInAntiNuModeCCEnum())   return "#nu_{#mu} Bkg in RHC"  ;
     if(testEnum == GetP0DWaterNuMuBarBkgCCEnum())          return "#bar{#nu}_{#mu} in FHC";
