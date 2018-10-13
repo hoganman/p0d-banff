@@ -247,7 +247,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
 
     // mu plus
     TCut muPlus_sel_cut = all_nom_sel_cut && tLepMuPlus && tFV_Correction;
-    PlottingSelectionInfo* muPlus_sel = new PlottingSelectionInfo("muPlus_sel", muPlus_sel_cut, "#mu^{&&}");
+    PlottingSelectionInfo* muPlus_sel = new PlottingSelectionInfo("muPlus_sel", muPlus_sel_cut, "#mu^{+}");
     ParticleSelections[entry++] = muPlus_sel;
 
     // pi minus
@@ -257,7 +257,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
 
     // pi plus
     TCut piPlus_sel_cut = all_nom_sel_cut && tLepPiPlus && tFV_Correction;
-    PlottingSelectionInfo* piPlus_sel = new PlottingSelectionInfo("piPlus_sel", piPlus_sel_cut, "#pi^{&&}");
+    PlottingSelectionInfo* piPlus_sel = new PlottingSelectionInfo("piPlus_sel", piPlus_sel_cut, "#pi^{+}");
     ParticleSelections[entry++] = piPlus_sel;
 
     // pi plus

@@ -16,22 +16,25 @@ import sys
 DRAW_ENU = 0
 DRAW_PMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 0
+DRAW_COSTHETAMU = 1
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
 DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
+# Apply event + flux weight
+APPLYEVENTANDFLUXWEIGHT = 0
+
 # Display the ratio of Data/MC below histogram
 SHOW_RATIO_PLOT_BELOW = 1
 
 # use the TN-208 runs
-TN208_ANALYSIS = 1
+TN208_ANALYSIS = 0
 
 # cut the measured momentum
 USE_MOMENTUM_CUT = 0
-MOMENTUM_CUT_VALUE = '1600.'
+MOMENTUM_CUT_VALUE = '5000.'
 
 # if the user wants to apply an addition set of cuts
 ADDITIONAL_CUTS = None
@@ -75,12 +78,12 @@ def main(argv):
     LoadSampleIDs()
 
     binningLocation = '%s/config/Binning.xml' % p0dbanffroot
-    # cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
-    cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
+    cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
+    # cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
     pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, XML)
-    # pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
-    pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
+    pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
+    # pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
     cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, XML)
     thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, XML)
     p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, XML)
@@ -202,7 +205,7 @@ def main(argv):
                 histstack_pMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
                 make_data_mc_stack(smpls, particle_selections, pMu_AnaBins,
-                                   histstack_pMu, 'recoP_mu_uniform')
+                                   histstack_pMu, 'recoP_mu')
 
             # TN-328 cos(theta)
             if DRAW_COSTHETAMU_TN328:
@@ -215,7 +218,7 @@ def main(argv):
                 make_data_mc_stack(smpls, particle_selections,
                                    cosThetaMu_TN328_AnaBins,
                                    histstack_cosThetaMu_TN328,
-                                   'recocosq_mu_TN328_uniform')
+                                   'recocosq_mu_TN328')
 
             # lepton candidate cos(theta)
             if DRAW_COSTHETAMU:
@@ -227,7 +230,7 @@ def main(argv):
                                     pot_str)
                 make_data_mc_stack(smpls, particle_selections,
                                    cosThetaMu_AnaBins, histstack_cosThetaMu,
-                                   'recocosq_mu_uniform')
+                                   'recocosq_mu')
 
             # lepton candidate thetaMu
             if DRAW_THETAMU:
@@ -238,7 +241,7 @@ def main(argv):
                 histstack_thetaMu.y_title = evts_p_bin_p_pot
                 ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
                 make_data_mc_stack(smpls, particle_selections, thetaMu_AnaBins,
-                                   histstack_thetaMu, 'recothetaMu_mu_uniform')
+                                   histstack_thetaMu, 'recothetaMu_mu')
 
             # lepton p0d position Z
             if DRAW_P0DZ:
@@ -311,6 +314,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
     save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title,
                             mc_sample.CPPClass.saveTitle)
+    if APPLYEVENTANDFLUXWEIGHT:
+        save_as += '_fluxweighted'
     canvas = TCanvas("canvas", "", 800, 600)
     legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
                      COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
@@ -364,10 +369,14 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
         if not ROOT.TString(a_selection.cuts.GetName()).\
                 Contains('Sand'):
-            mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
+            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom*FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
             mc_v1 = mc_sample.getTChain().GetV1()
+            mc_v2 = mc_sample.getTChain().GetV2()
             for entry_in_draw in range(mc_nEntries):
-                anaBins.Fill(mc_v1[entry_in_draw])
+                if APPLYEVENTANDFLUXWEIGHT:
+                    anaBins.Fill(mc_v1[entry_in_draw], mc_v2[entry_in_draw])
+                else:
+                    anaBins.Fill(mc_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
             name_fmt = 'mc_h1d_%s_%s'
@@ -377,12 +386,16 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
         else:
             sandTChain = sand_sample.getTChain()
-            sand_nEntries = sandTChain.Draw(plot_var,
+            sand_nEntries = sandTChain.Draw('%s:WeightNom*FluxWeightNom' % plot_var,
                                             a_selection.cuts,
                                             'goff')
             sand_v1 = sand_sample.getTChain().GetV1()
+            sand_v2 = sand_sample.getTChain().Get21()
             for entry_in_draw in range(sand_nEntries):
-                anaBins.Fill(sand_v1[entry_in_draw])
+                if APPLYEVENTANDFLUXWEIGHT:
+                    anaBins.Fill(sand_v1[entry_in_draw], sand_v2[entry_in_draw])
+                else:
+                    anaBins.Fill(sand_v1[entry_in_draw])
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
             name_fmt = 'sand_h1d_%s_%s'
@@ -822,11 +835,10 @@ def GetNeutrinoSelectionList(sampleID):
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillNeutrinoSelections('nom_sel', SAMPLEIDS.GetLabel(sampleID), sampleID, more_cuts)
+    CUTS.FillNeutrinoSelections('nom_sel', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
     neutrino_selections = list()
-    for index in range(0, CUTS.NMAXNEUTRINOESELECTIONS):
-        neutrino_selections.append(CUTS.GetNeurinoSelection(index))
-
+    for index in range(0, CUTS.NMAXNEUTRINOSELECTIONS):
+        neutrino_selections.append(CUTS.GetNeutrinoSelection(index))
     return neutrino_selections
 
 
@@ -843,7 +855,7 @@ def GetLeptonCandidateSelectionList(sampleID):
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillParticleSelections('nom_sel', SAMPLEIDS.GetLabel(sampleID), sampleID, more_cuts)
+    CUTS.FillParticleSelections('nom_sel', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
     particle_selections = list()
     for index in range(0, CUTS.NMAXPARTICLESELECTIONS):
         particle_selections.append(CUTS.GetParticleSelection(index))
