@@ -51,7 +51,7 @@ SELECTIONSAVENAMEDICT = dict()
 SELECTIONLABELSDICT = dict()
 
 # P0DBANFFInterface class to make plots pretty
-STACK_COLORS = list()
+STACK_COLORS = None
 BLACK = int(1)
 
 # Classes from P0DBANFF library
@@ -326,9 +326,9 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     # Data hist fill
     anaBins.Sumw2(True)
     full_selection = true_selections[0]
-    tmp_save_name = '%s_%s' % (save_title, full_selection.CPPClass.name)
+    tmp_save_name = '%s_%s' % (save_title, full_selection.name)
     nEntries = data_sample.getTChain().Draw(plot_var,
-                                            full_selection.CPPClass.cuts,
+                                            full_selection.cuts,
                                             'goff')
     v1 = data_sample.getTChain().GetV1()
     for entry_in_draw in range(nEntries):
@@ -358,12 +358,12 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     #    first entry is full selection
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
-        tmp_save_name = '%s_%s' % (save_title, a_selection.CPPClass.name)
+        tmp_save_name = '%s_%s' % (save_title, a_selection.name)
         mc_hist = None
 
-        if not ROOT.TString(a_selection.CPPClass.cuts.GetName()).\
+        if not ROOT.TString(a_selection.cuts.GetName()).\
                 Contains('Sand'):
-            mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.CPPClass.cuts, 'goff')
+            mc_nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.cuts, 'goff')
             mc_v1 = mc_sample.getTChain().GetV1()
             for entry_in_draw in range(mc_nEntries):
                 anaBins.Fill(mc_v1[entry_in_draw])
@@ -377,7 +377,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         else:
             sandTChain = sand_sample.getTChain()
             sand_nEntries = sandTChain.Draw(plot_var,
-                                            a_selection.CPPClass.cuts,
+                                            a_selection.cuts,
                                             'goff')
             sand_v1 = sand_sample.getTChain().GetV1()
             for entry_in_draw in range(sand_nEntries):
@@ -393,7 +393,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
                               STACK_COLORS[index])
         mc_hists.append(mc_hist)
-        legend.AddEntry(mc_hist, a_selection.CPPClass.legendLabel, 'f')
+        legend.AddEntry(mc_hist, a_selection.legendLabel, 'f')
         anaBins.Reset()
 
     mc_hists.reverse()
@@ -887,7 +887,7 @@ def GetLeptonCandidateSelectionList(sampleID):
     """Make a list of lepton candidate cuts by particle"""
 
     cut = ROOT.DefineCuts()
-    all_nom_sel_cut = None
+    all_nom_sel_cut = ROOT.TCut()
 
     if SAMPLEIDS.IsP0DNuMuSample(sampleID):
         all_nom_sel_cut = cut.muMinusSelection
@@ -899,74 +899,19 @@ def GetLeptonCandidateSelectionList(sampleID):
         print 'ERROR: unable to determine sample in GetLeptonCandidateSelectionList'
         sys.exit(1)
 
-    if ADDITIONAL_CUTS:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, ADDITIONAL_CUTS)
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == ROOT.TCut:
+        all_nom_sel_cut += ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.FVTN208)
+        all_nom_sel_cut += cut.FVTN208
 
     if USE_MOMENTUM_CUT:
-        all_nom_sel_cut = cut.AndTCuts(all_nom_sel_cut, 'LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+        all_nom_sel_cut += ROOT.TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    # all selection events
-    all_nom_sel = selection_info('nom_sel', all_nom_sel_cut,
-                                 'P0D numuCC-inclusive')
-    # mu minuses
-    muMinus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepMuMinus)
-    if TN208_ANALYSIS:
-        muMinus_sel_cut = cut.AndTCuts(muMinus_sel_cut, cut.tFVTN208)
-    muMinus_sel = selection_info('muMinus_sel', muMinus_sel_cut, '#mu^{-}')
-
-    # mu plus
-    muPlus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepMuPlus)
-    if TN208_ANALYSIS:
-        muPlus_sel_cut = cut.AndTCuts(muPlus_sel_cut, cut.tFVTN208)
-    muPlus_sel = selection_info('muPlus_sel', muPlus_sel_cut, '#mu^{+}')
-
-    # pi minus
-    piMinus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepPiMinus)
-    if TN208_ANALYSIS:
-        piMinus_sel_cut = cut.AndTCuts(piMinus_sel_cut, cut.tFVTN208)
-    piMinus_sel = selection_info('piMinus_sel', piMinus_sel_cut, '#pi^{-}')
-
-    # pi plus
-    piPlus_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepPiPlus)
-    if TN208_ANALYSIS:
-        piPlus_sel_cut = cut.AndTCuts(piPlus_sel_cut, cut.tFVTN208)
-    piPlus_sel = selection_info('piPlus_sel', piPlus_sel_cut, '#pi^{+}')
-
-    # pi plus
-    proton_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepProton)
-    if TN208_ANALYSIS:
-        proton_sel_cut = cut.AndTCuts(proton_sel_cut, cut.tFVTN208)
-    proton_sel = selection_info('proton_sel', proton_sel_cut, 'p')
-
-    # EM particles
-    em_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepEMParticle)
-    if TN208_ANALYSIS:
-        em_sel_cut = cut.AndTCuts(em_sel_cut, cut.tFVTN208)
-    em_sel = selection_info('em_sel', em_sel_cut, 'e^{#pm}/#gamma')
-
-    # other particles
-    other_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepOther)
-    if TN208_ANALYSIS:
-        other_sel_cut = cut.AndTCuts(other_sel_cut, cut.tFVTN208)
-    other_sel = selection_info('other_sel', other_sel_cut, 'other')
-
-    # OOFV
-    oofv_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tOOFV)
-    if TN208_ANALYSIS:
-        oofv_sel_cut = cut.AndTCuts(oofv_sel_cut, cut.tOOFVTN208)
-    oofv_sel = selection_info('oofv_sel', oofv_sel_cut, 'OOFV')
-
-    # sand muons
-    # sandmu_sel_cut = ROOT.TCut('%s && %s' % (all_nom_sel_cut, cut.tLepSand))
-    sandmu_sel_cut = cut.AndTCuts(all_nom_sel_cut, cut.tLepSand)
-    sandmu_sel = selection_info('sandmu_sel', sandmu_sel_cut, 'Sand muons')
-
-    particle_selections = [all_nom_sel, muMinus_sel, muPlus_sel,
-                           piMinus_sel, piPlus_sel, proton_sel,
-                           em_sel, other_sel, oofv_sel, sandmu_sel]
+    cut.FillParticleSelections('nom_sel', all_nom_sel_cut, 'P0D numuCC-inclusive')
+    particle_selections = list()
+    for index in range(0, cut.NMAXPARTICLESELECTIONS):
+        particle_selections.append(cut.GetParticleSelection(index))
     return particle_selections
 
 
@@ -1010,17 +955,7 @@ def LoadP0DBANFF():
         sys.exit(1)
     global STACK_COLORS, BLACK
     BLACK = INTERFACE.kcbBlack
-    STACK_COLORS.append(INTERFACE.kcbBlack)  # 0
-    STACK_COLORS.append(INTERFACE.kcbBlue)  # 1
-    STACK_COLORS.append(INTERFACE.kcbSky)  # 2
-    STACK_COLORS.append(INTERFACE.kcbRed)  # 3
-    STACK_COLORS.append(INTERFACE.kcbOrange)  # 4
-    STACK_COLORS.append(INTERFACE.kcbPurple)  # 5
-    STACK_COLORS.append(INTERFACE.kcbGreen)  # 6
-    STACK_COLORS.append(INTERFACE.kcbYellow)  # 7
-    STACK_COLORS.append(INTERFACE.kcbBrightGreen)  # 8
-    STACK_COLORS.append(INTERFACE.kcbBrightPurple)  # 9
-    STACK_COLORS.append(INTERFACE.kcbBrightGrey)  # 10
+    STACK_COLORS = INTERFACE.GetStackColors()
 
 
 def LoadSampleIDs():

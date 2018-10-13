@@ -92,8 +92,6 @@ public:
     void PrettyUpTH2(TH2* inHist, TString xAxisTitle = "none",
         TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
 
-    Int_t GetColorCodeForPDG(Int_t pdg);
-
     ///Get the TStyle pointer
     TStyle* GetThisStyle() const {return P0DBANFFStyle;}
 
@@ -106,9 +104,11 @@ public:
 
     static TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search);
 
+    std::vector<Int_t> GetStackColors() const {return std::vector<Int_t>(StackColors);}
+
 protected:
 
-    void SetPDGColorCodes();
+    std::vector<Int_t> StackColors;
 
 public:
 

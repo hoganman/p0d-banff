@@ -60,6 +60,19 @@ P0DBANFFInterface::P0DBANFFInterface()
     cbMutedWine = new TColor(kcbMutedWine, 0.53, 0.13, 0.33);
     cbMutedPurple = new TColor(kcbMutedPurple, 0.67, 0.27, 0.60);
 
+    StackColors.resize(11);
+    StackColors[0] = kcbBlack;
+    StackColors[1] = kcbBlue;
+    StackColors[2] = kcbSky;
+    StackColors[3] = kcbRed;
+    StackColors[4] = kcbOrange;
+    StackColors[5] = kcbPurple;
+    StackColors[6] = kcbGreen;
+    StackColors[7] = kcbYellow;
+    StackColors[8] = kcbBrightGreen;
+    StackColors[9] = kcbBrightPurple;
+    StackColors[10] = kcbBrightGrey;
+
     P0DBANFFStyle = new TStyle("P0DBANFFStyle","Color style + colorblind frendly palletes");
     TGaxis::SetMaxDigits(3);
     P0DBANFFStyle->SetOptStat("i");
@@ -608,36 +621,6 @@ void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
     const UInt_t dummy = 0;
     PrettyUpTH1(static_cast<TH1*>(inHist), xAxisTitle, yAxisTitle,
 	    dummy, dummy, dummy, textSizeChange);
-}
-
-//**************************************************
-Int_t P0DBANFFInterface::GetColorCodeForPDG(Int_t pdg)
-//**************************************************
-{
-    if(pdgColorCodes.size() == 0)
-        SetPDGColorCodes();
-    std::map<Int_t, Int_t>::iterator it = pdgColorCodes.find(pdg);
-    if( it == pdgColorCodes.end() )
-        return pdgColorCodes[0];
-    return it->second;
-}
-
-//**************************************************
-void P0DBANFFInterface::SetPDGColorCodes()
-//**************************************************
-{
-    HEPConstants hepconsts;
-    pdgColorCodes[0] = kcbBlack;
-    pdgColorCodes[hepconsts.kElectronPDG] = kcbOrange;
-    pdgColorCodes[hepconsts.kPositronPDG] = kcbOrange;
-    pdgColorCodes[hepconsts.kNuEPDG]    = kcbSky;
-    pdgColorCodes[hepconsts.kNuEBarPDG] = kcbSky;
-    pdgColorCodes[hepconsts.kMuMinusPDG] = kcbPurple;
-    pdgColorCodes[hepconsts.kNuMuPDG] = kcbBlack;
-    pdgColorCodes[hepconsts.kMuPlusPDG] = kcbRed;
-    pdgColorCodes[hepconsts.kNuMuBarPDG] = kcbGreen;
-    pdgColorCodes[hepconsts.kPiPlusPDG] = kcbYellow;
-    pdgColorCodes[hepconsts.kPiMinusPDG] = kcbBlue;
 }
 
 //**************************************************

@@ -112,6 +112,8 @@ void HEPConstants::Init()
     kNEUTNuP_CC1PiPlusP = 11; // NEU,P --> LEPTON-,P,PI+
     kNEUTNuN_CC1PiZeroP = 12; // NEU,N --> LEPTON-,P,PI0
     kNEUTNuN_CC1PiPlusN = 13; // NEU,N --> LEPTON-,N,PI+
+
+    // -- CC COHERENT --
     kNEUTNuO_CC1PiPlusO = 16; // NEU,O(16) --> LEPTON-,O(16),PI+
 
     // -- SINGLE GAMMA FROM DELTA RESONANCE --
@@ -170,6 +172,8 @@ void HEPConstants::Init()
     kNEUTAntiNuP_CC1PiPlusP = -11; // NEUBAR,P --> LEPTON-,P,PI+
     kNEUTAntiNuN_CC1PiZeroP = -12; // NEUBAR,N --> LEPTON-,P,PI0
     kNEUTAntiNuN_CC1PiPlusN = -13; // NEUBAR,N --> LEPTON-,N,PI+
+
+    // -- CC COHERENT --
     kNEUTAntiNuO_CC1PiPlusO = -16; // NEUBAR,O(16) --> LEPTON-,O(16),PI+
 
     // -- SINGLE GAMMA FROM DELTA RESONANCE --

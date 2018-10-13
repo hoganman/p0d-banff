@@ -163,12 +163,16 @@ public:
     inline Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum)||IsP0DNuMuBkgSample(testEnum);}
     inline Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuBkgInAntiNuModeSample(testEnum)||IsP0DNuMuBarInAntiNuModeSample(testEnum);}
 
-    Bool_t IsP0DNuMuSample(const Int_t &testInt) const {return IsP0DNuMuSample(static_cast<SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DNuMuBkgSample(const Int_t &testInt) const {return IsP0DNuMuBkgSample(static_cast<SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DNuMuBkgInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBkgInAntiNuModeSample(static_cast<SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DNuMuBarInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBarInAntiNuModeSample(static_cast<SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DWaterSample(const Int_t &testInt) const {return IsP0DWaterSample(static_cast<const SampleId::SampleEnum>(testInt));}
-    Bool_t IsP0DAirSample(const Int_t &testInt) const {return IsP0DAirSample(static_cast<const SampleId::SampleEnum>(testInt));}
+    inline const SampleId::SampleEnum Convert(const Int_t& input) const {return static_cast<SampleId::SampleEnum>(input);}
+    Bool_t IsP0DNuMuSample(const Int_t &testInt) const {return IsP0DNuMuSample(Convert(testInt));}
+    Bool_t IsP0DNuMuBkgSample(const Int_t &testInt) const {return IsP0DNuMuBkgSample(Convert(testInt));}
+    Bool_t IsP0DNuMuBkgInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBkgInAntiNuModeSample(Convert(testInt));}
+    Bool_t IsP0DNuMuBarInAntiNuModeSample(const Int_t &testInt) const {return IsP0DNuMuBarInAntiNuModeSample(Convert(testInt));}
+    Bool_t IsP0DWaterSample(const Int_t &testInt) const {return IsP0DWaterSample(Convert(testInt));}
+    Bool_t IsP0DAirSample(const Int_t &testInt) const {return IsP0DAirSample(Convert(testInt));}
+
+    const char* GetLabelName(const SampleId::SampleEnum &testEnum) const;
+    const char* GetLabelName(const Int_t &testInt) const { return GetLabelName(Convert(testInt)); }
 
     ClassDef(SampleId, 1)
 
