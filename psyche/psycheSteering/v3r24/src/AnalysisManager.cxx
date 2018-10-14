@@ -11,6 +11,8 @@
 #include "BFieldDistortionSystematics.hxx"
 #include "MomentumScaleSystematics.hxx"
 #include "MomentumResolSystematics.hxx"
+#include "P0DELossScaleSystematics.hxx"
+#include "P0DELossResolSystematics.hxx"
 #include "ToFResolSystematics.hxx"
 #include "ECalEMEnergyResolSystematics.hxx"
 #include "ECalEMEnergyScaleSystematics.hxx"
@@ -22,6 +24,7 @@
 #include "FGDHybridTrackEffSystematics.hxx"
 #include "TPCClusterEffSystematics.hxx"
 #include "MichelElectronEffSystematics.hxx"
+#include "P0DVetoSystematics.hxx"
 
 // Matching
 #include "TPCFGDMatchEffSystematics.hxx"
@@ -38,6 +41,7 @@
 #include "PileUpSystematics.hxx"
 #include "FGDMassSystematics.hxx"
 #include "OOFVSystematics.hxx"
+#include "P0DOOFVSystematics.hxx"
 #include "SandMuonsSystematics.hxx"
 #include "SIPionSystematics.hxx"
 #include "SIProtonSystematics.hxx"
@@ -535,9 +539,14 @@ void AnalysisManager::DefineSystematics(){
   eweight().AddEventWeight(SystId::kNuEECalPileUp,     "NuEECalPileUp",     new nueECalPileUpSystematics());
   eweight().AddEventWeight(SystId::kNuEOOFV,           "NuEOOFV",           new nueOOFVSystematics());
 
-  //P0D+TPC!!!
+  // P0D+TPC
+  evar().AddEventVariation(SystId::kP0DELossScale,     "P0DELossScale" ,    new P0DELossScaleSystematics());
+  evar().AddEventVariation(SystId::kP0DELossResol,     "P0DELossResol" ,    new P0DELossResolSystematics());
+  eweight().AddEventWeight(SystId::kP0DOOFV,           "P0DOOFV"       ,    new P0DOOFVSystematics());
+  eweight().AddEventWeight(SystId::kP0DVeto,           "P0DVeto"       ,    new P0DVetoSystematics());
   eweight().AddEventWeight(SystId::kTpcP0dMatchEff,    "TpcP0dMatchEff",    new TPCP0DMatchEffSystematics());
 
+  // Flux
   syst().AddFluxSystematic(SystId::kFluxWeight,        "FluxWeight",        new FluxWeightSystematics());
 
 
@@ -584,6 +593,10 @@ void AnalysisManager::DefineSystematics(){
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEOOFV"))           eweight().EnableEventWeight(SystId::kNuEOOFV);
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcP0dMatchEff"))    eweight().EnableEventWeight(SystId::kTpcP0dMatchEff);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DELossScale"))     evar().EnableEventVariation(SystId::kP0DELossScale);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DELossResol"))     evar().EnableEventVariation(SystId::kP0DELossResol);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DOOFV"      ))     eweight().EnableEventWeight(SystId::kP0DOOFV       );
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DVeto"      ))     eweight().EnableEventWeight(SystId::kP0DVeto       );
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableFlux"))              syst().EnableSystematic(SystId::kFluxWeight);
 

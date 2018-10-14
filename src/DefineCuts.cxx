@@ -138,7 +138,7 @@ void DefineCuts::SetCuts()
     tNEUTNuCC2p2h = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTNu_2p2h)) && tFV;
     tNEUTNuCC2p2h.SetName("True NEUT Nu CC-2p2h");
 
-    tNEUTNuCC1pi = TCut(TString::Format("%d<=tReacionCode&&tReacionCode<=%d",
+    tNEUTNuCC1pi = TCut(TString::Format("(%d<=tReacionCode&&tReacionCode<=%d)||tReactionCode==3",
                         pdg.kNEUTNuP_CC1PiPlusP, pdg.kNEUTNuO_CC1PiPlusO)) && tFV;
     tNEUTNuCC1pi.SetName("True NEUT Nu CC-1pi");
 
@@ -164,7 +164,7 @@ void DefineCuts::SetCuts()
     tNEUTAntiNuCC2p2h = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTAntiNu_2p2h)) && tFV;
     tNEUTAntiNuCC2p2h.SetName("True NEUT Anti-nu CC-2p2h");
 
-    tNEUTAntiNuCC1pi = TCut(TString::Format("%d<=tReacionCode&&tReacionCode<=%d",
+    tNEUTAntiNuCC1pi = TCut(TString::Format("(%d<=tReacionCode&&tReacionCode<=%d)||tReacionCode==-3",
                         pdg.kNEUTAntiNuO_CC1PiPlusO, pdg.kNEUTAntiNuP_CC1PiPlusP)) && tFV;
     tNEUTAntiNuCC1pi.SetName("True NEUT Anti-nu CC-1pi");
 

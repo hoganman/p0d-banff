@@ -9,31 +9,31 @@ namespace SystId{
     enum SystEnum {
         // Momentum related systematics
         kBFieldDist=0,
-        kMomScale,      
+        kMomScale,
         kMomResol,
         kMomRangeResol,
-        kMomBiasFromVertexMigration, 
-        // Charge and PID identification 
-        kTpcPid,        
-        kFgdPid,        
-        kChargeIDEff,    
+        kMomBiasFromVertexMigration,
+        // Charge and PID identification
+        kTpcPid,
+        kFgdPid,
+        kChargeIDEff,
         // Efficiencies for TPC tracking
-        kTpcClusterEff,     
+        kTpcClusterEff,
         kTpcTrackEff,
         // TPC matching
         kTpcFgdMatchEff,
-        kTpcECalMatchEff, 
-        kTpcP0dMatchEff, 
+        kTpcECalMatchEff,
+        kTpcP0dMatchEff,
         // FGD reconstruction efficiencies
-        kFgdTrackEff,       
-        kFgdHybridTrackEff, 
-        kMichelEleEff,          
+        kFgdTrackEff,
+        kFgdHybridTrackEff,
+        kMichelEleEff,
         // Pile-up, tracker
         kPileUp,
         // Detector mass, normalization
         kFgdMass,
         // OOFV
-        kOOFV, 
+        kOOFV,
         // GEANT 4 model
         kSIPion,
         kSIProton,
@@ -44,14 +44,14 @@ namespace SystId{
         kECalEMScale,
         kECalTrackEff,
         kECalPID,
-        kECalPiZeroVetoPileUp, 
+        kECalPiZeroVetoPileUp,
         // High-angle matching
-        kFgdECalMatchEff, 
+        kFgdECalMatchEff,
         kFgdECalSmrdMatchEff,
         // ToF
-        kToFResol, 
+        kToFResol,
         // Flux
-        kFluxWeight,      
+        kFluxWeight,
         // NuE analysis specific
         kECalEmHipPID,
         kFGD2Shower,
@@ -63,13 +63,14 @@ namespace SystId{
         kP0DELossScale,
         kP0DELossResol,
         kP0DVeto,
-        
+        kP0DOOFV,
+
         kNotASyst,
         SystEnumLast_SystId
     };
-    std::string ConvertSystematic(SystId::SystEnum syst);  
-    SystId::SystEnum GetSystematic(std::string);  
-    
+    std::string ConvertSystematic(SystId::SystEnum syst);
+    SystId::SystEnum GetSystematic(std::string);
+
 }
 
 
