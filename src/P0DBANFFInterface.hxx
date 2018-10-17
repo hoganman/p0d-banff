@@ -35,62 +35,62 @@ public:
     ///The time is between zero (0) and "scale" seconds.
     ///For scale == 10, then ROOT will sleep between 0 to 10 seconds
     ///The seed is from the current Unix time unless otherwise stated
-    void RandomSleep(Int_t nSeconds, Int_t seed=0) const;
+    static void RandomSleep(Int_t nSeconds, Int_t seed=0);
 
     ///Split a TString into its components by a separator
     static std::vector<TString> SplitString(TString theOpt, Char_t separator);
 
     ///For a given TCanvas, get the TH1
-    TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName) const;
+    static TH1* GetTH1FromCanvas(TCanvas* inCanvas, TString histName);
 
     ///For a given TCanvas, get the TH2
-    TH2* GetTH2FromCanvas(TCanvas* inCanvas, TString histName) const;
+    static TH2* GetTH2FromCanvas(TCanvas* inCanvas, TString histName);
 
     ///For a given TFile, get the TCanvas
-    TCanvas* GetTCanvasFromFile(TFile* inFile, TString canvasName) const;
+    static TCanvas* GetTCanvasFromFile(TFile* inFile, TString canvasName);
 
     ///Convert a ROOT file with a canvas to various other file formats
     ///To specify different file formats, separate them by a char delimiter
-    void SaveCanvasAs(TString inputFileName, TString canvasName = "c1",
+    static void SaveCanvasAs(TString inputFileName, TString canvasName = "c1",
         TString outputNamePrefix = "", TString formats = "root,png",
-        Char_t delimiter = ',') const;
+        Char_t delimiter = ',');
 
     ///Save a canvas to various file formats. Default is eps, png, pdf, and root
     ///To specify different file formats, separate them by a char delimiter
-    void SaveCanvasAs(TCanvas* const canvas, TString outputNamePrefix,
-        TString formats = "root,png", Char_t delimiter = ',') const;
+    static void SaveCanvasAs(TCanvas* const canvas, TString outputNamePrefix,
+        TString formats = "root,png", Char_t delimiter = ',');
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
+    static void PrettyUpTH1(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
         TString yAxisTitle = "none", TString saveAsFormats = "root,png",
         Char_t delimiter = ',', Int_t lineColor = P0DBANFFInterface::kcbBlue,
-        Int_t fillColor = 0, Int_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        Int_t fillColor = 0, Int_t lineWidth = 3, Double_t textSizeChange = 0.0);
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTH1(TH1* inHist, TString xAxisTitle = "none",
+    static void PrettyUpTH1(TH1* inHist, TString xAxisTitle = "none",
         TString yAxisTitle = "none",
         Int_t lineColor = P0DBANFFInterface::kcbBlue, Int_t fillColor = 0,
-        Int_t lineWidth = 3, Double_t textSizeChange = 0.0) const;
+        Int_t lineWidth = 3, Double_t textSizeChange = 0.0);
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTHStack(THStack* stack, TString xAxisTitle = "none",
-        TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
+    static void PrettyUpTHStack(THStack* stack, TString xAxisTitle = "none",
+        TString yAxisTitle = "none", Double_t textSizeChange = 0.0);
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTH2(TString inFileName, TString outputName, TString canvasName = "c1",
+    static void PrettyUpTH2(TString inFileName, TString outputName, TString canvasName = "c1",
         TString histName = "", TString xAxisTitle = "none",
         TString yAxisTitle = "none", TString saveAsFormats = "root,png",
-        Char_t delimiter = ',', Double_t textSizeChange = 0.0) const;
+        Char_t delimiter = ',', Double_t textSizeChange = 0.0);
 
     ///Applies a set of styles and font size to make
     ///canvases easier to see in presentations
-    void PrettyUpTH2(TH2* inHist, TString xAxisTitle = "none",
-        TString yAxisTitle = "none", Double_t textSizeChange = 0.0) const;
+    static void PrettyUpTH2(TH2* inHist, TString xAxisTitle = "none",
+        TString yAxisTitle = "none", Double_t textSizeChange = 0.0);
 
     ///Get the TStyle pointer
     TStyle* GetThisStyle() const {return P0DBANFFStyle;}
@@ -99,8 +99,8 @@ public:
     void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
 
     ///To convert sci notation for stringification
-    Int_t GetExponentBase10(Double_t arg) const;
-    Double_t GetMantissaBase10(Double_t arg, Int_t exp=9999) const;
+    static Int_t GetExponentBase10(Double_t arg);
+    static Double_t GetMantissaBase10(Double_t arg, Int_t exp=9999);
 
     static TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search);
 

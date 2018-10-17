@@ -145,7 +145,7 @@ P0DBANFFInterface::~P0DBANFFInterface()
 void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
         TString canvasName, TString histName, TString xAxisTitle,
         TString yAxisTitle, TString saveAsFormats, Char_t delimiter, Int_t lineColor,
-        Int_t fillColor, Int_t lineWidth, Double_t textSizeChange) const
+        Int_t fillColor, Int_t lineWidth, Double_t textSizeChange)
 //**************************************************
 {
 
@@ -203,7 +203,7 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
 //**************************************************
 void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
         TString xAxisTitle, TString yAxisTitle,
-    Double_t textSizeChange) const
+    Double_t textSizeChange)
 //**************************************************
 {
   if(!stack)
@@ -234,7 +234,7 @@ void P0DBANFFInterface::PrettyUpTHStack(THStack* stack,
 void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
         TString xAxisTitle, TString yAxisTitle,
         Int_t lineColor, Int_t fillColor,
-    Int_t lineWidth, Double_t textSizeChange) const
+    Int_t lineWidth, Double_t textSizeChange)
 //**************************************************
 {
     if(!inHist)
@@ -272,7 +272,7 @@ void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
 }
 
 //**************************************************
-void P0DBANFFInterface::RandomSleep(Int_t nSeconds, Int_t seed) const
+void P0DBANFFInterface::RandomSleep(Int_t nSeconds, Int_t seed)
 //**************************************************
 {
     if(nSeconds <= 0){
@@ -374,7 +374,7 @@ void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
 //**************************************************
 void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
     TString outputNamePrefix, TString formats,
-    Char_t delimiter) const
+    Char_t delimiter)
 //**************************************************
 {
     std::cout << "...Saving canvas as " << std::endl;
@@ -408,7 +408,7 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
 //**************************************************
 void P0DBANFFInterface::SaveCanvasAs(TString inputFileName,
         TString canvasName, TString outputNamePrefix,
-        TString formats, Char_t delimiter) const
+        TString formats, Char_t delimiter)
 //**************************************************
 {
   TCanvas* canvas = NULL;
@@ -492,7 +492,7 @@ TObject* P0DBANFFInterface::FindObjectInFileByName(TFile* inFile,
 
 //**************************************************
 TCanvas* P0DBANFFInterface::GetTCanvasFromFile(TFile* inFile,
-        TString canvasName) const
+        TString canvasName)
 //**************************************************
 {
     TCanvas* canvas = NULL;
@@ -517,7 +517,7 @@ TCanvas* P0DBANFFInterface::GetTCanvasFromFile(TFile* inFile,
 
 //**************************************************
 TH2* P0DBANFFInterface::GetTH2FromCanvas(TCanvas* inCanvas,
-        TString histName) const
+        TString histName)
 //**************************************************
 {
     return static_cast<TH2*>(GetTH1FromCanvas(inCanvas, histName));
@@ -526,7 +526,7 @@ TH2* P0DBANFFInterface::GetTH2FromCanvas(TCanvas* inCanvas,
 
 //**************************************************
 TH1* P0DBANFFInterface::GetTH1FromCanvas(TCanvas* inCanvas,
-        TString histName) const
+        TString histName)
 //**************************************************
 {
     TH1* htemp = NULL;
@@ -557,7 +557,7 @@ void P0DBANFFInterface::PrettyUpTH2(TString inFileName, TString outputName,
 	TString canvasName, TString histName,
 	TString xAxisTitle, TString yAxisTitle,
 	TString saveAsFormats, Char_t delimiter,
-	Double_t textSizeChange) const
+	Double_t textSizeChange)
 //**************************************************
 {
     TCanvas* canvas = NULL;
@@ -615,7 +615,7 @@ void P0DBANFFInterface::PrettyUpTH2(TString inFileName, TString outputName,
 
 //**************************************************
 void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
-	TString yAxisTitle, Double_t textSizeChange) const
+	TString yAxisTitle, Double_t textSizeChange)
 //**************************************************
 {
     const UInt_t dummy = 0;
@@ -624,14 +624,14 @@ void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
 }
 
 //**************************************************
-Int_t P0DBANFFInterface::GetExponentBase10(Double_t arg) const
+Int_t P0DBANFFInterface::GetExponentBase10(Double_t arg)
 //**************************************************
 {
    return (arg == 0) ? 0 : static_cast<Int_t>(std::floor(std::log10(std::fabs(arg))));
 }
 
 //**************************************************
-Double_t P0DBANFFInterface::GetMantissaBase10(Double_t arg, Int_t exp) const
+Double_t P0DBANFFInterface::GetMantissaBase10(Double_t arg, Int_t exp)
 //**************************************************
 {
     if(exp == 9999)

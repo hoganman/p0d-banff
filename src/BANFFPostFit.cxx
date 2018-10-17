@@ -251,7 +251,6 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
         const Int_t &projection, const Double_t &normalizeBinsBy ) const
 //**************************************************
 {
-    const P0DBANFFInterface interface;
     const TString prefitName = name + "_prefit";
     THnT<double>* prefit = GetTHn(prefitName);
     if(!prefit)
@@ -328,12 +327,12 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
         xAxisTitle = "Lepton Candidate Angle [cos(#theta)]";
     }
 
-    interface.PrettyUpTH1(data_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbBlack);
-    interface.PrettyUpTH1(prefit_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbSky);
+    P0DBANFFInterface::PrettyUpTH1(data_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbBlack);
+    P0DBANFFInterface::PrettyUpTH1(prefit_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbSky);
 
     TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
-    TPad* pad1 = new TPad("pad1", "pad1", 0.0, 0.325, 1.0, 1.0);
-    pad1->SetBottomMargin(0);
+    TPad* pad1 = new TPad("pad1", "pad1", 0.0, 0.25, 1.0, 1.0);
+    pad1->SetBottomMargin(0.1);
     pad1->Draw();
     pad1->cd();
     data_1D->Draw();
@@ -360,12 +359,11 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     canvas->cd();
     TPad* pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.225);
     pad2->SetTopMargin(0);
-    pad2->SetBottomMargin(0.2);
+    pad2->SetBottomMargin(0.1);
     pad2->SetGridx();  // vertical grid
     pad2->SetGridy();  // horizontal grid
     pad2->Draw();
     pad2->cd();      // pad2 becomes the current pad
-    pad2->SetBottomMargin(0.3);
 
     // Define the ratio plot
     TH1D* data_prefit_ratio = static_cast<TH1D*>(data_1D->Clone(TString::Format("data_prefit_ratio_%s", name.Data())));
@@ -398,6 +396,5 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     data_prefit_ratio->GetXaxis()->SetTitleSize(0.15);
     data_prefit_ratio->GetXaxis()->SetLabelSize(3* prefit_1D->GetXaxis()->GetLabelSize());
     //data_prefit_ratio->GetXaxis()->SetLabelSize(15);
-
     return canvas;
 }
