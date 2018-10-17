@@ -1,0 +1,41 @@
+package highland2/p0dAntiNumuCCAnalysis
+version v2r6
+
+manager Thomas Campbell 
+author nd280-software@mailman.t2k.org
+
+branches cmt src doc app 
+
+use highlandTools * highland2
+use baseTrackerAnalysis * highland2
+use numuCCAnalysis * highland2
+use p0dNumuCCAnalysis * highland2
+
+# Build methods to include.
+document doxygen doxygen -group=documentation src/*.cpp src/*.h src/*.hxx src/*.cxx ../doc/*.dox
+
+# Build information used by packages that use this one.
+macro p0dAntiNumuCCAnalysis_cppflags " -DP0DANTINUMUCCANALYSIS_USED"
+macro p0dAntiNumuCCAnalysis_linkopts " -L$(P0DANTINUMUCCANALYSISROOT)/$(p0dAntiNumuCCAnalysis_tag) -lp0dAntiNumuCCAnalysis "
+macro p0dAntiNumuCCAnalysis_stamps " $(P0DANTINUMUCCANALYSISROOT)/$(p0dAntiNumuCCAnalysis_tag)/p0dAntiNumuCCAnalysis.stamp"
+
+# The paths to find this library.
+path_remove PATH "$(P0DANTINUMUCCANALYSISROOT)"
+path_prepend PATH "$(P0DANTINUMUCCANALYSISROOT)/$(p0dAntiNumuCCAnalysis_tag)"
+path_remove LD_LIBRARY_PATH "$(P0DANTINUMUCCANALYSISROOT)"
+path_prepend LD_LIBRARY_PATH "$(P0DANTINUMUCCANALYSISROOT)/$(p0dAntiNumuCCAnalysis_tag)"
+path_remove DYLD_LIBRARY_PATH "" \
+	    Darwin	      "$(P0DANTINUMUCCANALYSISROOT)"
+path_prepend DYLD_LIBRARY_PATH "" \
+	     Darwin	       "$(P0DANTINUMUCCANALYSISROOT)/$(p0dAntiNumuCCAnalysis_tag)"
+
+
+# The library to build
+library p0dAntiNumuCCAnalysis *.cxx  ../dict/*.cxx
+
+application RunP0DAntiNumuCCAnalysis ../app/RunP0DAntiNumuCCAnalysis*.cxx
+
+# tests
+document doxygen doxygen -group=documentation ../scripts/* ../doc/*.dox
+
+
