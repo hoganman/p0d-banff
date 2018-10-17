@@ -132,7 +132,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = DataFit_Tracker_2017.root >
+< BANFF.RunFit.OutputFile = DataFit_P0DRun4_SystWeightsOff.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >

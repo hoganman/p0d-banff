@@ -65,8 +65,8 @@ int main(int argc, char** argv){
     //For each observable and sample set up the binning used in the fit.
 
     //Set the binning for the CCp0d_water_inc sample.
-    Int_t npbins_p0d_water_inc = 4;
-    Double_t pbins_p0d_water_inc[5] = {0.,450.,700.,1100.,1600.};
+    Int_t npbins_p0d_water_inc = 8;
+    Double_t pbins_p0d_water_inc[9] = {0.,450.,700.,1100.,1600.,2200, 3000,4000,5000};
     Int_t nctbins_p0d_water_inc = 5;
     Double_t ctbins_p0d_water_inc[6] = {0.0,+0.8,+0.90,+0.955,+0.985,1};
     TAxis* pAxis_p0d_water_inc  = new TAxis(npbins_p0d_water_inc, pbins_p0d_water_inc);
@@ -75,8 +75,8 @@ int main(int argc, char** argv){
     p0d_water_numuccinc_axes[0] = pAxis_p0d_water_inc;
     p0d_water_numuccinc_axes[1] = thAxis_p0d_water_inc;
 
-    Int_t npbins_p0d_air_inc = 4;
-    Double_t pbins_p0d_air_inc[5] = {0.,450.,700.,1100.,1600.};
+    Int_t npbins_p0d_air_inc = 8;
+    Double_t pbins_p0d_air_inc[9] = {0.,450.,700.,1100.,1600.,2200, 3000,4000,5000};
     Int_t nctbins_p0d_air_inc = 5;
     Double_t ctbins_p0d_air_inc[6] = {0.0,+0.8,+0.90,+0.955,+0.985,1};
     TAxis* pAxis_p0d_air_inc  = new TAxis(npbins_p0d_air_inc, pbins_p0d_air_inc);
@@ -85,6 +85,7 @@ int main(int argc, char** argv){
     p0d_air_numuccinc_axes[0] = pAxis_p0d_air_inc;
     p0d_air_numuccinc_axes[1] = thAxis_p0d_air_inc;
 
+    /*
     Int_t npbins_p0d_water_numubar_inc = 6;
     Double_t pbins_p0d_water_numubar_inc[7] = {0.,450.,700.,1100.,1600.,2600.,5000.};
     Int_t nctbins_p0d_water_numubar_inc = 6;
@@ -124,6 +125,7 @@ int main(int argc, char** argv){
     TAxis** p0d_air_numuRHCccinc_axes = new TAxis*[2];
     p0d_air_numuRHCccinc_axes[0] = pAxis_p0d_air_numuRHC_inc;
     p0d_air_numuRHCccinc_axes[1] = thAxis_p0d_air_numuRHC_inc;
+    */
 
     //Create the samples.
     //Supply the:
@@ -140,16 +142,17 @@ int main(int argc, char** argv){
     // FHC Numu selections
     BANFFBinnedSample* fhc_p0d_water_numuccinc = new BANFFBinnedSample("fhc_p0d_water_numuccinc", SampleId::kP0DWaterNuMuCC, 2, observables, p0d_water_numuccinc_axes, throwMCStat, throwStat);
 
+    BANFFBinnedSample* fhc_p0d_air_numuccinc = new BANFFBinnedSample("fhc_p0d_air_numuccinc", SampleId::kP0DAirNuMuCC, 2, observables, p0d_air_numuccinc_axes, throwMCStat, throwStat);
+
+    /*
     BANFFBinnedSample* rhc_p0d_water_numubarccinc = new BANFFBinnedSample("rhc_p0d_water_numubarccinc", SampleId::kP0DWaterNuMuBarInAntiNuModeCC, 2, observables, p0d_water_numubarRHCccinc_axes, throwMCStat, throwStat);
 
     BANFFBinnedSample* rhc_p0d_water_numubkgccinc = new BANFFBinnedSample("rhc_p0d_water_numubkgccinc", SampleId::kP0DWaterNuMuBkgInAntiNuModeCC, 2, observables, p0d_water_numuRHCccinc_axes, throwMCStat, throwStat);
 
-    BANFFBinnedSample* fhc_p0d_air_numuccinc = new BANFFBinnedSample("fhc_p0d_air_numuccinc", SampleId::kP0DAirNuMuCC, 2, observables, p0d_air_numuccinc_axes, throwMCStat, throwStat);
-
     BANFFBinnedSample* rhc_p0d_air_numubarccinc = new BANFFBinnedSample("rhc_p0d_air_numubarccinc", SampleId::kP0DAirNuMuBarInAntiNuModeCC, 2, observables, p0d_air_numubarRHCccinc_axes, throwMCStat, throwStat);
 
     BANFFBinnedSample* rhc_p0d_air_numubkgccinc = new BANFFBinnedSample("rhc_p0d_air_numubkgccinc", SampleId::kP0DAirNuMuBkgInAntiNuModeCC, 2, observables, p0d_air_numuRHCccinc_axes, throwMCStat, throwStat);
-
+    */
     int nSamples = 0;
     BANFFSampleBase** samples = new BANFFSampleBase*[nSamples];
 
