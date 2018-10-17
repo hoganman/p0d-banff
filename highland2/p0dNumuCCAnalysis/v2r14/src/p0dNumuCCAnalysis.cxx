@@ -1,5 +1,6 @@
 #include "p0dNumuCCAnalysis.hxx"
-#include "p0dNumuCCSelection.hxx"
+#include "p0dWaterNumuCCSelection.hxx"
+//#include "p0dAirNumuCCSelection.hxx"
 #include "FiducialVolumeDefinition.hxx"
 #include "Parameters.hxx"
 #include "UseGlobalAltMomCorrection.hxx"
@@ -71,7 +72,8 @@ void p0dNumuCCAnalysis::DefineSelections(){
 //********************************************************************
 
   // ----- Inclusive CC -----------
-  sel().AddSelection("kP0DNuMuCC",           "inclusive p0dNumuCC selection",     new p0dNumuCCSelection(false));
+  //sel().AddSelection("kP0DNuMuCCWaterOut",           "inclusive p0dNumuCC selection, water-out",     new p0dAirNumuCCSelection(false));
+  sel().AddSelection("kP0DNuMuCCWaterIn",            "inclusive p0dNumuCC selection, water-in",      new p0dWaterNumuCCSelection(false));
 }
 
 //********************************************************************
