@@ -510,14 +510,6 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         canvas.SetLogy(0)
 
     if SHOW_RATIO_PLOT_BELOW:
-        # Do not draw the Y axis label on the upper plot and redraw a small
-        # axis instead, in order to avoid the first label (0) to be clipped.
-        # h_stack.GetYaxis().SetLabelSize(0.)
-        # axis = ROOT.TGaxis(-5, 20, -5, 220, 20, 220, 510, "")
-        # axis.SetLabelFont(43)
-        # axis.SetLabelSize(15)
-        # axis.Draw()
-
         canvas.cd()  # Go back to the main canvas before defining pad2
         pad2 = ROOT.TPad("pad2", "pad2", 0, 0.0, 1., 0.225)
         pad2.SetTopMargin(0)

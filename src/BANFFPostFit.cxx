@@ -251,6 +251,7 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
         const Int_t &projection, const Double_t &normalizeBinsBy ) const
 //**************************************************
 {
+    const P0DBANFFInterface interface;
     const TString prefitName = name + "_prefit";
     THnT<double>* prefit = GetTHn(prefitName);
     if(!prefit)
@@ -293,8 +294,6 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
             postfit_1D->SetBinContent(bin, postfit_binContent);
         }
     }
-    prefit_1D->SetLineColor(P0DBANFFInterface::kcbSky);
-    data_1D->SetLineColor(P0DBANFFInterface::kcbBlack);
 
     prefit_1D->SetLineWidth(3);
     data_1D->SetLineWidth(3);
@@ -309,25 +308,31 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
 
     data_1D->SetMaximum(max);
     prefit_1D->SetMaximum(max);
+
+    TString xAxisTitle;
+    TString yAxisTitle;
     if(projection == 0)
     {
         if(normalizeBinsBy > 0)
-            data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f MeV/c)", normalizeBinsBy));
+            yAxisTitle = TString::Format("Events/(%.f MeV/c)", normalizeBinsBy);
         else
-            data_1D->GetYaxis()->SetTitle("Events/bin");
+            yAxisTitle = "Events/bin";
+        xAxisTitle = "Lepton Candidate Momentum [MeV/c]";
     }
     if(projection == 1)
     {
-        data_1D->GetXaxis()->SetTitle("Muon cos(#theta)");
         if(normalizeBinsBy > 0)
-            data_1D->GetYaxis()->SetTitle(TString::Format("Events/(%.f)", normalizeBinsBy));
+            yAxisTitle = TString::Format("Events/(%.f)", normalizeBinsBy);
         else
-            data_1D->GetYaxis()->SetTitle("Events/bin");
+            yAxisTitle = "Events/bin";
+        xAxisTitle = "Lepton Candidate Angle [cos(#theta)]";
     }
 
-    TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
+    interface.PrettyUpTH1(data_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbBlack);
+    interface.PrettyUpTH1(prefit_1D, xAxisTitle, yAxisTitle, P0DBANFFInterface::kcbSky);
 
-    TPad* pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+    TCanvas* canvas = new TCanvas(TString::Format("canvas_%s", name.Data()), "", 800,600);
+    TPad* pad1 = new TPad("pad1", "pad1", 0.0, 0.325, 1.0, 1.0);
     pad1->SetBottomMargin(0);
     pad1->Draw();
     pad1->cd();
@@ -352,13 +357,8 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     }
     legend->Draw();
 
-    //Do not draw the Y axis label on the upper plot and redraw a small
-    //axis instead, in order to avoid the first label (0) to be clipped.
-    TGaxis* axis = new TGaxis(-5, 20, -5, 220, 20, 220, 510, "");
-    axis->Draw();
-
     canvas->cd();
-    TPad* pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+    TPad* pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.225);
     pad2->SetTopMargin(0);
     pad2->SetBottomMargin(0.2);
     pad2->SetGridx();  // vertical grid
@@ -380,7 +380,7 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
 
     TLine* line = new TLine(data_prefit_ratio->GetXaxis()->GetBinLowEdge(1), 1, data_prefit_ratio->GetXaxis()->GetBinUpEdge(data_prefit_ratio->GetXaxis()->GetNbins()), 1);
     line->SetLineWidth(3);
-    line->SetLineStyle(9);
+    line->SetLineStyle(P0DBANFFInterface::kThickDashedLineStyle);
     line->SetLineColor(P0DBANFFInterface::kcbBlue);
     data_prefit_ratio->Draw("ep");       // Draw the ratio plot
     line->Draw();
@@ -394,10 +394,6 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     data_prefit_ratio->GetYaxis()->SetTitleSize(0.2);
 
     // X axis ratio plot settings
-    if(projection == 0)
-        data_prefit_ratio->GetXaxis()->SetTitle("Muon Momentum [MeV/c]");
-    if(projection == 1)
-        data_prefit_ratio->GetXaxis()->SetTitle("Muon cos(#theta)");
     data_prefit_ratio->GetXaxis()->SetTitleOffset(prefit_1D->GetXaxis()->GetTitleOffset());
     data_prefit_ratio->GetXaxis()->SetTitleSize(0.15);
     data_prefit_ratio->GetXaxis()->SetLabelSize(3* prefit_1D->GetXaxis()->GetLabelSize());
