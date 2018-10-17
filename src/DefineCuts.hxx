@@ -59,7 +59,7 @@ public:
     ///Any lepton candidate species not listed above
     TCut tLepOther;
     ///Is the particle coming from the sand?
-    TCut tLepSand;
+    TCut tSand;
     ///Is parent neutrino a numu
     TCut tParNuMu;
     ///Is parent neutrino a numubar
@@ -110,9 +110,9 @@ public:
     TVector3 minSandCoords;
     TVector3 maxSandCoords;
 
+    static const UInt_t NMAXNEUTSELECTIONS = 11;
     static const UInt_t NMAXPARTICLESELECTIONS = 10;
     static const UInt_t NMAXNEUTRINOSELECTIONS = 7;
-    static const UInt_t NMAXNEUTSELECTIONS = 9;
 
     std::vector<PlottingSelectionInfo*> ParticleSelections;
     std::vector<PlottingSelectionInfo*> NeutrinoSelections;
@@ -135,7 +135,7 @@ public:
     PlottingSelectionInfo* GetParticleSelection(const UInt_t &index) const {return ParticleSelections[index];}
     PlottingSelectionInfo* GetNeutrinoSelection(const UInt_t &index) const {return NeutrinoSelections[index];}
     PlottingSelectionInfo* GetNEUTNuSelection(const UInt_t &index) const {return NEUTNuSelections[index];}
-    PlottingSelectionInfo* GetNEUTAntiSelection(const UInt_t &index) const {return NEUTAntiNuSelections[index];}
+    PlottingSelectionInfo* GetNEUTAntiNuSelection(const UInt_t &index) const {return NEUTAntiNuSelections[index];}
 
     ///These methods are NOT PyROOT friendly (CRASHES!)
     PlottingSelectionInfo** FillAndGetParticleSelections(const TString &name, const TString &title,

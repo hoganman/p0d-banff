@@ -123,59 +123,56 @@ void DefineCuts::SetCuts()
                 TCut(TString::Format("tLeptonPDG!=%d" , pdg.kProtonPDG));
     tLepOther.SetName("Other Particle Cut");
 
-    tLepSand = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)&&(%f<=%s&&%s<=%f)",
-                                     pdg.kMuMinusPDG, minSandCoords.Z(), "tVtxZ", "tVtxZ", maxSandCoords.Z()
-                                   )
-                   );
-    tLepSand.SetName("Sand Muon Cut");
+    tSand = TCut(TString::Format("%f<=tVtxZ&&tVtxZ<=%f", minSandCoords.Z(), maxSandCoords.Z()));
+    tSand.SetName("Sand Muon Cut");
 
-    tNEUTNuCCAny = TCut(TString::Format("0<tReactionCode&&tReactionCode<%d", pdg.kNEUTNuN_NC1PiZeroN)) && tFV;
+    tNEUTNuCCAny = TCut(TString::Format("0<tReactionCode&&tReactionCode<%d", pdg.kNEUTNuN_NC1PiZeroN));
     tNEUTNuCCAny.SetName("True NEUT Nu CC");
 
-    tNEUTNuCCQE = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_CCQE)) && tFV;
+    tNEUTNuCCQE = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_CCQE));
     tNEUTNuCCQE.SetName("True NEUT Nu CC-QE");
 
-    tNEUTNuCC2p2h = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTNu_2p2h)) && tFV;
+    tNEUTNuCC2p2h = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_2p2h));
     tNEUTNuCC2p2h.SetName("True NEUT Nu CC-2p2h");
 
-    tNEUTNuCC1pi = TCut(TString::Format("(%d<=tReacionCode&&tReacionCode<=%d)||tReactionCode==3",
-                        pdg.kNEUTNuP_CC1PiPlusP, pdg.kNEUTNuO_CC1PiPlusO)) && tFV;
+    tNEUTNuCC1pi = TCut(TString::Format("(%d<=tReactionCode&&tReactionCode<=%d)||tReactionCode==3",
+                        pdg.kNEUTNuP_CC1PiPlusP, pdg.kNEUTNuO_CC1PiPlusO));
     tNEUTNuCC1pi.SetName("True NEUT Nu CC-1pi");
 
-    tNEUTNuCCNpi = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTNu_CCMultiPi)) && tFV;
+    tNEUTNuCCNpi = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_CCMultiPi));
     tNEUTNuCCNpi.SetName("True NEUT Nu CC-Npi");
 
-    tNEUTNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_CCDIS)) && tFV;
+    tNEUTNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_CCDIS));
     tNEUTNuCCDIS.SetName("True NEUT Nu CC-DIS");
 
     tNEUTNuCCOther = TCut(TString::Format("tReactionCode==%d||tReactionCode==%d||tReactionCode==%d",
-                          pdg.kNEUTNuN_CC1GammaP,pdg.kNEUTNuN_CC1EtaZeroP,pdg.kNEUTNuN_CC1KaPlusLambda)) && tFV;
+                          pdg.kNEUTNuN_CC1GammaP,pdg.kNEUTNuN_CC1EtaZeroP,pdg.kNEUTNuN_CC1KaPlusLambda));
     tNEUTNuCCOther.SetName("True NEUT Nu CC-Other");
 
-    tNEUTNC  = TCut(TString::Format("abs(tReactionCode)>=abs(%d)", pdg.kNEUTNuN_NC1PiZeroN)) && tFV;
+    tNEUTNC  = TCut(TString::Format("abs(tReactionCode)>=abs(%d)", pdg.kNEUTNuN_NC1PiZeroN));
     tNEUTNC.SetName("True NEUT NC");
 
-    tNEUTAntiNuCCAny = TCut(TString::Format("%d<tReactionCode&&tReactionCode<%d", pdg.kNEUTAntiNuN_NC1PiZeroN, pdg.kNEUTAntiNu_CCQE)) && tFV;
+    tNEUTAntiNuCCAny = TCut(TString::Format("%d<tReactionCode&&tReactionCode<%d", pdg.kNEUTAntiNuN_NC1PiZeroN, pdg.kNEUTAntiNu_CCQE));
     tNEUTAntiNuCCAny.SetName("True NEUT Any Anti-nu");
 
-    tNEUTAntiNuCCQE = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCQE)) && tFV;
+    tNEUTAntiNuCCQE = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCQE));
     tNEUTAntiNuCCQE.SetName("True NEUT Anti-nu CCQE");
 
-    tNEUTAntiNuCC2p2h = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTAntiNu_2p2h)) && tFV;
+    tNEUTAntiNuCC2p2h = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_2p2h));
     tNEUTAntiNuCC2p2h.SetName("True NEUT Anti-nu CC-2p2h");
 
-    tNEUTAntiNuCC1pi = TCut(TString::Format("(%d<=tReacionCode&&tReacionCode<=%d)||tReacionCode==-3",
-                        pdg.kNEUTAntiNuO_CC1PiPlusO, pdg.kNEUTAntiNuP_CC1PiPlusP)) && tFV;
+    tNEUTAntiNuCC1pi = TCut(TString::Format("(%d<=tReactionCode&&tReactionCode<=%d)||tReactionCode==-3",
+                        pdg.kNEUTAntiNuO_CC1PiPlusO, pdg.kNEUTAntiNuP_CC1PiPlusP));
     tNEUTAntiNuCC1pi.SetName("True NEUT Anti-nu CC-1pi");
 
-    tNEUTAntiNuCCNpi = TCut(TString::Format("tReacionCode==%d", pdg.kNEUTAntiNu_CCMultiPi)) && tFV;
+    tNEUTAntiNuCCNpi = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCMultiPi));
     tNEUTAntiNuCCNpi.SetName("True NEUT Anti-nu CC-Npi");
 
     tNEUTAntiNuCCOther = TCut(TString::Format("tReactionCode==%d||tReactionCode==%d||tReactionCode==%d",
-                          pdg.kNEUTAntiNuN_CC1GammaP,pdg.kNEUTAntiNuN_CC1EtaZeroP,pdg.kNEUTAntiNuN_CC1KaPlusLambda)) && tFV;
+                          pdg.kNEUTAntiNuN_CC1GammaP,pdg.kNEUTAntiNuN_CC1EtaZeroP,pdg.kNEUTAntiNuN_CC1KaPlusLambda));
     tNEUTAntiNuCCOther.SetName("True NEUT Anti-nu CC-Other");
 
-    tNEUTAntiNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCDIS)) && tFV;
+    tNEUTAntiNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCDIS));
     tNEUTAntiNuCCDIS.SetName("True NEUT Anti-nu CC-DIS");
 
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode>=%d", pdg.kNuMuPDG, pdg.kNEUTNu_CCQE))&& !tNEUTNC && tFV;
@@ -281,7 +278,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
     ParticleSelections[entry++] = oofv_sel;
 
     // sand muons
-    TCut sandmu_sel_cut = all_nom_sel_cut && tLepSand;
+    TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
     PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
     ParticleSelections[entry++] = sandmu_sel;
 
@@ -369,7 +366,7 @@ void DefineCuts::FillNeutrinoSelections(const TString &name,
     NeutrinoSelections[entry++] = oofv_sel;
 
     // sand muons
-    TCut sandmu_sel_cut = all_nom_sel_cut && tLepSand;
+    TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
     PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
     NeutrinoSelections[entry++] = sandmu_sel;
 
@@ -405,20 +402,16 @@ void DefineCuts::FillNEUTNuSelections(const TString &name, const TString &title,
         return;
     }
 
-    //Since cuts like tNEUTNuCCQE have tFV in them, there is no need to add
-    //extra checks on the FV X and Y since the only Z is different
-    TCut tFV_Correction = "1";
+    TCut tFV_Correction = tFV;
     TCut tOOFV_Correction = tOOFV;
     if(TString(all_nom_sel_cut.GetTitle()).Contains(tFVTN208.GetTitle()))
     {
-        tFV_Correction = TCut(TString::Format("(%f<=%s&&%s<=%f)",
-                                 minFidVolTN208Coords.Z(), "tVtxZ",
-                                 "tVtxZ", maxFidVolTN208Coords.Z()));
+        tFV_Correction = tFVTN208;
         tOOFV_Correction = tOOFVTN208;
     }
 
 
-    NEUTNuSelections.resize(NMAXNEUTRINOSELECTIONS);
+    NEUTNuSelections.resize(NMAXNEUTSELECTIONS);
     if(TString(additionalCuts.GetTitle()).Length() > 0)
         all_nom_sel_cut = all_nom_sel_cut && additionalCuts;
 
@@ -465,9 +458,16 @@ void DefineCuts::FillNEUTNuSelections(const TString &name, const TString &title,
     PlottingSelectionInfo* oofv_sel = new PlottingSelectionInfo("oofv_sel", oofv_sel_cut, "OOFV");
     NEUTNuSelections[entry++] = oofv_sel;
 
+    // sand muons
+    TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
+    PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
+    NEUTNuSelections[entry++] = sandmu_sel;
+
     if(entry != NMAXNEUTSELECTIONS)
     {
         std::cout << "ERROR: There is a mismatch between the number of cuts in DefineCuts::FillNEUTNuSelections" << std::endl;
+        std::cout << "Number of counted entries = " << entry << std::endl;
+        std::cout << "NMAXNEUTSELECTIONS = " << NMAXNEUTSELECTIONS << std::endl;
     }
 
 }
@@ -497,20 +497,15 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
         return;
     }
 
-    //Since cuts like tNEUTAntiNuCCQE have tFV in them, there is no need to add
-    //extra checks on the FV X and Y since the only Z is different
-    TCut tFV_Correction = "1";
+    TCut tFV_Correction = tFV;
     TCut tOOFV_Correction = tOOFV;
     if(TString(all_nom_sel_cut.GetTitle()).Contains(tFVTN208.GetTitle()))
     {
-        tFV_Correction = TCut(TString::Format("(%f<=%s&&%s<=%f)",
-                                 minFidVolTN208Coords.Z(), "tVtxZ",
-                                 "tVtxZ", maxFidVolTN208Coords.Z()));
+        tFV_Correction = tFVTN208;
         tOOFV_Correction = tOOFVTN208;
     }
 
-
-    NEUTAntiNuSelections.resize(NMAXNEUTRINOSELECTIONS);
+    NEUTAntiNuSelections.resize(NMAXNEUTSELECTIONS);
     if(TString(additionalCuts.GetTitle()).Length() > 0)
         all_nom_sel_cut = all_nom_sel_cut && additionalCuts;
 
@@ -555,6 +550,11 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
     TCut oofv_sel_cut = all_nom_sel_cut && tOOFV_Correction;
     PlottingSelectionInfo* oofv_sel = new PlottingSelectionInfo("oofv_sel", oofv_sel_cut, "OOFV");
     NEUTAntiNuSelections[entry++] = oofv_sel;
+
+    // sand muons
+    TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
+    PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
+    NEUTAntiNuSelections[entry++] = sandmu_sel;
 
     if(entry != NMAXNEUTSELECTIONS)
     {

@@ -129,7 +129,7 @@ void HEPConstants::Init()
     kNEUTNuN_CC1KaPlusLambda = 23; // NEU,N --> LEPTON-,LAMBDA,K+
 
     // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
-    kNEUTNu_CCDIS =  46; // NEU,(N OR P) --> NEU,(N OR P),MESONS
+    kNEUTNu_CCDIS =  26; // NEU,(N OR P) --> LEPTON,(N OR P),MESONS
 
     // ***** NEU NEUTAL CURRENT *****
     // -- NC: SINGLE PI FROM DELTA RESONANCE --
@@ -189,7 +189,7 @@ void HEPConstants::Init()
     kNEUTAntiNuN_CC1KaPlusLambda = -23; // NEUBAR,N --> LEPTON-,LAMBDA,K+
 
     // -- DEEP INELASTIC (2.0 GeV < W , JET set) --
-    kNEUTAntiNu_CCDIS = - 46; // NEUBAR,(N OR P) --> NEUBAR,(N OR P),MESONS
+    kNEUTAntiNu_CCDIS = -26; // NEUBAR,(N OR P) --> NEUBAR,(N OR P),MESONS
 
     // ***** NEUBAR NEUTAL CURRENT *****
     // -- NC: SINGLE PI FROM DELTA RESONANCE --
