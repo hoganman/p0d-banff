@@ -30,8 +30,8 @@ Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 
 int main(int argc, char **argv){
 
-    const Int_t nWeights = 25;
-    const UInt_t nToys = 0;//1000;
+    const Int_t nWeights = 23;
+    const Int_t nToys = 1000;
     const Int_t debug = 0;
     const Double_t kDoubleInit = -999;
     const Int_t kIntInit = -1;
@@ -42,7 +42,6 @@ int main(int argc, char **argv){
     std::string inputFileName = "";
     std::string inputFileType = "kHighlandTree";
     std::string outputFileName= "";
-    Int_t ntoys;
     Bool_t preload = kFALSE;
     Long64_t nmax = 100000000;
     Bool_t isData = false;
@@ -166,7 +165,7 @@ int main(int argc, char **argv){
     std::vector<EventVariationBase*> allVar  = _man.evar().GetEventVariations();
     std::vector<SystematicBase*>     allSyst = _man.syst().GetSystematics();
     _man.sel().DumpSelections();
-
+    _man.syst().DumpSystematics();
     ToyMaker* toyMaker = NULL;
     ToyMaker* ZeroVarToyMaker = NULL;
     ToyExperiment* ZeroVarToy = NULL;
@@ -402,9 +401,11 @@ int main(int argc, char **argv){
         tree->Branch("inFGD2", &inFGD2,"inFGD2/I");
         tree->Branch("tOnWaterTarget",&tOnWaterTarget,"tOnWaterTarget/I");
 
+        Int_t* nToysPTR = const_cast<Int_t*>(&nToys);
         if(ThrowToys)
         {
-            tree->Branch("nToys",            (Int_t*)&nToys,  "nToys/i");
+            tree->Branch("nToys",            nToysPTR,        "nToys/I");
+            tree->Branch("tYbj",             &tYbj,           "tYbj/D");
             tree->Branch("Toy",              Toy,             Form("Toy[%d]/I",              nToys));
             tree->Branch("TrueVertexIDToy",  TrueVertexIDToy, Form("TrueVertexIDToy[%d]/I",  nToys));
             tree->Branch("SelectionToy",     SelectionToy,    Form("SelectionToy[%d]/I",     nToys));
@@ -412,7 +413,7 @@ int main(int argc, char **argv){
             tree->Branch("TrueNuPDGToy",     TrueNuPDGToy,    Form("TrueNuPDGToy[%d]/I",     nToys));
             tree->Branch("LeptonMomToy",     LeptonMomToy,    Form("LeptonMomToy[%d]/D",     nToys));
             tree->Branch("LeptonCosToy",     LeptonCosToy,    Form("LeptonCosToy[%d]/D",     nToys));
-            tree->Branch("FluxWeightToy",     FluxWeightToy,  Form("FluxWeightToy[%d]/D",nToys));
+            tree->Branch("FluxWeightToy",    FluxWeightToy,  Form("FluxWeightToy[%d]/D",nToys));
             if(!WeightSyst)
                 tree->Branch("WeightToy",    WeightToy,       Form("WeightToy[%d]/D",        nToys));
             else
@@ -425,9 +426,9 @@ int main(int argc, char **argv){
         std::vector<Float_t> weights;
         Weight_h totalweight;
         Weight_h fluxWeightSyst;
-        Int_t rtvi = 0;
-        Int_t prevTruthID = -1;
-        Int_t prevRTV = -1;
+        //Int_t rtvi = 0;
+        //Int_t prevTruthID = -1;
+        //Int_t prevRTV = -1;
 
         //  ProfilerStart("prof.out");
         //--------- Loop over entries in the tree ----------------------------------
@@ -880,8 +881,6 @@ Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& Start
   //Element 6 should be /USECal_0/ or /USTarget_0/ or /CTarget_0/ or /CECal_0/
   //Element 7 should be /P0Dule_#/ or /Radiator_#/ or /Target_#/ where # gives the p0dule number with in the superp0dule (0-6 for ecals and 0-12 for targets)
 
-  Int_t returnP0DuleNumber = -9999;
-  Int_t returnXorYLayer = -9999;
 
   if (DetectorVolumes.size() < 6 )
     return (-1);
@@ -912,7 +911,8 @@ Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& Start
   if(DetectorVolumes[6] == "CECal_0")
     SuperP0DuleOffset = 33;
 
-  returnP0DuleNumber = atoi(tmpInSuperP0Dule[1].c_str());
+  Int_t returnP0DuleNumber = atoi(tmpInSuperP0Dule[1].c_str());
+  Int_t returnXorYLayer = -9999;
 
   Int_t P0DuleByP0DuleOffset = 0;
   if(tmpInSuperP0Dule[0]=="Radiator" || tmpInSuperP0Dule[0]=="Target") {
@@ -960,7 +960,7 @@ Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& Start
       } // Epoxy_0
     } // if > 8
   } // if P0Dule
-
+  (void)returnXorYLayer;
   return (returnP0DuleNumber+ SuperP0DuleOffset + P0DuleByP0DuleOffset)*10 + IsOnWater;
 }
 

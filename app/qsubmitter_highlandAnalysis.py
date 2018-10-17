@@ -457,7 +457,7 @@ def main(argv):
     useQueueName = ''
     useHostName = ''
     useOpportunisticNodes = 0
-    helpstatement = 'qsubmitter_splines.py [OPTIONS]\n'
+    helpstatement = 'qsubmitter_highlandAnalysis.py [OPTIONS]\n'
     for ele in range(0,len(shortArgsList)):
         helpstatement=helpstatement+'-%s/--%s == %s \n'%(shortArgsList[ele][0:1],longArgsList[ele][0:len(longArgsList[ele])-1],argDescriptionList[ele])
     try:

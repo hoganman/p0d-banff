@@ -7,8 +7,7 @@ A script that makes histogram of the resulting TTree from
 from os import getenv
 from os.path import join
 import ROOT
-from ROOT import THStack, TCanvas, TLegend, gSystem  # TChain
-from ROOT import TPad, TGaxis, TLine, TCut
+from ROOT import TCut, TLegend, gSystem
 from ROOTHStack import ROOTHStack
 import sys
 
@@ -16,7 +15,7 @@ import sys
 DRAW_ENU = 0
 DRAW_PMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 1
+DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
@@ -24,7 +23,12 @@ DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # Apply event + flux weight
-APPLYEVENTANDFLUXWEIGHT = 0
+APPLY_FLUX_WEIGHTS = 1
+APPLY_EVENT_WEIGHTS = 0
+
+PLOTLEPTONCANDIDATETRUEPDG = 0
+PLOTNEUTNUREACTIONCODES = 1
+PLOTNEUTANTINUREACTIONCODES = 0
 
 # Display the ratio of Data/MC below histogram
 SHOW_RATIO_PLOT_BELOW = 1
@@ -37,18 +41,17 @@ USE_MOMENTUM_CUT = 0
 MOMENTUM_CUT_VALUE = '5000.'
 
 # if the user wants to apply an addition set of cuts
-ADDITIONAL_CUTS = None
+ADDITIONAL_CUTS = ROOT.TCut('NumberOfTracks==2')
 
 # Which selection to run
 RUNP0DWATERNUMUCCSELECTION = 1
 RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
-RUNP0DAIRNUMUCCSELECTION = 1
+RUNP0DAIRNUMUCCSELECTION = 0
 RUNP0DAIRNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION = 0
 
 # This sets the SampleId throughout the macro
-SELECTION = int(0)
 SELECTIONSAVENAME = str()
 SELECTIONSAVENAMEDICT = dict()
 SELECTIONLABELSDICT = dict()
@@ -95,8 +98,7 @@ def main(argv):
     mc_data_sample_dict_DATA_key = 'DATA'
 
     for current_sampleID in SELECTIONLABELSDICT.keys():
-        global SELECTION, SELECTIONSAVENAME
-        SELECTION = current_sampleID
+        global SELECTIONSAVENAME
         if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuCC() and \
                 not RUNP0DWATERNUMUCCSELECTION:
             continue
@@ -146,6 +148,12 @@ def main(argv):
         # these store how to break down the samples by particles or other grouping
         neutrino_selections = GetNeutrinoSelectionList(current_sampleID)
         particle_selections = GetLeptonCandidateSelectionList(current_sampleID)
+        neut_nu_selections = GetNEUTNuSelectionList(current_sampleID)
+        neut_antinu_selections = GetNEUTAntiNuSelectionList(current_sampleID)
+
+        # these are data/mc histograms
+        all_selection_sets = [particle_selections,
+                              neut_antinu_selections, neut_nu_selections]
 
         # loop over sample classes
         for smpls in mc_data_sample_dict.values():
@@ -185,93 +193,110 @@ def main(argv):
                 make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
                                    histstack_Enu, 'trueE_nu')
 
-            # TN-328 Momentum
-            if DRAW_PMU_TN328:
-                histstack_pMu_TN328 = ROOTHStack()
-                histstack_pMu_TN328.plot_var = 'LeptonMomNom'
-                histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
-                histstack_pMu_TN328.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins,
-                                    pot_str)
-                make_data_mc_stack(smpls, particle_selections,
-                                   pMu_TN328_AnaBins, histstack_pMu_TN328,
-                                   'recoP_mu_TN328')
+            for a_selection_set in all_selection_sets:
+                selection_name = ROOT.TString(a_selection_set[0].name)
+                if selection_name.Contains('LeptonCandidateTruePDG'):
+                    if not PLOTLEPTONCANDIDATETRUEPDG:
+                        continue
+                if selection_name.Contains('NEUTNuReactionCodes'):
+                    if not PLOTNEUTNUREACTIONCODES:
+                        continue
+                    if not (SAMPLEIDS.IsP0DNuMuSample(current_sampleID)
+                            or SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(current_sampleID)):
+                        continue
+                if selection_name.Contains('NEUTAntiNuReactionCodes'):
+                    if not PLOTNEUTANTINUREACTIONCODES:
+                        continue
+                    if not SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
+                        continue
 
-            # lepton candidate momentum
-            if DRAW_PMU:
-                histstack_pMu = ROOTHStack()
-                histstack_pMu.plot_var = 'LeptonMomNom'
-                histstack_pMu.x_title = 'Lepton Candidate Momentum'
-                histstack_pMu.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, pMu_AnaBins,
-                                   histstack_pMu, 'recoP_mu')
+                # TN-328 Momentum
+                if DRAW_PMU_TN328:
+                    histstack_pMu_TN328 = ROOTHStack()
+                    histstack_pMu_TN328.plot_var = 'LeptonMomNom'
+                    histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
+                    histstack_pMu_TN328.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins,
+                                        pot_str)
+                    make_data_mc_stack(smpls, a_selection_set,
+                                       pMu_TN328_AnaBins, histstack_pMu_TN328,
+                                       'recoP_mu_TN328')
 
-            # TN-328 cos(theta)
-            if DRAW_COSTHETAMU_TN328:
-                histstack_cosThetaMu_TN328 = ROOTHStack()
-                histstack_cosThetaMu_TN328.plot_var = 'LeptonCosNom'
-                histstack_cosThetaMu_TN328.x_title = 'Lepton Candidate Angle'
-                histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_cosThetaMu_TN328,
-                                    cosThetaMu_TN328_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections,
-                                   cosThetaMu_TN328_AnaBins,
-                                   histstack_cosThetaMu_TN328,
-                                   'recocosq_mu_TN328')
+                # lepton candidate momentum
+                if DRAW_PMU:
+                    histstack_pMu = ROOTHStack()
+                    histstack_pMu.plot_var = 'LeptonMomNom'
+                    histstack_pMu.x_title = 'Lepton Candidate Momentum'
+                    histstack_pMu.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set, pMu_AnaBins,
+                                       histstack_pMu, 'recoP_mu')
 
-            # lepton candidate cos(theta)
-            if DRAW_COSTHETAMU:
-                histstack_cosThetaMu = ROOTHStack()
-                histstack_cosThetaMu.plot_var = 'LeptonCosNom'
-                histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
-                histstack_cosThetaMu.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins,
-                                    pot_str)
-                make_data_mc_stack(smpls, particle_selections,
-                                   cosThetaMu_AnaBins, histstack_cosThetaMu,
-                                   'recocosq_mu')
+                # TN-328 cos(theta)
+                if DRAW_COSTHETAMU_TN328:
+                    histstack_cosThetaMu_TN328 = ROOTHStack()
+                    histstack_cosThetaMu_TN328.plot_var = 'LeptonCosNom'
+                    histstack_cosThetaMu_TN328.x_title = 'Lepton Candidate Angle'
+                    histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_cosThetaMu_TN328,
+                                        cosThetaMu_TN328_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set,
+                                       cosThetaMu_TN328_AnaBins,
+                                       histstack_cosThetaMu_TN328,
+                                       'recocosq_mu_TN328')
 
-            # lepton candidate thetaMu
-            if DRAW_THETAMU:
-                histstack_thetaMu = ROOTHStack()
-                histstack_thetaMu.plot_var = \
-                    'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
-                histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
-                histstack_thetaMu.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, thetaMu_AnaBins,
-                                   histstack_thetaMu, 'recothetaMu_mu')
+                # lepton candidate cos(theta)
+                if DRAW_COSTHETAMU:
+                    histstack_cosThetaMu = ROOTHStack()
+                    histstack_cosThetaMu.plot_var = 'LeptonCosNom'
+                    histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
+                    histstack_cosThetaMu.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins,
+                                        pot_str)
+                    make_data_mc_stack(smpls, a_selection_set,
+                                       cosThetaMu_AnaBins, histstack_cosThetaMu,
+                                       'recocosq_mu')
 
-            # lepton p0d position Z
-            if DRAW_P0DZ:
-                histstack_p0dZ = ROOTHStack()
-                histstack_p0dZ.plot_var = 'vtxZ'
-                histstack_p0dZ.x_title = 'Vertex Z'
-                histstack_p0dZ.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, p0dZ_AnaBins,
-                                   histstack_p0dZ, 'recoZ_mu')
+                # lepton candidate thetaMu
+                if DRAW_THETAMU:
+                    histstack_thetaMu = ROOTHStack()
+                    histstack_thetaMu.plot_var = \
+                        'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
+                    histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
+                    histstack_thetaMu.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set, thetaMu_AnaBins,
+                                       histstack_thetaMu, 'recothetaMu_mu')
 
-            # lepton p0d position X
-            if DRAW_P0DX:
-                histstack_p0dX = ROOTHStack()
-                histstack_p0dX.plot_var = 'vtxX'
-                histstack_p0dX.x_title = 'Vertex X'
-                histstack_p0dX.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, p0dX_AnaBins,
-                                   histstack_p0dX, 'recoX_mu')
+                # lepton p0d position Z
+                if DRAW_P0DZ:
+                    histstack_p0dZ = ROOTHStack()
+                    histstack_p0dZ.plot_var = 'vtxZ'
+                    histstack_p0dZ.x_title = 'Vertex Z'
+                    histstack_p0dZ.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set, p0dZ_AnaBins,
+                                       histstack_p0dZ, 'recoZ_mu')
 
-            # lepton p0d position Y
-            if DRAW_P0DY:
-                histstack_p0dY = ROOTHStack()
-                histstack_p0dY.plot_var = 'vtxY'
-                histstack_p0dY.x_title = 'Vertex Y'
-                histstack_p0dY.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
-                make_data_mc_stack(smpls, particle_selections, p0dY_AnaBins,
-                                   histstack_p0dY, 'recoY_mu')
+                # lepton p0d position X
+                if DRAW_P0DX:
+                    histstack_p0dX = ROOTHStack()
+                    histstack_p0dX.plot_var = 'vtxX'
+                    histstack_p0dX.x_title = 'Vertex X'
+                    histstack_p0dX.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set, p0dX_AnaBins,
+                                       histstack_p0dX, 'recoX_mu')
+
+                # lepton p0d position Y
+                if DRAW_P0DY:
+                    histstack_p0dY = ROOTHStack()
+                    histstack_p0dY.plot_var = 'vtxY'
+                    histstack_p0dY.x_title = 'Vertex Y'
+                    histstack_p0dY.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
+                    make_data_mc_stack(smpls, a_selection_set, p0dY_AnaBins,
+                                       histstack_p0dY, 'recoY_mu')
 
 
 class sample(object):
@@ -312,11 +337,14 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     sand_sample = evt_sample['MC']['Sand']
     data_sample = evt_sample['DATA']
 
-    save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title,
-                            mc_sample.CPPClass.saveTitle)
-    if APPLYEVENTANDFLUXWEIGHT:
-        save_as += '_fluxweighted'
-    canvas = TCanvas("canvas", "", 800, 600)
+    save_as = '%s_%s_%s_%s' % (SELECTIONSAVENAME, save_title,
+                               mc_sample.CPPClass.saveTitle,
+                               true_selections[0].name)
+    if APPLY_FLUX_WEIGHTS:
+        save_as += '_fluxtuned'
+    if APPLY_EVENT_WEIGHTS:
+        save_as += '_systematicweighted'
+    canvas = ROOT.TCanvas("canvas", "", 800, 600)
     legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
                      COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
@@ -369,14 +397,17 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
         if not ROOT.TString(a_selection.cuts.GetName()).\
                 Contains('Sand'):
-            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom*FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
-            mc_v1 = mc_sample.getTChain().GetV1()
-            mc_v2 = mc_sample.getTChain().GetV2()
+            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom:FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
+            mc_var = mc_sample.getTChain().GetV1()
+            mc_systematic_weights = mc_sample.getTChain().GetV2()
+            mc_flux_weights = mc_sample.getTChain().GetV3()
             for entry_in_draw in range(mc_nEntries):
-                if APPLYEVENTANDFLUXWEIGHT:
-                    anaBins.Fill(mc_v1[entry_in_draw], mc_v2[entry_in_draw])
-                else:
-                    anaBins.Fill(mc_v1[entry_in_draw])
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= mc_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= mc_systematic_weights[entry_in_draw]
+                anaBins.Fill(mc_var[entry_in_draw], weight)
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
             name_fmt = 'mc_h1d_%s_%s'
@@ -386,16 +417,19 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
         else:
             sandTChain = sand_sample.getTChain()
-            sand_nEntries = sandTChain.Draw('%s:WeightNom*FluxWeightNom' % plot_var,
+            sand_nEntries = sandTChain.Draw('%s:WeightNom:FluxWeightNom' % plot_var,
                                             a_selection.cuts,
                                             'goff')
-            sand_v1 = sand_sample.getTChain().GetV1()
-            sand_v2 = sand_sample.getTChain().Get21()
+            sand_var = sand_sample.getTChain().GetV1()
+            sand_systematic_weights = sand_sample.getTChain().GetV2()
+            sand_flux_weights = sand_sample.getTChain().GetV3()
             for entry_in_draw in range(sand_nEntries):
-                if APPLYEVENTANDFLUXWEIGHT:
-                    anaBins.Fill(sand_v1[entry_in_draw], sand_v2[entry_in_draw])
-                else:
-                    anaBins.Fill(sand_v1[entry_in_draw])
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= sand_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= sand_systematic_weights[entry_in_draw]
+                anaBins.Fill(sand_var[entry_in_draw], weight)
             if anaBins.GetDivideByBinWidth():
                 anaBins.DivideByBinWidth()
             name_fmt = 'sand_h1d_%s_%s'
@@ -412,7 +446,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
     mc_hists.reverse()
 
-    h_stack = THStack('%s_stack' % (save_title), '')
+    h_stack = ROOT.THStack('%s_stack' % (save_title), '')
     h_total = anaBins.GetTH1DClone("h_total_%s" % save_title)
     INTERFACE.PrettyUpTH1(h_total, hstack.x_title, hstack.y_title,
                           BLACK)
@@ -428,7 +462,9 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     mc_stats.SetFillColor(0)
     mc_stats.SetMargin(0.1)
 
+    h_stack.SetMinimum(0)
     h_stack.Draw()
+    # h_stack.GetXaxis().SetTitleSize(1.25*h_stack.GetXaxis().GetTitleSize())
     INTERFACE.PrettyUpTHStack(h_stack, hstack.x_title, hstack.y_title)
     if hstack.minimum > -1:
         new_min = hstack.minimum
@@ -441,20 +477,16 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
     else:
-        new_max = 1.1*old_max
+        new_max = max(1.2 * data_hist.GetMaximum(), 1.1 * old_max)
         h_stack.SetMaximum(new_max)
         # h_total.SetMaximum(new_max)
         # data_hist.SetMaximum(new_max)
 
-    h_stack.SetMinimum(0)
-    if SHOW_RATIO_PLOT_BELOW:
-        # move the minimum lower since some weird stuff happens with my style template
-        h_stack.SetMinimum(-30*h_stack.GetMaximum()/h_total.GetNdivisions())
-
+    canvas.Clear()
     canvas.cd()
     pad1, pad2, axis, line, ratio = None, None, None, None, None
     if SHOW_RATIO_PLOT_BELOW:
-        pad1 = TPad("pad1", "pad1", 0, 0.3, 1, 1.0)
+        pad1 = ROOT.TPad("pad1", "pad1", 0.0, 0.325, 1.0, 1.0)
         pad1.SetBottomMargin(0)
         pad1.Draw()
         pad1.cd()
@@ -481,12 +513,13 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         # Do not draw the Y axis label on the upper plot and redraw a small
         # axis instead, in order to avoid the first label (0) to be clipped.
         # h_stack.GetYaxis().SetLabelSize(0.)
-        axis = TGaxis(-5, 20, -5, 220, 20, 220, 510, "")
+        # axis = ROOT.TGaxis(-5, 20, -5, 220, 20, 220, 510, "")
+        # axis.SetLabelFont(43)
         # axis.SetLabelSize(15)
-        axis.Draw()
+        # axis.Draw()
 
         canvas.cd()  # Go back to the main canvas before defining pad2
-        pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.3)
+        pad2 = ROOT.TPad("pad2", "pad2", 0, 0.0, 1., 0.225)
         pad2.SetTopMargin(0)
         pad2.SetBottomMargin(0.2)
         pad2.SetGridx()  # vertical grid
@@ -505,14 +538,16 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         ratio.SetStats(0)       # No statistics on lower plot
         ratio.SetMarkerStyle(INTERFACE.kDataMarkerStyle)
 
-        line = TLine(ratio.GetXaxis().GetBinLowEdge(1), 1, ratio.GetXaxis().GetBinUpEdge(ratio.GetXaxis().GetNbins()), 1)
+        xaxis = ratio.GetXaxis()
+        line = ROOT.TLine(xaxis.GetBinLowEdge(1), 1,
+                          xaxis.GetBinUpEdge(xaxis.GetNbins()), 1)
         line.SetLineWidth(3)
         line.SetLineStyle(9)
         line.SetLineColor(INTERFACE.kcbBlue)
 
-        ratio.Draw("ep")        # Draw the ratio plot
+        ratio.Draw("EP ")        # Draw the ratio plot
         line.Draw()
-        ratio.Draw("ep same")   # Draw the ratio plot
+        ratio.Draw("EP SAME")   # Draw the ratio plot
 
         # Ratio plot (ratio) settings
         ratio.SetTitle("")  # Remove the ratio title
@@ -530,6 +565,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         ratio.GetXaxis().SetLabelSize(3*h_stack.GetXaxis().GetLabelSize())
         # ratio.GetXaxis().SetLabelSize(15)
 
+    canvas.Update()
+    canvas.Draw()
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
     anaBins.Reset()
@@ -559,7 +596,7 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
     Saved as save_title.root
     """
     save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
-    canvas = TCanvas("canvas", "", 800, 600)
+    canvas = ROOT.TCanvas("canvas", "", 800, 600)
     legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
                      COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
@@ -588,7 +625,7 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
 
     hists.reverse()
 
-    h_stack = THStack('%s_stack' % (save_title), '')
+    h_stack = ROOT.THStack('%s_stack' % (save_title), '')
     h_total = anaBins.GetTH1DClone("h_total_%s" % save_title)
     INTERFACE.PrettyUpTH1(h_total, hstack.x_title, hstack.y_title,
                           BLACK)
@@ -835,7 +872,7 @@ def GetNeutrinoSelectionList(sampleID):
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillNeutrinoSelections('nom_sel', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    CUTS.FillNeutrinoSelections('TrueNuPDG', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
     neutrino_selections = list()
     for index in range(0, CUTS.NMAXNEUTRINOSELECTIONS):
         neutrino_selections.append(CUTS.GetNeutrinoSelection(index))
@@ -844,7 +881,6 @@ def GetNeutrinoSelectionList(sampleID):
 
 def GetLeptonCandidateSelectionList(sampleID):
     """Make a list of lepton candidate cuts by particle"""
-
     more_cuts = TCut()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
@@ -855,11 +891,49 @@ def GetLeptonCandidateSelectionList(sampleID):
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillParticleSelections('nom_sel', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    CUTS.FillParticleSelections('LeptonCandidateTruePDG', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
     particle_selections = list()
     for index in range(0, CUTS.NMAXPARTICLESELECTIONS):
         particle_selections.append(CUTS.GetParticleSelection(index))
     return particle_selections
+
+
+def GetNEUTNuSelectionList(sampleID):
+    """Make a list of true reaction code cuts (Nu)"""
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
+
+    if TN208_ANALYSIS:
+        more_cuts += CUTS.FVTN208
+
+    if USE_MOMENTUM_CUT:
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+
+    CUTS.FillNEUTNuSelections('NEUTNuReactionCodes', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    neut_nu_selections = list()
+    for index in range(CUTS.NMAXNEUTSELECTIONS):
+        neut_nu_selections.append(CUTS.GetNEUTNuSelection(index))
+    return neut_nu_selections
+
+
+def GetNEUTAntiNuSelectionList(sampleID):
+    """Make a list of true reaction code cuts (Anti-nu)"""
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
+
+    if TN208_ANALYSIS:
+        more_cuts += CUTS.FVTN208
+
+    if USE_MOMENTUM_CUT:
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+
+    CUTS.FillNEUTAntiNuSelections('NEUTAntiNuReactionCodes', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    neut_antinu_selections = list()
+    for index in range(CUTS.NMAXNEUTSELECTIONS):
+        neut_antinu_selections.append(CUTS.GetNEUTAntiNuSelection(index))
+    return neut_antinu_selections
 
 
 def ConfigureROOTHStack(hstack, anaBins, pot_str):
