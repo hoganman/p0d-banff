@@ -92,6 +92,7 @@ Int_t p0dAirNumubarInAntiNuModeCCSelection::GetRelevantRecObjectGroupsForSystema
   groups[   kP0DELossResol  ] = CreateVectorI( 1, EventBoxTracker::kTracksWithTPCInP0DFV );
   groups[   kTpcTrackEff    ] = CreateVectorI( 1, EventBoxTracker::kTracksWithTPC        );
   groups[   kTpcP0dMatchEff ] = CreateVectorI( 1, EventBoxTracker::kTracksWithTPC        );
+  groups[   kP0DVeto        ] = CreateVectorI( 1, EventBoxTracker::kTracksWithTPC        );
 
   // The systematics not mentioned above will get no groups
   Int_t ngroups = 0;
@@ -126,6 +127,7 @@ Int_t p0dAirNumubarInAntiNuModeCCSelection::GetRelevantTrueObjectGroupsForSystem
   // --- Systematic         Detectors                                   P0D
   groups[ kTpcTrackEff    ] =  CreateVectorI(1, EventBoxTracker::kTrueParticlesChargedInTPCInBunch);
   groups[ kTpcP0dMatchEff ] =  CreateVectorI(1, EventBoxTracker::kTrueParticlesChargedInTPCInBunch);
+  groups[ kP0DVeto        ] =  CreateVectorI(1, EventBoxTracker::kTrueParticlesChargedInTPCInBunch);
 
   // The systematics not mentioned above will get no groups
   Int_t ngroups = 0;
