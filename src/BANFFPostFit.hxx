@@ -50,6 +50,9 @@ public:
     TCanvas* GetDataPrePostfitMCWithProjection(const TString &name,
             const Int_t &projection, const Double_t &normalizeBinsBy = 0) const;
 
+    TCanvas* GetReactionCodePrePostfitMC(const TString &name,
+            const Int_t &projection, const Double_t &normalizeBinsBy = 0) const;
+
     void Dump(TString prefit_cov_csv="", TString postfit_cov_csv="");
 
     Int_t GetReactionCode(const TString &histogramName) const;

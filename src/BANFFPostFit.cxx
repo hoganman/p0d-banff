@@ -1,14 +1,15 @@
 #define BANFFPOSTFIT_CXX
 
+#include "BANFFPostFit.hxx"
+ClassImp(BANFFPostFit)
+#include "CanvasCoordinates.hxx"
+#include "HEPConstants.hxx"
+#include "TLegend.h"
+#include "TGaxis.h"
 #include "stdio.h"
+#include <algorithm>
 #include <iostream>
 #include <map>
-#include <algorithm>
-#include "TLegend.h"
-#include "CanvasCoordinates.hxx"
-#include "BANFFPostFit.hxx"
-#include "TGaxis.h"
-ClassImp(BANFFPostFit)
 
 //**************************************************
 BANFFPostFit::BANFFPostFit()
@@ -407,13 +408,33 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
 }
 
 
+//**************************************************
+TCanvas* BANFFPostFit::GetReactionCodePrePostfitMC(const TString &name,
+        const Int_t &projection, const Double_t &normalizeBinsBy) const
+//**************************************************
+{
+    const HEPConstants hep;
+    std::map< TString, THnT<double>* >::const_iterator it;
+
+    for(it = AllHistograms.begin(); it != AllHistograms.end(); ++it)
+    {
+        const TString histogramName = it->second->GetName();
+        if(!histogramName.Contains("rxn"))
+            continue;
+        const Int_t reactionCode = GetReactionCode(histogramName);
+    }
+}
+
+//**************************************************
 Int_t BANFFPostFit::GetReactionCode(const TString &histogramName) const
+//**************************************************
 {
     if(!histogramName.Contains("rxn"))
     {
         P0DBANFFInterface::Error(this, "Input histogram does NOT contain \"rxn\". No reaction code obtained");
         return 0;
     }
-    const Int_t alteredReactionCode = TString(histogramName(histogramName.Index("_rxnPredMC_")+11,3)).Atoi();
+    const Int_t alteredReactionCode =
+        TString(histogramName(histogramName.Index("_rxnPredMC_")+11,3)).Atoi();
     return kReactionCodeOffset - alteredReactionCode;
 }
