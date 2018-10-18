@@ -25,7 +25,7 @@ Samples::Samples(TString name, TString configFile)
     XMLNodePointer_t ptr = xml->GetXMLNode(name);
     if(!ptr)
     {
-        std::cout << "ERROR: Unable to get " << name.Data() << " from " << configFile.Data() << std::endl;
+        P0DBANFFInterface::Error(this, TString::Format("Unable to get %s from %s", name.Data(), configFile.Data()));
         return;
     }
 
@@ -44,16 +44,13 @@ Samples::Samples(TString name, TString configFile)
 
     if(static_cast<Int_t>(momentumBinEdges_vect.size()) != nMomentumBinEdges)
     {
-        std::cout << "ERROR in " << name.Data() << std::endl;
-        std::cout << "    The number of stated bin entries (" << momentumBinEdges_vect.size() << ") for momentum does" << std::endl;
-        std::cout << "    match the number of found entries (" << nMomentumBinEdges << ")" <<  std::endl;
+
+        P0DBANFFInterface::Error(this, TString::Format("In %s. The number of stated entries (%ld) for momentum does NOT match the number of found entries (%i)", name.Data(), momentumBinEdges_vect.size(), nMomentumBinEdges));
         return;
     }
     if(static_cast<Int_t>(cosThetaBinEdges_vect.size()) != nCosThetaBinEdges)
     {
-        std::cout << "ERROR in " << name.Data() << std::endl;
-        std::cout << "    The number of stated bin entries (" << cosThetaBinEdges_vect.size() << ") for cosTheta does" << std::endl;
-        std::cout << "    match the number of found entries (" << nMomentumBinEdges << ")" <<  std::endl;
+        P0DBANFFInterface::Error(this, TString::Format("In %s. The number of stated entries (%ld) for cosTheta does NOT match the number of found entries (%i)", name.Data(), cosThetaBinEdges_vect.size(), nCosThetaBinEdges));
         return;
     }
     for(UInt_t index = 0; index < momentumBinEdges_vect.size(); ++index)

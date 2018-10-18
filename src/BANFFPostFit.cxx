@@ -143,7 +143,7 @@ void BANFFPostFit::Dump(TString prefit_cov_csv, TString postfit_cov_csv)
 {
     if(!param_list)
     {
-        std::cout << "ERROR: No parameter list is set, did you set the input file? " << std::endl;
+        P0DBANFFInterface::Error(this, "ERROR: No parameter list is set, did you set the input file?");
         return;
     }
 
@@ -237,12 +237,19 @@ THnT<double>* BANFFPostFit::GetTHn(const TString &name) const
 //**************************************************
 {
     std::map< TString, THnT<double>* >::const_iterator it = AllHistograms.find(name);
-    if(it == AllHistograms.end())
+    if(it != AllHistograms.end())
+        return it->second;
+
+    P0DBANFFInterface::Warning(this, TString::Format("Unable to find %s using full name. Trying TString::Contains", name.Data()));
+    for(it = AllHistograms.begin(); it != AllHistograms.end(); ++it)
     {
-        std::cout << "Unable to find " << name.Data() << std::endl;
-        return NULL;
+        if(it->first.Contains(name))
+        {
+            P0DBANFFInterface::Announce(this, TString::Format("Found potential match, returning %s", it->first.Data()));
+            return it->second;
+        }
     }
-    return it->second;
+    return NULL;
 }
 
 
@@ -255,21 +262,21 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     THnT<double>* prefit = GetTHn(prefitName);
     if(!prefit)
     {
-        std::cout << "Unable to get prefit for " << name.Data() << std::endl;
+        P0DBANFFInterface::Error(this, TString::Format("Unable to get prefit for %s", name.Data()));
         return NULL;
     }
     const TString dataName = name + "_data";
     THnT<double>* data = GetTHn(dataName);
     if(!data)
     {
-        std::cout << "Unable to get prefit for " << name.Data() << std::endl;
+        P0DBANFFInterface::Error(this, TString::Format("Unable to get data for %s", name.Data()));
         return NULL;
     }
     const TString postfitName = name + "_postfit_0_0";
     THnT<double>* postfit = GetTHn(postfitName);
     if(!postfit)
     {
-        std::cout << "Unable to get postfit for " << name.Data() << std::endl;
+        P0DBANFFInterface::Warning(this, TString::Format("Unable to get data for %s", name.Data()));
     }
 
     TH1D* prefit_1D = static_cast<TH1D*>(prefit->Projection(projection)->Clone(TString::Format("hPrefit_%s", prefitName.Data())));
@@ -397,4 +404,16 @@ TCanvas* BANFFPostFit::GetDataPrePostfitMCWithProjection(const TString &name,
     data_prefit_ratio->GetXaxis()->SetLabelSize(3* prefit_1D->GetXaxis()->GetLabelSize());
     //data_prefit_ratio->GetXaxis()->SetLabelSize(15);
     return canvas;
+}
+
+
+Int_t BANFFPostFit::GetReactionCode(const TString &histogramName) const
+{
+    if(!histogramName.Contains("rxn"))
+    {
+        P0DBANFFInterface::Error(this, "Input histogram does NOT contain \"rxn\". No reaction code obtained");
+        return 0;
+    }
+    const Int_t alteredReactionCode = TString(histogramName(histogramName.Index("_rxnPredMC_")+11,3)).Atoi();
+    return kReactionCodeOffset - alteredReactionCode;
 }

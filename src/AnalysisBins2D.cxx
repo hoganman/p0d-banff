@@ -3,6 +3,7 @@
 #include "AnalysisBins2D.hxx"
 ClassImp(AnalysisBins2D)
 #include "AnalysisBins.hxx"
+#include "P0DBANFFInterface.hxx"
 #include <iostream>
 
 //**************************************************
@@ -13,7 +14,7 @@ AnalysisBins2D::AnalysisBins2D(TString xBinsName, TString yBinsName, TString con
     XMLTools* new_xml_inst = NULL;
     if(!xml)
     {
-        std::cout << "WARNING: Creating new XMLTools instance" << std::endl;
+        P0DBANFFInterface::Warning(this, "Creating new XMLTools instance");
         xml = new XMLTools();
         new_xml_inst = xml;
     }

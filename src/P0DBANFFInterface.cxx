@@ -93,11 +93,10 @@ P0DBANFFInterface::P0DBANFFInterface()
     //</plain>
     gROOT->SetStyle("P0DBANFFStyle");
 
-    std::cout << "WARNING: If you are going to use the XMLTools class" << std::endl;
-    std::cout << "         (or other classes relying on it)" << std::endl;
-    std::cout << "         make sure you load an external TXMLEngine instance before" << std::endl;
-    std::cout << "         the first XMLTools instance" << std::endl;
-
+    P0DBANFFInterface::Warning(this, "If you are going to use the XMLTools class\n\
+            (or other classes relying on it)\n\
+            make sure you load an external TXMLEngine instance before\n\
+            the first XMLTools instance\n");
 }
 
 //**************************************************
@@ -338,7 +337,7 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
 //**************************************************
 {
-    std::cout << "...Loading color palette with nColors = " << nColors << "...";
+    P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette with nColors = %d...",  nColors));
     const Int_t nColorBins = 999;
     if(nColors==5)
     {
@@ -368,7 +367,7 @@ void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
         std::cout << "...Cannot load nColors = " << nColors << "...FAILED!" << std::endl;
         return;
     }
-    std::cout << "DONE!" << std::endl;
+    P0DBANFFInterface::Announce(this, "DONE!");
 }
 
 //**************************************************
@@ -501,7 +500,6 @@ TCanvas* P0DBANFFInterface::GetTCanvasFromFile(TFile* inFile,
     //try to find canvas using non-standard methods
     if(!canvas)
     {
-        std::cout << "WARNING: Unable to find canvas with name " << canvasName.Data() << std::endl;
         const Int_t nNames = 3;
         const TString canvasNames[nNames] = {"c1", "canvas", "canvas1"};
         for(Int_t iName = 0; iName < nNames; ++iName)

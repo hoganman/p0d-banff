@@ -4,6 +4,7 @@
 ClassImp(AnalysisBins)
 #include"TMath.h"
 #include"TF1.h"
+#include"P0DBANFFInterface.hxx"
 #include<iostream>
 
 //**************************************************
@@ -26,14 +27,12 @@ AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t
     Init();
     if(!edges)
     {
-        printf("ERROR: Unable to create AnalysisBins");
-        printf("       NULL Double_t ptr in constructor");
+        P0DBANFFInterface::Error(this, "Unable to create AnalysisBins. NULL Double_t ptr in constructor");
         return;
     }
     if(nEntries <= 0)
     {
-        printf("ERROR: Unable to create AnalysisBins");
-        printf("       nEntries = 0!");
+        P0DBANFFInterface::Error(this, "Unable to create AnalysisBins. nEntries = 0!");
         return;
     }
     binningName = name;
@@ -57,14 +56,12 @@ AnalysisBins::AnalysisBins(TString name, Float_t* edges, Int_t nEntries, Bool_t 
     Init();
     if(!edges)
     {
-        printf("ERROR: Unable to create AnalysisBins");
-        printf("       NULL Float_t ptr in constructor");
+        P0DBANFFInterface::Error(this, "Unable to create AnalysisBins. NULL Double_t ptr in constructor");
         return;
     }
     if(nEntries <= 0)
     {
-        printf("ERROR: Unable to create AnalysisBins");
-        printf("       nEntries = 0!");
+        P0DBANFFInterface::Error(this, "Unable to create AnalysisBins. nEntries = 0!");
         return;
     }
     binningName = name;
@@ -87,8 +84,7 @@ AnalysisBins::AnalysisBins(TString name, TH1D* template_hist, Bool_t setShowOver
     Init();
     if(!template_hist)
     {
-        printf("ERROR: Unable to create AnalysisBins");
-        printf("       NULL TH1D ptr in constructor");
+        P0DBANFFInterface::Error(this, "Unable to create AnalysisBins. NULL TH1D ptr in constructor");
         return;
     }
     hist = new TH1D(*template_hist);
@@ -109,7 +105,7 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
     XMLTools* new_xml_inst = NULL;
     if(!xml)
     {
-        std::cout << "WARNING: Creating new XMLTools instance" << std::endl;
+        P0DBANFFInterface::Warning(this, "Creating new XMLTools instance");
         xml = new XMLTools();
         new_xml_inst = xml;
     }

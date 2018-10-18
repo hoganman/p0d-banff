@@ -52,6 +52,10 @@ public:
 
     void Dump(TString prefit_cov_csv="", TString postfit_cov_csv="");
 
+    Int_t GetReactionCode(const TString &histogramName) const;
+
+    static const Int_t kReactionCodeOffset = 200;
+
 protected:
 
     TFile* inputFile;  //!
@@ -81,6 +85,7 @@ protected:
     void Init();
 
     std::map< TString, THnT<double>* > AllHistograms;
+
 
 public:
     ClassDef(BANFFPostFit,1)

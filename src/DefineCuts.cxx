@@ -2,6 +2,7 @@
 
 #include "DefineCuts.hxx"
 ClassImp(DefineCuts)
+#include"P0DBANFFInterface.hxx"
 #include "HEPConstants.hxx"
 #include <iostream>
 
@@ -212,7 +213,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
         all_nom_sel_cut = muPlusInRHCSelection;
     else
     {
-        printf("ERROR: unable to determine sample using sampleID = %d", sampleID);
+        P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
         return;
     }
 
@@ -284,7 +285,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
 
     if(entry != NMAXPARTICLESELECTIONS)
     {
-        std::cout << "ERROR: There is a mismatch between the number of cuts in DefineCuts::FillParticleSelections" << std::endl;
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillParticleSelections");
     }
 
 }
@@ -311,7 +312,7 @@ void DefineCuts::FillNeutrinoSelections(const TString &name,
         all_nom_sel_cut = muPlusInRHCSelection;
     else
     {
-        printf("ERROR: unable to determine sample using sampleID = %d", sampleID);
+        P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
         return;
     }
 
@@ -372,7 +373,7 @@ void DefineCuts::FillNeutrinoSelections(const TString &name,
 
     if(entry != NMAXNEUTRINOSELECTIONS)
     {
-        std::cout << "ERROR: There is a mismatch between the number of cuts in DefineCuts::FillNeutrinoSelections" << std::endl;
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNeutrinoSelections");
     }
 
 }
@@ -398,7 +399,7 @@ void DefineCuts::FillNEUTNuSelections(const TString &name, const TString &title,
         all_nom_sel_cut = muPlusInRHCSelection;
     else
     {
-        printf("ERROR: unable to determine sample using sampleID = %d", sampleID);
+        P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
         return;
     }
 
@@ -465,9 +466,7 @@ void DefineCuts::FillNEUTNuSelections(const TString &name, const TString &title,
 
     if(entry != NMAXNEUTSELECTIONS)
     {
-        std::cout << "ERROR: There is a mismatch between the number of cuts in DefineCuts::FillNEUTNuSelections" << std::endl;
-        std::cout << "Number of counted entries = " << entry << std::endl;
-        std::cout << "NMAXNEUTSELECTIONS = " << NMAXNEUTSELECTIONS << std::endl;
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTNuSelections");
     }
 
 }
@@ -493,7 +492,7 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
         all_nom_sel_cut = muPlusInRHCSelection;
     else
     {
-        printf("ERROR: unable to determine sample using sampleID = %d", sampleID);
+        P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
         return;
     }
 
@@ -558,7 +557,7 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
 
     if(entry != NMAXNEUTSELECTIONS)
     {
-        std::cout << "ERROR: There is a mismatch between the number of cuts in DefineCuts::FillNEUTAntiNuSelections" << std::endl;
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTAntiNuSelections");
     }
 
 }

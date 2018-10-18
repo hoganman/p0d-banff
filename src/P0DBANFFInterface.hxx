@@ -104,6 +104,21 @@ public:
 
     static TObject* FindObjectInFileByName(TFile* inFile, const TString& name_search);
 
+    static void Warning(const TObject* obj, const TString &msg)
+    {
+        printf("%s::WARNING %s\n", obj->IsA()->GetName(), msg.Data());
+    }
+
+    static void Error(const TObject* obj, const TString &msg)
+    {
+        printf("%s::ERROR %s\n", obj->IsA()->GetName(), msg.Data());
+    }
+
+    static void Announce(const TObject* obj, const TString &msg)
+    {
+        printf("%s::ANNOUNCEMENT %s\n", obj->IsA()->GetName(), msg.Data());
+    }
+
     std::vector<Int_t> GetStackColors() const {return std::vector<Int_t>(StackColors);}
 
 protected:

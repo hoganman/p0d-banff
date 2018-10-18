@@ -19,7 +19,7 @@ TChain* RunName::GetAllChainsFrom(const TString &ChainName,
         testFileName = TString::Format(formatBuffer, lastNum);
         if (lastNum < firstNum)
         {
-            std::cout << "RUNNAME ERROR: Unable to find files for " << properName.Data() << std::endl;
+            P0DBANFFInterface::Error(this, TString::Format("Unable to find files for %s", properName.Data()));
             return chain;
         }
     }
