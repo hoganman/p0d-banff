@@ -381,7 +381,7 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
         P0DBANFFInterface::Error("P0DBANFFInterface", "No input canvas, returning");
         return;
     }
-    P0DBANFFInterface::Announce("P0DBANFFInterface", "..Saving canvas as");
+    P0DBANFFInterface::Announce("P0DBANFFInterface", "...Saving canvas as");
     canvas->cd();
     //TFrame* frame = static_cast<TFrame*>(gPad->GetPrimitive("TFrame"));
     std::vector<TString> fileOutputs = SplitString(formats,delimiter);

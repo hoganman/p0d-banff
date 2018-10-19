@@ -16,7 +16,7 @@ public:
   bool FillEventSummary(AnaEventC& event, Int_t allCutsPassed[]);
   /// Fill the EventBox with the objects needed by this selection
   virtual void InitializeEvent(AnaEventC&);
-  SampleId_h GetSampleId(){return SampleId::kP0DNuMuCC;}
+  SampleId_h GetSampleId(){return SampleId::kP0DAirNuMuCC;}
 
   Int_t GetRelevantRecObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
   Int_t GetRelevantTrueObjectGroupsForSystematic(SystId_h systId, Int_t* IDs, Int_t branch) const;
