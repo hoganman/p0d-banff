@@ -34,18 +34,4 @@ public:
   StepBase* MakeClone(){return new FillSummaryAction_p0dWaterNumuCC();}
 };
 
-class FindP0DVetoAction: public StepBase{
- public:
-  using StepBase::Apply;
-  bool Apply(AnaEventC& event, ToyBoxB& box) const;
-  StepBase* MakeClone(){return new FindP0DVetoAction();}
-};
-
-class P0DSelectionVetoCut: public StepBase{
- public:
-  using StepBase::Apply;
-  bool Apply(AnaEventC& event, ToyBoxB& box) const;
-  StepBase* MakeClone(){return new P0DSelectionVetoCut();}
-};
-
 #endif

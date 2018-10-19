@@ -1,4 +1,5 @@
 #include "baseSelection.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "p0dAirNumuCCSelection.hxx"
 #include "p0dAirNumubarBkgCCSelection.hxx"
 #include "CutUtils.hxx"

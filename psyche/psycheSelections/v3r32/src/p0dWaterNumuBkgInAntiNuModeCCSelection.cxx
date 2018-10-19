@@ -1,4 +1,5 @@
 #include "p0dWaterNumuBkgInAntiNuModeCCSelection.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "baseSelection.hxx"
 #include "numuBkgInAntiNuModeCCSelection.hxx"
 #include "CutUtils.hxx"

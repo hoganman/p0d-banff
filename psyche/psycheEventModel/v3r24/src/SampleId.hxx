@@ -122,6 +122,8 @@ namespace SampleId{
     kFGD1GammaInAntiNuMode,
     // FGD2
     kFGD2GammaInAntiNuMode,
+    // P0D, water mode irrelevant
+    kP0DNuMuCC,
 
     // P0D, water in
     kP0DWaterNuMuCC,

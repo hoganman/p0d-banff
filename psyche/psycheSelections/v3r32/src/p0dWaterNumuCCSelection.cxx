@@ -1,4 +1,4 @@
-//#include "p0dAirNumuCCSelection.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "p0dWaterNumuCCSelection.hxx"
 #include "baseSelection.hxx"
 #include "numuBkgInAntiNuModeCCSelection.hxx"
@@ -141,45 +141,6 @@ Int_t p0dWaterNumuCCSelection::GetRelevantTrueObjectGroupsForSystematic(SystId_h
   if (groups[systId][0] >= 0) IDs[ngroups++] = groups[systId][0];
 
   return ngroups;
-}
-
-//Is identical to FindLeadingTracksAction, but will keep here for debugging
-////**************************************************
-//bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-////**************************************************
-//
-//  // Cast the ToyBox to the appropriate type
-//  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
-//
-//  trackerSelUtils::FindLeadingTracks(event, box);
-//
-//  // For this selection the main track is the HMN track
-//  box.MainTrack = box.HMNtrack;
-//
-//  return true;
-//}
-
-//**************************************************
-bool FindP0DVetoAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  box->VetoTrack = cutUtils::FindP0DVetoTrack(event);
-
-  return true;
-}
-
-//**************************************************
-bool P0DSelectionVetoCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
-//**************************************************
-
-  (void)event;
-
-  ToyBoxTracker* box = static_cast<ToyBoxTracker*> (&boxB);
-  if (box->VetoTrack)
-    return false;
-
-  return true;
-
 }
 
 //********************************************************************

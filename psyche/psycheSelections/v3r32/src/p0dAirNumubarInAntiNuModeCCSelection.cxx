@@ -2,6 +2,7 @@
 #include "CutUtils.hxx"
 #include "trackerSelectionUtils.hxx"
 #include "EventBoxUtils.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "p0dWaterNumuCCSelection.hxx"
 #include "p0dAirNumubarInAntiNuModeCCSelection.hxx"
 #include "antiNumuCCSelection.hxx"
