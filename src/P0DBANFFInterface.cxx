@@ -376,9 +376,12 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
     Char_t delimiter)
 //**************************************************
 {
-    std::cout << "...Saving canvas as " << std::endl;
     if(!canvas)
+    {
+        P0DBANFFInterface::Error("P0DBANFFInterface", "No input canvas, returning");
         return;
+    }
+    P0DBANFFInterface::Announce("P0DBANFFInterface", "..Saving canvas as");
     canvas->cd();
     //TFrame* frame = static_cast<TFrame*>(gPad->GetPrimitive("TFrame"));
     std::vector<TString> fileOutputs = SplitString(formats,delimiter);
@@ -387,7 +390,7 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
         Char_t buffer[1000];
         const TString outputFormat = fileOutputs.at(outputI);
         sprintf(buffer,"%s.%s",outputNamePrefix.Data(),outputFormat.Data());
-        std::cout << "                    " << buffer << std::endl;
+        P0DBANFFInterface::Announce("P0DBANFFInterface", TString::Format("                     %s", buffer));
         if(outputFormat.Contains("png") || outputFormat.Contains("jpg"))
         {
             TImage* img =  TImage::Create();
@@ -400,7 +403,7 @@ void P0DBANFFInterface::SaveCanvasAs(TCanvas* const canvas,
             canvas->SaveAs(buffer);
         }
     }
-    std::cout << "...DONE!" << std::endl;
+    P0DBANFFInterface::Announce("P0DBANFFInterface", "...DONE!");
 }
 
 
