@@ -23,12 +23,12 @@ or the all systematics configuration (when EnableAllSystematics = 1)
 need to be enabled in baseAnalysis parameter file
 
 TPC-FGD related, observable variation systematics
- < baseTrackerAnalysis.Variations.EnableBFieldDist                 = 0 >
- < baseTrackerAnalysis.Variations.EnableMomScale                   = 0 >
- < baseTrackerAnalysis.Variations.EnableMomRes                     = 0 >
+ < baseTrackerAnalysis.Variations.EnableBFieldDist                 = 1 >
+ < baseTrackerAnalysis.Variations.EnableMomScale                   = 1 >
+ < baseTrackerAnalysis.Variations.EnableMomRes                     = 1 >
  < baseTrackerAnalysis.Variations.EnableMomBiasFromVertexMigration = 0 >
- 
- < baseTrackerAnalysis.Variations.EnableTPCPID                     = 0 >
+
+ < baseTrackerAnalysis.Variations.EnableTPCPID                     = 1 >
  < baseTrackerAnalysis.Variations.EnableFGDPID                     = 0 >
 
 
@@ -45,15 +45,15 @@ ToF
  < baseTrackerAnalysis.Variations.EnableToFResol          = 0 >
 
 P0D
- < baseTrackerAnalysis.Variations.EnableP0DELossScale          = 0 >
- < baseTrackerAnalysis.Variations.EnableP0DELossResol          = 0 >
+ < baseTrackerAnalysis.Variations.EnableP0DELossScale          = 1 >
+ < baseTrackerAnalysis.Variations.EnableP0DELossResol          = 1 >
 
 --- Event Weights ------------
 
 TPC-FGD related, efficiency-like systematics (i.e. weight systematics)
- < baseTrackerAnalysis.Weights.EnableTPCClusterEff        = 0 >
- < baseTrackerAnalysis.Weights.EnableTPCTrackEff          = 0 >
- < baseTrackerAnalysis.Weights.EnableChargeConf           = 0 > i.e. TPC Charge ID efficiency
+ < baseTrackerAnalysis.Weights.EnableTPCClusterEff        = 1 >
+ < baseTrackerAnalysis.Weights.EnableTPCTrackEff          = 1 >
+ < baseTrackerAnalysis.Weights.EnableChargeConf           = 1 > i.e. TPC Charge ID efficiency
  < baseTrackerAnalysis.Weights.EnableTPCFGDMatchEff       = 0 >
  < baseTrackerAnalysis.Weights.EnableFGDTrackEff          = 0 > (not in TN212)
  < baseTrackerAnalysis.Weights.EnableFGDHybridTrackEff    = 0 >
@@ -71,13 +71,13 @@ High-angle
  < baseTrackerAnalysis.Weights.EnableFGDECalSMRDMatchEff  = 0 >
 
 P0D
-< baseTrackerAnalysis.Weights.EnableTPCP0DMatchEff        = 0 >
-< baseTrackerAnalysis.Weights.EnableP0DVeto        = 0 >
+< baseTrackerAnalysis.Weights.EnableTPCP0DMatchEff = 1 >
+< baseTrackerAnalysis.Weights.EnableP0DVeto        = 1 >
 
 
 Background related, normalization systematics
  < baseTrackerAnalysis.Weights.EnableOOFV              = 0 >
- < baseTrackerAnalysis.Weights.EnableSandMu            = 0 >
+ < baseTrackerAnalysis.Weights.EnableSandMu            = 1 >
  < baseTrackerAnalysis.Weights.EnablePileUp            = 1 >
 
 MC modeling related, normalization systematics
@@ -85,12 +85,12 @@ MC modeling related, normalization systematics
  < baseTrackerAnalysis.Weights.EnableFGDMass           = 0 >
 
 NuE analysis specific
- < baseTrackerAnalysis.Weights.EnableECalEmHipPID      = 0 >  
+ < baseTrackerAnalysis.Weights.EnableECalEmHipPID      = 0 >
  < baseTrackerAnalysis.Weights.EnableFGD2Shower        = 0 >
  < baseTrackerAnalysis.Weights.EnableNuETPCPileUp      = 0 >
  < baseTrackerAnalysis.Weights.EnableNuEP0DPileUp      = 0 >
  < baseTrackerAnalysis.Weights.EnableNuEECalPileUp     = 0 >
- < baseTrackerAnalysis.Weights.EnableNuEOOFV           = 0 >	
+ < baseTrackerAnalysis.Weights.EnableNuEOOFV           = 0 >
 
 Compute the analysis sample, efficiency inside the eff-like systematics
- < baseTrackerAnalysis.Systematics.ComputeEfficiency       = 0 >
+ < baseTrackerAnalysis.Systematics.ComputeEfficiency   = 1 >
