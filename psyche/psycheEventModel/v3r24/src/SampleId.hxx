@@ -6,9 +6,8 @@
 #include <stdio.h>
 #include <iostream>
 
-
 /// Event sample - whether it passes the NuMu-CCQE selection, or CC1Pi selection for example
-namespace SampleId{
+namespace SampleId {
 
 
   enum SampleEnum {
