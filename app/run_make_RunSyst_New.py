@@ -9,16 +9,17 @@ from ShellCommand import ShellCommand
 import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-QUEUE = '\"physics.q|short.q\"'
+QUEUE = '\"physics.q|short.q|defaultfaculty.q\"'
 HOSTS = '\"node42|node27\"'
-# EXCLUDEHOSTS = [6, 7, 10, 19, 45]
+EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
-# for x in range(1, 20) + range(27, 31):  # + range(40, 46):
+# for x in range(1, 20) + range(27, 31) + range(40, 46):
 #     if x in EXCLUDEHOSTS:
 #         continue
 #     HOSTS += 'node{}|'.format(x)
 # HOSTS = HOSTS.rstrip("|")
 # HOSTS += '\"'
+
 MEM = '1024'
 NEUT = 'NEUT'
 MCMIN = '60'
@@ -63,9 +64,7 @@ def make_qsub(run_name, production, is_mc):
     output_path = '-p %s' % (output_path_name.get())
     output_name = '-o %s' % (run_name.upper_case())
 
-    run_type = '-r "MC"'
-    if not is_mc:
-        run_type = '-r "Data"'
+    run_type = '-r "MC"' if is_mc == DATATYPES.MC else '-r "Data"'
 
     this_run = ShellCommand('nohup %s' % (QSUBRUNSYSTNEW))
     this_run.add(flattree_dir_list)
@@ -82,21 +81,20 @@ def make_qsub(run_name, production, is_mc):
 def submit_runsyst_new_mc():
     """submits MC RunSyst_New.exe jobs"""
 
-    is_mc = True
-    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, is_mc)
-    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, is_mc)
-    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, is_mc)
-    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, is_mc)
-    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, is_mc)
-    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, is_mc)
-    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, is_mc)
-    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, is_mc)
-    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, is_mc)
-    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, is_mc)
-    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, is_mc)
-    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, is_mc)
-    sand_fhc_mc = make_qsub(RN.SANDFHC, SAND, is_mc)
-    sand_rhc_mc = make_qsub(RN.SANDRHC, SAND, is_mc)
+    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, DATATYPES.MC)
+    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, DATATYPES.MC)
+    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, DATATYPES.MC)
+    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, DATATYPES.MC)
+    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, DATATYPES.MC)
+    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, DATATYPES.MC)
+    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, DATATYPES.MC)
+    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, DATATYPES.MC)
+    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, DATATYPES.MC)
+    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, DATATYPES.MC)
+    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, DATATYPES.MC)
+    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, DATATYPES.MC)
+    sand_fhc_mc = make_qsub(RN.SANDFHC, SAND, DATATYPES.MC)
+    sand_rhc_mc = make_qsub(RN.SANDRHC, SAND, DATATYPES.MC)
 
     run2w_mc.run(ShellCommand.IN_BKG)
     run2a_mc.run(ShellCommand.IN_BKG)
@@ -117,19 +115,18 @@ def submit_runsyst_new_mc():
 def submit_runsyst_new_data():
     """submits data RunSyst_New.exe jobs"""
 
-    is_mc = True
-    run2w_data = make_qsub(RN.RUN2WDATA, DATA_6M, not is_mc)
-    run2a_data = make_qsub(RN.RUN2ADATA, DATA_6M, not is_mc)
-    run3b_data = make_qsub(RN.RUN3BDATA, DATA_6M, not is_mc)
-    run3c_data = make_qsub(RN.RUN3CDATA, DATA_6M, not is_mc)
-    run4w_data = make_qsub(RN.RUN4WDATA, DATA_6M, not is_mc)
-    run4a_data = make_qsub(RN.RUN4ADATA, DATA_6M, not is_mc)
-    run5c_data = make_qsub(RN.RUN5CDATA, DATA_6M, not is_mc)
-    run6b_data = make_qsub(RN.RUN6BDATA, DATA_6M, not is_mc)
-    run6c_data = make_qsub(RN.RUN6CDATA, DATA_6M, not is_mc)
-    run6d_data = make_qsub(RN.RUN6DDATA, DATA_6M, not is_mc)
-    run6e_data = make_qsub(RN.RUN6EDATA, DATA_6M, not is_mc)
-    run7b_data = make_qsub(RN.RUN7BDATA, DATA_6N, not is_mc)
+    run2w_data = make_qsub(RN.RUN2WDATA, DATA_6M, DATATYPES.DATA)
+    run2a_data = make_qsub(RN.RUN2ADATA, DATA_6M, DATATYPES.DATA)
+    run3b_data = make_qsub(RN.RUN3BDATA, DATA_6M, DATATYPES.DATA)
+    run3c_data = make_qsub(RN.RUN3CDATA, DATA_6M, DATATYPES.DATA)
+    run4w_data = make_qsub(RN.RUN4WDATA, DATA_6M, DATATYPES.DATA)
+    run4a_data = make_qsub(RN.RUN4ADATA, DATA_6M, DATATYPES.DATA)
+    run5c_data = make_qsub(RN.RUN5CDATA, DATA_6M, DATATYPES.DATA)
+    run6b_data = make_qsub(RN.RUN6BDATA, DATA_6M, DATATYPES.DATA)
+    run6c_data = make_qsub(RN.RUN6CDATA, DATA_6M, DATATYPES.DATA)
+    run6d_data = make_qsub(RN.RUN6DDATA, DATA_6M, DATATYPES.DATA)
+    run6e_data = make_qsub(RN.RUN6EDATA, DATA_6M, DATATYPES.DATA)
+    run7b_data = make_qsub(RN.RUN7BDATA, DATA_6N, DATATYPES.DATA)
 
     run2w_data.run(ShellCommand.IN_BKG)
     run2a_data.run(ShellCommand.IN_BKG)
@@ -143,6 +140,11 @@ def submit_runsyst_new_data():
     run6d_data.run(ShellCommand.IN_BKG)
     run6e_data.run(ShellCommand.IN_BKG)
     run7b_data.run(ShellCommand.IN_BKG)
+
+
+class DATATYPES(object):
+    DATA = 0
+    MC = 1
 
 
 if __name__ == "__main__":
