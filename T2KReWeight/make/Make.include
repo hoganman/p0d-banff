@@ -41,7 +41,7 @@ ARCH_OK =
 # ROOT headers and libraries
 
 ROOT_INCLUDES  = -I$(shell root-config --incdir)
-ROOT_LIBRARIES = $(shell root-config --glibs) -lMinuit -lGeom -lEG -lXMLIO -lXMLParser
+ROOT_LIBRARIES = $(shell root-config --glibs) -lMinuit -lGeom -lEG -lXMLIO
 
 ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_GENIE)),YES)
 ROOT_LIBRARIES := $(ROOT_LIBRARIES) -lEGPythia6
@@ -549,6 +549,11 @@ endif
 INCLUDES  = $(ROOT_INCLUDES) \
 	    $(T2KREWEIGHT_INCLUDES)
 
+ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_PSYCHE)),YES)
+LIBRARIES += $(PSYCHE_LIBRARIES)
+INCLUDES  += $(PSYCHE_INCLUDES)
+endif
+
 ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_OAANALYSIS)),YES)
 LIBRARIES += $(OAANALYSIS_LIBRARIES)
 INCLUDES  += $(OAANALYSIS_INCLUDES)
@@ -583,11 +588,6 @@ endif
 ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_TRACKERFILE)),YES)
 LIBRARIES += $(TRACKERFILE_LIBRARIES)
 INCLUDES  += $(TRACKERFILE_INCLUDES)
-endif
-
-ifeq ($(strip $(T2KREWEIGHT_OPTION_ENABLE_PSYCHE)),YES)
-LIBRARIES += $(PSYCHE_LIBRARIES)
-INCLUDES  += $(PSYCHE_INCLUDES)
 endif
 
 # Strip /usr/include from INCLUDES since it is implicit for g++ and

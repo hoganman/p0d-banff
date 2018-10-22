@@ -33,7 +33,8 @@
 using namespace t2krew;
 
 int fNEvts = -1;
-int fMirror = 1;
+bool fMirror = true;
+int fToys = 1;
 int fId = 0;
 char * fInputFile;
 char * fOutputFile;
@@ -43,8 +44,6 @@ bool data = 0;
 void Usage();
 void ParseArgs(int argc, char **argv);
 int GetPThetaBin(double p, double th);
-
-
 
 int main(int argc, char *argv[]){
 
@@ -96,10 +95,10 @@ int main(int argc, char *argv[]){
   //PF_C dial values;
   std::vector<float> pf_c;
   if( fMirror ){
-      for(int i=0; i<10; i++) pf_c.push_back(pfc_spacing[i]*(66.7/(6.*217.)) + (475./(2.*217.) - 1.));
+    for(int i=0; i<10; i++) pf_c.push_back(pfc_spacing[i]*(66.7/(6.*217.)) + (475./(2.*217.) - 1.));
   }
   else{
-      for(int i=3; i<10; i++) pf_c.push_back(pfc_spacing[i]*(66.7/(6.*217.)) + (475./(2.*217.) - 1.));
+    for(int i=3; i<10; i++) pf_c.push_back(pfc_spacing[i]*(66.7/(6.*217.)) + (475./(2.*217.) - 1.));
   }
   dial_values.push_back(pf_c);
   dials.push_back(t2krew::kNIWG2014a_pF_C12);
@@ -262,10 +261,10 @@ int main(int argc, char *argv[]){
   //MEC PDD C dial values;
   std::vector<float> pdd_c_vec;
   if( fMirror ){
-      for(int i=0; i<10; i++) pdd_c_vec.push_back( pdd_spacing[i]/2. );
+    for(int i=0; i<10; i++) pdd_c_vec.push_back( pdd_spacing[i]/2. );
   }
   else{
-      for(int i=0; i<7; i++) pdd_c_vec.push_back( pdd_spacing[i]/2. );
+    for(int i=0; i<7; i++) pdd_c_vec.push_back( pdd_spacing[i]/2. );
   }
   dial_values.push_back(pdd_c_vec);
   dials.push_back(t2krew::kNIWGMEC_PDDWeight_C12);
@@ -276,10 +275,10 @@ int main(int argc, char *argv[]){
   //MEC PDD O dial values;
   std::vector<float> pdd_o_vec;
   if( fMirror ){
-      for(int i=0; i<10; i++) pdd_o_vec.push_back( pdd_spacing[i]/2. );
+    for(int i=0; i<10; i++) pdd_o_vec.push_back( pdd_spacing[i]/2. );
   }
   else{
-      for(int i=0; i<7; i++) pdd_o_vec.push_back( pdd_spacing[i]/2. );
+    for(int i=0; i<7; i++) pdd_o_vec.push_back( pdd_spacing[i]/2. );
   }
   dial_values.push_back(pdd_o_vec);
   dials.push_back(t2krew::kNIWGMEC_PDDWeight_O16);
@@ -359,8 +358,6 @@ int main(int argc, char *argv[]){
   Double_t MECOTuningWeight     [SampleId::kNSamples];
   Double_t MaQETuningWeight     [SampleId::kNSamples];
 
-
-  
   Int_t Run;
 
   // Add NEUT reweighting engine
@@ -470,8 +467,8 @@ int main(int argc, char *argv[]){
   ND::params().SetReadParamOverrideFilePointPassed();
 
   if(!(bool)ND::params().GetParameterI("psycheSteering.Systematics.ApplyWeightSystematics")) {
-      std::cerr << "< psycheSteering.Systematics.ApplyWeightSystematics = 0 > you should change that otherwise the nominal detector weight won't get applied" << std::endl;
-      throw;
+    std::cerr << "< psycheSteering.Systematics.ApplyWeightSystematics = 0 > you should change that otherwise the nominal detector weight won't get applied" << std::endl;
+    throw;
   }
   int nWeightSyst=0;
   if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableChargeConf"       )){ nWeightSyst++; }  
@@ -497,10 +494,10 @@ int main(int argc, char *argv[]){
   if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEOOFV"          )){ nWeightSyst++; }
 
   if(nWeightSyst == 0) {
-      std::cerr << "You have to apply all the systematics you want to have a correction" << std::endl;
-      throw;
+    std::cerr << "You have to apply all the systematics you want to have a correction" << std::endl;
+    throw;
   }else{
-      std::cout << "Applying " << nWeightSyst << " correction weight systematics" << std::endl;
+    std::cout << "Applying " << nWeightSyst << " correction weight systematics" << std::endl;
   }
 
   AnalysisManager _man;
@@ -509,7 +506,7 @@ int main(int argc, char *argv[]){
   if (!_man.input().Initialize(fInputFile,"", false)) return false;
 
   int nmax_entries = fNEvts;
-  int nmax_events =-1;
+  int nmax_events = -1;
 
   // Get the number of entries in the tree
   if ( fNEvts < 0 ) {
@@ -527,7 +524,7 @@ int main(int argc, char *argv[]){
   }
   else
     std::cout << nmax_events << " events." << std::endl;
-    
+
   Run = 0;
   if     (string(fRunPeriod)=="MC"  ) Run=1;
   else if(string(fRunPeriod)=="sand") Run=-1;
@@ -667,11 +664,12 @@ int main(int argc, char *argv[]){
 
   int last_event_selected = -1;
 
-  // Set a ToyMaker to configure the toy experiment. Initialize it with a random seed
-  ToyMaker* toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), true);
+  // Set a ToyMaker to configure the toy experiment. Initialize it with a random seed. Apply variation if throwing toys.
+  bool zero_var = fToys == 1;
+  ToyMaker* toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), zero_var);
 
   // Create and fill the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
-  toyMaker->CreateToyExperiments(1, _man.syst().GetSystematics()); 
+  toyMaker->CreateToyExperiments(fToys, _man.syst().GetSystematics()); 
 
   // Create the array of PreviousToyBox
   _man.sel().CreateToyBoxArray(nmax_events);
@@ -711,96 +709,113 @@ int main(int argc, char *argv[]){
 
     // Get event number
     evtNumber = event->EventInfo.Event;
+    //std::cout << "evtNumber: " << evtNumber << std::endl;
 
-    //  Gets the ToyExperiment with index itoy from the ToyMaker
-    ToyExperiment* toy = toyMaker->GetToyExperiment(0);
-
-    // Fixed 0 sigma for all systematics
-    bool passed = _man.ProcessEvent(*toy,*event,totalWeightSyst,fluxWeightSyst);
-    DetNomWeight = (double)totalWeightSyst.Correction;
-    // Generated skimmed spline files -> only save events if something passes one of the psyche selections
-    // If not, reset the event containers
-    if(!passed){
-
-      // Delete the SystBox array
-      _man.syst().FinalizeEventSystematics(*event);
-
-      // Reset the PreviousToyBox
-      _man.sel().FinalizeEvent(*event);
-
-      evt++;
-      continue;
+    // Clear all the old graphs
+    for(unsigned int i=0; i<dial_graphs.size(); i++){
+      (dial_graphs[i])->Clear();
     }
-    AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
 
-    if(!data){
-        
-      // Clear all the old graphs
-      for(unsigned int i=0; i<dial_graphs.size(); i++){
-        (dial_graphs[i])->Clear();
+    std::set<int> samples;
+
+    // Set default values
+    for(int sample = 0; sample < SampleId::kNSamples; ++sample){
+
+      for(unsigned int sys_iter=0; sys_iter<nDials; sys_iter++){
+        TGraph* graph = (TGraph*) dial_graphs[sys_iter]->ConstructedAt(sample);
+        graph->SetName(Form("%s_gr",dial_names[sys_iter].c_str()));
+        for(int piter=(graph->GetN()-1); piter>=0; piter--) graph->RemovePoint(piter);
+        graph->SetPoint(0,0.0,1.0);
       }
 
-      SelectedSample = summary->EventSample;
-      TrueNeutrinoDirX      = -999;
-      TrueNeutrinoDirY      = -999;
-      TrueNeutrinoDirZ      = -999;
+      NeutrinoCode         [sample] = -999;
+      Enu                  [sample] = -999;
 
-      TrueLepPDG            = -999;
-      TrueLepDirX           = -999;
-      TrueLepDirY           = -999;
-      TrueLepDirZ           = -999;
-      RecoLepDirX           = -999;
-      RecoLepDirY           = -999;
+      TrueLepMom           [sample] = -999;
+      TrueCosThetamu       [sample] = -999;
 
-      TruePostFSIPiPDG      = -999;
-      TruePostFSIPiMom      = -999;
-      TruePostFSIPiDirX     = -999;
-      TruePostFSIPiDirY     = -999;
-      TruePostFSIPiDirZ     = -999;
-      TruePreFSIPiPDG       = -999;
-      TruePreFSIPiMom       = -999;
-      TruePreFSIPiDirX      = -999;
-      TruePreFSIPiDirY      = -999;
-      TruePreFSIPiDirZ      = -999;
-      RecoPiMom             = -999;
-      RecoPiDirX            = -999;
-      RecoPiDirY            = -999;
-      RecoPiDirZ            = -999;
+      RecoLepDirZ          [sample] = -999;
+      RecoLepMom           [sample] = -999;
 
-      // We save something for each possible selection, so must loop through them
-      for(int sample = 0; sample < SampleId::kNSamples; ++sample){
+      ReactionCode         [sample] = -999;
+      NuParent             [sample] = -999;
+      Q2                   [sample] = -999;
+      Q2QE                 [sample] = -999;
+      HaveTruth            [sample] = false;
+      TgtMat               [sample] = -999;
+      FluxWeight           [sample] = -999;
+      TruthVtx             [sample] = -999;
+      CCQETuningWeight     [sample] = -999;
+      CohTuningWeight      [sample] = -999;
+      RFGTuningWeight      [sample] = -999;
+      RelRPATuningWeight   [sample] = -999;
+      NonRelRPATuningWeight[sample] = -999;
+      pFTuningWeight       [sample] = -999;
+      MECCTuningWeight     [sample] = -999;
+      MECOTuningWeight     [sample] = -999;
+      MaQETuningWeight     [sample] = -999;
 
-        TrueLepMom           [sample] = -999;
-        RecoLepDirZ          [sample] = -999;
-        NeutrinoCode         [sample] = -999;
-        Enu                  [sample] = -999;
-        TrueCosThetamu       [sample] = -999;
+    }
 
-        ReactionCode         [sample] = -999;
-        NuParent             [sample] = -999;
-        Q2                   [sample] = -999;
-        Q2QE                 [sample] = -999;
-        HaveTruth            [sample] = -999;
-        TgtMat               [sample] = -999;
-        FluxWeight           [sample] = -999;
-        TruthVtx             [sample] = -999;
-        CCQETuningWeight     [sample] = -999;
-        CohTuningWeight      [sample] = -999;
-        RFGTuningWeight      [sample] = -999;
-        RelRPATuningWeight   [sample] = -999;
-        NonRelRPATuningWeight[sample] = -999;
-        pFTuningWeight       [sample] = -999;
-        MECCTuningWeight     [sample] = -999;
-        MECOTuningWeight     [sample] = -999;
-        MaQETuningWeight     [sample] = -999;
+    TrueNeutrinoDirX      = -999;
+    TrueNeutrinoDirY      = -999;
+    TrueNeutrinoDirZ      = -999;
+
+    TrueLepPDG            = -999;
+    TrueLepDirX           = -999;
+    TrueLepDirY           = -999;
+    TrueLepDirZ           = -999;
+    RecoLepDirX           = -999;
+    RecoLepDirY           = -999;
+
+    TruePostFSIPiPDG      = -999;
+    TruePostFSIPiMom      = -999;
+    TruePostFSIPiDirX     = -999;
+    TruePostFSIPiDirY     = -999;
+    TruePostFSIPiDirZ     = -999;
+    TruePreFSIPiPDG       = -999;
+    TruePreFSIPiMom       = -999;
+    TruePreFSIPiDirX      = -999;
+    TruePreFSIPiDirY      = -999;
+    TruePreFSIPiDirZ      = -999;
+    RecoPiMom             = -999;
+    RecoPiDirX            = -999;
+    RecoPiDirY            = -999;
+    RecoPiDirZ            = -999;
+
+    DetNomWeight = -999;;
+
+    for(int itoy=0; itoy<fToys; itoy++){
+      //  Gets the ToyExperiment with index itoy from the ToyMaker
+      ToyExperiment* toy = toyMaker->GetToyExperiment(itoy);
+
+      bool passed = _man.ProcessEvent(*toy,*event,totalWeightSyst,fluxWeightSyst);
+      DetNomWeight = (double)totalWeightSyst.Correction;
+      AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
+      // Generated skimmed spline files -> only save events if something passes one of the psyche selections
+      // If not, reset the event containers
+      if(!passed){
+        evt++;
+        continue;
+      }
+      else if(samples.find(int( summary->EventSample )) != samples.end()) continue;
+      else samples.insert(int( summary->EventSample ));
+
+      int sample = int(summary->EventSample);
+
+      //AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
+
+      if(!data){
+
+        SelectedSample = summary->EventSample;
 
         if(summary->TrueVertex[sample] == NULL && summary->EventSample == sample){
           std::cerr << "weird error, the event has been selected but doesn't have true vertex" << std::endl;
         }
         if(summary->TrueVertex[sample] != NULL && summary->EventSample == sample){
-          //Save stuff  
+          //Save stuff
           AnaParticleMomB* leptonCandidate = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
-              
+
           RecoLepMom[sample] = leptonCandidate->Momentum;
           RecoLepDirX = leptonCandidate->DirectionStart[0];
           RecoLepDirY = leptonCandidate->DirectionStart[1];
@@ -816,7 +831,7 @@ int main(int argc, char *argv[]){
              sample == SampleId::kFGD1NuMuCCOtherHAFwd           ||
              sample == SampleId::kFGD1NuMuCC1PiHABwd             ||
              sample == SampleId::kFGD1NuMuCCOtherHABwd           ||
-                                                                 
+
              sample == SampleId::kFGD2NuMuCC1Pi                  ||
              sample == SampleId::kFGD2NuMuCCOther                ||
              sample == SampleId::kFGD2NuMuCC1PiFwd               ||
@@ -827,10 +842,10 @@ int main(int argc, char *argv[]){
              sample == SampleId::kFGD2NuMuCCOtherHAFwd           ||
              sample == SampleId::kFGD2NuMuCC1PiHABwd             ||
              sample == SampleId::kFGD2NuMuCCOtherHABwd           ||
-                                                                 
+
              sample == SampleId::kFGD1AntiNuMuCC1Pi              ||
              sample == SampleId::kFGD1AntiNuMuCCOther            ||
-                                                                 
+
              sample == SampleId::kFGD2AntiNuMuCC1Pi              ||
              sample == SampleId::kFGD2AntiNuMuCCOther            ||
 
@@ -846,7 +861,7 @@ int main(int argc, char *argv[]){
             RecoPiDirZ = 0;
           }
 
-          
+
           if(leptonCandidate->GetTrueParticle()){
             TrueLepMom[sample]  = leptonCandidate->GetTrueParticle()->Momentum;
             TrueLepPDG  = leptonCandidate->GetTrueParticle()->PDG;
@@ -863,12 +878,6 @@ int main(int argc, char *argv[]){
             throw;
           }
         }
-        else{
-          //   //Need event in flat tree for spill information so save empty splines
-          RecoLepMom[sample] = -999;
-          //   CosThetamu[sample] = -999;
-          TruthVtx  [sample] = -999;
-        }
 
         ND::NRooTrackerVtx * vtx = NULL;
 
@@ -876,26 +885,9 @@ int main(int argc, char *argv[]){
 
         int flavor = -999;
         FluxWeight  [sample] = 1.0;
-        Enu         [sample] = -999.;
-        ReactionCode[sample] = -999.;
         Double_t weight = 1.0;
 
         if(RecoLepMom[sample] < 0){
-          for(unsigned int sys_iter=0; sys_iter<nDials; sys_iter++){
-            TGraph* graph = (TGraph*) dial_graphs[sys_iter]->ConstructedAt(sample);
-            graph->SetName(Form("%s_gr",dial_names[sys_iter].c_str()));
-            for(int piter=(graph->GetN()-1); piter>=0; piter--) graph->RemovePoint(piter);
-            graph->SetPoint(0,0.0,1.0);
-          }
-          NeutrinoCode    [sample] = -999;
-          TrueNeutrinoDirX = -999;
-          TrueNeutrinoDirY = -999;
-          TrueNeutrinoDirZ = -999;
-          Q2[sample] = -999;
-          Q2QE[sample] = -999;
-          TgtMat[sample] = -999;
-          NuParent[sample] = -999;
-          HaveTruth[sample] = false;
           continue;
         }
 
@@ -940,7 +932,7 @@ int main(int argc, char *argv[]){
         bool vtx_match = true;
         // If there is no RooTrackerVertex, or we are looking at sand events, set it all to nominal
         if(!vtx || Run == -1){
-          std::cout << "Cannot find NRooTrackerVtx object - skipping weight for this vertex!" << std::endl;;
+          //std::cout << "Cannot find NRooTrackerVtx object - skipping weight for this vertex!" << std::endl;;
           vtx_match = false;
           for(unsigned int sys_iter=0; sys_iter<nDials; sys_iter++){
             TGraph* graph = (TGraph*) dial_graphs[sys_iter]->ConstructedAt(sample);
@@ -950,7 +942,7 @@ int main(int argc, char *argv[]){
           }
         } 
         else{
-          std::cout << "Found NRooTrackerVtx object!" << std::endl;;
+          //std::cout << "Found NRooTrackerVtx object!" << std::endl;;
           //Save the truth information
           ReactionCode[sample] = atoi( ((vtx->EvtCode)->String()).Data() );
           NeutrinoCode[sample] = 0;
@@ -981,7 +973,7 @@ int main(int argc, char *argv[]){
                TMath::Abs(vtx->NEipvc[ipart]) != 111)
               continue;
             TVector3 pi(vtx->NEpvc[ipart][0], vtx->NEpvc[ipart][1], vtx->NEpvc[ipart][2]);
-            
+
             if(vtx->NEicrnvc[ipart] == 1 && pi.Mag() > TruePostFSIPiMom){ // the pion exits the nucleus (takes the most energetic)
               TruePostFSIPiPDG      = vtx->NEipvc[ipart];
               TruePostFSIPiMom      = pi.Mag();
@@ -1009,12 +1001,12 @@ int main(int argc, char *argv[]){
           // std::cout << " - PX[0]            " << vtx->NEpvc[ipart][0]  << std::endl;
           // std::cout << " - PY[1]            " << vtx->NEpvc[ipart][1]  << std::endl;
           // std::cout << " - PZ[2]            " << vtx->NEpvc[ipart][2]  << std::endl;
-        
-      
- 
+
+
+
           //Add Kendall's pion tuning stuff
           double piEnergy = -1.0;                    
-          
+
           if(reac == 16){
             for(int ipart = 0; ipart < event->nTrueParticles; ++ipart){
               if(fabs(event->TrueParticles[ipart]->PDG) != 211) continue;
@@ -1066,29 +1058,29 @@ int main(int argc, char *argv[]){
             else{
               for(unsigned int dial_iter=0; dial_iter<dial_values[sys_iter].size(); dial_iter++){
                 weight = 1;
-		// If event is on Hydrogen and we are looking at MAQE
-		if(TgtMat[sample] == 1 && dial_names[sys_iter] == "MAQE"){
-		    rw.Systematics().SetTwkDial(dials[sys_iter], (1.03 - 1.2)/1.2);
-		}
-		else{
-		    rw.Systematics().SetTwkDial(dials[sys_iter], dial_values[sys_iter][dial_iter]);
-		}
+                // If event is on Hydrogen and we are looking at MAQE
+                if(TgtMat[sample] == 1 && dial_names[sys_iter] == "MAQE"){
+                  rw.Systematics().SetTwkDial(dials[sys_iter], (1.03 - 1.2)/1.2);
+                }
+                else{
+                  rw.Systematics().SetTwkDial(dials[sys_iter], dial_values[sys_iter][dial_iter]);
+                }
                 rw.Reconfigure();
                 weight = rw.CalcWeight(vtx);
                 if( fabs(weight-1.0) > 1.e-5 ) flat = false;
                 if(sys_iter==nDials-2){
                   graph->SetPoint(dial_iter, dial_iter, weight);
                 }
-		else if(fMirror && (dial_names[sys_iter] == "PDD_C" || dial_names[sys_iter] == "PDD_O")){
-		    double x_val = dial_values[sys_iter][dial_iter];
-		    if(dial_iter > 6) x_val = 2.0 - x_val;
-		    graph->SetPoint(dial_iter, x_val, weight);
-		}
-		else if(fMirror && (dial_names[sys_iter] == "PF_C" || dial_names[sys_iter] == "PF_O")){
-		    double x_val = dial_values[sys_iter][dial_iter];
-		    if(dial_iter < 3) x_val = 2.0*dial_values[sys_iter][3] - x_val;
-		    graph->SetPoint(dial_iter, x_val, weight);
-		}
+                else if(fMirror && (dial_names[sys_iter] == "PDD_C" || dial_names[sys_iter] == "PDD_O")){
+                  double x_val = dial_values[sys_iter][dial_iter];
+                  if(dial_iter > 6) x_val = 2.0 - x_val;
+                  graph->SetPoint(dial_iter, x_val, weight);
+                }
+                else if(fMirror && (dial_names[sys_iter] == "PF_C" || dial_names[sys_iter] == "PF_O")){
+                  double x_val = dial_values[sys_iter][dial_iter];
+                  if(dial_iter < 3) x_val = 2.0*dial_values[sys_iter][3] - x_val;
+                  graph->SetPoint(dial_iter, x_val, weight);
+                }
                 else{
                   graph->SetPoint(dial_iter, dial_values[sys_iter][dial_iter], weight);
                 }
@@ -1169,7 +1161,7 @@ int main(int argc, char *argv[]){
           HaveTruth[sample] = false;
         }
         // break;
-      } // Samples
+      }
     }
 
     //Fill summary tree
@@ -1228,7 +1220,7 @@ int main(int argc, char *argv[]){
 // Print the cmd line syntax
 void Usage(){
   std::cout << "Cmd line syntax should be:" << std::endl;
-  std::cout << "genWeightsFromNRooTracker_BANFF_2016.exe -p psyche_inputfile -o outputfile -r run_type [-n n_events = -1 -m mirrored splines = 1]" << std::endl;
+  std::cout << "genWeightsFromNRooTracker_BANFF_2016.exe -p psyche_inputfile -o outputfile -r run_type [-n n_events = -1 -m mirrored splines = 1 -t n_toys = 1]" << std::endl;
   std::cout << "psyche_inputfile is a flat tree suitable for input into psyche." << std::endl;
   std::cout << "run_type can be 'MC', 'sand' or 'data'." << std::endl;
   std::cout << "outputfile is the desired name of the output file." << std::endl;
@@ -1251,7 +1243,8 @@ void ParseArgs(int argc, char **argv){
     else if(string(argv[i]) == "-o") fOutputFile = argv[i+1];
     else if(string(argv[i]) == "-r") fRunPeriod  = argv[i+1];
     else if(string(argv[i]) == "-n") fNEvts = atoi(argv[i+1]);
-    else if(string(argv[i]) == "-m") fMirror = atoi(argv[i+1]);
+    else if(string(argv[i]) == "-m") fMirror = (bool)atoi(argv[i+1]);
+    else if(string(argv[i]) == "-t") fToys = atoi(argv[i+1]);
     else {  
       std::cout << "Invalid argument:" << argv[i] << " "<< argv[i+1] << std::endl;
       Usage();

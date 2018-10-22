@@ -1,3 +1,4 @@
+source $P0DBANFFROOT/highland2/oaAnalysisReader/*/cmt/setup.sh
 ./configure \
     --enable-neut \
         --with-cern=$CERN_ROOT \

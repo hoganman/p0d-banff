@@ -53,17 +53,17 @@ using namespace t2krew;
 const int nDecorrSample = 2;
 const int nDecorrDet = 2;
 const int nSyst = 30;
-const int nThrows = 500;
+const int nThrows = 1000;
 int nDuplicate= 4; // number of times the systematics are duplicated in the matrix
 int nRows;
 int fNEvts = -1;
 int fNThrows = 1;
 
-bool verbose = false;
+bool verbose = true;
 bool PreLoad = false;
-bool onSample[nSyst][4];
+bool onSample [nSyst][4];
 bool applySyst[nSyst];
-bool Decorr[nSyst][nDecorrDet];
+bool Decorr   [nSyst][nDecorrDet];
 std::map<std::string, int> systMap;
 std::map<std::string, int> systFirstIndex;
 
@@ -445,8 +445,6 @@ int ParseArgs(int argc, char *argv[]);
 int main(int argc, char *argv[]){
 //******************************************************************
   
-  std::cout<<"here"<<std::endl;
-
   double fSmallNumber = 0.0000001;
 
   // process the arguments
@@ -472,39 +470,70 @@ int main(int argc, char *argv[]){
   TFile* outfile = new TFile(fOutfile.c_str(),"RECREATE");
   TTree* outtree = new TTree("SelectedEventTruth","SelectedEventTruth");
 
-  int nTh = nThrows;
-  float* PMu          = new float[nThrows];
-  float* ThetaMu      = new float[nThrows];
-  float* DetWeight    = new float[nThrows];
-  float* FluxWeight   = new float[nThrows];
-  float* NIWGWeight   = new float[nThrows];
-  int*   Selection    = new int  [nThrows];
-  int    EventNumber = 0;
-  int    Run = 0;
-  int    SubRun = 0;
-  
+  Int_t nToys = nThrows;
+  if(!(nToys <= 1000)) nToys = 1000;
 
-  for(int i = 0; i < nThrows; ++i){
-    FluxWeight[i]   = 1.;
-    DetWeight[i]    = 1.;
-    NIWGWeight[i]   = 1.;
-    PMu[i]       = -999;
-    ThetaMu[i]   = -999;
-    Selection[i] = 0;
+  Int_t Run         = -999;
+  Int_t SubRun      = -999;
+  Int_t EventNumber = -999;
+
+  Int_t    TrueVertexIDNom;
+  Int_t    SelectionNom   ;
+  Double_t TrueEnuNom     ;
+  Int_t    TrueNuPDGNom   ;
+  Double_t LeptonMomNom   ;
+  Double_t LeptonCosNom   ;
+  Double_t WeightNom      ;
+  Double_t FluxWeightNom  ;
+  Double_t NIWGWeightNom  ;
+  
+  Int_t    Toy            [1000];
+  Int_t    TrueVertexIDToy[1000];
+  Int_t    SelectionToy   [1000];
+  Double_t TrueEnuToy     [1000];
+  Int_t    TrueNuPDGToy   [1000];
+  Double_t LeptonMomToy   [1000];
+  Double_t LeptonCosToy   [1000];
+  Double_t WeightToy      [1000];
+  Double_t FluxWeightToy  [1000];
+  Double_t NIWGWeightToy  [1000];
+  
+  for (int iToy = 0; iToy < nToys; ++iToy) {
+    Toy            [iToy] = -999;
+    TrueVertexIDToy[iToy] = -999;
+    SelectionToy   [iToy] = -999;
+    LeptonMomToy   [iToy] = -999;
+    TrueEnuToy     [iToy] = -999;
+    TrueNuPDGToy   [iToy] = -999;
+    LeptonCosToy   [iToy] = -999;
+    WeightToy      [iToy] = -999;
+    NIWGWeightToy  [iToy] = -999;
   }
-
-  outtree->Branch("nThrows",     &nTh,          "nThrows/I");
-  outtree->Branch("PMu",          PMu,         "PMu[nThrows]/F");
-  outtree->Branch("ThetaMu",      ThetaMu,     "ThetaMu[nThrows]/F");
-  outtree->Branch("DetWeight",    DetWeight,   "DetWeight[nThrows]/F");
-  outtree->Branch("FluxWeight",   FluxWeight,  "FluxWeight[nThrows]/F");
-  outtree->Branch("NIWGWeight",   NIWGWeight,  "NIWGWeight[nThrows]/F");
-  outtree->Branch("Selection",    Selection,   "Selection[nThrows]/I");
-  outtree->Branch("EventNumber", &EventNumber, "EventNumber/I");
-  outtree->Branch("Run",         &Run,         "Run/I");
-  outtree->Branch("SubRun",      &SubRun,      "SubRun/I");
   
-
+  outtree->Branch("Run",            &Run,           "Run/I"        );
+  outtree->Branch("SubRun",         &SubRun,        "SubRun/I"     );
+  outtree->Branch("EventNumber",    &EventNumber,   "EventNumber/I");
+  
+  outtree->Branch("SelectionNom",    &SelectionNom,    "SelectionNom/I"   );
+  outtree->Branch("TrueEnuNom",      &TrueEnuNom,      "TrueEnuNom/D"     );
+  outtree->Branch("TrueNuPDGNom",    &TrueNuPDGNom,    "TrueNuPDGNom/I"   );
+  outtree->Branch("TrueVertexIDNom", &TrueVertexIDNom, "TrueVertexIDNom/I");
+  outtree->Branch("LeptonMomNom",    &LeptonMomNom,    "LeptonMomNom/D"   );
+  outtree->Branch("LeptonCosNom",    &LeptonCosNom,    "LeptonCosNom/D"   );
+  outtree->Branch("WeightNom",       &WeightNom,       "WeightNom/D"      );
+  outtree->Branch("FluxWeightNom",   &FluxWeightNom,   "FluxWeightNom/D"  );
+  
+  outtree->Branch("nToys",          &nToys,           "nToys/I"                 );
+  outtree->Branch("Toy",             Toy,             "Toy[nToys]/I"            );
+  outtree->Branch("TrueVertexIDToy", TrueVertexIDToy, "TrueVertexIDToy[nToys]/I");
+  outtree->Branch("SelectionToy",    SelectionToy,    "SelectionToy[nToys]/I"   );
+  outtree->Branch("TrueEnuToy",      TrueEnuToy,      "TrueEnuToy[nToys]/D"     );
+  outtree->Branch("TrueNuPDGToy",    TrueNuPDGToy,    "TrueNuPDGToy[nToys]/I"   );
+  outtree->Branch("LeptonMomToy",    LeptonMomToy,    "LeptonMomToy[nToys]/D"   );
+  outtree->Branch("LeptonCosToy",    LeptonCosToy,    "LeptonCosToy[nToys]/D"   );
+  outtree->Branch("WeightToy",       WeightToy,       "WeightToy[nToys]/D"      );
+  outtree->Branch("FluxWeightToy",   FluxWeightToy,   "FluxWeightToy[nToys]/D"  );
+  
   std::cout << "Starting to reweight events from psyche file: " << fFileName << std::endl;
 
   // Load in the NRooTracker vertex tree.
@@ -543,7 +572,6 @@ int main(int argc, char *argv[]){
   applySyst[26] = (bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp");
   applySyst[27] = (bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp");
   applySyst[28] = (bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEOOFV");
-  applySyst[29] = (bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFlux");
   
   // numuFGD1              numuFGD2                 nueFGD1                  nueFGD2
   onSample[ 0][0] = true;  onSample[ 0][1] = true;  onSample[ 0][2] = true;  onSample[ 0][3] = true;  // Variations.BFieldDist
@@ -578,7 +606,6 @@ int main(int argc, char *argv[]){
   onSample[26][0] = false; onSample[26][1] = false; onSample[26][2] = true;  onSample[26][3] = true;  // Weights.NuEP0DPileUp
   onSample[27][0] = false; onSample[27][1] = false; onSample[27][2] = true;  onSample[27][3] = true;  // Weights.NuEECalPileUp   
   onSample[28][0] = false; onSample[28][1] = false; onSample[28][2] = true;  onSample[28][3] = true;  // Weights.NuEOOFV
-  onSample[29][0] = false; onSample[29][1] = false; onSample[29][2] = true;  onSample[29][3] = true;  // Weights.Flux
    
   // nue / numu          FGD1 / FGD2
   Decorr[ 0][0] = false; Decorr[ 0][1] = false; // Variations.BFieldDist
@@ -612,7 +639,6 @@ int main(int argc, char *argv[]){
   Decorr[26][0] = false; Decorr[26][1] = false; // Weights.NuEP0DPileUp
   Decorr[27][0] = false; Decorr[27][1] = false; // Weights.NuEECalPileUp   
   Decorr[28][0] = false; Decorr[28][1] = false; // Weights.NuEOOFV
-  Decorr[29][0] = false; Decorr[29][1] = false; // Weights.Flux 
 
   
 
@@ -646,7 +672,6 @@ int main(int argc, char *argv[]){
   systMap["NuEP0DPileUp"]      = 26;
   systMap["NuEECalPileUp"]     = 27;
   systMap["NuEOOFV"]           = 28;
-  systMap["FluxWeight"]        = 29;
   //Set up the AnalysisManagers.
   AnalysisManager _man;
 
@@ -675,12 +700,14 @@ int main(int argc, char *argv[]){
   _man.syst().GetVariationSystematics(nv);
   int nw;
   _man.syst().GetWeightSystematics(nw);
-
+  
   std::vector<SystematicBase*>  allSyst = _man.syst().GetSystematics();
-
-  for(int i = 0; i < allSyst.size(); i++){
-    if(allSyst[i])
+  std::vector<double> SystName;
+  
+  for(int i = 0; i < (int)allSyst.size(); i++){
+    if(allSyst[i]){
       std::cout << allSyst[i]->GetName() << " has index " << allSyst[i]->GetIndex() << std::endl;
+    }
   }
 
   
@@ -832,10 +859,6 @@ int main(int argc, char *argv[]){
       
       if(sname == "FgdPid"){
 	
-	// Note: it looks like the FGD1 and FGD2 are already correlated for this syst inside psyche
-	// (doesn't read the last 4 parameters and apply FGD1 numbers to FGD2)
-	// I'll fill a bug and probably this will be changed at some point
-	// The structure is then:
 	// 0 Muon FGD1 Mean
 	// 1 Proton FGD1 Mean
 	// 2 Muon FGD1 Sig
@@ -879,7 +902,6 @@ int main(int argc, char *argv[]){
       if(sname == "OOFV"   ||
 	 sname == "NuEOOFV"){
 	// Same applies here, reco OOFV are all 100% correlated even if you have 5+5
-	// parameters for the FGD1 and FGD2 -> Submitting a bug
 	// The structure is then:
 	// 5 FGD1 reco
 	// 5 FGD2 reco
@@ -947,9 +969,9 @@ int main(int argc, char *argv[]){
     for(int j = 0; j < corr->GetNrows(); j++)
       (*smallercorr)(i, j) = (*corr)(i, j);
 
-  // TFile* f = new TFile("CorrelationMatrix.root", "RECREATE");
-  // corr->Write();
-  // f->Close();
+  TFile* f = new TFile("CorrelationMatrix.root", "RECREATE");
+  corr    ->Write();
+  f->Close();
 
   TDecompChol *chdcmp = new TDecompChol(*corr);
   //std::cout << "Condition is : " <<  chdcmp.Condition() << std::endl;    
@@ -1019,6 +1041,7 @@ int main(int argc, char *argv[]){
   }
 
   std::cout << "Correlation matrix is made" << std::endl;
+
   if(verbose){
     TFile * testfile = new TFile("test.root", "RECREATE");
     (*corr).Write("theMatrix");
@@ -1211,18 +1234,18 @@ int main(int argc, char *argv[]){
   // Apply nominal tuning
   rw.Systematics().SetTwkDial(t2krew::kNIWG2014a_SF_RFG,0); // SF->RFG tuning
   rw.Systematics().SetTwkDial(t2krew::kNXSec_VecFFCCQE, 2); // Note that when we set MAQE, we need to set NXSec_VecFFCCQE to 2 for SF->RFG MC
-  rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm,1);
+  rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm, 1);
   rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_shape,0);
 
   std::cout << "Setting the NIWG dials -done-" << std::endl;
   rw.Reconfigure();
   std::cout << "Reconfigured NIWG dials -done-" << std::endl;
   int prevTruthID = -1;
+  int prevTruthIDNom = -1;
   float prevNIWGWeight = -1.;
   int prevRTV = -1;
-  // int prevnomRTV = 0;
-  //bool foundvtx = false;
   Int_t rtvi = 0;
+  Int_t rtviNom = 0;
 
 
   for(UInt_t isyst = 0; isyst < NMAXSYSTEMATICS; isyst++){
@@ -1252,8 +1275,8 @@ int main(int argc, char *argv[]){
   // Create the array of SystBox
   _man.syst().Initialize(_man.sel(), nmax_events);
   
-  _man.syst().DumpVariationSystematics();
-  _man.syst().DumpWeightSystematics();
+  if(verbose) _man.syst().DumpVariationSystematics();
+  if(verbose) _man.syst().DumpWeightSystematics();
   
   TTree* RTV = (TTree*)infile->Get("NRooTrackerVtx");
   TClonesArray *nRooVtxs = new TClonesArray("ND::NRooTrackerVtx",100);
@@ -1262,10 +1285,13 @@ int main(int argc, char *argv[]){
   RTV->SetBranchAddress("NVtx", &NRooVtx);
   Long64_t entry = 0;
   Int_t evt = 0;
+  ToyMaker* ZeroVarToyMaker = new ToyMakerExample(1, true);
+  ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics()); 
+  ToyExperiment* ZeroVarToy = ZeroVarToyMaker->GetToyExperiment(0);
   
   while(entry < nmax_entries && evt < nmax_events){
 
-    if(entry%10000 == 0)
+    if(entry%1000 == 0)
       std::cout << "Progress: " << (double)entry / (double)nmax_entries * 100. << "%... nThrows = " << nThrows << std::endl;
     if(entry == 0){
       std::cout << "sampling time from " << entry << std::endl;
@@ -1288,32 +1314,130 @@ int main(int argc, char *argv[]){
     int OverAllSample = 0;
      
     int nSelected = 0;
+    int nSelectedNom = 0;
     bool foundvtx = false;
+    FluxWeightNom = 1;
+    WeightNom     = 1;
+    NIWGWeightNom = 1;
+    SelectionNom  = SampleId::kUnassigned;
+    
+    LeptonMomNom = -999;
+    LeptonCosNom = -999;
     
     _man.syst().InitializeEventSystematics(_man.sel(),*event);
+    AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
+    WeightType totalWeightSyst;
+    WeightType fluxWeightSyst ;
+      
+    _man.ProcessEvent(*ZeroVarToy, *event, totalWeightSyst, fluxWeightSyst);
+    FluxWeightNom = fluxWeightSyst .Correction;
+    WeightNom     = totalWeightSyst.Correction;
+    //Only interested if the event passed selection.
+    SelectionNom = summary->EventSample;
+    
+    if(summary->EventSample != SampleId::kUnassigned){
+      if(summary->TrueVertex[summary->EventSample] != NULL){
+        LeptonMomNom = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum;
+        LeptonCosNom = summary->LeptonCandidate[summary->EventSample]->DirectionStart[2];
+        Int_t TrueVertexIDNom = summary->LeptonCandidate[summary->EventSample]->GetTrueParticle()->VertexID;
+
+        if(TrueVertexIDNom == prevTruthID){
+          NIWGWeightNom = prevNIWGWeight;
+          nSelectedNom++;
+          continue;
+        }
+
+        if(event->EventInfo.IsSand){
+          NIWGWeightNom = 1;
+          nSelectedNom++;
+          continue;
+        }
+
+        //Use the TruthVertexID to get the RooTrackerVertex corresponding to this
+        //event.
+        ND::NRooTrackerVtx * vtxNom = NULL;
+        prevTruthIDNom = TrueVertexIDNom;
+        prevRTV     = rtviNom;
+        if(!foundvtx){
+          while(vtxNom==NULL){
+            //Pull out the correct RooTrackerVtx tree entry.
+            RTV->GetEntry(rtviNom);
+            for(int i = 0; i < NRooVtx; ++i){
+              vtxNom = (ND::NRooTrackerVtx*)(*nRooVtxs)[i];
+              if(vtxNom->TruthVertexID == TrueVertexIDNom &&
+                 fabs(vtxNom->StdHepP4[0][3]*1000 - summary->TrueVertex[summary->EventSample]->NuEnergy) < 0.1){
+                foundvtx = true;
+                break;
+              }
+              vtxNom = NULL;
+            }
+            if(vtxNom==NULL) rtviNom++;
+            if(rtviNom == RTV->GetEntries()){
+              std::cout << "Looping to find correct vertex!" << std::endl;
+              rtviNom = 0;
+              //break;
+            }
+            if(rtviNom == prevRTV - 1){
+              std::cout << "Event failed to find ANY vertex!" << std::endl;
+              break;
+            }
+          }
+        }else{
+          //may not work, depending on how RTV->GetEntry(rvti) works
+          for(int i = 0; i > NRooVtx; ++i){
+            vtxNom = (ND::NRooTrackerVtx*)(*nRooVtxs)[i];
+            if(vtxNom->TruthVertexID == TrueVertexIDNom &&
+               fabs(vtxNom->StdHepP4[0][3]*1000 - summary->TrueVertex[summary->EventSample]->NuEnergy) < 0.1){
+              break;
+            } 
+          }
+        }
+        if(vtxNom != NULL){
+          NIWGWeightNom = rw.CalcWeight(vtxNom);
+
+
+          //Add Kendall's pion tuning stuff
+          double piEnergy = -1.0;
+          if(fabs(atoi(((vtxNom->EvtCode)->String()).Data() )) == 16){
+            for(int i = 0; i < event->nTrueParticles; ++i){
+              if(fabs(event->TrueParticles[i]->PDG) != 211) continue;
+              if(event->TrueParticles[i]->TrueVertex == NULL) continue;
+              if(event->TrueParticles[i]->VertexID == TrueVertexIDNom){
+                piEnergy = sqrt(event->TrueParticles[i]->Momentum * event->TrueParticles[i]->Momentum + 139.57 * 139.57) / 1000.0;
+              }
+            }
+            if     (piEnergy < 0   ){ NIWGWeightNom = 1    *NIWGWeightNom; }
+            else if(piEnergy < 0.25){ NIWGWeightNom = 0.135*NIWGWeightNom; }
+            else if(piEnergy < 0.5 ){ NIWGWeightNom = 0.4  *NIWGWeightNom; }
+            else if(piEnergy < 0.75){ NIWGWeightNom = 0.294*NIWGWeightNom; }
+            else if(piEnergy < 1.0 ){ NIWGWeightNom = 1.206*NIWGWeightNom; }
+          }
+        }
+        prevNIWGWeight = NIWGWeightNom;
+        foundvtx=false;
+      } //End true vertex exists check.
+      nSelectedNom++;
+    } //End passed check.
 
     for (Int_t itoy = 0; itoy < nThrows; itoy++){
-      FluxWeight[itoy]   = 1;
-      DetWeight[itoy]    = 1;
-      NIWGWeight[itoy]   = 1;
+      FluxWeightToy[itoy] = 1;
+      WeightToy [itoy] = 1;
+      NIWGWeightToy[itoy] = 1;
 
-      PMu[itoy]     = -999;
-      ThetaMu[itoy] = -999;
+      LeptonMomToy[itoy] = -999;
+      LeptonCosToy[itoy] = -999;
 
       //Get the event to be modified.
-
-      WeightType totalWeightSyst;
-      WeightType fluxWeightSyst;
-            
+      		  
       AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
       ToyExperiment* toy = toyMakerNuMuFGD1->GetToyExperiment(itoy);
       
       _man.ProcessEvent(*toy, *event, totalWeightSyst, fluxWeightSyst);
       
       if(summary->EventSample != SampleId::kFGD1NuMuCC   &&
-	 summary->EventSample != SampleId::kFGD1NuMuCCQE &&
-	 
-	 summary->EventSample != SampleId::kFGD1NuMuCC0Pi   &&
+		 summary->EventSample != SampleId::kFGD1NuMuCCQE &&
+	 	 
+     	 summary->EventSample != SampleId::kFGD1NuMuCC0Pi   &&
       	 summary->EventSample != SampleId::kFGD1NuMuCC1Pi   &&
       	 summary->EventSample != SampleId::kFGD1NuMuCCOther &&
 
@@ -1330,7 +1454,7 @@ int main(int argc, char *argv[]){
       	 summary->EventSample != SampleId::kFGD1NuMuCC1PiHABwd   &&
       	 summary->EventSample != SampleId::kFGD1NuMuCCOtherHABwd &&
 
-	 summary->EventSample != SampleId::kFGD1AntiNuMuCC        &&
+         summary->EventSample != SampleId::kFGD1AntiNuMuCC        &&
 	 summary->EventSample != SampleId::kFGD1AntiNuMuCC1Track  &&
 	 summary->EventSample != SampleId::kFGD1AntiNuMuCCNTracks &&
 	 summary->EventSample != SampleId::kFGD1AntiNuMuCC0Pi     &&
@@ -1399,36 +1523,29 @@ int main(int argc, char *argv[]){
       	}
       }
       
-      Selection[itoy] = summary->EventSample;
+      SelectionToy[itoy] = summary->EventSample;
                 
       //Only interested if the event passed selection.
       if(summary->EventSample != SampleId::kUnassigned){
-	if(summary->TrueVertex[summary->EventSample] != NULL){
+        if(summary->TrueVertex[summary->EventSample] != NULL){
 
-	  PMu[itoy]     = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum;
-	  ThetaMu[itoy] = summary->LeptonCandidate[summary->EventSample]->DirectionStart[2];
+    	  LeptonMomToy[itoy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum;
+	      LeptonCosToy[itoy] = summary->LeptonCandidate[summary->EventSample]->DirectionStart[2];
 
-          FluxWeight[itoy] = fluxWeightSyst .Correction;
-          DetWeight[itoy]  = totalWeightSyst.Systematic;
-          // std::cout << std::endl;
-          // std::cout << "Selection [" << itoy << "] " << Selection [itoy] << std::endl;
-          // std::cout << "PMu       [" << itoy << "] " << PMu       [itoy] << std::endl;
-          // std::cout << "ThetaMu   [" << itoy << "] " << ThetaMu   [itoy] << std::endl;
-          // std::cout << "FluxWeight[" << itoy << "] " << FluxWeight[itoy] << std::endl;
-          // std::cout << "DetWeight [" << itoy << "] " << DetWeight [itoy] << std::endl;
-          
+          FluxWeightToy[itoy] = fluxWeightSyst .Correction;
+          WeightToy    [itoy] = totalWeightSyst.Systematic;
           //What we need to get the RooTrackerVtx is truth vertex identifier
-	  //which is given by AnaTrueVertexB::TrueVertexID
-	  Int_t TrueVertexID = summary->LeptonCandidate[summary->EventSample]->GetTrueParticle()->VertexID;
+	      //which is given by AnaTrueVertexB::TrueVertexID
+	      Int_t TrueVertexID = summary->LeptonCandidate[summary->EventSample]->GetTrueParticle()->VertexID;
 
 	  if(TrueVertexID == prevTruthID){
-	    NIWGWeight[itoy] = prevNIWGWeight;
+	    NIWGWeightToy[itoy] = prevNIWGWeight;
 	    nSelected++;
 	    continue;
 	  }
 
 	  if(event->EventInfo.IsSand){
-	    NIWGWeight[itoy] = 1;
+	    NIWGWeightToy[itoy] = 1;
 	    nSelected++;
 	    continue;
 	  }
@@ -1437,7 +1554,6 @@ int main(int argc, char *argv[]){
 	  //event.
 	  ND::NRooTrackerVtx * vtx = NULL;
 	  prevTruthID = TrueVertexID;
-	  //if(itoy == 0){rtvi = prevnomRTV;}
 	  prevRTV = rtvi;
 	  if(!foundvtx){
 	    while(vtx==NULL){
@@ -1460,7 +1576,8 @@ int main(int argc, char *argv[]){
 	      }
 	      if(rtvi == prevRTV - 1){
 		std::cout << "Event failed to find ANY vertex!" << std::endl;
-		break;}
+		break;
+              }
 	    }
 	  }else{
 	    //may not work, depending on how RTV->GetEntry(rvti) works
@@ -1472,42 +1589,42 @@ int main(int argc, char *argv[]){
 	      } 
 	    }
 	  }
+          
 	  if(vtx != NULL){
-	    NIWGWeight[itoy] = rw.CalcWeight(vtx);
-
+	    NIWGWeightToy[itoy] = rw.CalcWeight(vtx);
 
 	    //Add Kendall's pion tuning stuff
 	    double piEnergy = -1.0;
 	    if(fabs(atoi(((vtx->EvtCode)->String()).Data() )) == 16){
 	      for(int i = 0; i < event->nTrueParticles; ++i){
-		if(fabs(event->TrueParticles[i]->PDG) != 211) continue;
+		if(TMath::Abs(event->TrueParticles[i]->PDG) != 211) continue;
 		if(event->TrueParticles[i]->TrueVertex == NULL) continue;
 		if(event->TrueParticles[i]->VertexID == TrueVertexID){
 		  piEnergy = sqrt(event->TrueParticles[i]->Momentum * event->TrueParticles[i]->Momentum + 139.57 * 139.57) / 1000.0;
-		}
-	      }
+        }
+	    }
 	      if(piEnergy < 0){
-		NIWGWeight[itoy] = 1*NIWGWeight[itoy];
+		NIWGWeightToy[itoy] = 1*NIWGWeightToy[itoy];
 	      }
 	      else if(piEnergy < 0.25){
-		NIWGWeight[itoy] = 0.135*NIWGWeight[itoy];
+		NIWGWeightToy[itoy] = 0.135*NIWGWeightToy[itoy];
 	      }
 	      else if(piEnergy < 0.5){
-		NIWGWeight[itoy] = 0.4*NIWGWeight[itoy];
+		NIWGWeightToy[itoy] = 0.4*NIWGWeightToy[itoy];
 	      }
 	      else if(piEnergy < 0.75){
-		NIWGWeight[itoy] = 0.294*NIWGWeight[itoy];
+		NIWGWeightToy[itoy] = 0.294*NIWGWeightToy[itoy];
 	      }
 	      else if(piEnergy < 1.0){
-		NIWGWeight[itoy] = 1.206*NIWGWeight[itoy];
+		NIWGWeightToy[itoy] = 1.206*NIWGWeightToy[itoy];
 	      }
 	    }
 	  }
-	  prevNIWGWeight = NIWGWeight[itoy];
+	  prevNIWGWeight = NIWGWeightToy[itoy];
 	} //End true vertex exists check.
+        foundvtx = false;
 	nSelected++;
       } //End passed check.
-      
     }
     //end loop over toy.
     EventNumber = event->EventInfo.Event;
@@ -1515,7 +1632,7 @@ int main(int argc, char *argv[]){
     SubRun      = event->EventInfo.SubRun;
     // Reset the PreviousToyBox
     _man.syst().FinalizeEventSystematics(*event);
-    _man.sel().FinalizeEvent(*event);
+    _man.sel(). FinalizeEvent(*event);
     evt++;
 
     if(nSelected > nThrows / 200){
@@ -1545,6 +1662,10 @@ void Usage(){
 
 int ParseArgs(int argc, char **argv){
 
+  if(argc < 4){
+	  Usage();
+	  throw;
+  }
   for (;;) {
     int c = getopt(argc, argv, "n:s:t:o:p");
     if (c < 0)
