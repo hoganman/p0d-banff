@@ -86,12 +86,12 @@ FGD2
  [MH] P0D+TPC1
  < psycheSteering.Selections.EnableNuMuCCP0DWater                          = 1 >
  < psycheSteering.Selections.EnableNuMubarBkgCCP0DWater                    = 0 >
- < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 0 >
- < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 1 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 1 >
  < psycheSteering.Selections.EnableNuMuCCP0DAir                            = 1 >
  < psycheSteering.Selections.EnableNuMubarBkgCCP0DAir                      = 0 >
- < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 0 >
- < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 1 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 1 >
 
 Parameter to control which run periods selectionsare valid for.
 Look at AnalysisUtils.cxx to find run period numbering - Run period 8 = run 5 anti-neutrino data/MC
@@ -140,7 +140,7 @@ The user can force the EventSummary to be filled always.
 -------------------------------------------------------------
 Parameters to control Detector Variation Systematics
 
- < psycheSteering.Systematics.ApplyVariationSystematics = 0 >
+ < psycheSteering.Systematics.ApplyVariationSystematics = 1 >
 
  < psycheSteering.Variations.EnableBFieldDist     = 1 >
  < psycheSteering.Variations.EnableMomResol       = 1 >
@@ -154,7 +154,7 @@ Parameters to control Detector Variation Systematics
 -------------------------------------------------------------
 Parameters to control Detector Weight Systematics
 
- < psycheSteering.Systematics.ApplyWeightSystematics = 0 >
+ < psycheSteering.Systematics.ApplyWeightSystematics = 1 >
 
  < psycheSteering.Weights.EnableChargeConf         = 1 >
  < psycheSteering.Weights.EnableMichelEleEff       = 1 >
