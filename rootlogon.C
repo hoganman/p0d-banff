@@ -20,5 +20,5 @@
     gSystem->Load("libP0DBANFF");
     P0DBANFFInterface interface;
     interface.LoadColorBlindPalette();
-    printf("Loaded P0DBANFFInterface as \"interface\"\n");
+    interface.Announce(&interface, "Loaded P0DBANFFInterface as \"interface\"\n");
 }

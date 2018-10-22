@@ -4,11 +4,9 @@
 #include "TObject.h"
 
 /// Event sample - whether it passes the NuMu-CCQE selection, or CC1Pi selection for example
-class SampleId : public TObject{
-
+class SampleId : public TObject {
 public:
-    SampleId(){}
-    virtual ~SampleId(){}
+
     enum SampleEnum {
         kUnassigned,
         // FGD1
@@ -120,6 +118,8 @@ public:
         kFGD1GammaInAntiNuMode,
         // FGD2
         kFGD2GammaInAntiNuMode,
+        // P0D, water mode irrelevant
+        kP0DNuMuCC,
 
         // P0D, water in
         kP0DWaterNuMuCC,
@@ -135,6 +135,9 @@ public:
 
         kNSamples
     };
+
+    SampleId(){}
+    virtual ~SampleId(){}
 
     SampleId::SampleEnum GetP0DWaterNuMuCCEnum() const {return kP0DWaterNuMuCC;}
     SampleId::SampleEnum GetP0DWaterNuMuBarBkgCCEnum() const {return kP0DWaterNuMuBarBkgCC;}
@@ -177,6 +180,5 @@ public:
     ClassDef(SampleId, 1)
 
 };
-
 
 #endif

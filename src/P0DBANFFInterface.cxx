@@ -93,10 +93,10 @@ P0DBANFFInterface::P0DBANFFInterface()
     //</plain>
     gROOT->SetStyle("P0DBANFFStyle");
 
-    P0DBANFFInterface::Warning(this, "If you are going to use the XMLTools class\n\
-            (or other classes relying on it)\n\
-            make sure you load an external TXMLEngine instance before\n\
-            the first XMLTools instance\n");
+    P0DBANFFInterface::Warning(this, "If you are going to use the XMLTools class");
+    P0DBANFFInterface::Warning(this, "        (or other classes relying on it)");
+    P0DBANFFInterface::Warning(this, "        make sure you load an external TXMLEngine instance");
+    P0DBANFFInterface::Warning(this, "        before the first XMLTools instance");
 }
 
 //**************************************************
