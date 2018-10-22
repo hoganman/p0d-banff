@@ -1,6 +1,6 @@
 #include "baseSelection.hxx"
 #include "p0dNumuCCQESelection.hxx"
-#include "p0dWaterNumuCCSelection.hxx"
+#include "p0dNumuCCSelection.hxx"
 #include "CutUtils.hxx"
 #include "EventBoxUtils.hxx"
 
@@ -13,7 +13,7 @@ p0dNumuCCQESelection::p0dNumuCCQESelection(bool forceBreak): SelectionBase(force
 //********************************************************************
 void p0dNumuCCQESelection::DefineSteps(){
 //********************************************************************
-  p0dWaterNumuCCSelection p0dnumucc;
+  p0dNumuCCSelection p0dnumucc;
   CopySteps(p0dnumucc);
   
   //Add a split to the trunk with 2 branches. One for single p0d
@@ -43,7 +43,7 @@ bool p0dNumuCCQESelection::FillEventSummary(AnaEventC& event, Int_t allCutsPasse
 //********************************************************************
 
     if(allCutsPassed[0]){
-        static_cast<AnaEventSummaryB*>(event.Summary)->EventSample = SampleId::kP0DAirNuMuCC;
+        static_cast<AnaEventSummaryB*>(event.Summary)->EventSample = SampleId::kP0DNuMuCC;
     }
     return (static_cast<AnaEventSummaryB*>(event.Summary)->EventSample != SampleId::kUnassigned);
 }
