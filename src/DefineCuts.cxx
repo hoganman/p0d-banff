@@ -176,7 +176,28 @@ void DefineCuts::SetCuts()
     tNEUTAntiNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCDIS));
     tNEUTAntiNuCCDIS.SetName("True NEUT Anti-nu CC-DIS");
 
-    tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode>=%d", pdg.kNuMuPDG, pdg.kNEUTNu_CCQE))&& !tNEUTNC && tFV;
+
+    TCut tAntiNuBkgTopologyInNuMode = (muMinusSelection || muMinusBkgInRHCSelection)
+                                      && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kMuon));
+    TCut tNuBkgTopologyInAntiNuMode = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kAntiMuon));
+    tBKGTopology = (tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode) && tFV;
+
+    TCut tZeroMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==0", pdg.kMesons));
+    tCC0PiTopology = TCut(TString::Format("(NPrimaryParticles[%d]+NPrimaryParticles[%d])==1", pdg.kAntiMuon, pdg.kMuon))
+                     && tZeroMesonTopology && tFV;
+
+    TCut tOneMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kMesons));
+    TCut tCC1PiInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1&&NPrimaryParticles[%d]==1", pdg.kMuon, pdg.kPiPos));
+    TCut tCC1PiInAntiNuModeTopology = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1&&NPrimaryParticles[%d]==1", pdg.kAntiMuon, pdg.kPiNeg));
+    tCC1PiToplogy = (tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology && tFV;
+
+    TCut tCCOtherInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection)
+                                     && TCut(TString::Format("(NPrimaryParticles[%d]>1||NPrimaryParticles[%d]>1)", pdg.kMuon, pdg.kMesons));
+
+    TCut tCCOtherInAntiNuModeTopology =  muPlusInRHCSelection && TCut(TString::Format("(NPrimaryParticles[%d]>1||NPrimaryParticles[%d]>1)", pdg.kAntiMuon, pdg.kMesons));
+    tCCOtherTopology = (tCCOtherInNuModeTopology || tCCOtherInAntiNuModeTopology) && tFV;
+
+    tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode>=%d", pdg.kNuMuPDG, pdg.kNEUTNu_CCQE)) && !tNEUTNC && tFV;
     tParNuMu.SetName("True #nu_{#mu} Cut");
 
     tParNuMubar = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode<=%d", pdg.kNuMuBarPDG, pdg.kNEUTAntiNu_CCQE)) && !tNEUTNC && tFV;

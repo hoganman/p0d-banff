@@ -101,6 +101,15 @@ public:
     ///NEUT code is Anti-nu CC-DIS (not nu CC-DIS)
     TCut tNEUTAntiNuCCDIS;
 
+    ///The number of outgoing muons <= 0
+    TCut tBKGTopology;
+    ///The number of outgoing pions == 0, no other mesons and any number of baryons
+    TCut tCC0PiTopology;
+    ///The number of outgoing pions == 1, no other mesons and any number of baryons
+    TCut tCC1PiToplogy;
+    ///Topology does not fit into any above category
+    TCut tCCOtherTopology;
+
     ///Is the parent interaction NC?
     /// The 3 dim coordinates of P0D FV
     TVector3 minFidVolCoords;
