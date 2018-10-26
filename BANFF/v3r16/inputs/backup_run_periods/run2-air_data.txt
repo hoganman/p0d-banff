@@ -1,1 +1,0 @@
-/physics/home/mhogan/splines/highlandIOv2r21/rdp6_Spin_M/run2-air/Run2_Air_data_splines.root

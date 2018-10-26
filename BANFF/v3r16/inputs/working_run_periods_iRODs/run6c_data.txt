@@ -1,1 +1,0 @@
-/physics/data/BANFF/asg2016oa/Data/Run6c_WaterOut_Data_nd280Psyche_v1r23p19.root
