@@ -15,7 +15,7 @@ import sys
 DRAW_ENU = 0
 DRAW_PMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 0
+DRAW_COSTHETAMU = 1
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
@@ -23,11 +23,11 @@ DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # Apply event + flux weight
-APPLY_FLUX_WEIGHTS = 1
-APPLY_EVENT_WEIGHTS = 0
+APPLY_FLUX_WEIGHTS = 0
+APPLY_EVENT_WEIGHTS = 1
 
 PLOTLEPTONCANDIDATETRUEPDG = 1
-PLOTNEUTNUREACTIONCODES = 0
+PLOTNEUTNUREACTIONCODES = 1
 PLOTNEUTANTINUREACTIONCODES = 0
 
 # Display the ratio of Data/MC below histogram
@@ -118,8 +118,12 @@ def main(argv):
                 not RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION:
             continue
 
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
+        INTERFACE.Announce(INTERFACE, '--- You can ignore these errors ---')
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
         mc_samples_dict = GetMonteCarloSamples(current_sampleID)
         data_samples_dict = GetDATAsamples(current_sampleID)
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
         SELECTIONSAVENAME = SELECTIONSAVENAMEDICT[current_sampleID]
 
         mc_data_sample_dict = dict()
@@ -477,7 +481,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
     else:
-        new_max = max(1.2 * data_hist.GetMaximum(), 1.1 * old_max)
+        new_max = 1.1 * old_max
         h_stack.SetMaximum(new_max)
         # h_total.SetMaximum(new_max)
         # data_hist.SetMaximum(new_max)

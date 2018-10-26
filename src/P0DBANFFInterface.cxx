@@ -153,9 +153,8 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     TH1* htemp_1Dclone = NULL;
     if(!CheckFile(inFileName))
     {
-      std::cerr << "ERROR: Invalid input file: " << inFileName.Data()
-                << std::endl;
-      return;
+        P0DBANFFInterface::Error("P0DBANFFInterface", TString::Format("Invalid input file: %s", inFileName.Data()));
+        return;
     }
     TFile* const inputFile = TFile::Open(inFileName.Data());
     canvas = GetTCanvasFromFile(inputFile, canvasName);
@@ -165,7 +164,6 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     }
     else
     {
-        //std::cout << " Trying to find \"" << histName.Data() << "\" in TFile..." << std::endl;
         htemp = static_cast<TH1*>(FindObjectInFileByName(inputFile, histName));
         if(htemp)
         {
@@ -306,7 +304,7 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 
     if(!status)
     {
-        std::cout << "ERROR: Could NOT find file \"" << fileName.Data() << "\"" << std::endl;
+        P0DBANFFInterface::Error("P0DBANFFInterface", TString::Format("Could NOT find file \"%s\"", fileName.Data()));
         return status;
     }
     else
