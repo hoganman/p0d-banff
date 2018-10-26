@@ -1,7 +1,112 @@
 #include "BANFFBinnedSample.hxx"
 #include "BANFFBinnedSampleUtils.hxx"
+#include "psycheInterface/psycheBANFFEvent.hxx"
+#include "SampleId.hxx"
+#include "BinningDefinition.hxx"
 #include "TRandom.h"
 #include <sstream>
+#include <iomanip>
+
+BANFFBinnedSample::BANFFBinnedSample(SampleId::SampleEnum sampleIDInput, int nObsInput,
+                                     BANFFObservableBase** obsInput,
+                                     bool ithrowMCStat, bool ithrowStat, bool ithrowMCStatPoisson):
+  BANFFSampleBase("none", (int)sampleIDInput, nObsInput, obsInput, ithrowMCStat, ithrowStat, ithrowMCStatPoisson){
+
+  name = SampleId::ConvertSample(sampleIDInput);
+  std::replace (name.begin(), name.end(), ' ', '_');
+  BANFF::TAxis2D* ax2d = BANFF::BinningDefinition::Get().GetBinningArray(sampleIDInput);
+  axes = new TAxis*[2];
+  axes[0] = (*ax2d)[0];
+  axes[1] = (*ax2d)[1];
+  
+  //Set up the array to store the reaction code breakdowns.  Make it size
+  //200, and fill it with NULL entries.  We will only actually create
+  //histograms as we need to fill them.
+  rxnPredMC = new THnD*[200];
+
+  for(int i = 0; i < 200; i++){
+    rxnPredMC[i] = NULL;
+  }
+
+  //The observableInformationSaved variable needs to default to false.
+  //If the "save observable information" method gets called, it will be
+  //set to true.
+  observableInformationSaved = false;
+
+  //Initialize the histograms to have the dimension of nObs, and uniform
+  //binning, since the contructor does not allow anything else.  Also,
+  //changing the axes later does not affect the array that the bins are
+  //stored in, so the number of bins for each dimension has to match the desired axis number of bins to start.
+
+  int* nBinsInitial = new int[nObs];
+  double *xMin = new double[nObs];
+  double *xMax = new double[nObs];
+
+  for(int i = 0; i < nObs; i++){
+    nBinsInitial[i] = axes[i]->GetNbins();
+    xMin[i] = 0.0;
+    xMax[i] = 1.0;
+  }
+
+
+  data   = new THnD("data",   "data",   nObs, nBinsInitial, xMin, xMax);
+  nomMC  = new THnD("nomMC",  "nomMC",  nObs, nBinsInitial, xMin, xMax);
+  predMC = new THnD("predMC", "predMC", nObs, nBinsInitial, xMin, xMax);
+
+  //Fill the diagnostic histograms.
+  nomMCNoWeights      = new THnD("nomMCNoWeights",      "nomMCNoWeights",      nObs, nBinsInitial, xMin, xMax);
+  nomMCPOTWeights     = new THnD("nomMCPOTWeights",     "nomMCPOTWeights",     nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxWeights = new THnD("nomMCNomFluxWeights", "nomMCNomFluxWeights", nObs, nBinsInitial, xMin, xMax);
+  nomMCNomXSecWeights = new THnD("nomMCNomXSecWeights", "nomMCNomXSecWeights", nObs, nBinsInitial, xMin, xMax);
+  nomMCNomDetWeights  = new THnD("nomMCNomDetWeights",  "nomMCNomDetWeights",  nObs, nBinsInitial, xMin, xMax);
+  nomMCNomCovWeights  = new THnD("nomMCNomCovWeights",  "nomMCNomCovWeights",  nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxAndXSecWeights = new THnD("nomMCNomFluxAndXSecWeights","nomMCNomFluxAndXSecWeights", nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxAndDetWeights  = new THnD("nomMCNomFluxAndDetWeights", "nomMCNomFluxAndDetWeights",  nObs, nBinsInitial, xMin, xMax);
+
+  std::string nameString = name + "_nominalFluxWeights";
+  nominalFluxWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+  nameString = name + "_nominalXSecWeights";
+  nominalXSecWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+  nameString = name + "_nominalDetWeights";
+  nominalDetWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+  nameString = name + "_nominalCovWeights";
+  nominalCovWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+    
+  //Change the histogram binning from the default NDimensional binning to the
+  //axes supplied by the user.
+  for(int i = 0; i < nObs; i++){ 
+    if(!axes[i]){
+      std::cerr << "Binning for " << name << " observable " << i << " isnt defined!" << std::endl;
+      throw;
+    }
+    data                      ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMC                     ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    predMC                    ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNoWeights            ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCPOTWeights           ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomFluxWeights       ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomFluxAndXSecWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomFluxAndDetWeights ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomXSecWeights       ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomDetWeights        ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomCovWeights        ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+
+  }
+
+
+  //Now, get the information on the number of bins and the indices of the
+  //non-under/overflow bins so the histogram bins can be looped through
+  //easily later. (It is the same for all 3 histograms.)
+  nBins = BANFFBinnedSampleUtils::GetNBins(data);
+  bins  = BANFFBinnedSampleUtils::GetBins(data);
+
+  //Delete the unneeded initialization arrays.
+  delete[] nBinsInitial;
+  delete[] xMin;
+  delete[] xMax;
+
+
+}
 
 BANFFBinnedSample::BANFFBinnedSample(std::string nameInput, int sampleIDInput, int nObsInput, BANFFObservableBase** obsInput, TAxis** axesInput, bool ithrowMCStat, bool ithrowStat, bool ithrowMCStatPoisson)
   : BANFFSampleBase(nameInput, sampleIDInput, nObsInput, obsInput, ithrowMCStat, ithrowStat, ithrowMCStatPoisson){
@@ -39,40 +144,45 @@ BANFFBinnedSample::BANFFBinnedSample(std::string nameInput, int sampleIDInput, i
   }
 
 
-  data = new THnD("data","data", nObs, nBinsInitial, xMin, xMax);
-  nomMC = new THnD("nomMC","nomMC", nObs, nBinsInitial, xMin, xMax);
+  data   = new THnD("data",  "data",   nObs, nBinsInitial, xMin, xMax);
+  nomMC  = new THnD("nomMC", "nomMC",  nObs, nBinsInitial, xMin, xMax);
   predMC = new THnD("predMC","predMC", nObs, nBinsInitial, xMin, xMax);
 
   //Fill the diagnostic histograms.
-  nomMCNoWeights = new THnD("nomMCNoWeights","nomMCNoWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCPOTWeights = new THnD("nomMCPOTWeights","nomMCPOTWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCNomFluxWeights = new THnD("nomMCNomFluxWeights","nomMCNomFluxWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCNomXSecWeights = new THnD("nomMCNomXSecWeights","nomMCNomXSecWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCNomDetWeights = new THnD("nomMCNomDetWeights","nomMCNomDetWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCNomFluxAndXSecWeights = new THnD("nomMCNomFluxAndXSecWeights","nomMCNomFluxAndXSecWeights", nObs, nBinsInitial, xMin, xMax);
-  nomMCNomFluxAndDetWeights = new THnD("nomMCNomFluxAndDetWeights","nomMCNomFluxAndDetWeights", nObs, nBinsInitial, xMin, xMax);
-
+  nomMCNoWeights             = new THnD("nomMCNoWeights",             "nomMCNoWeights",             nObs, nBinsInitial, xMin, xMax);
+  nomMCPOTWeights            = new THnD("nomMCPOTWeights",            "nomMCPOTWeights",            nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxWeights        = new THnD("nomMCNomFluxWeights",        "nomMCNomFluxWeights",        nObs, nBinsInitial, xMin, xMax);
+  nomMCNomXSecWeights        = new THnD("nomMCNomXSecWeights",        "nomMCNomXSecWeights",        nObs, nBinsInitial, xMin, xMax);
+  nomMCNomDetWeights         = new THnD("nomMCNomDetWeights",         "nomMCNomDetWeights",         nObs, nBinsInitial, xMin, xMax);
+  nomMCNomCovWeights         = new THnD("nomMCNomCovWeights",         "nomMCNomCovWeights",         nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxAndXSecWeights = new THnD("nomMCNomFluxAndXSecWeights", "nomMCNomFluxAndXSecWeights", nObs, nBinsInitial, xMin, xMax);
+  nomMCNomFluxAndDetWeights  = new THnD("nomMCNomFluxAndDetWeights",  "nomMCNomFluxAndDetWeights",  nObs, nBinsInitial, xMin, xMax);
   std::string nameString = nameInput + "_nominalFluxWeights";
   nominalFluxWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
   nameString = nameInput + "_nominalXSecWeights";
   nominalXSecWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
   nameString = nameInput + "_nominalDetWeights";
-  nominalDetWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
-
+  nominalDetWeights  = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+  nameString = name + "_nominalCovWeights";
+  nominalCovWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
+  
   //Change the histogram binning from the default NDimensional binning to the
   //axes supplied by the user.
   for(int i = 0; i < nObs; i++){
-    data->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMC->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    data  ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMC ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
     predMC->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
 
-    nomMCNoWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMCPOTWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMCNomFluxWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNoWeights            ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCPOTWeights           ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomFluxWeights       ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
     nomMCNomFluxAndXSecWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMCNomFluxAndDetWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMCNomXSecWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
-    nomMCNomDetWeights->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomFluxAndDetWeights ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomXSecWeights       ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomDetWeights        ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    nomMCNomCovWeights        ->GetAxis(i)->Set(axes[i]->GetNbins(),axes[i]->GetXbins()->GetArray());
+    std::cout << "Observable " << i << std::endl;
+    axes[i]->Dump();
 
   }
 
@@ -186,17 +296,28 @@ void BANFFBinnedSample::AddNominalMCEvent(BANFFEventBase* event){
     nomMCNomDetWeights->SetBinContent(event->observableBin, nomMCNomDetWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetDetWeight()));
     nomMCNomDetWeights->SetEntries(nomMCNomDetWeights->GetEntries() + 1);
 
+    nomMCNomCovWeights->SetBinContent(event->observableBin, nomMCNomCovWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetObservableWeight()));
+    nomMCNomCovWeights->SetEntries(nomMCNomDetWeights->GetEntries() + 1);
+    
     //The combination plots.
     nomMCNomFluxAndXSecWeights->SetBinContent(event->observableBin, nomMCNomFluxAndXSecWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetXsecWeight()));
     nomMCNomFluxAndXSecWeights->SetEntries(nomMCNomFluxAndXSecWeights->GetEntries() + 1);
 
     nomMCNomFluxAndDetWeights->SetBinContent(event->observableBin, nomMCNomFluxAndDetWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetDetWeight()));
     nomMCNomFluxAndDetWeights->SetEntries(nomMCNomFluxAndDetWeights->GetEntries() + 1);
-
-  }
-
-  //Otherwise, use the full treatment.
-  else{
+#ifdef DEBUGWEIGHTS
+#pragma message "DEBUGGING WEIGHT, couting all the weights"
+    std::cout << "POTWeight     " << event->GetPOTWeight()     << std::endl;
+    std::cout << "FluxWeight    " << event->GetFluxWeight()    << std::endl;
+    std::cout << "XsecWeight    " << event->GetXsecWeight()    << std::endl;
+    std::cout << "DetWeight     " << event->GetDetWeight()     << std::endl;
+    std::cout << "NuEnergy      " << event->GetNuEnergy()      << std::endl;
+    std::cout << "ReactionCode  " << event->GetReactionCode()  << std::endl;
+    std::cout << "ObservableBin " << event->GetObservableBin() << std::endl;
+    std::cout << "ObservableWeight " << event->GetObservableWeight() << std::endl;
+#endif 
+  }else{//Otherwise, use the full treatment.
+    
     //Create the array to feed to THnBase Fill method.
     double* obsVals = new double[nObs];
 
@@ -216,20 +337,20 @@ void BANFFBinnedSample::AddNominalMCEvent(BANFFEventBase* event){
     nomMCPOTWeights->Fill(obsVals,event->GetPOTWeight());
     nomMCNomFluxWeights->Fill(obsVals,(event->GetPOTWeight())*(event->GetFluxWeight()));
     nomMCNomXSecWeights->Fill(obsVals,(event->GetPOTWeight())*(event->GetXsecWeight()));
-    nomMCNomDetWeights->Fill(obsVals,(event->GetPOTWeight())*(event->GetDetWeight()));
+    nomMCNomDetWeights ->Fill(obsVals,(event->GetPOTWeight())*(event->GetDetWeight ()));
 
     //The combination plots.
     nomMCNomFluxAndXSecWeights->Fill(obsVals,(event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetXsecWeight()));
-    nomMCNomFluxAndDetWeights->Fill(obsVals,(event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetDetWeight()));
+    nomMCNomFluxAndDetWeights ->Fill(obsVals,(event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetDetWeight ()));
 
     //Delete the observable array now that we're done with it.
     delete[] obsVals;
   }
 
-  nominalFluxWeights->Fill(event->GetFluxWeight());
-  nominalXSecWeights->Fill(event->GetXsecWeight());
-  nominalDetWeights->Fill(event->GetDetWeight());
-
+  nominalFluxWeights->Fill(event->GetFluxWeight      ());
+  nominalXSecWeights->Fill(event->GetXsecWeight      ());
+  nominalDetWeights ->Fill(event->GetDetWeight       ());
+  nominalCovWeights ->Fill(event->GetObservableWeight());
 
 
 }
@@ -404,19 +525,19 @@ void BANFFBinnedSample::SaveNominalMC(std::string nomMCName){
   //Write out the histogram.
   nomMC->Write(nomMCName.c_str());
 
-  nomMCNoWeights->Write((nomMCName + "_withNoWeights").c_str());
-  nomMCPOTWeights->Write((nomMCName + "_withPOTWeights").c_str());
+  nomMCNoWeights     ->Write((nomMCName + "_withNoWeights"     ).c_str());
+  nomMCPOTWeights    ->Write((nomMCName + "_withPOTWeights"    ).c_str());
   nomMCNomFluxWeights->Write((nomMCName + "_withNomFluxWeights").c_str());
   nomMCNomXSecWeights->Write((nomMCName + "_withNomXSecWeights").c_str());
-  nomMCNomDetWeights->Write((nomMCName + "_withNomDetWeights").c_str());
-
+  nomMCNomDetWeights ->Write((nomMCName + "_withNomDetWeights" ).c_str());
+  nomMCNomCovWeights ->Write((nomMCName + "_withNomCovWeights" ).c_str());
   nomMCNomFluxAndXSecWeights->Write((nomMCName + "_withNomFluxAndXSecWeights").c_str());
-  nomMCNomFluxAndDetWeights->Write((nomMCName + "_withNomFluxAndDetWeights").c_str());
+  nomMCNomFluxAndDetWeights ->Write((nomMCName + "_withNomFluxAndDetWeights" ).c_str());
 
   nominalFluxWeights->Write((nomMCName + "_nominalFluxWeights").c_str());
   nominalXSecWeights->Write((nomMCName + "_nominalXSecWeights").c_str());
-  nominalDetWeights->Write((nomMCName + "_nominalDetWeights").c_str());
-
+  nominalDetWeights ->Write((nomMCName + "_nominalDetWeights" ).c_str());
+  nominalCovWeights ->Write((nomMCName + "_nominalCovWeights" ).c_str());
   //Take this opportunity to also write out the axes for this sample.
   for(int i = 0; i < nObs; i++){
 

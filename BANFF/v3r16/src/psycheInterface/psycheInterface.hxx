@@ -21,7 +21,7 @@ class psycheInterface
 			FitParameters* fitParms = NULL,
 			bool loadDetParms = false,
 			bool varyDetParms = false,
-			std::string diagnostic = "");
+			std::string diagnostic = "DiagnosticFile.root");
         ~psycheInterface();
 
         ///The psyche analysis manager.  Holds data and MC events together, as

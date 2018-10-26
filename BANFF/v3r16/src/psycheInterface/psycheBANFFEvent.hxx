@@ -16,8 +16,8 @@ class psycheBANFFEvent: public BANFFEventBase{
         psycheBANFFEvent(AnaSuperEventB* event){
             detEvent = event;
             AnaEventB* aeb = dynamic_cast<AnaEventB*>(event->Event);
-            if(anaUtils::IsRHC(aeb->EventInfo.Run)) beamMode =  1;
-            else                                    beamMode = -1;
+            if(anaUtils::IsRHC(aeb->EventInfo.Run)) beamMode = -1;
+            else                                    beamMode =  1;
             
         };
 
@@ -26,8 +26,8 @@ class psycheBANFFEvent: public BANFFEventBase{
             detEvent = event;
             POTWeight = event->POTWeight;
             AnaEventB* aeb = dynamic_cast<AnaEventB*> (event->Event);
-            if(anaUtils::IsRHC(aeb->EventInfo.Run)) beamMode =  1;
-            else                                    beamMode = -1;
+            if(anaUtils::IsRHC(aeb->EventInfo.Run)) beamMode = -1;
+            else                                    beamMode =  1;
         };
 
         virtual ~psycheBANFFEvent(){};

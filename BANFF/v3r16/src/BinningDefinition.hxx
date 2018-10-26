@@ -1,89 +1,190 @@
+#include <map>
+
 #include "TAxis.h"
 
+#include "SampleId.hxx"
+#include "Parameters.hxx"
 
-namespace BinningDefinition{
 
-  //namespace numuCC0PiFHC{
-    int npbins_0pi1 = 14;
-    double pbins_0pi1[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
-    int npbins_0pi = 6;
-    double pbins_0pi[7] = {0, 1000, 1250, 2000, 3000, 5000, 30000};
-    //cos(theta) bins
-    //CC0pi
-    int nctbins_0pi1 = 11;
-    double ctbins_0pi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_0pi = 7;
-    double ctbins_0pi[8] = { -1, 0.6, 0.7, 0.8, 0.85,0.94, 0.96, 1};
-    //}
+namespace BANFF{
 
-  //namespace numuCC1PiFHC{
-    //CC1pi
-    int npbins_1pi1 = 13;
-    double pbins_1pi1[14] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 5000, 30000};
-    int npbins_1pi = 5;
-    double pbins_1pi[6] = {0, 300, 1250, 1500, 5000, 30000};
-    //CC1pi
-    int nctbins_1pi1 = 11;
-    double ctbins_1pi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_1pi = 8;
-    double ctbins_1pi[9] = {-1, 0.7, 0.85, 0.9, 0.92, 0.96, 0.98, 0.99, 1};
-    //}
-  //namespace numuCCOthFHC{
-    //CCOther
-    int npbins_npi1 = 14;
-    double pbins_npi1[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
-    int npbins_npi = 5;
-    double pbins_npi[6] = {0, 1500, 2000, 3000, 5000, 30000};
-    //CCOther
-    int nctbins_npi1 = 11;
-    double ctbins_npi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_npi = 8;
-    double ctbins_npi[9] = {-1, 0.8, 0.85, 0.9, 0.92, 0.96, 0.98, 0.99, 1};
-  //}
-  
-  //namespace anumuCC1trRHC{
+  class TAxis2D{
+  private:
+    TAxis* FirstDim;
+    TAxis* SecondDim;
+  public:
+    TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2){
+      FirstDim  = new TAxis(nbin1, bins1);
+      SecondDim = new TAxis(nbin2, bins2);
+    };
     
-    //Anti-numu QE selection in anti-neutrino beam mode.
-    Int_t npbins_anuqe1 = 10;
-    Double_t pbins_anuqe1[11] = {0., 400., 500., 600., 700., 800., 900., 1100., 1400., 2000., 10000.};
-    Int_t npbins_anuqe = 5;
-    Double_t pbins_anuqe[6] = { 0., 400., 900., 1100., 2000., 10000.};
+    ~TAxis2D(){
+      delete FirstDim;
+      delete SecondDim;        
+    };
 
-    Int_t nctbins_anuqe1 = 13;
-    Double_t ctbins_anuqe1[14] = {-1., 0.6, 0.7, 0.8, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-    Int_t nctbins_anuqe = 8;
-    Double_t ctbins_anuqe[9] = { -1., 0.6, 0.7, 0.88, 0.95, 0.97, 0.98, 0.99, 1.00};
-    //}
+    TAxis* operator[] (const unsigned int d){
+      if     (d == 0) return FirstDim;
+      else if(d == 1) return SecondDim;
+      else{
+        std::cerr << "Can't acces more than 2D" << std::endl;
+        throw;
+      }
+    };
+  };
+
   
-  //Anti-numu nQE selection in anti-neutrino beam mode.
-  Int_t npbins_anunqe1 = 7;
-  Double_t pbins_anunqe1[8] = {0., 700., 950., 1200., 1500., 2000., 3000., 10000.};
-  Int_t npbins_anunqe = 6;
-  Double_t pbins_anunqe[7] = {0., 700., 1200., 1500., 2000., 3000., 10000.};
-  Int_t nctbins_anunqe1 = 11;
-  Double_t ctbins_anunqe1[12] = {-1., 0.75, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_anunqe = 6;
-  Double_t ctbins_anunqe[7] = {-1., 0.85, 0.88, 0.93, 0.98, 0.99, 1.00};
+  class BinningDefinition{
+ 
+  private:
+    BinningDefinition();
+    BinningDefinition(const BinningDefinition& binning);
+    static BinningDefinition* fBinningDefinition;
 
-  //Numu QE selection in anti-neutrino beam mode.
-  Int_t npbins_nuqe1 = 6;
-  Double_t pbins_nuqe1[7] = {0., 400., 600., 800., 1100., 2000., 10000.};
-  Int_t npbins_nuqe = 5;
-  Double_t pbins_nuqe[6] = {0., 400., 800., 1100., 2000., 10000.};
-  Int_t nctbins_nuqe1 = 11;
-  Double_t ctbins_nuqe1[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_nuqe = 8;
-  Double_t ctbins_nuqe[9] = {-1., 0.7, 0.85, 0.90, 0.93, 0.96, 0.98, 0.99, 1.00};
+    std::map<SampleId::SampleEnum, bool> ActiveSample;
+    
+    std::map<SampleId::SampleEnum, TAxis*> Axis_Mom;
+    std::map<SampleId::SampleEnum, TAxis*> Axis_Mom_Det;
+    std::map<SampleId::SampleEnum, TAxis*> Axis_Cos;
+    std::map<SampleId::SampleEnum, TAxis*> Axis_Cos_Det;
+    std::map<SampleId::SampleEnum, TAxis2D*> bothAxis;
+    std::map<SampleId::SampleEnum, TAxis2D*> bothAxis_Det;
+
+    std::map<int, int> FullToReduMap;
+
+    bool Do4PiFHC    ;
+    bool DoNue       ;
+    bool DoOnlyNue   ;
+    bool DoMultiPiRHC;
+    
+    bool Do1DCheckMom;
+    bool Do1DCheckCos;
+    bool UseFlatNuMuBinning;
+    
+  public:
+    ~BinningDefinition(){
+      for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+        if(it->second) delete it->second;
+        Axis_Mom.erase(it);
+      }
+
+      for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+        if(it->second) delete it->second;
+        Axis_Mom_Det.erase(it);
+      }
+      for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
+        if(it->second) delete it->second;
+        Axis_Cos.erase(it);
+      }
+
+      for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
+        if(it->second) delete it->second;
+        Axis_Cos_Det.erase(it);
+      }
+    };
+
+    int GetNbins_Mom    (const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Mom    [sample]->GetNbins();
+      else return 0;
+    };
+    int GetNbins_Mom_Det(const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Mom_Det[sample]->GetNbins();
+      else return 0;
+    };
+    int GetNbins_Cos    (const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Cos    [sample]->GetNbins();
+      else return 0;
+    };
+    int GetNbins_Cos_Det(const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Cos_Det[sample]->GetNbins();
+      else return 0;
+    };
+    
+    int GetGlobalBinMatrix_Det(const SampleId::SampleEnum sample);
+    int GetGlobalBinMatrix    (const SampleId::SampleEnum sample);
+    void GetLocalBinMatrixMomCos    (const int GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin);
+    void GetLocalBinMatrixMomCos_Det(const int GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin);
+
+    int GetNbins_Det();
+    int GetNbins    ();
+    
+    int GetNbins_Det(const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
+      else return 0;
+    };
+    int GetNbins    (const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return GetNbins_Mom    (sample) * GetNbins_Cos    (sample);
+      else return 0;
+    };
+
+    int GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum sample, const double Mom, const double Cos);
+    int GetGlobalBinMatrixMomCos    (const SampleId::SampleEnum sample, const double Mom, const double Cos);
+
+    TAxis* GetBinning_Mom    (const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Mom    [sample];
+      else{
+        std::cerr << "No momentum binning for the sample " << ConvertSample(sample) << std::endl;
+        throw;
+        return NULL;
+      }
+    };
+    TAxis* GetBinning_Mom_Det(const  SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Mom_Det[sample];
+      else{
+        std::cerr << "No momentum (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+        throw;
+        return NULL;
+      }
+    };
+    TAxis* GetBinning_Cos    (const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Cos    [sample];
+      else{
+        std::cerr << "No costheta binning for the sample " << ConvertSample(sample) << std::endl;
+        throw;
+        return NULL;
+      }
+    };
+    TAxis* GetBinning_Cos_Det(const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return Axis_Cos_Det[sample];
+      else{
+        std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+        throw;
+        return NULL;
+      }
+    };
+
+    TAxis2D* GetBinningArray(const SampleId::SampleEnum sample){
+      if(ActiveSample[sample]) return bothAxis[sample];
+      else{
+        std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+        throw;
+        return NULL;
+      }
+    };
+
+    SampleId::SampleEnum GetSampleFromIndex    (const int index);
+    SampleId::SampleEnum GetSampleFromIndex_Det(const int index);
+
+    bool IsActiveSample(const SampleId::SampleEnum sample){
+      return ActiveSample[sample];
+    };
+    bool IsActiveSample(const int sample){
+      if(sample >= SampleId::kUnassigned && sample < SampleId::kNSamples){
+        SampleId::SampleEnum s = static_cast<SampleId::SampleEnum>(sample);
+        return ActiveSample[s];
+      }else return false;
+    };
+    std::vector<std::string> GetListOfBins();
+    std::vector<std::string> GetListOfBins_Det();
+    std::map<int,int> GetFullToReduMap();
+
+    
+    static BANFF::BinningDefinition& Get() {
+      if (!fBinningDefinition) fBinningDefinition = new BANFF::BinningDefinition;
+      return *(fBinningDefinition);
+    };
+    
+  };
 
 
-  //Numu CCnQE selection in anti-neutrino beam mode.
-  Int_t npbins_nunqe1 = 8;
-  Double_t pbins_nunqe1[9] = {0., 500., 700., 1000., 1250., 1500., 2000., 3000., 10000.};
-  Int_t npbins_nunqe = 5;
-  Double_t pbins_nunqe[6] = {0., 1000., 1500., 2000., 3000., 10000.};
-  Int_t nctbins_nunqe1 = 11;
-  Double_t ctbins_nunqe1[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_nunqe = 8;
-  Double_t ctbins_nunqe[9] = {-1., 0.8, 0.90, 0.93, 0.95, 0.96, 0.97, 0.99, 1.00};
-
-};
+}

@@ -127,6 +127,10 @@ class BANFFEventBase{
         Int_t* reactionCode;
         int numbXsecSysts;
 
+        ///True lepton information
+        Double_t* truePmu;
+        Int_t* trueLepPDG;
+
         ///The material that the neutrino interaction occurred on.
         Int_t* targetMaterial;
 
@@ -145,7 +149,12 @@ class BANFFEventBase{
 		
         ///The index of the cross section normalization parameter that applies
         ///to this event.
-        int xsecNormParameter;
+        std::vector<int> xsecNormParameter;
+        //int xsecNormParameter;
+
+        ///Contains the number of cross section normalization parameters that
+        ///applies to a given event
+        int xsecNormParameterNumElements;
 
         ///The index of the observable normalization parameter that applies to
         ///this event.
@@ -157,7 +166,7 @@ class BANFFEventBase{
         TSpline3 ***xsecSplines;
         TGraph ***xsecGraphs;
         double **xsecWeights;
-        float *twkDials;
+        double *twkDials;
 
         ///The cross section weight for this event, calculated from XSecNorm
         ///and XSecResp parameter values.  Defaults to 1.0.
@@ -169,7 +178,9 @@ class BANFFEventBase{
         ///The flux weight for this event based off of the flux tuning applied.
         ///Since this depends on which true vertex is being used, this is an
         ///array over all the samples that could have been selected into.
-        Double_t* fluxWeight;
+        /// PL: 10/2017 it is now gotten directly from the process event
+        /// method and doesn't need to be an array anymore
+        Double_t fluxWeight;
 
         ///The weight applied to this event to normalize to data POT.  Defaults
         ///to 1.0 unless set in the interface to detector code.
@@ -183,6 +194,8 @@ class BANFFEventBase{
         ///stored.
         double detWeight;
 
+        ///The Obsnormweight
+        double ObsNormWeight;
         ///The product of all of the above weights for whatever sample the
         ///event is in when the calculation is performed.  Its calculation includes
         ///setting it to 0 if it goes negative.
@@ -209,9 +222,13 @@ class BANFFEventBase{
         double GetQ2();
         int GetNuFlavor();
         int GetReactionCode();
+        double GetTruePmu();
+        int GetTrueLepPDG();
         int GetBeamMode(){ return beamMode; };
         int GetFluxParameter(){ return fluxParameter; };
-        int GetXsecNormParameter(){ return xsecNormParameter; };
+        std::vector<int> GetXsecNormParameter(){ return xsecNormParameter; }
+        int GetXsecNormParameterSize(){ return xsecNormParameterNumElements; }
+        //int GetXsecNormParameter(){ return xsecNormParameter; };
         int GetXsecFuncParameter(){ return xsecFuncParameter; };
         int GetObsNormParameter(){ return obsNormParameter; };
         int GetObservableBin(){ return observableBin; };
@@ -222,7 +239,6 @@ class BANFFEventBase{
         char GetThrownSample(int index){ return thrownSamples[index]; };
         unsigned int GetNThrownBins(){return thrownBins.size();};
         short GetThrownBin(int index){return thrownBins[index]; };
-
         ///Return the index of the summary tree that contains information
         ///corresponding to this event.
         int GetSumTreeIndex(){ return evtNumb;};
@@ -232,12 +248,18 @@ class BANFFEventBase{
         void SetQ2(Double_t* x);
         void SetNuFlavor(Int_t* x);
         void SetReactionCode(Int_t* x);
+        void SetTruePmu(Double_t* x);
+        void SetTrueLepPDG(Int_t* x);
         void SetFluxParameter(int x){ fluxParameter = x; };
         void SetPOTWeight(double weight){ POTWeight = weight;}
         void SetDetWeight(double weight){detWeight = weight;};
-        void SetFluxWeight(Double_t* weight);
+        void SetFluxWeight(double weight){fluxWeight = weight;};
+        void SetObservableWeight(double weight){ObsNormWeight = weight;};
+
         void SetXsecFuncParameter(int x){ xsecFuncParameter = x; };
-        void SetXsecNormParameter(int x){ xsecNormParameter = x; };
+        void SetXsecNormParameter(int x){ xsecNormParameter.push_back(x); };
+        void SetXsecNormParameterNumElements(){ xsecNormParameterNumElements++; }
+        //void SetXsecNormParameter(int x){ xsecNormParameter = x; };
         void SetObsNormParameter(int x){ obsNormParameter = x; };
         void SetObservableBin(int x){ observableBin = x; };
         void SetSampleIndex(int x){ sampleIndex = x; };
@@ -252,9 +274,10 @@ class BANFFEventBase{
         double GetXsecWeight(FitParameters &fitParameters);
         void SaveTotalWeight(FitParameters* fitParameters, double Q2, int NuFlavor);
         double GetTotalWeight(){ return totalWeight; };
-        double GetFluxWeight();
+        double GetFluxWeight(){ return fluxWeight; };
         double GetPOTWeight(){ return POTWeight;};
         double GetDetWeight(){ return detWeight;};
+        double GetObservableWeight(){return ObsNormWeight;};
         int GetTargetMaterial();
 
         void SaveTotalWeightFast(FitParameters* fitParameters, double Q2, int NuFlavor);
@@ -279,8 +302,8 @@ class BANFFEventBase{
         ///splines that only have information saved for one selection result.
         void CopySummaryTreeInfo();
 		
-		// Calculates the absolute eRPA for given Q2, BERNSTEIN STYLE	
-		double const calcRPA(double Q2, double A, double B, double D, double E, double U);
+        // Calculates the absolute eRPA for given Q2, BERNSTEIN STYLE	
+        double const calcRPA(double Q2, double A, double B, double D, double E, double U);
 		
 };
 #endif

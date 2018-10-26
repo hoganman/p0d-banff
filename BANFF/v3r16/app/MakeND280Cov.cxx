@@ -1,889 +1,715 @@
+#include <iostream>
+#include <fstream>
+
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TH2D.h"
 #include "TMatrixTSym.h"
 #include "TVectorT.h"
-#include <iostream>
 #include "TLine.h"
 #include "TF1.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TMath.h"
 #include "TRandom3.h"
+#include "TStyle.h"
+#include "TColor.h"
 #include "TFitResultPtr.h"
+#include "TDirectory.h"
+#include "TROOT.h"
+#include "TKey.h"
+
 #include "BinningDefinition.hxx"
 #include "ND280AnalysisUtils.hxx"
+#include "Parameters.hxx"
 
-using namespace BinningDefinition;
+bool ApplyNIWG = false;
+bool Apply1p1h = false;
+const int nThrows = 1000;
 
-void MakeCovariance(char* infile, char* outfile, char* fake_data_file){
+void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
+        char* Cov1P1HStr,     char* OutFileStr){
 
+    ND::params().SetReadParamOverrideFilePointPassed();
+    BANFF::BinningDefinition& bd = BANFF::BinningDefinition::Get();
 
-  //gROOT->SetBatch(kTRUE);
+    std::vector<std::string> name_vector = bd.GetListOfBins();
+    std::vector<std::string> name_vector_det = bd.GetListOfBins_Det();
 
-    TFile *fake = new TFile(fake_data_file);
+    // for(int i = 0; i < (int)name_vector.size(); i++)
+    //   std::cout << name_vector[i] << std::endl;
+
+    // for(int i = 0; i < (int)name_vector_det.size(); i++)
+    //   std::cout << name_vector_det[i] << std::endl;
+
+    TFile* fake = NULL;
+
     TH2D* fake_cov = NULL;
-    if(fake)
-      fake_cov = (TH2D*) fake->Get("cov_1p1h");
-
-    TChain inChain("SelectedEventTruth");
-    inChain.Add(infile);
-
-    //TODO: Maybe move some of this onto the backend? Assemble TAxis pointers
-    //inside the object?
-    //Alternatively, a scrip to easily assemble files with TAxis definitions in
-    //them, and the card file has a path to the TAxis files?
-    
-    //The binning is with similar systematic merging (2017 summer analysis)
-    //The "1" binning is the fit binning (2017 summer analysis)
-
-    int nThrows = 502;
-    float* PMu        = new float[nThrows];
-    float* ThetaMu    = new float[nThrows];
-    float* DetWeight  = new float[nThrows];
-    float* FluxWeight = new float[nThrows];
-    float* NIWGWeight = new float[nThrows];
-    int* Selection    = new int  [nThrows];
-    int EventNumber, Run, SubRun;
-    for( int i = 0; i < nThrows; ++i){
-        FluxWeight[i] = 1;
-        DetWeight[i]  = 1;
-        NIWGWeight[i] = 1;
-        PMu[i]       = -999;
-        ThetaMu[i]   = -999;
-        Selection[i] = 0;
+    if(Apply1p1h){
+        std::cout << "Fake1P1H File " << Cov1P1HStr << std::endl;
+        fake = new TFile(Cov1P1HStr);
+        fake_cov = (TH2D*)fake->Get("cov_1p1h");
     }
 
-    inChain.SetBranchAddress("nThrows",     &nThrows);
-    inChain.SetBranchAddress("PMu",          PMu);
-    inChain.SetBranchAddress("ThetaMu",      ThetaMu);
-    inChain.SetBranchAddress("DetWeight",    DetWeight);
-    inChain.SetBranchAddress("FluxWeight",   FluxWeight);
-    inChain.SetBranchAddress("NIWGWeight",   NIWGWeight);
-    inChain.SetBranchAddress("Selection",    Selection);
-    inChain.SetBranchAddress("EventNumber", &EventNumber);
-    inChain.SetBranchAddress("Run",         &Run);
-    inChain.SetBranchAddress("SubRun",      &SubRun);
-  
-    TFile output(outfile,"RECREATE");
-    int nbins_0pi = nctbins_0pi*npbins_0pi;
-    int nbins_1pi = nctbins_1pi*npbins_1pi;
-    int nbins_npi = nctbins_npi*npbins_npi;
-    int nbins_0pi1 = nctbins_0pi1*npbins_0pi1;
-    int nbins_1pi1 = nctbins_1pi1*npbins_1pi1;
-    int nbins_npi1 = nctbins_npi1*npbins_npi1;
-    int nbins_anuqe = nctbins_anuqe*npbins_anuqe;
-    int nbins_anunqe = nctbins_anunqe*npbins_anunqe;
-    int nbins_nuqe = nctbins_nuqe*npbins_nuqe;
-    int nbins_nunqe = nctbins_nunqe*npbins_nunqe;
-    int nbins_anuqe1 = nctbins_anuqe1*npbins_anuqe1;
-    int nbins_anunqe1 = nctbins_anunqe1*npbins_anunqe1;
-    int nbins_nuqe1 = nctbins_nuqe1*npbins_nuqe1;
-    int nbins_nunqe1 = nctbins_nunqe1*npbins_nunqe1;
-    int nbins = nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+nbins_nuqe+nbins_nunqe;
-    int nbins1 = nbins_0pi1+nbins_1pi1+nbins_npi1+nbins_anuqe1+nbins_anunqe1+nbins_nuqe1+nbins_nunqe1;
+    ifstream MCFilesList;
+    MCFilesList.open(MCFilesListStr);
 
-    nbins = nbins*2;
-    nbins1 = nbins1*2;
+    std::map<std::string, TChain*> MCChains;
 
-    std::cout << "We have " << nbins <<  " bins in the covariance matrix" << std::endl;
 
-    TMatrixTSym<double> matrix(nbins);
-    TVectorT<double> vector(nbins);
-    TH2D corr("Total_Correlation_Matrix","Total Correlation Matrix",nbins, 0, nbins, nbins, 0, nbins);
-    TH2D cov("Total_Covariance_Matrix","Total Covariance Matrix",nbins, 0, nbins, nbins, 0, nbins);
-    TH2D cov_var("Covariance_Matrix_Var","Covariance Matrix for variation",nbins, 0, nbins, nbins, 0, nbins);
-    TH2D cov_zero("Covariance_Matrix_Zero","Covariance Matrix for zero point offset",nbins, 0, nbins, nbins, 0, nbins);
-    TH2D cov_nofake("Covariance_Matrix_NoFake","Covariance Matrix without 1p1h error",nbins, 0, nbins, nbins, 0, nbins);
-    TH2D fake_error("1p1h_fake_Error","1p1h systematic error",nbins, 0, nbins, nbins, 0, nbins);
-    TH1D nominal("Nominal","Nominal Events",nbins, 0, nbins);
-    TH1D mc_sys_error("MC_Sys_Error","MC systematic error",nbins, 0, nbins);
-    TH1D mc_stat_error1("MC_Stat_Error1","MC statistical error",nbins1, 0, nbins1);
-    TH1D mc_stat_error("MC_Stat_Error","MC statistical error",nbins, 0, nbins);
-    TH1D mc_stat_nom("MC_Stat_Nom","MC statistical nominal",nbins1, 0, nbins1);
-    TH1D var_mean("Varied_Mean","Varied Mean",nbins, 0, nbins);
-    TH1D zero_point("Zero_Point","Zero Point",nbins, 0, nbins);
-    TH1D var_mean_offset("Varied_Mean_over_Nominal","Varied Mean normalised by nominal",nbins, 0, nbins);
-    TH1D* varied[502];
-    TH1D number_events("number_events","Number of Events",nbins, 0, nbins);
+    //  TChain* MCChain = new TChain("all_syst");
 
-    TH1D GOF("GOF","Chi-square between gaussian and bin variation",nbins, 0, nbins);
+    if(MCFilesList.is_open()){
+        std::string line;
+        while(getline(MCFilesList, line)){
+            if(MCChains.size() == 0){
+                std::cout << "Reading list of systematics trees from file" << std::endl;
+                TFile temp(line.c_str(), "READ");
 
-    for (int i = 0; i < nThrows; ++i){
-        varied[i] = new TH1D(Form("Varied_Events_%d",i),Form("Varied Events %d",i),nbins, 0, nbins);
+                TIter next(temp.GetListOfKeys());
+                TKey *key;
+                while ((key = (TKey*)next())) {
+                    TClass *cl = gROOT->GetClass(key->GetClassName());
+                    if (!cl->InheritsFrom("TTree")) continue;
+                    TTree *h = (TTree*)key->ReadObj();
+                    std::string name = h->GetName();
+                    std::cout << "Adding syst " << name << " to TChain map" << std::endl;
+                    MCChains.insert(std::pair<std::string, TChain*>(name, new TChain(name.c_str())));
+                } 
+            }
+            std::cout << "Adding the file " << line << " to the TChain" << std::endl;
+            for(std::map<std::string, TChain*>::iterator it = MCChains.begin(); it != MCChains.end(); ++it){
+                it->second->Add(line.c_str());
+            }
+        }
+        MCFilesList.close();
+    }else{
+        std::cerr << "List of MC files not open!!" << std::endl;
+        throw;
     }
 
-    for(int j = 1; j < nbins+1; ++j){
-        for(int k = 1; k < nbins+1; ++k){
-            cov.SetBinContent(j,k, 0);
-            cov_var.SetBinContent(j,k, 0);
-            cov_zero.SetBinContent(j,k, 0);
-        	cov_nofake.SetBinContent(j,k, 0);
-		}
-        nominal.SetBinContent(j,0);
-        mc_stat_error.SetBinContent(j,0);
-        mc_sys_error.SetBinContent(j,0);
-        var_mean.SetBinContent(j,0);
-        var_mean_offset.SetBinContent(j,0);
-        zero_point.SetBinContent(j,0);
-        for(int i = 0; i < nThrows; ++i){
-            varied[i]->SetBinContent(j,0);
+    ifstream NIWGFilesList;
+    NIWGFilesList.open(NIWGFilesListStr);
+    TChain* NIWGTune = NULL;
+
+    if(ApplyNIWG){
+        if(NIWGFilesList.is_open()){
+            NIWGTune = new TChain("NIWGWeightTree");
+            std::string line;
+            while(getline(NIWGFilesList, line)){
+                std::cout << "NIWG tune File " << line << std::endl;
+                NIWGTune->Add(line.c_str());
+            }
+            NIWGFilesList.close();
+        }else{
+            std::cerr << "List of MC files not open!!" << std::endl;
+            throw;
         }
     }
 
-    double POT_Weight = 1;
-    TRandom3 rand(0);
+    int    Run            ;
+    int    SubRun         ;
+    int    EventNumber    ;
+    int    SelectionNom   ;
+    double TrueEnuNom     ;
+    int    TrueNuPDGNom   ;
+    int    TrueVertexIDNom;
+    double LeptonMomNom   ;
+    double LeptonMomFDS   ;
+    double LeptonCosNom   ;
+    double WeightNom      ;
+    double FluxWeightNom  ;
+    double NIWGWeightNom  ;
+    int    nToys          ;
+    int    Toy            [1000];
+    int    TrueVertexIDToy[1000];
+    int    SelectionToy   [1000];
+    double TrueEnuToy     [1000];
+    int    TrueNuPDGToy   [1000];
+    double LeptonMomToy   [1000];
+    double LeptonCosToy   [1000];
+    double WeightToy      [1000];
+    double FluxWeightToy  [1000];
+    double NIWGWeightToy  [1000];
 
-    for(int i = 0; i < (int)inChain.GetEntries(); ++i){
-        inChain.GetEntry(i);
-	
-        if(i%100000 == 0)
-	  std::cout << "Progress " << 100. * ((double) i) / inChain.GetEntries() << "%" << std::endl;
-        bool isSand = 0;
-	Int_t runp = anaUtils::GetRunPeriod(Run, SubRun);
 
-	if(anaUtils::GetSandMode(Run) >= 0)
-	  isSand = true;
-        switch (runp){
-	  // run2a:  25.9438         (3.56131e+19 / 9.23937e+20)
-	  // run2w:  27.744          (4.33756e+19 / 1.20341e+21)
-	  // run3b:  20.613          (2.17273e+19 / 4.47864e+20)
-	  // run3c:  16.9685         (1.36447e+20 / 2.3153e+21 )
-	  // run4a:  18.62           (1.78203e+20 / 3.31813e+21)
-	  // run4w:  21.2819         (1.64277e+20 / 3.49613e+21)
-	  // run5w:  52.8266         (4.3468e+19  / 2.29627e+21)
-	  // run6b:  9.87713         (1.28838e+20 / 1.27255e+21)
-	  // run6c:  10.3869         (5.07819e+19 / 5.27465e+20)
-	  // run6d:  8.88964         (7.74385e+19 / 6.884e+20  )
-	  // run6e:  10.0878         (8.51668e+19 / 8.59145e+20)
-	case 0://run1 water
-	   POT_Weight = 0.018057359;
-	  break;
-	case 1://run2 water
-	  POT_Weight = 0.3604390856;
-	  break;
-	case 2://run2 air
-	  POT_Weight = 0.03854494408;
-	  break;
-	case 3://run3b air separated based on the pot of data (run3b/(run3b+run3c)=0.13542
-	  POT_Weight = 0.04851316471;
-	  break;
-	case 4://run3c air separated based on the pot of data
-	  POT_Weight = 0.0589327517;
-	  if(isSand) POT_Weight = 0.49537864;
-	  break;
-	case 5://run4 water
-	   POT_Weight = 0.04698824128;	
-	  break;
-	case 6://run4 air
-	  POT_Weight = 0.05370585239;
-	  break;
-	case 8://run5 antinu-water
-	  POT_Weight = 0.01892982968;
-	  if(isSand) POT_Weight = 0.036109244;
-	  break;
-	case 9://run6b antinu-air
-	  POT_Weight = 0.101243959;
-	  break;
-	case 10://run6c antinu-air - have to split Run 6 due to different flux tunings for the different parts
-	  POT_Weight = 0.09627539268;
-	  break;
-	case 11://run6d antinu-air
-	  POT_Weight = 0.1124905578;
-	  break;
-	case 12://run6e antinu-air
-	  POT_Weight = 0.09912971617;
-	  break;
-	default:
-	  std::cout << "NOT FOUND?!?!" << std::endl;
-	  exit(0);
-	}
+    TChain* MCChain;
 
-	int test = 0;
+    for(std::map<std::string, TChain*>::iterator it = MCChains.begin(); it != MCChains.end(); ++it){
 
-        for(int j = 0; j < nThrows; ++j){
-            int bin = 0;
-            double* pbins = pbins_0pi;
-            double* tbins = ctbins_0pi;
-            int npbins = npbins_0pi;
-            int ntbins = nctbins_0pi;        
+        MCChain = it->second;
 
-            int bin1 = 0;
-            double* pbins1 = pbins_0pi1;
-            double* tbins1 = ctbins_0pi1;
-            int npbins1 = npbins_0pi1;
-            int ntbins1 = nctbins_0pi1;        
 
-            switch(Selection[j]){
-                // Find the correct bin in the massive 2D histogram/matrix
-	    case  SampleId::kFGD1NuMuCC0Pi:
-                    break;   
-                    // FGD1 CC1Pi
-	    case SampleId::kFGD1NuMuCC1Pi :
-                    bin = nbins_0pi;
-                    pbins = pbins_1pi;
-                    tbins = ctbins_1pi;
-                    npbins = npbins_1pi;
-                    ntbins = nctbins_1pi;
-                    bin1 = nbins_0pi1;
-                    pbins1 = pbins_1pi1;
-                    tbins1 = ctbins_1pi1;
-                    npbins1 = npbins_1pi1;
-                    ntbins1 = nctbins_1pi1;
-                    break;
-                    // FGD 1 CCNPi
-                case SampleId::kFGD1NuMuCCOther :
-                    bin = nbins_0pi + nbins_1pi;
-                    pbins = pbins_npi;
-                    tbins = ctbins_npi;
-                    npbins = npbins_npi;
-                    ntbins = nctbins_npi;
-                    bin1 = nbins_0pi1 + nbins_1pi1;
-                    pbins1 = pbins_npi1;
-                    tbins1 = ctbins_npi1;
-                    npbins1 = npbins_npi1;
-                    ntbins1 = nctbins_npi1;
-                    break;
-                    // FGD 1 anu qe
-                case SampleId::kFGD1AntiNuMuCC1Track :
-                    bin = nbins_0pi + nbins_1pi + nbins_npi;
-                    pbins = pbins_anuqe;
-                    tbins = ctbins_anuqe;
-                    npbins = npbins_anuqe;
-                    ntbins = nctbins_anuqe;
-                    bin1 = nbins_0pi1 + nbins_1pi1 + nbins_npi1;
-                    pbins1 = pbins_anuqe1;
-                    tbins1 = ctbins_anuqe1;
-                    npbins1 = npbins_anuqe1;
-                    ntbins1 = nctbins_anuqe1;
-                    break;
-                    // FGD 1 anu nqe
-                case SampleId::kFGD1AntiNuMuCCNTracks :
-                    bin = nbins_0pi + nbins_1pi + nbins_npi + nbins_anuqe;
-                    pbins = pbins_anunqe;
-                    tbins = ctbins_anunqe;
-                    npbins = npbins_anunqe;
-                    ntbins = nctbins_anunqe;
-                    bin1 = nbins_0pi1 + nbins_1pi1 + nbins_npi1 + nbins_anuqe1;
-                    pbins1 = pbins_anunqe1;
-                    tbins1 = ctbins_anunqe1;
-                    npbins1 = npbins_anunqe1;
-                    ntbins1 = nctbins_anunqe1;
-                    break;
-                    // Not anu selection
-                case SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track :
-                    bin = nbins_0pi + nbins_1pi + nbins_npi + nbins_anuqe + nbins_anunqe;
-                    pbins = pbins_nuqe;
-                    tbins = ctbins_nuqe;
-                    npbins = npbins_nuqe;
-                    ntbins = nctbins_nuqe;
-                    bin1 = nbins_0pi1 + nbins_1pi1 + nbins_npi1 + nbins_anuqe1 + nbins_anunqe1;
-                    pbins1 = pbins_nuqe1;
-                    tbins1 = ctbins_nuqe1;
-                    npbins1 = npbins_nuqe1;
-                    ntbins1 = nctbins_nuqe1;
-                    break;
-                    // Not nu_in_anu_qe
-                case SampleId::kFGD1NuMuBkgInAntiNuModeCCNTracks :
-                    bin = nbins_0pi + nbins_1pi + nbins_npi + nbins_anuqe + nbins_anunqe + nbins_nuqe;
-                    pbins = pbins_nunqe;
-                    tbins = ctbins_nunqe;
-                    npbins = npbins_nunqe;
-                    ntbins = nctbins_nunqe;
-                    bin1 = nbins_0pi1 + nbins_1pi1 + nbins_npi1 + nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1;
-                    pbins1 = pbins_nunqe1;
-                    tbins1 = ctbins_nunqe1;
-                    npbins1 = npbins_nunqe1;
-                    ntbins1 = nctbins_nunqe1;
-                    break;
-                    //now repeat for fgd2 - bin should be set fine
-                    //int bin = 0;
-                case SampleId::kFGD2NuMuCC0Pi :
-                    bin = nbins_0pi + nbins_1pi + nbins_npi + nbins_anuqe + nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_0pi;
-                    tbins = ctbins_0pi;
-                    npbins = npbins_0pi;
-                    ntbins = nctbins_0pi;
-                    bin1 = nbins_0pi1 + nbins_1pi1 + nbins_npi1 + nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_0pi1;
-                    tbins1 = ctbins_0pi1;
-                    npbins1 = npbins_0pi1;
-                    ntbins1 = nctbins_0pi1;
-                    break;
-                    // FGD 2 1PI
-	    case SampleId::kFGD2NuMuCC1Pi :
-                    bin = 2*nbins_0pi + nbins_1pi + nbins_npi + nbins_anuqe + nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_1pi;
-                    tbins = ctbins_1pi;
-                    npbins = npbins_1pi;
-                    ntbins = nctbins_1pi;
-                    bin1 = 2*nbins_0pi1 + nbins_1pi1 + nbins_npi1 + nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_1pi1;
-                    tbins1 = ctbins_1pi1;
-                    npbins1 = npbins_1pi1;
-                    ntbins1 = nctbins_1pi1;
-                    break;
-                case SampleId::kFGD2NuMuCCOther :
-                    //FGD2 NPi
-                    bin = 2*nbins_0pi + 2*nbins_1pi + nbins_npi + nbins_anuqe + nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_npi;
-                    tbins = ctbins_npi;
-                    npbins = npbins_npi;
-                    ntbins = nctbins_npi;
-                    bin1 = 2*nbins_0pi1 + 2*nbins_1pi1 + nbins_npi1 + nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_npi1;
-                    tbins1 = ctbins_npi1;
-                    npbins1 = npbins_npi1;
-                    ntbins1 = nctbins_npi1;
-                    break;
-                case SampleId::kFGD2AntiNuMuCC1Track :
-                    //FGD 2 anu 1tr
-                    bin = 2*nbins_0pi + 2*nbins_1pi + 2*nbins_npi + nbins_anuqe + nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_anuqe;
-                    tbins = ctbins_anuqe;
-                    npbins = npbins_anuqe;
-                    ntbins = nctbins_anuqe;
-                    bin1 = 2*nbins_0pi1 + 2*nbins_1pi1 + 2*nbins_npi1 + nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_anuqe1;
-                    tbins1 = ctbins_anuqe1;
-                    npbins1 = npbins_anuqe1;
-                    ntbins1 = nctbins_anuqe1;
-                    break;
-                case SampleId::kFGD2AntiNuMuCCNTracks :
-                    //fgd2 anu ntr
-                    bin = 2*nbins_0pi + 2*nbins_1pi + 2*nbins_npi + 2*nbins_anuqe + nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_anunqe;
-                    tbins = ctbins_anunqe;
-                    npbins = npbins_anunqe;
-                    ntbins = nctbins_anunqe;
-                    bin1 = 2*nbins_0pi1 + 2*nbins_1pi1 + 2*nbins_npi1 + 2*nbins_anuqe1 + nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_anunqe1;
-                    tbins1 = ctbins_anunqe1;
-                    npbins1 = npbins_anunqe1;
-                    ntbins1 = nctbins_anunqe1;
-                    break;
-                case SampleId::kFGD2NuMuBkgInAntiNuModeCC1Track :
-                    //fgd2 nu in anu 1tr
-                    bin = 2*nbins_0pi + 2*nbins_1pi + 2*nbins_npi + 2*nbins_anuqe + 2*nbins_anunqe + nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_nuqe;
-                    tbins = ctbins_nuqe;
-                    npbins = npbins_nuqe;
-                    ntbins = nctbins_nuqe;
-                    bin1 = 2*nbins_0pi1 + 2*nbins_1pi1 + 2*nbins_npi1 + 2*nbins_anuqe1 + 2*nbins_anunqe1 + nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_nuqe1;
-                    tbins1 = ctbins_nuqe1;
-                    npbins1 = npbins_nuqe1;
-                    ntbins1 = nctbins_nuqe1;
-                    break;
-                case SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks :
-                    //fgd2 nu in anu ntr
-                    bin = 2*nbins_0pi + 2*nbins_1pi + 2*nbins_npi + 2*nbins_anuqe + 2*nbins_anunqe + 2*nbins_nuqe + nbins_nunqe;
-                    pbins = pbins_nunqe;
-                    tbins = ctbins_nunqe;
-                    npbins = npbins_nunqe;
-                    ntbins = nctbins_nunqe;
-                    bin1 = 2*nbins_0pi1 + 2*nbins_1pi1 + 2*nbins_npi1 + 2*nbins_anuqe1 + 2*nbins_anunqe1 + 2*nbins_nuqe1 + nbins_nunqe1;
-                    pbins1 = pbins_nunqe1;
-                    tbins1 = ctbins_nunqe1;
-                    npbins1 = npbins_nunqe1;
-                    ntbins1 = nctbins_nunqe1;
-                    break;
-                default :
-                    continue;
 
+        MCChain->SetBranchAddress("Run"            , &Run            );
+        MCChain->SetBranchAddress("SubRun"         , &SubRun         );
+        MCChain->SetBranchAddress("EventNumber"    , &EventNumber    );
+        MCChain->SetBranchAddress("SelectionNom"   , &SelectionNom   );
+        MCChain->SetBranchAddress("TrueEnuNom"     , &TrueEnuNom     );
+        MCChain->SetBranchAddress("TrueNuPDGNom"   , &TrueNuPDGNom   );
+        MCChain->SetBranchAddress("TrueVertexIDNom", &TrueVertexIDNom);
+        MCChain->SetBranchAddress("LeptonMomNom"   , &LeptonMomNom   );
+        MCChain->SetBranchAddress("LeptonCosNom"   , &LeptonCosNom   );
+        MCChain->SetBranchAddress("WeightNom"      , &WeightNom      );
+        MCChain->SetBranchAddress("FluxWeightNom"  , &FluxWeightNom  );
+        MCChain->SetBranchAddress("nToys"          , &nToys          );
+        MCChain->SetBranchAddress("Toy"            ,  Toy            );
+        MCChain->SetBranchAddress("TrueVertexIDToy",  TrueVertexIDToy);
+        MCChain->SetBranchAddress("SelectionToy"   ,  SelectionToy   );
+        MCChain->SetBranchAddress("TrueEnuToy"     ,  TrueEnuToy     );
+        MCChain->SetBranchAddress("TrueNuPDGToy"   ,  TrueNuPDGToy   );
+        MCChain->SetBranchAddress("LeptonMomToy"   ,  LeptonMomToy   );
+        MCChain->SetBranchAddress("LeptonCosToy"   ,  LeptonCosToy   );
+        MCChain->SetBranchAddress("WeightToy"      ,  WeightToy      );
+        MCChain->SetBranchAddress("FluxWeightToy"  ,  FluxWeightToy  );
+        if(ApplyNIWG){
+            NIWGTune->SetBranchAddress("T2KRW_NIWGWeightNom",    &NIWGWeightNom);
+            NIWGTune->SetBranchAddress("T2KRW_LeptonMom1p1hFDS", &LeptonMomFDS);
+            NIWGTune->SetBranchAddress("T2KRW_NIWGWeightToy",     NIWGWeightToy);
+            MCChain->AddFriend(NIWGTune);
+            TH2D* check1 = new TH2D("EnuCheck", "EnuCheck;Enu;Enu", 1000, 0, 5000, 1000, 0, 5000);
+            MCChain->Project("EnuCheck", "TrueEnuToy:T2KRW_EnuToy");
+            TH2D* check2 = new TH2D("EnuCheck2", "EnuCheck2;Enu;Enu", 1000, 0, 5000, 1000, 0, 5000);
+            MCChain->Project("EnuCheck2", "TrueEnuNom:T2KRW_EnuNom");
+
+            TCanvas* c = new TCanvas();
+            check1->Draw();
+            c->SaveAs("check1.png");
+
+            TCanvas* b = new TCanvas();
+            check2->Draw();
+            b->SaveAs("check2.png");
+        }else{
+            std::cout << "WARNING!! NOT APPLYING THE NIWG WEIGHTING" << std::endl;
+            for(int i = 0;i < 1000; i++) NIWGWeightToy[i] = 1;
+            NIWGWeightNom = 1.;
+        }
+
+        std::cout << "Creating the file " << OutFileStr << ".root" << std::endl;
+        TFile* OutputFile = new TFile(Form("%s_%s.root",OutFileStr,(it->first).c_str()), "RECREATE");
+
+        int nBinsRedu = bd.GetNbins_Det();
+        int nBinsFull = bd.GetNbins();
+
+        std::cout << "We have " << nBinsRedu <<  " bins in the covariance matrix" << std::endl;
+
+        TMatrixTSym<double> matrix(nBinsRedu);
+        TVectorT   <double> vector(nBinsRedu);
+        TH2D* corr               = new TH2D("Total_Correlation_Matrix", "Total Correlation Matrix",                      nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH2D* cov                = new TH2D("Total_Covariance_Matrix",  "Total Covariance Matrix",                       nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH2D* cov_var            = new TH2D("Covariance_Matrix_Var",    "Covariance Matrix for variation",               nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH2D* cov_zero           = new TH2D("Covariance_Matrix_Zero",   "Covariance Matrix for zero point offset",       nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH2D* cov_nofake         = new TH2D("Covariance_Matrix_NoFake", "Covariance Matrix without 1p1h error",          nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH2D* fake_error_cov     = new TH2D("1p1h_fake_Error_cov",      "1p1h systematic error",                         nBinsRedu, 0, nBinsRedu, nBinsRedu, 0, nBinsRedu);
+        TH1D* fake_error_redu    = new TH1D("1p1h_fake_Error_redu",     "1p1h systematic error",                         nBinsRedu, 0, nBinsRedu);
+        TH1D* nominal            = new TH1D("Nominal",                  "Nominal Events",                                nBinsRedu, 0, nBinsRedu);
+        TH1D* mc_sys_error       = new TH1D("MC_Sys_Error",             "MC systematic error",                           nBinsRedu, 0, nBinsRedu);
+        TH1D* mc_stat_error_redu = new TH1D("MC_Stat_Error_Redu",       "MC statistical error",                          nBinsRedu, 0, nBinsRedu); 
+        TH1D* var_mean           = new TH1D("Varied_Mean",              "Varied Mean",                                   nBinsRedu, 0, nBinsRedu);
+        TH1D* zero_point         = new TH1D("Zero_Point",               "Zero Point",                                    nBinsRedu, 0, nBinsRedu);
+        TH1D* var_mean_offset    = new TH1D("Varied_Mean_over_Nominal", "Varied Mean normalised by nominal",             nBinsRedu, 0, nBinsRedu);
+        TH1D* number_events_redu = new TH1D("number_events",            "Number of Events",                              nBinsRedu, 0, nBinsRedu);
+        TH1D* GOF                = new TH1D("GOF",                      "Chi-square between gaussian and bin variation", nBinsRedu, 0, nBinsRedu);
+        TH1D* varied[nThrows];
+        for (int i = 0; i < nThrows; ++i){
+            varied[i] = new TH1D(Form("Varied_Events_%d", i), Form("Varied Events %d", i), nBinsRedu, 0, nBinsRedu);
+        }
+
+        TH1D* mc_stat_error_full = new TH1D("MC_Stat_Error_full",   "MC statistical error",   nBinsFull, 0, nBinsFull);
+        TH1D* mc_stat_nom        = new TH1D("MC_Stat_Nom",          "MC statistical nominal", nBinsFull, 0, nBinsFull);
+        TH1D* number_events_full = new TH1D("number_events_full",   "Number of Events",       nBinsFull, 0, nBinsFull);
+        TH1D* fake_error_full    = new TH1D("1p1h_fake_Error_full", "1p1h systematic error",  nBinsFull, 0, nBinsFull);
+
+        TH1D* Selection = new TH1D("Selection", "Selection;SampleId;N events", SampleId::kNSamples, 0, SampleId::kNSamples);
+
+
+        for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+            for(int jBin = 1; jBin < nBinsRedu+1; ++jBin){
+                cov       ->SetBinContent(iBin, jBin, 0);
+                cov_var   ->SetBinContent(iBin, jBin, 0);
+                cov_zero  ->SetBinContent(iBin, jBin, 0);
+                cov_nofake->SetBinContent(iBin, jBin, 0);
+            }
+            nominal           ->SetBinContent(iBin, 0);
+            mc_stat_error_redu->SetBinContent(iBin, 0);
+            mc_sys_error      ->SetBinContent(iBin, 0);
+            var_mean          ->SetBinContent(iBin, 0);
+            var_mean_offset   ->SetBinContent(iBin, 0);
+            zero_point        ->SetBinContent(iBin, 0);
+
+            for(int iToy = 0; iToy < nThrows; ++iToy){
+                varied[iToy]->SetBinContent(iBin, 0);
+            }
+        }
+
+        double POT_Weight = 1;
+
+        for(int i = 0; i < (int)MCChain->GetEntries(); ++i){
+            MCChain->GetEntry(i);
+            if(nThrows != nToys){
+                std::cerr << "nThrows should be equal to nToys, change this in the beginning MakeND280Cov and recompile" << std::endl;
+                throw;
+            }
+            if(i%10000 == 0)
+                std::cout << "Progress " << 100. * ((double) i) / MCChain->GetEntries() << "%" << std::endl;
+            bool isSand = 0;
+            Int_t runp = anaUtils::GetRunPeriod(Run, SubRun);
+
+            if(anaUtils::GetSandMode(Run) >= 0)
+                isSand = true;
+            switch (runp){
+                case 0://run1 water
+                    POT_Weight = 0.018057359;
+                    break;
+                case 1://run2 water
+                    POT_Weight = 4.33765e+19/1.20341e+21;
+                    break;
+                case 2://run2 air
+                    POT_Weight = 3.59337e+19/9.23937e+20;
+                    break;       
+                case 3://run3b air
+                case 4://run3c air
+                    POT_Weight = 1.58103e+20/3.08013e+21;
+                    if(isSand) POT_Weight = 0.49537864;
+                    break;
+                case 5://run4 water
+                    POT_Weight = 1.64277e+20/1.89224e+21;	
+                    break;
+                case 6://run4 air
+                    POT_Weight = 1.78271e+20/3.4996e+21;
+                    break;
+                case 8://run5 antinu-water
+                    POT_Weight = 4.3468e+19/2.29627e+21;
+                    if(isSand) POT_Weight = 0.036109244;
+                    break;
+                case 9://run6b antinu-air
+                case 10://run6c antinu-air
+                case 11://run6d antinu-air
+                case 12://run6e antinu-air
+                    POT_Weight = 3.40756e+20/9.903e+20;
+                    break;
+                case 15://run7 antinu-water
+                    POT_Weight = 2.83453e+20/3.37059e+21;
+                    break;
+                default:
+                    std::cout << "NOT FOUND?!?!" << std::endl;
+                    throw;
+            }
+            if(isSand){
+                for(int i = 0;i < 1000; i++) NIWGWeightToy[i] = 1;
+                NIWGWeightNom = 1.;
             }
 
-            int pbin = 0;
-            int tbin = 0;
-
-            for(int k = 1; k < npbins+1; ++k){
-                if(PMu[j] <= pbins[k]){
-                    pbin = k;
-                    break;
+            if(bd.IsActiveSample(SelectionNom)){
+                Selection->Fill(SelectionNom);
+                int BinRedu = bd.GetGlobalBinMatrixMomCos_Det((SampleId::SampleEnum)SelectionNom,
+                        LeptonMomNom, LeptonCosNom);
+                if(BinRedu > nBinsRedu){
+                    std::cout << "BinRedu > nBinsRedu" << std::endl;
+                    throw;
                 }
-            }
-            for(int k = 1; k < ntbins+1; ++k){
-                if(ThetaMu[j] <= tbins[k]){
-                    tbin = k;
-                    break;
+                int BinFull = bd.GetGlobalBinMatrixMomCos((SampleId::SampleEnum)SelectionNom,
+                        LeptonMomNom, LeptonCosNom);
+                if(BinFull > nBinsFull){
+                    std::cout << "BinFull > nBinsFull" << std::endl;
+                    throw;
                 }
-            }
-            if(pbin==0 || tbin == 0) continue;
-            if(TMath::IsNaN(DetWeight[j]) || !TMath::Finite(DetWeight[j])) continue;
+                if(TMath::IsNaN(WeightNom    ) || !TMath::Finite(WeightNom    ) || WeightNom      == -999 || WeightNom      > 1000){ std::cerr << "WeightNom isn't finite: "     << WeightNom     << std::endl; throw;}
+                if(TMath::IsNaN(NIWGWeightNom) || !TMath::Finite(NIWGWeightNom) || NIWGWeightNom  == -999 || NIWGWeightNom  > 1000){ std::cerr << "NIWGWeightNom isn't finite: " << NIWGWeightNom << std::endl; throw;}
+                if(TMath::IsNaN(FluxWeightNom) || !TMath::Finite(FluxWeightNom) || FluxWeightNom  == -999 || FluxWeightNom  > 1000){ std::cerr << "FluxWeightNom isn't finite: " << FluxWeightNom << std::endl; throw;}
+                if(TMath::IsNaN(POT_Weight   ) || !TMath::Finite(POT_Weight   ) || POT_Weight     == -999 || POT_Weight     > 1000){ std::cerr << "POT_Weight isn't finite: "    << POT_Weight    << std::endl; throw;}
 
-            bin += (pbin - 1)*ntbins + tbin;
 
-			if(test==0) number_events.Fill(bin);
-			test = 1;
-			
-            int pbin1 = 0;
-            int tbin1 = 0;
+                number_events_redu->Fill(BinRedu);
+                number_events_full->Fill(BinFull);
 
-            for(int k = 1; k < npbins1+1; ++k){
-                if(PMu[j] <= pbins1[k]){
-                    pbin1 = k;
-                    break;
-                }
-            }
-            for(int k = 1; k < ntbins1+1; ++k){
-                if(ThetaMu[j] <= tbins1[k]){
-                    tbin1 = k;
-                    break;
-                }
-            }
-            bin1 += (pbin1 - 1)*ntbins1 + tbin1;
+                nominal           ->SetBinContent(BinRedu, nominal           ->GetBinContent(BinRedu) + WeightNom * NIWGWeightNom * POT_Weight);
+                zero_point        ->SetBinContent(BinRedu, zero_point        ->GetBinContent(BinRedu) + WeightNom * NIWGWeightNom * FluxWeightNom * POT_Weight);
+                mc_stat_nom       ->SetBinContent(BinFull, mc_stat_nom       ->GetBinContent(BinFull) + FluxWeightNom * NIWGWeightNom * POT_Weight);
+                mc_stat_error_full->SetBinContent(BinFull, mc_stat_error_full->GetBinContent(BinFull) + TMath::Power(FluxWeightNom * NIWGWeightNom * POT_Weight, 2.));
+                mc_stat_error_redu->SetBinContent(BinRedu, mc_stat_error_redu->GetBinContent(BinRedu) + TMath::Power(FluxWeightNom * NIWGWeightNom * POT_Weight, 2.));
 
-            if(j==0){
-                nominal.SetBinContent(bin, nominal.GetBinContent(bin) + FluxWeight[j]*NIWGWeight[j]*POT_Weight);
-                mc_stat_error1.SetBinContent(bin1, mc_stat_error1.GetBinContent(bin1) + (FluxWeight[j]*NIWGWeight[j]*FluxWeight[j]*NIWGWeight[j]*POT_Weight*POT_Weight));
-                mc_stat_nom.SetBinContent(bin1, mc_stat_nom.GetBinContent(bin1) + (FluxWeight[j]*NIWGWeight[j]*POT_Weight));
             }
-            else if(j==1){
-                zero_point.SetBinContent(bin, zero_point.GetBinContent(bin) + FluxWeight[j]*NIWGWeight[j]*DetWeight[j]*POT_Weight);
-            }
-            else{
-                if(DetWeight[j] < 100){
-                    varied[j-2]->SetBinContent(bin, varied[j-2]->GetBinContent(bin) + POT_Weight*FluxWeight[j]*NIWGWeight[j]*(DetWeight[j]));
-                    if(TMath::IsNaN(varied[j-2]->GetBinContent(bin)) || !TMath::Finite(varied[j-2]->GetBinContent(bin))){
-                        std::cout << "Not a number in bin " << bin << "!" << std::endl;
+
+            for(int iToy = 0; iToy < nThrows; ++iToy){
+                if(bd.IsActiveSample(SelectionToy[iToy])){
+                    int BinRedu = bd.GetGlobalBinMatrixMomCos_Det((SampleId::SampleEnum)SelectionToy[iToy],
+                            LeptonMomToy[iToy], LeptonCosToy[iToy]);
+                    if(BinRedu > nBinsRedu){
+                        std::cout << "BinRedu > nBinsRedu" << std::endl;
+                        throw;
+                    }
+                    if(!TMath::IsNaN(WeightToy[iToy]) && TMath::Finite(WeightToy[iToy])){
+
+                        if(WeightToy[iToy] < 100){
+                            varied[iToy]->SetBinContent(BinRedu, varied[iToy]->GetBinContent(BinRedu) + POT_Weight * FluxWeightToy[iToy] * NIWGWeightToy[iToy] * WeightToy[iToy]);
+                            if(TMath::IsNaN(WeightToy[iToy]    ) || !TMath::Finite(WeightToy[iToy]    ) || WeightToy[iToy]      == -999 || WeightNom      > 1000){ std::cerr << "WeightToy["     << iToy << "] isn't finite: " << WeightToy[iToy]     << std::endl; throw;}
+                            if(TMath::IsNaN(NIWGWeightToy[iToy]) || !TMath::Finite(NIWGWeightToy[iToy]) || NIWGWeightToy[iToy]  == -999 || NIWGWeightNom  > 1000){ std::cerr << "NIWGWeightToy[" << iToy << "] isn't finite: " << NIWGWeightToy[iToy] << std::endl; throw;}
+                            if(TMath::IsNaN(FluxWeightToy[iToy]) || !TMath::Finite(FluxWeightToy[iToy]) || FluxWeightToy[iToy]  == -999 || FluxWeightNom  > 1000){ std::cerr << "FluxWeightToy[" << iToy << "] isn't finite: " << FluxWeightToy[iToy] << std::endl; throw;}
+                            if(TMath::IsNaN(POT_Weight         ) || !TMath::Finite(POT_Weight         ) || POT_Weight           == -999 || POT_Weight     > 1000){ std::cerr << "POT_Weight isn't finite: "                    << POT_Weight          << std::endl; throw;}
+                        }else{
+                            varied[iToy]->SetBinContent(BinRedu, varied[iToy]->GetBinContent(BinRedu) + FluxWeightToy[iToy] * NIWGWeightToy[iToy] * POT_Weight * 100.);
+                        }
                     }
                 }
-                else{
-                    varied[j-2]->SetBinContent(bin, varied[j-2]->GetBinContent(bin) + FluxWeight[j]*NIWGWeight[j]*POT_Weight*100);
+            }
+        }
+
+        for(int iToy = 0; iToy < nThrows; ++iToy){
+            for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+                var_mean->SetBinContent(iBin, var_mean->GetBinContent(iBin) + varied[iToy]->GetBinContent(iBin)/double(nThrows));
+            }
+        }
+
+
+        for(int iToy = 0; iToy < nThrows; ++iToy){
+            for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+                for(int jBin = 1; jBin < nBinsRedu+1; ++jBin){
+                    cov_var->SetBinContent(iBin, jBin, cov_var->GetBinContent(iBin,jBin) + ((varied[iToy]->GetBinContent(iBin) - var_mean->GetBinContent(iBin))*(varied[iToy]->GetBinContent(jBin) - var_mean->GetBinContent(jBin))));
                 }
             }
         }
-    }
-    for(int i = 0; i < nThrows-2; ++i){
-        for(int j = 1; j < nbins+1; ++j){
-            var_mean.SetBinContent(j, var_mean.GetBinContent(j) + varied[i]->GetBinContent(j)/double(nThrows-2));
-        }
-    }
 
+        for(int iBin = 1; iBin < nBinsFull+1; ++iBin){
+            if(mc_stat_nom->GetBinContent(iBin)>0){
+                mc_stat_error_full->SetBinContent(iBin, mc_stat_error_full->GetBinContent(iBin) / (mc_stat_nom->GetBinContent(iBin) * mc_stat_nom->GetBinContent(iBin)));
+            }
+        }
 
-    for(int i = 0; i < nThrows-2; ++i){
-        for(int j = 1; j < nbins+1; ++j){
-            for(int k = 1; k < nbins+1; ++k){
-                cov_var.SetBinContent(j, k, cov_var.GetBinContent(j,k) + ((varied[i]->GetBinContent(j) - var_mean.GetBinContent(j))*(varied[i]->GetBinContent(k) - var_mean.GetBinContent(k))));
-            }
-        }
-    }
+        int lastk = 1;
+        for(int j = 1; j < nBinsFull; ++j){
+            double staterr= mc_stat_error_full->GetBinContent(j);
+            double fakeerr= fake_error_full->GetBinContent(j);
+            SampleId::SampleEnum sample1 = bd.GetSampleFromIndex(j);
+            int localbin = j - bd.GetGlobalBinMatrix(sample1);
+            double p    = bd.GetBinning_Mom(sample1)->GetBinUpEdge (int(j/bd.GetNbins_Cos(sample1)) + 1);
+            double c    = bd.GetBinning_Cos(sample1)->GetBinUpEdge (int(j%bd.GetNbins_Cos(sample1)) + 1);
+            double plow = bd.GetBinning_Mom(sample1)->GetBinLowEdge(int(j/bd.GetNbins_Cos(sample1)));
+            double clow = bd.GetBinning_Cos(sample1)->GetBinLowEdge(int(j%bd.GetNbins_Cos(sample1)));
 
-    for(int j = 1; j < nbins1+1; ++j){
-        if(mc_stat_nom.GetBinContent(j)>0){
-            mc_stat_error1.SetBinContent(j, mc_stat_error1.GetBinContent(j)/(mc_stat_nom.GetBinContent(j)*mc_stat_nom.GetBinContent(j)));
-        }
-    }
+            for(int k = bd.GetGlobalBinMatrix_Det(sample1); k < bd.GetNbins_Det(sample1); ++k){
 
-    int lastk = 1;
-    for(int j = 1; j < nbins1+1; ++j){
-        int sample = 0;
-        double p = 0;
-        double c = 0;
-        double plow = 0;
-        double clow = 0;
-        double staterr= mc_stat_error1.GetBinContent(j);
-        double fakeerr=0;// fake_cov->GetBinContent(j,j);
-        //FGD1 CC0pi
-		if(j < nbins_0pi1 + 1){
-            p = pbins_0pi1[int((j-1)/nctbins_0pi1) + 1];
-            c = ctbins_0pi1[int((j-1)%nctbins_0pi1) + 1];
-            plow = pbins_0pi1[int((j-1)/nctbins_0pi1)];
-            clow = ctbins_0pi1[int((j-1)%nctbins_0pi1)];
-            for(int k = 1; k < nbins_0pi+1; ++k){
-                if( pbins_0pi[int((k-1)/nctbins_0pi)] < plow || ctbins_0pi[int((k-1)%nctbins_0pi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
+                if(bd.GetBinning_Mom_Det(sample1)->GetBinLowEdge(int(k/bd.GetNbins_Cos_Det(sample1))) < plow ||
+                        bd.GetBinning_Cos_Det(sample1)->GetBinLowEdge(int(k%bd.GetNbins_Cos_Det(sample1))) < clow)
+                    continue;
+
+                if(staterr > mc_stat_error_redu->GetBinContent(k)){
+                    mc_stat_error_redu->SetBinContent(k, staterr);
                 } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-        }
-        //FGD1 CC1pi
-		else if(j < nbins_1pi1+nbins_0pi1+1){
-            p = pbins_1pi1[int((j-nbins_0pi1-1)/nctbins_1pi1) + 1];
-            c = ctbins_1pi1[int((j-nbins_0pi1-1)%nctbins_1pi1) + 1];
-            plow = pbins_1pi1[int((j-nbins_0pi1-1)/nctbins_1pi1)];
-            clow = ctbins_1pi1[int((j-nbins_0pi1-1)%nctbins_1pi1)];
-            for(int k = nbins_0pi+1; k < nbins_0pi+nbins_1pi+1; ++k){
-                if( pbins_1pi[int((k - nbins_0pi - 1)/nctbins_1pi)] < plow || ctbins_1pi[int((k - nbins_0pi - 1)%nctbins_1pi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-        }
-        //FGD1 CCOther
-		else if(j < nbins_npi1+nbins_1pi1+nbins_0pi1+1){
-            p = pbins_npi1[int((j - nbins_1pi1-nbins_0pi1-1)/nctbins_npi1) + 1];
-            c = ctbins_npi1[int((j - nbins_1pi1-nbins_0pi1-1)%nctbins_npi1) + 1];
-            plow = pbins_npi1[int((j - nbins_1pi1-nbins_0pi1-1)/nctbins_npi1)];
-            clow = ctbins_npi1[int((j - nbins_1pi1-nbins_0pi1-1)%nctbins_npi1)];
-            for(int k = nbins_0pi+nbins_1pi+1; k < nbins_0pi+nbins_1pi+nbins_npi+1; ++k){
-                if( pbins_npi[int((k - nbins_0pi - nbins_1pi - 1)/nctbins_npi)] < plow || ctbins_npi[int((k - nbins_0pi - nbins_1pi - 1)%nctbins_npi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-        }
-		//FGD1 Anuccqe
-		else if(j < nbins_anuqe1 + nbins_npi1+nbins_1pi1+nbins_0pi1+1){
-            p = pbins_anuqe1[int((j - nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_anuqe1) + 1];
-            c = ctbins_anuqe1[int((j - nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_anuqe1) + 1];
-            plow = pbins_anuqe1[int((j - nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_anuqe1)];
-            clow = ctbins_anuqe1[int((j - nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_anuqe1)];
-            for(int k = nbins_0pi+nbins_1pi+nbins_npi+1; k < nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+1; ++k){
-                if( pbins_anuqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - 1)/nctbins_anuqe)] < plow || ctbins_anuqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - 1)%nctbins_anuqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-		}
-		//FGD1 Anuccnqe
-		else if(j < nbins_anunqe1 + nbins_anuqe1 + nbins_npi1+nbins_1pi1+nbins_0pi1+1){
-            p = pbins_anunqe1[int((j - nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_anunqe1) + 1];
-            c = ctbins_anunqe1[int((j -nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_anunqe1) + 1];
-            plow = pbins_anunqe1[int((j -nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_anunqe1)];
-            clow = ctbins_anunqe1[int((j -nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_anunqe1)];
-            for(int k = nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+1; k < nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+1; ++k){
-                if( pbins_anunqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-1)/nctbins_anunqe)] < plow || ctbins_anunqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-1)%nctbins_anunqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-		}
-		//FGD1 Nuccqe
-		else if(j < nbins_nuqe1+ nbins_anunqe1 + nbins_anuqe1 + nbins_npi1+nbins_1pi1+nbins_0pi1+1){
-            p = pbins_nuqe1[int((j - nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_nuqe1) + 1];
-            c = ctbins_nuqe1[int((j -nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_nuqe1) + 1];
-            plow = pbins_nuqe1[int((j -nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_nuqe1)];
-            clow = ctbins_nuqe1[int((j -nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_nuqe1)];
-            for(int k = nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+1; k < nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+nbins_nuqe+1; ++k){
-                if( pbins_nuqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-nbins_anunqe-1)/nctbins_nuqe)] < plow || ctbins_nuqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-nbins_anunqe-1)%nctbins_nuqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-		}
-		//FGD1 Nuccnqe
-		else if(j < nbins_nunqe1+nbins_nuqe1+ nbins_anunqe1 + nbins_anuqe1 + nbins_npi1+nbins_1pi1+nbins_0pi1+1){
-            p = pbins_nunqe1[int((j - nbins_nuqe1-nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_nunqe1) + 1];
-            c = ctbins_nunqe1[int((j -nbins_nuqe1-nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_nunqe1) + 1];
-            plow = pbins_nunqe1[int((j -nbins_nuqe1-nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)/nctbins_nunqe1)];
-            clow = ctbins_nunqe1[int((j -nbins_nuqe1-nbins_anunqe1-nbins_anuqe1- nbins_npi1-nbins_1pi1-nbins_0pi1-1)%nctbins_nunqe1)];
-            for(int k = nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+nbins_nuqe+1; k < nbins_0pi+nbins_1pi+nbins_npi+nbins_anuqe+nbins_anunqe+nbins_nuqe+nbins_nunqe+1; ++k){
-                if( pbins_nunqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-nbins_anunqe-nbins_nuqe-1)/nctbins_nunqe)] < plow || ctbins_nunqe[int((k - nbins_0pi - nbins_1pi - nbins_npi - nbins_anuqe-nbins_anunqe-nbins_nuqe-1)%nctbins_nunqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-				break;
-            }
-		}
-		//FGD2 CC0pi
-        else if(j < nbins_nunqe1+nbins_nuqe1+nbins_anunqe1+nbins_anuqe1+nbins_npi1+nbins_1pi1+(2*nbins_0pi1) + 1){
-            p = pbins_0pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-nbins_0pi1 - 1)/nctbins_0pi1) + 1];
-            c = ctbins_0pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-nbins_0pi1 - 1)%nctbins_0pi1) + 1];
-            plow = pbins_0pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-nbins_0pi1 - 1)/nctbins_0pi1)];
-            clow = ctbins_0pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-nbins_0pi1 - 1)%nctbins_0pi1)];
-            for(int k = nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+nbins_npi+nbins_1pi+nbins_0pi + 1; k < nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+nbins_npi+nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_0pi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-nbins_1pi-nbins_0pi - 1)/nctbins_0pi)] < plow || ctbins_0pi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-nbins_1pi-nbins_0pi - 1)%nctbins_0pi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
+                if(Apply1p1h){
+                    if(fabs(fakeerr) > fabs(fake_error_redu->GetBinContent(k))){
+                        fake_error_redu->SetBinContent(k, fakeerr);
+                    }
+                }
                 break;
+
+            }
+
+            if(Apply1p1h){
+                fake_error_redu->Write("Fake_Error_Lin");
+
+                TH1D* fake_lin = new TH1D("Lin_1p1h","Lin_1p1h",nBinsRedu,0,nBinsRedu); 
+
+                for(int j = 1; j < nBinsRedu+1; ++j){
+                    fake_lin->SetBinContent(j,fake_error_cov->GetBinContent(j,j));
+                    for(int k = j+1; k < nBinsRedu+1; ++k){
+                        fake_error_cov->SetBinContent(j,k, fake_error_redu->GetBinContent(j) * fake_error_redu->GetBinContent(k));
+                    }
+                    fake_error_cov->SetBinContent(j,j, fake_error_redu->GetBinContent(j) * fake_error_redu->GetBinContent(j));
+                }
+
+                fake_lin->Write();
+
+                for(int j = 1; j < nBinsRedu+1; ++j){
+                    for(int k = 1; k < j; ++k){
+                        fake_error_cov->SetBinContent(j,k, fake_error_cov->GetBinContent(k,j));
+                    }
+                }
             }
         }
-		//FGD2 CC1pi
-        else if(j < nbins_nunqe1+nbins_nuqe1+nbins_anunqe1+nbins_anuqe1+nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-            p = pbins_1pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_1pi1) + 1];
-            c = ctbins_1pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_1pi1) + 1];
-            plow = pbins_1pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_1pi1)];
-            clow = ctbins_1pi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_1pi1)];
-            for(int k = nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+nbins_npi+nbins_1pi+2*nbins_0pi + 1; k < nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_1pi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-nbins_1pi-2*nbins_0pi - 1)/nctbins_1pi)] < plow || ctbins_1pi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-nbins_1pi-2*nbins_0pi - 1)%nctbins_1pi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
+
+
+        for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+            if(nominal->GetBinContent(iBin)>0){
+                vector(iBin-1) = var_mean->GetBinContent(iBin) / nominal->GetBinContent(iBin);
+                var_mean_offset->SetBinContent(iBin, var_mean->GetBinContent(iBin)/nominal->GetBinContent(iBin));
+            }else{
+                vector(iBin-1) = 1.0;
+                var_mean_offset->SetBinContent(iBin,1);
+            }
+
+            for(int jBin = 1; jBin < nBinsRedu+1; ++jBin){
+                if(fabs(cov_var->GetBinContent(iBin,jBin)) > 0.00001 && nominal->GetBinContent(iBin) > 0 && nominal->GetBinContent(jBin) > 0){
+                    cov_var->SetBinContent(iBin, jBin, cov_var->GetBinContent(iBin,jBin)/(double(nThrows)*nominal->GetBinContent(iBin)*nominal->GetBinContent(jBin)));
+                }
+
+                if(jBin == iBin){
+                    mc_sys_error->SetBinContent(iBin, cov_var->GetBinContent(iBin,jBin));
+                    cov_var->SetBinContent(iBin, jBin, cov_var->GetBinContent(iBin,jBin) + mc_stat_error_redu->GetBinContent(iBin));
+                }
+
+                cov->SetBinContent(iBin, jBin, cov_var->GetBinContent(iBin,jBin));
+                if(Apply1p1h) matrix(iBin-1,jBin-1) = cov->GetBinContent(iBin,jBin) + fake_error_cov->GetBinContent(iBin,jBin);
+                else          matrix(iBin-1,jBin-1) = cov->GetBinContent(iBin,jBin);
+                cov_nofake->SetBinContent(iBin, jBin, cov->GetBinContent(iBin,jBin));
+            }
+            mc_stat_error_redu->SetBinContent(iBin, sqrt(mc_stat_error_redu->GetBinContent(iBin)));
+        }
+
+        if(Apply1p1h) cov->Add(&*fake_error_cov);
+
+        for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+            for(int jBin = 1; jBin < nBinsRedu+1; ++jBin){
+                if(cov->GetBinContent(iBin,iBin) > 0 && cov->GetBinContent(jBin,jBin) > 0)
+                    corr->SetBinContent(iBin, jBin, cov->GetBinContent(iBin,jBin) / sqrt(cov->GetBinContent(iBin,iBin) * cov->GetBinContent(jBin,jBin)));
             }
         }
-		//FGD2 CCOther
-        else if(j < nbins_nunqe1+nbins_nuqe1+nbins_anunqe1+nbins_anuqe1+2*nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-            p = pbins_npi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_npi1) + 1];
-            c = ctbins_npi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_npi1) + 1];
-            plow = pbins_npi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_npi1)];
-            clow = ctbins_npi1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_npi1)];
-            for(int k = nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; k < nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_npi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)/nctbins_npi)] < plow || ctbins_npi[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)%nctbins_npi)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
+
+        OutputFile->cd();
+
+        vector.Write("Mean_Value");
+        matrix.Write("Covariance_Matrix");
+        std::string CurSampleStr = "";
+        for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+            std::string SampleStr = ConvertSample(bd.GetSampleFromIndex_Det(iBin));
+            if(SampleStr != CurSampleStr){
+                cov       ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                corr      ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                cov_zero  ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                cov_nofake->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                cov       ->GetYaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                corr      ->GetYaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                cov_zero  ->GetYaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                cov_nofake->GetYaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                fake_error_redu    ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                nominal            ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                mc_sys_error       ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                mc_stat_error_redu ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                var_mean           ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                zero_point         ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                var_mean_offset    ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                number_events_redu ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                mc_stat_nom        ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
+                CurSampleStr = SampleStr;
             }
         }
-		//FGD2 AnuCCQE
-        else if(j < nbins_nunqe1+nbins_nuqe1+nbins_anunqe1+2*nbins_anuqe1+2*nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-            p = pbins_anuqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_anuqe1) + 1];
-            c = ctbins_anuqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_anuqe1) + 1];
-            plow = pbins_anuqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_anuqe1)];
-            clow = ctbins_anuqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_anuqe1)];
-            for(int k = nbins_nunqe+nbins_nuqe+nbins_anunqe+nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; k < nbins_nunqe+nbins_nuqe+nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_anuqe[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)/nctbins_anuqe)] < plow || ctbins_anuqe[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)%nctbins_anuqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
-            }
-        }
-		//FGD2 AnuCCNQE
-        else if(j < nbins_nunqe1+nbins_nuqe1+2*nbins_anunqe1+2*nbins_anuqe1+2*nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-            p = pbins_anunqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_anunqe1) + 1];
-            c = ctbins_anunqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_anunqe1) + 1];
-            plow = pbins_anunqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_anunqe1)];
-            clow = ctbins_anunqe1[int((j-nbins_nunqe1-nbins_nuqe1-nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_anunqe1)];
-            for(int k = nbins_nunqe+nbins_nuqe+nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; k < nbins_nunqe+nbins_nuqe+2*nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_anunqe[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)/nctbins_anunqe)] < plow || ctbins_anunqe[int((k-nbins_nunqe-nbins_nuqe-nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)%nctbins_anunqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
-            }
-        }
-		//FGD2 NuCCQE
-        else if(j < nbins_nunqe1+2*nbins_nuqe1+2*nbins_anunqe1+2*nbins_anuqe1+2*nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-            p = pbins_nuqe1[int((j-nbins_nunqe1-nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_nuqe1) + 1];
-            c = ctbins_nuqe1[int((j-nbins_nunqe1-nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_nuqe1) + 1];
-            plow = pbins_nuqe1[int((j-nbins_nunqe1-nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_nuqe1)];
-            clow = ctbins_nuqe1[int((j-nbins_nunqe1-nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_nuqe1)];
-            for(int k = nbins_nunqe+nbins_nuqe+2*nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; k < nbins_nunqe+2*nbins_nuqe+2*nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_nuqe[int((k-nbins_nunqe-nbins_nuqe-2*nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)/nctbins_nuqe)] < plow || ctbins_nuqe[int((k-nbins_nunqe-nbins_nuqe-2*nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)%nctbins_nuqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
-            }
-        }
-		//FGD2 NuCCQE
-        else if(j < 2*nbins_nunqe1+2*nbins_nuqe1+2*nbins_anunqe1+2*nbins_anuqe1+2*nbins_npi1+2*nbins_1pi1+2*nbins_0pi1 + 1){
-			p = pbins_nunqe1[int((j-nbins_nunqe1-2*nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_nunqe1) + 1];
-            c = ctbins_nunqe1[int((j-nbins_nunqe1-2*nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_nunqe1) + 1];
-            plow = pbins_nunqe1[int((j-nbins_nunqe1-2*nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)/nctbins_nunqe1)];
-            clow = ctbins_nunqe1[int((j-nbins_nunqe1-2*nbins_nuqe1-2*nbins_anunqe1-2*nbins_anuqe1-2*nbins_npi1-2*nbins_1pi1-2*nbins_0pi1 - 1)%nctbins_nunqe1)];
-            for(int k = nbins_nunqe+2*nbins_nuqe+2*nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; k < 2*nbins_nunqe+2*nbins_nuqe+2*nbins_anunqe+2*nbins_anuqe+2*nbins_npi+2*nbins_1pi+2*nbins_0pi + 1; ++k){
-                if( pbins_nunqe[int((k-nbins_nunqe-2*nbins_nuqe-2*nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)/nctbins_nunqe)] < plow || ctbins_nunqe[int((k-nbins_nunqe-2*nbins_nuqe-2*nbins_anunqe-2*nbins_anuqe-2*nbins_npi-2*nbins_1pi-2*nbins_0pi - 1)%nctbins_nunqe)] < clow) continue;
-                if(staterr > mc_stat_error.GetBinContent(k)){
-					mc_stat_error.SetBinContent(k, staterr);
-                } 
-                if(fabs(fakeerr) > fabs(fake_error.GetBinContent(k,k))){
-					 fake_error.SetBinContent(k,k, fakeerr);
-				 }
-                break;
-            }
-        }
-    }
-    // End of stat error stuff
 
-    fake_error.Write("Fake_Error_Lin");
-	
-	TH1D* fake_lin = new TH1D("Lin_1p1h","Lin_1p1h",nbins,0,nbins); 
-	
-    for(int j = 1; j < nbins+1; ++j){
-		fake_lin->SetBinContent(j,fake_error.GetBinContent(j,j));
-        for(int k = j+1; k < nbins+1; ++k){
-            fake_error.SetBinContent(j,k, fake_error.GetBinContent(j,j) * fake_error.GetBinContent(k,k));
-        }
-        fake_error.SetBinContent(j,j, fake_error.GetBinContent(j,j) * fake_error.GetBinContent(j,j));
-    }
-	
-	fake_lin->Write();
-
-    for(int j = 1; j < nbins+1; ++j){
-        for(int k = 1; k < j; ++k){
-            fake_error.SetBinContent(j,k, fake_error.GetBinContent(k,j));
-        }
-    }
-		
-    for(int j = 1; j < nbins+1; ++j){
-        if(nominal.GetBinContent(j)>0){
-            vector(j-1) = var_mean.GetBinContent(j)/nominal.GetBinContent(j);
-            var_mean_offset.SetBinContent(j, var_mean.GetBinContent(j)/nominal.GetBinContent(j));
-        }
-        else{
-            vector(j-1) = 1.0;
-            var_mean_offset.SetBinContent(j,1);
-        }
-        for(int k = 1; k < nbins+1; ++k){
-
-            if(fabs(cov_var.GetBinContent(j,k)) > 0.00001 && nominal.GetBinContent(j) > 0 && nominal.GetBinContent(k) > 0){
-                cov_var.SetBinContent(j, k, cov_var.GetBinContent(j,k)/(double(nThrows-2)*nominal.GetBinContent(j)*nominal.GetBinContent(k)));
-            }
-            if(k==j){
-                mc_sys_error.SetBinContent(j, cov_var.GetBinContent(j,k));
-                cov_var.SetBinContent(j, k, cov_var.GetBinContent(j,k) + mc_stat_error.GetBinContent(j));
-            }
-            cov.SetBinContent(j, k, cov_var.GetBinContent(j,k));
-            matrix(j-1,k-1) = cov.GetBinContent(j,k) + fake_error.GetBinContent(j,k);
-        	cov_nofake.SetBinContent(j, k, cov.GetBinContent(j,k));
-		}
-        mc_stat_error.SetBinContent(j, sqrt(mc_stat_error.GetBinContent(j)));
-    }
-	cov.Add(&fake_error);
-	
-    vector.Write("Mean_Value");
-    matrix.Write("Covariance_Matrix");
-
-    for(int i = 1; i < nbins+1; ++i){
-        for(int j = 1; j < nbins+1; ++j){
-            corr.SetBinContent(i,j,cov.GetBinContent(i,j)/sqrt(cov.GetBinContent(i,i)*cov.GetBinContent(j,j)));
-        }
-    }
-
-    corr.Write();
-    cov.Write();
-    mc_sys_error.Write();
-    cov_var.Write();
-    cov_zero.Write();
-    cov_nofake.Write();
-    nominal.Write();
-    mc_stat_error.Write();
-    fake_error.Write();
-    zero_point.Write();
-    var_mean.Write();
-    var_mean_offset.Write();
-
-    for(int i = 0; i < nThrows-2; ++i){
-        varied[i]->Write();
-    }
-
-    number_events.Write();
-
-    TCanvas c1;
-
-    for(int i = 1; i < nbins+1; ++i){
-        c1.SetName(Form("Bin_%d_NEvent_Spread",i));
-        c1.SetTitle(Form("Bin_%d_NEvent_Spread",i));
-        TH1F h1(Form("Bin_%d_NEvent_Spread_Hist",i), Form("Bin %d NEvent Spread",i), int(nominal.GetBinContent(i))*12, 0, int(nominal.GetBinContent(i))*3);
-
-        TF1 f1("f1","gaus",nominal.GetBinContent(i)*0.5, nominal.GetBinContent(i)*1.5);
-        TF1 f2("f2","gaus",nominal.GetBinContent(i)*0.5, nominal.GetBinContent(i)*1.5);
-
-        f1.SetNameTitle(Form("Bin_%d_NEvent_Varying_Gaussian",i), "Varying Gaussian");
-        f2.SetNameTitle(Form("Bin_%d_NEvent_Total_Gaussian",i), "Total Gaussian");
-
-        for(int j = 0; j <nThrows-2; ++j){
-            h1.Fill(varied[j]->GetBinContent(i));
+        for(int iBin = 1; iBin < Selection->GetXaxis()->GetNbins()+1; ++iBin){
+            std::string SampleStr = SampleId::ConvertSample((SampleId::SampleEnum)(iBin-1));
+            Selection->GetXaxis()->SetBinLabel(iBin, SampleStr.c_str());
         }
 
-        h1.GetXaxis()->SetTitle("N Events selected");
-        h1.SetStats(kFALSE);
-        h1.Draw();
+        Selection          ->Write();
+        corr               ->Write();
+        cov                ->Write();
+        cov_var            ->Write();
+        cov_zero           ->Write();
+        cov_nofake         ->Write();
+        nominal            ->Write();
+        mc_sys_error       ->Write();
+        mc_stat_error_redu ->Write(); 
+        var_mean           ->Write();
+        zero_point         ->Write();
+        var_mean_offset    ->Write();
+        number_events_redu ->Write();
+        mc_stat_error_full ->Write();
+        mc_stat_nom        ->Write();
+        number_events_full ->Write();
+        Selection          ->Write();
 
-        f1.SetParameters((h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov_var.GetBinContent(i,i))*nominal.GetBinContent(i)), var_mean.GetBinContent(i), sqrt(cov_var.GetBinContent(i,i))*nominal.GetBinContent(i));
-        f2.SetParameters((h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov.GetBinContent(i,i))*nominal.GetBinContent(i)), var_mean.GetBinContent(i), sqrt(cov.GetBinContent(i,i))*nominal.GetBinContent(i));
 
-        h1.GetYaxis()->SetRangeUser(0,h1.GetMaximum()*1.1);
-        h1.GetXaxis()->SetRange(h1.FindFirstBinAbove(0)-5,h1.FindLastBinAbove(0)+5);
 
-        f1.FixParameter(0,(h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov_var.GetBinContent(i,i))*nominal.GetBinContent(i)));
-        f1.FixParameter(1,var_mean.GetBinContent(i));
-        f1.FixParameter(2,sqrt(cov_var.GetBinContent(i,i))*nominal.GetBinContent(i));
+        const UInt_t Number_p = 5;
+        Double_t Red_p[Number_p]    = { 1.00, 0.70, 0.50, 0.30, 0.100 };
+        Double_t Green_p[Number_p]  = { 1.00, 0.00, 0.00, 0.00, 0.00  };
+        Double_t Blue_p[Number_p]   = { 1.00, 0.70, 0.50, 0.30, 0.100 };
+        Double_t Length_p[Number_p] = { 0.00, 0.10, 0.4,  0.8,  1.00  };
+        Int_t nb_p = 400;
+        TColor::CreateGradientColorTable(Number_p,Length_p,Red_p,Green_p,Blue_p,nb_p);  
+        const Int_t NCont = 255;
+        gStyle->SetNumberContours(NCont);
+        gStyle->SetOptStat(0);
 
-        h1.Fit(&f1,"BNQ");
-        double chi2 = f1.GetChisquare();
-
-        GOF.SetBinContent(i,chi2);
-
-        TLine l1(nominal.GetBinContent(i),0,nominal.GetBinContent(i),h1.GetMaximum());
-        TLine l2(zero_point.GetBinContent(i),0,zero_point.GetBinContent(i),h1.GetMaximum());
-
-        f1.SetLineWidth(2);
-        f1.SetLineColor(kRed);
-        f2.SetLineWidth(2);
-        f2.SetLineColor(kGreen);
-
-        f1.Draw("SAME");
-        f2.Draw("SAME");
-
-        l1.SetLineWidth(2);
-        l1.SetLineStyle(2);
-        l1.SetLineColor(kBlack);
-        l2.SetLineWidth(2);
-        l2.SetLineStyle(2);
-        l2.SetLineColor(kOrange);
-
-        l1.Draw("SAME");
-        l2.Draw("SAME");
-
-        TLegend* leg = new TLegend(0.65,0.7,0.98,0.94);
-        leg->AddEntry(&h1, "Bin content from throws","l");
-        leg->AddEntry(&f1, "Gaussian from throw cov","l");
-        leg->AddEntry(&f2, "Gaussian from total cov","l");
-        leg->AddEntry(&l1, "Nominal bin content","l");
-        leg->AddEntry(&l2, "Zero weight bin content","l");
-        leg->SetFillColor(kWhite);
-        leg->Draw();
-        c1.Update();
+        TCanvas c1;
+        cov->Draw("COLZ");
+        c1.SetTitle("Covariance");
+        c1.SetName ("canCovariance");
+        c1.Write();
+        cov_zero->Draw("COLZ");
+        c1.SetTitle("CovarianceZero");
+        c1.SetName ("canCovarianceZero");
+        c1.Write();
+        cov_nofake->Draw("COLZ");
+        c1.SetTitle("CovarianceNoFake");
+        c1.SetName ("canCovarianceNoFake");
         c1.Write();
 
+        const Int_t NRGBs = 3;
+        Double_t stops[NRGBs] = { 0.00, 0.5, 1.00 };
+        Double_t red[NRGBs]   = { 0.00, 1.0, 1.00 };
+        Double_t green[NRGBs] = { 0.00, 1.0, 0.00 };
+        Double_t blue[NRGBs]  = { 1.00, 1.0, 0.00 };
+        TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+        gStyle->SetPalette(1,0);  // use the nice blue->white->red palette
+
+        corr->SetMaximum( 1);
+        corr->SetMinimum(-1);
+        corr->Draw("COLZ");
+        c1.SetTitle("Correlation");
+        c1.SetName ("canCorrelation");
+        c1.Write();
+
+        TDirectory* VarU = OutputFile->mkdir("VariedUniverse");
+        VarU->cd();
+        for (int i = 0; i < nThrows; ++i){ varied[i]->Write(); }
+
+        TCanvas c2;
+        OutputFile->cd();
+        TDirectory* BinVar = OutputFile->mkdir("BinVariations");
+        BinVar->cd();
+
+        for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
+            c2.SetName(Form("Bin_%d_NEvent_Spread",iBin));
+            c2.SetTitle(Form("Bin_%d_NEvent_Spread",iBin));
+            int nevent = int(nominal->GetBinContent(iBin));
+            if(nevent == 0) nevent = 10;
+            TH1F h1(Form("Bin_%d_NEvent_Spread_Hist",iBin), Form("Bin %d NEvent Spread",iBin), int(nominal->GetBinContent(iBin)*120), 0, int(nominal->GetBinContent(iBin)*3));
+
+            TF1 f1("f1","gaus",nominal->GetBinContent(iBin)*0.5, nominal->GetBinContent(iBin)*1.5);
+            TF1 f2("f2","gaus",nominal->GetBinContent(iBin)*0.5, nominal->GetBinContent(iBin)*1.5);
+
+            f1.SetNameTitle(Form("Bin_%d_NEvent_Varying_Gaussian",iBin), "Varying Gaussian");
+            f2.SetNameTitle(Form("Bin_%d_NEvent_Total_Gaussian",iBin), "Total Gaussian");
+
+            for(int iToy = 0; iToy < nThrows; ++iToy){
+                h1.Fill(varied[iToy]->GetBinContent(iBin));
+            }
+
+            h1.GetXaxis()->SetTitle("N Events selected");
+            h1.SetStats(kFALSE);
+            h1.Draw();
+
+            f1.SetParameters((h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov_var->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin)), var_mean->GetBinContent(iBin), sqrt(cov_var->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin));
+            f2.SetParameters((h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin)), var_mean->GetBinContent(iBin), sqrt(cov->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin));
+
+            h1.GetYaxis()->SetRangeUser(0,h1.GetMaximum()*1.1);
+            h1.GetXaxis()->SetRange(h1.FindFirstBinAbove(0)-5,h1.FindLastBinAbove(0)+5);
+
+            f1.FixParameter(0,(h1.Integral()/4.0)/(sqrt(TMath::Pi()*2)*sqrt(cov_var->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin)));
+            f1.FixParameter(1,var_mean->GetBinContent(iBin));
+            f1.FixParameter(2,sqrt(cov_var->GetBinContent(iBin,iBin))*nominal->GetBinContent(iBin));
+
+            h1.Fit(&f1,"BNQ");
+            double chi2 = f1.GetChisquare();
+
+            GOF->SetBinContent(iBin,chi2);
+
+            TLine l1(nominal->GetBinContent(iBin),0,nominal->GetBinContent(iBin),h1.GetMaximum());
+            TLine l2(zero_point->GetBinContent(iBin),0,zero_point->GetBinContent(iBin),h1.GetMaximum());
+
+            f1.SetLineWidth(2);
+            f1.SetLineColor(kRed);
+            f2.SetLineWidth(2);
+            f2.SetLineColor(kGreen);
+
+            f1.Draw("SAME");
+            f2.Draw("SAME");
+
+            l1.SetLineWidth(2);
+            l1.SetLineStyle(2);
+            l1.SetLineColor(kBlack);
+            l2.SetLineWidth(2);
+            l2.SetLineStyle(2);
+            l2.SetLineColor(kOrange);
+
+            l1.Draw("SAME");
+            l2.Draw("SAME");
+
+            TLegend* leg = new TLegend(0.65,0.7,0.98,0.94);
+            leg->AddEntry(&h1, "Bin content from throws","l");
+            leg->AddEntry(&f1, "Gaussian from throw cov","l");
+            leg->AddEntry(&f2, "Gaussian from total cov","l");
+            leg->AddEntry(&l1, "Nominal bin content","l");
+            leg->AddEntry(&l2, "Zero weight bin content","l");
+            leg->SetFillColor(kWhite);
+            leg->Draw();
+            c2.Update();
+            c2.Write();
+
+        }
+        GOF->Write();
+
+        OutputFile->cd();
+        TDirectory* AxisCovDir = OutputFile->mkdir("AxisForCov");
+        OutputFile->cd();
+        TDirectory* AxisFitDir = OutputFile->mkdir("AxisForFit");
+
+        for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
+            SampleId::SampleEnum smpl = static_cast<SampleId::SampleEnum>(i);
+
+            if(bd.IsActiveSample(smpl)){
+                std::string name = SampleId::ConvertSample(smpl);
+                std::replace (name.begin(), name.end(), ' ', '_');
+                AxisCovDir->cd();
+                bd.GetBinning_Mom_Det(smpl)->Write((name+"_p_axis").c_str());
+                bd.GetBinning_Cos_Det(smpl)->Write((name+"_th_axis").c_str());
+                AxisFitDir->cd();
+                bd.GetBinning_Mom(smpl)->Write((name+"_p_axis").c_str());
+                bd.GetBinning_Cos(smpl)->Write((name+"_th_axis").c_str());
+            }
+
+        }
+
+        OutputFile->Close();
+
     }
-    GOF.Write();
-    output.Close();
 }
 
 
+void MakeCovariance4Arg(char* MCFilesListStr, char* NIWGFilesListStr,
+        char* Cov1P1HStr,     char* OutFileStr){
+    MakeCovariance(MCFilesListStr, NIWGFilesListStr, Cov1P1HStr, OutFileStr);
+}
 
+void MakeCovariance3Arg(char* MCFilesListStr, char* NIWGFilesListStr, char* OutFileStr){
+    MakeCovariance(MCFilesListStr, NIWGFilesListStr, "", OutFileStr);
+}
+
+void MakeCovariance2Arg(char* MCFilesListStr, char* OutFileStr){
+    MakeCovariance(MCFilesListStr, "", "", OutFileStr);
+}
 
 int main(int argn, char** arg){
 
-  if(argn != 3){
-    std::cout << "Specify MakeND280DetectorCov.exe infile outfile.root" << std::endl;
-    return 1;
-  }
-  MakeCovariance(arg[1], arg[2], NULL);
-  return 0;
+    switch (argn){
+        case 5:{
+                   ApplyNIWG = true;
+                   Apply1p1h = true;
+                   MakeCovariance4Arg(arg[1], arg[2], arg[3], arg[4]);
+                   break;
+               }
+        case 4:{
+                   ApplyNIWG = true;
+                   Apply1p1h = false;
+                   MakeCovariance3Arg(arg[1], arg[2], arg[3]);
+                   break;
+               }
+        case 3:{
+                   ApplyNIWG = false;
+                   Apply1p1h = false;
+                   MakeCovariance2Arg(arg[1], arg[2]);
+                   break;
+               }
+        default:{
+                    std::cout << "\n\n\nUsage:\nMakeND280DetectorCov.exe ListOfFilesWithNDThrows ListOfFileWithNIWGWeight 1p1hCov.root outfile.root" << std::endl;
+                    std::cout << "or:\nMakeND280DetectorCov.exe ListOfFilesWithNDThrows ListOfFileWithNIWGWeight outfile.root" << std::endl;
+                    std::cout << "or:\nMakeND280DetectorCov.exe ListOfFilesWithNDThrows outfile.root" << std::endl;
+                    throw;
+                }
+    }
+
+    return 0;
 
 }
 

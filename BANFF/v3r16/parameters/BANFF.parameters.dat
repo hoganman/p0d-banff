@@ -10,6 +10,9 @@ Doesnt fit
 < BANFF.SavePrefitAndExit = 0 >
 < BANFF.SavePrefitParamsAndExit = 0 >
 
+Do a likelihood scan of the likelihood as a function of the xsec parameters
+< BANFF.DoLikelihoodScan = 0 >
+
 Do either multi pi selection 1 either multi track selection 0 in RHC
 Watch out for the splines and a the parameter files in psyche steering
 < BANFF.DoMultiPiRHC = 0 >
@@ -21,9 +24,14 @@ Wether to apply nue selections
 If nue's are the only thing you care about...
 < BANFF.DoOnlyNueSelections = 0 >
 
+For doing one dimensional fits (do not put both in the same time other BANFF will insult you)
+< BANFF.Do1DCheckMom = 0 >
+< BANFF.Do1DCheckCos = 0 >
+< BANFF.UseFlatNuMuBinning = 0 >
+
 The flux input file, which contains the information about the flux parameters
 and their covariance.
-< BANFF.FluxInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/flux_covariance_banff_13av1.1.root >
+< BANFF.FluxInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/flux_covariance_banff_13av2.root >
 
 The XSec input file, which contains the information about the xsec parameters
 and their covariance.
@@ -31,7 +39,7 @@ and their covariance.
 
 The Observable Normalization parameters input file, which contains information
 about those parameters and their covariance.
-< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/obsNorm_2015_v3.root >
+< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/obsnorm_runs2-6_21Sep18.root  >
 
 Whether to apply an additional scaling factor to the MC POT.  Would typically
 only use this if wanted to scale MC to a desired POT to check fit performance.
@@ -50,7 +58,7 @@ to crashing if this is set to true for toy throwing.
 Parameters that affect the toy throwing code.
 ==================================================
 The number of toys to throw.
-< BANFF.ThrowToys.NToys = 1 >
+< BANFF.ThrowToys.NToys = 10 >
 
 The name of the output file to put the toys in.
 < BANFF.ThrowToys.OutputFile = test_toys.root >
@@ -132,7 +140,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = DataFit_P0DRun4_SystWeightsOff.root >
+< BANFF.RunFit.OutputFile = DataFit_rhc_multi-pi_run2_run7.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >
@@ -170,7 +178,7 @@ parameter does nothing.)
 < BANFF.RunFit.FitDetParams = 0 >
 
 Whether to load the ObsNorm parameters from the ObsNorm input file for the fit.
-< BANFF.RunFit.LoadObsNormParams = 0 >
+< BANFF.RunFit.LoadObsNormParams = 1 >
 
 Whether to fit the observable normalization parameters (if they are loaded.)
-< BANFF.RunFit.FitObsNormParams = 0 >
+< BANFF.RunFit.FitObsNormParams = 1 >

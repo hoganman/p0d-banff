@@ -15,54 +15,49 @@
 ///Minuit2
 class Minuit2LikelihoodFit {
 
-    public:
-        Minuit2LikelihoodFit(BANFFInterfaceBase* inter, std::string outputFileName);
-        ~Minuit2LikelihoodFit();
+public:
+  Minuit2LikelihoodFit(BANFFInterfaceBase* inter, std::string outputFileName);
+  ~Minuit2LikelihoodFit();
 
-        void Reset();
+  void Reset();
 
-        void InitializeParameters();
+  void InitializeParameters();
 
-        void ScanParameters();
+  void ScanParameters();
 
-        void DoFit();
+  void DoFit();
 
-        //Class variables
+  void InitializeParametersFromFile(std::string inputFileName);
+  //Class variables
         
-        ///A pointer to the BANFFInterfaceBase with all the information needed
-        ///to perform the fit.
-        BANFFInterfaceBase* interface;
+  ///A pointer to the BANFFInterfaceBase with all the information needed
+  ///to perform the fit.
+  BANFFInterfaceBase* interface;
 
-        TFile* outputFile;
+  TFile* outputFile;
 
-        ///The fit function used in the fit.
-        Minuit2LikelihoodFitFCN* minuit2_likelihood_fit_fcn;
+  ///The fit function used in the fit.
+  Minuit2LikelihoodFitFCN* minuit2_likelihood_fit_fcn;
 
-        ///The covariance matrix from migrad.
-        TMatrixDSym* migrad_covariance;
+  ///The covariance matrix from migrad.
+  TMatrixDSym* migrad_covariance;
 
-        ///The Hessian matrix from migrad.
-        TMatrixDSym* migrad_hessian;
+  ///The Hessian matrix from migrad.
+  TMatrixDSym* migrad_hessian;
 
-        ///The parameters fed to Minuit2.
-        ROOT::Minuit2::MnUserParameters *params;
+  ///The parameters fed to Minuit2.
+  ROOT::Minuit2::MnUserParameters *params;
 
-        ///The Minuit fitter.
-        TFitterMinuit *fminuit;
+  ///The Minuit fitter.
+  TFitterMinuit *fminuit;
 
-        ///A counter used to count how many times DoFit() has been called with
-        ///this instance of Minuit2LikelihoodFit.  Primarly useful for
-        ///validation purposes (don't need to reload MC when want to fit
-        ///against different toys.
-        int iteration;
+  ///A counter used to count how many times DoFit() has been called with
+  ///this instance of Minuit2LikelihoodFit.  Primarly useful for
+  ///validation purposes (don't need to reload MC when want to fit
+  ///against different toys.
+  int iteration;
 
-
-        TVectorD *fcnMin;
-
-
-
-
-
+  TVectorD *fcnMin;
 
 };
 #endif

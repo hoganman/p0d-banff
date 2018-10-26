@@ -14,6 +14,7 @@ class BANFFBinnedSample: public BANFFSampleBase{
 
     public:
 
+        BANFFBinnedSample(SampleId::SampleEnum sampleIDInput, int nObsInput, BANFFObservableBase** obsInput, bool ithrowMCStat = false, bool ithrowStat = false, bool ithrowMCStatPoisson = false);
         BANFFBinnedSample(std::string nameInput, int sampleIDInput, int nObsInput, BANFFObservableBase** obsInput, TAxis** axesInput, bool ithrowMCStat = false, bool ithrowStat = false, bool ithrowMCStatPoisson = false);
         virtual ~BANFFBinnedSample(){};
 
@@ -71,7 +72,11 @@ class BANFFBinnedSample: public BANFFSampleBase{
         ///A histogram of the nominal det weights.
         TH1D* nominalDetWeights;
 
-        //Some additional combination histograms.
+        ///POT weighted nominal MC with "covariance" weights applied.
+        THnD* nomMCNomCovWeights;
+
+        ///A histogram of the  "covariance"  weights.
+        TH1D* nominalCovWeights;
         
         ///POT weighted nominal MC with flux and xsec weights.
         THnD* nomMCNomFluxAndXSecWeights;
