@@ -22,11 +22,11 @@
 
 #define DEBUG(X) std::cout << #X << " = " << X << std::endl;
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
-std::vector<std::string> SplitString(const std::string &inString, char SplitBy);
+std::vector<std::string> SplitString(const std::string &inString, const char SplitBy);
 Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
 inline Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
-AnaTrueParticleB* GetTrueVtxLepton(AnaTrueVertexB* trueVtx, Bool_t absPDG = kTRUE);
 Int_t GetSameGenerationLepton(const Int_t& nuPDG);
+void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles);
 
 int main(int argc, char **argv){
 
@@ -230,6 +230,8 @@ int main(int argc, char **argv){
 
     }
 
+    const Int_t NMAXPRIMARYPARTICLESSIZE = ParticleId::kLast + 1;
+
     std::cout << "The number of events = " << nmax << std::endl;
     Int_t Run         = kDoubleInit;
     Int_t SubRun      = kDoubleInit;
@@ -276,6 +278,9 @@ int main(int argc, char **argv){
     Double_t vtxY = kDoubleInit;
     Double_t vtxZ = kDoubleInit;
     Int_t NumberOfTracks = kIntInit;
+    Int_t NPrimaryParticles[NMAXPRIMARYPARTICLESSIZE];
+    for(Int_t index = 0; index < NMAXPRIMARYPARTICLESSIZE; ++index)
+        NPrimaryParticles[index] = 0;
     Int_t inFGD1 = kIntInit;
     Int_t inFGD2 = kIntInit;
 
@@ -356,20 +361,20 @@ int main(int argc, char **argv){
 
         outfile->cd();
         tree = new TTree(syst_name.c_str(),syst_name.c_str());
-        tree->Branch("Run",                         &Run,                         "Run/I"                );
-        tree->Branch("SubRun",                    &SubRun,                    "SubRun/I"         );
+        tree->Branch("Run",                         &Run,                         "Run/I");
+        tree->Branch("SubRun",                    &SubRun,                    "SubRun/I");
         tree->Branch("EventNumber",         &EventNumber,         "EventNumber/I");
         tree->Branch("RooVertexIndex",    &RooVertexIndex,    "RooVertexIndex/i");
 
-        tree->Branch("SelectionNom",        &SelectionNom,        "SelectionNom/I"     );
-        tree->Branch("TrueEnuNom",            &TrueEnuNom,            "TrueEnuNom/D"         );
-        tree->Branch("TrueNuPDGNom",        &TrueNuPDGNom,        "TrueNuPDGNom/I"     );
+        tree->Branch("SelectionNom",        &SelectionNom,        "SelectionNom/I");
+        tree->Branch("TrueEnuNom",            &TrueEnuNom,            "TrueEnuNom/D");
+        tree->Branch("TrueNuPDGNom",        &TrueNuPDGNom,        "TrueNuPDGNom/I");
         tree->Branch("TrueVertexIDNom", &TrueVertexIDNom, "TrueVertexIDNom/I");
-        tree->Branch("LeptonMomNom",        &LeptonMomNom,        "LeptonMomNom/D"     );
-        tree->Branch("LeptonTPC1MomNom",        &LeptonTPC1MomNom,        "LeptonTPC1MomNom/D"     );
-        tree->Branch("LeptonCosNom",        &LeptonCosNom,        "LeptonCosNom/D"     );
-        tree->Branch("WeightNom",             &WeightNom,             "WeightNom/D"            );
-        tree->Branch("FluxWeightNom",     &FluxWeightNom,     "FluxWeightNom/D"    );
+        tree->Branch("LeptonMomNom",        &LeptonMomNom,        "LeptonMomNom/D");
+        tree->Branch("LeptonTPC1MomNom",        &LeptonTPC1MomNom,        "LeptonTPC1MomNom/D");
+        tree->Branch("LeptonCosNom",        &LeptonCosNom,        "LeptonCosNom/D");
+        tree->Branch("WeightNom",             &WeightNom,             "WeightNom/D");
+        tree->Branch("FluxWeightNom",     &FluxWeightNom,     "FluxWeightNom/D");
 
         tree->Branch("tLeptonPDG", &tLeptonPDG, "tLeptonPDG/I");
         tree->Branch("tLeptonParentPDG", &tLeptonParentPDG, "tLeptonParentPDG/I");
@@ -396,6 +401,7 @@ int main(int argc, char **argv){
         tree->Branch("tNu", &tNu, "tNu/D");
         tree->Branch("tYbj", &tYbj, "tYbj/D");
         tree->Branch("NumberOfTracks", &NumberOfTracks, "NumberOfTracks/I");
+        tree->Branch("NPrimaryParticles", NPrimaryParticles, Form("NPrimaryParticles[%d]/I", NMAXPRIMARYPARTICLESSIZE));
 
         tree->Branch("inFGD1", &inFGD1,"inFGD1/I");
         tree->Branch("inFGD2", &inFGD2,"inFGD2/I");
@@ -405,7 +411,6 @@ int main(int argc, char **argv){
         if(ThrowToys)
         {
             tree->Branch("nToys",            nToysPTR,        "nToys/I");
-            tree->Branch("tYbj",             &tYbj,           "tYbj/D");
             tree->Branch("Toy",              Toy,             Form("Toy[%d]/I",              nToys));
             tree->Branch("TrueVertexIDToy",  TrueVertexIDToy, Form("TrueVertexIDToy[%d]/I",  nToys));
             tree->Branch("SelectionToy",     SelectionToy,    Form("SelectionToy[%d]/I",     nToys));
@@ -538,6 +543,9 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tOnWaterTarget    = kIntInit;
             RooVertexIndex    = kUIntInit;
 
+            for(Int_t index = 0; index < NMAXPRIMARYPARTICLESSIZE; ++index)
+                NPrimaryParticles[index] = 0;
+
             //_man.syst().InitializeEventSystematics(_man.sel(),*event);
             Bool_t passednom = false;
 
@@ -599,6 +607,7 @@ if(debug) DEBUG(trueParticle->PDG)
                         tVtxY = trVtx->Position[1];
                         tVtxZ = trVtx->Position[2];
                         tReactionCode = trVtx->ReacCode;
+                        FillNPrimaryParticles(trVtx, NPrimaryParticles);
                         TrueEnuNom      = trVtx->NuEnergy;
                         TrueNuPDGNom    = trVtx->NuPDG;
                         tQ2 = trVtx->Q2;
@@ -965,7 +974,7 @@ Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& Start
 }
 
 
-std::vector<std::string> SplitString(const std::string &inString, char SplitBy)
+std::vector<std::string> SplitString(const std::string &inString, const char SplitBy)
 {
   std::vector<std::string> outStringVec;
 
@@ -985,4 +994,39 @@ std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentz
     thisGeoManger->InitTrack(checkPosition.X(), checkPosition.Y(), checkPosition.Z(), 0, 0, 1); // 0, 0, 1 = the direction vector
     std::string tmpMCPath = thisGeoManger->GetPath();
     return tmpMCPath;
+}
+
+void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles){
+
+  // if RooTrackerVtx is not available fill the new NPrimaryParticles (used in Categories.cxx) using TrueParticles
+
+  for (Int_t i = 0; i < vertex->nTrueParticles; i++)
+  {
+      AnaTrueParticleB* trueTrack = vertex->TrueParticles[i];
+
+      if(!trueTrack)
+          continue;
+
+      if(trueTrack->ParentPDG != 0)
+          continue; //should correspond to the primary vertex
+
+      if (abs(trueTrack->PDG) > 1000 && abs(trueTrack->PDG) < 10000) NPrimaryParticles[ParticleId::kBaryons]++;
+      if (abs(trueTrack->PDG) > 100 && abs(trueTrack->PDG) < 1000) NPrimaryParticles[ParticleId::kMesons]++;
+      if (abs(trueTrack->PDG) > 10 && abs(trueTrack->PDG) < 19) NPrimaryParticles[ParticleId::kLeptons]++;
+      if (trueTrack->PDG == +12 || trueTrack->PDG == +14 || trueTrack->PDG == +16) NPrimaryParticles[ParticleId::kNeutrinos]++;
+      if (trueTrack->PDG == -12 || trueTrack->PDG == -14 || trueTrack->PDG == -16) NPrimaryParticles[ParticleId::kAntiNeutrinos]++;
+
+  } // end loop over vertex->TrueParticles
+
+  // Fill NPrimaryParticles for kPions and Kaons
+  NPrimaryParticles[ParticleId::kPions] = NPrimaryParticles[ParticleId::kPi0]   +
+                                                  NPrimaryParticles[ParticleId::kPiPos] +
+                                                  NPrimaryParticles[ParticleId::kPiNeg] ;
+  NPrimaryParticles[ParticleId::kKaons] = NPrimaryParticles[ParticleId::kK0]     +
+                                                  NPrimaryParticles[ParticleId::kAntiK0] +
+                                                  NPrimaryParticles[ParticleId::kK0L]    +
+                                                  NPrimaryParticles[ParticleId::kK0S]    +
+                                                  NPrimaryParticles[ParticleId::kKPos]   +
+                                                  NPrimaryParticles[ParticleId::kKNeg]   ;
+
 }
