@@ -47,6 +47,9 @@ void DefineCuts::SetCuts()
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()));
     muMinusBkgInRHCSelection.SetName("#mu^{-} Bkg in RHC Selection Cut");
 
+    anyP0DSelection = muMinusSelection || muMinusBkgInRHCSelection || muPlusInRHCSelection;
+    anyP0DSelection.SetName("Any P0D+TPC selection cut");
+
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
                                 minFidVolCoords.Z(), "vtxZ", "vtxZ", maxFidVolCoords.Z(),
                                 minFidVolCoords.X(), "vtxX", "vtxX", maxFidVolCoords.X(),
@@ -176,26 +179,24 @@ void DefineCuts::SetCuts()
     tNEUTAntiNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCDIS));
     tNEUTAntiNuCCDIS.SetName("True NEUT Anti-nu CC-DIS");
 
-
     TCut tAntiNuBkgTopologyInNuMode = (muMinusSelection || muMinusBkgInRHCSelection)
                                       && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kMuon));
     TCut tNuBkgTopologyInAntiNuMode = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kAntiMuon));
     tBKGTopology = (tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode) && tFV;
 
     TCut tZeroMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==0", pdg.kMesons));
-    tCC0PiTopology = TCut(TString::Format("(NPrimaryParticles[%d]+NPrimaryParticles[%d])==1", pdg.kAntiMuon, pdg.kMuon))
-                     && tZeroMesonTopology && tFV;
+    tCC0PiTopology = anyP0DSelection && tZeroMesonTopology && tFV;
 
+    TCut tCC1PiInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiPos));
+    TCut tCC1PiInAntiNuModeTopology = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiNeg));
     TCut tOneMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kMesons));
-    TCut tCC1PiInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1&&NPrimaryParticles[%d]==1", pdg.kMuon, pdg.kPiPos));
-    TCut tCC1PiInAntiNuModeTopology = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1&&NPrimaryParticles[%d]==1", pdg.kAntiMuon, pdg.kPiNeg));
-    tCC1PiToplogy = (tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology && tFV;
+    tCC1PiTopology = (tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology && tFV;
 
-    TCut tCCOtherInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection)
-                                     && TCut(TString::Format("(NPrimaryParticles[%d]>1||NPrimaryParticles[%d]>1)", pdg.kMuon, pdg.kMesons));
-
-    TCut tCCOtherInAntiNuModeTopology =  muPlusInRHCSelection && TCut(TString::Format("(NPrimaryParticles[%d]>1||NPrimaryParticles[%d]>1)", pdg.kAntiMuon, pdg.kMesons));
-    tCCOtherTopology = (tCCOtherInNuModeTopology || tCCOtherInAntiNuModeTopology) && tFV;
+    tCCOtherTopology = anyP0DSelection && (     !(tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode)
+                                             && !(tZeroMesonTopology)
+                                             && !((tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology)
+                                          )
+                                       && tFV;
 
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode>=%d", pdg.kNuMuPDG, pdg.kNEUTNu_CCQE)) && !tNEUTNC && tFV;
     tParNuMu.SetName("True #nu_{#mu} Cut");

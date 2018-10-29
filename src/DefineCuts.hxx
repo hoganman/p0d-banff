@@ -20,12 +20,15 @@ public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts();
 
-    ///Passes the mu- selection
+    ///Passes the mu- selection for P0D+TPC
     TCut muMinusSelection;
-    ///Passes the mu+ selection
+    ///Passes the mu+ selection for P0D+TPC
     TCut muPlusInRHCSelection;
-    ///
+    /// Passes the mu- selection  in anti-nu mode for P0D+TPC
     TCut muMinusBkgInRHCSelection;
+
+    TCut anyP0DSelection;
+
     ///In the reconstructed P0D fiducial volume
     TCut FV;
     ///In the true P0D fiducial volume
@@ -106,7 +109,7 @@ public:
     ///The number of outgoing pions == 0, no other mesons and any number of baryons
     TCut tCC0PiTopology;
     ///The number of outgoing pions == 1, no other mesons and any number of baryons
-    TCut tCC1PiToplogy;
+    TCut tCC1PiTopology;
     ///Topology does not fit into any above category
     TCut tCCOtherTopology;
 
