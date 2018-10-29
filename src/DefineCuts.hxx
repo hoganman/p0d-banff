@@ -125,11 +125,13 @@ public:
     static const UInt_t NMAXNEUTSELECTIONS = 11;
     static const UInt_t NMAXPARTICLESELECTIONS = 10;
     static const UInt_t NMAXNEUTRINOSELECTIONS = 7;
+    static const UInt_t NMAXTOPOLOGYSELECTIONS = 7;
 
     std::vector<PlottingSelectionInfo*> ParticleSelections;
     std::vector<PlottingSelectionInfo*> NeutrinoSelections;
     std::vector<PlottingSelectionInfo*> NEUTNuSelections;
     std::vector<PlottingSelectionInfo*> NEUTAntiNuSelections;
+    std::vector<PlottingSelectionInfo*> TopologySelections;
 
     void FillParticleSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
@@ -143,11 +145,15 @@ public:
     void FillNEUTAntiNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
 
+    void FillTopologySelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
+
     ///These methods are PyROOT friendly
     PlottingSelectionInfo* GetParticleSelection(const UInt_t &index) const {return ParticleSelections[index];}
     PlottingSelectionInfo* GetNeutrinoSelection(const UInt_t &index) const {return NeutrinoSelections[index];}
     PlottingSelectionInfo* GetNEUTNuSelection(const UInt_t &index) const {return NEUTNuSelections[index];}
     PlottingSelectionInfo* GetNEUTAntiNuSelection(const UInt_t &index) const {return NEUTAntiNuSelections[index];}
+    PlottingSelectionInfo* GetTopologySelection(const UInt_t &index) const {return TopologySelections[index];}
 
     ///These methods are NOT PyROOT friendly (CRASHES!)
     PlottingSelectionInfo** FillAndGetParticleSelections(const TString &name, const TString &title,
@@ -156,24 +162,35 @@ public:
         FillParticleSelections(name, title, sampleID, additionalCuts);
         return &ParticleSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNeutrinoSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNeutrinoSelections(name, title, sampleID, additionalCuts);
         return &NeutrinoSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNEUTNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNEUTNuSelections(name, title, sampleID, additionalCuts);
         return &NEUTNuSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNEUTAntiNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNEUTAntiNuSelections(name, title, sampleID, additionalCuts);
         return &NEUTAntiNuSelections[0];
     }
+
+    PlottingSelectionInfo** FillAndGetTopologySelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillTopologySelections(name, title, sampleID, additionalCuts);
+        return &TopologySelections[0];
+    }
+
 
 
 protected:

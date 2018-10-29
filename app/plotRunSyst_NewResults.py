@@ -29,6 +29,7 @@ APPLY_EVENT_WEIGHTS = 0
 PLOTLEPTONCANDIDATETRUEPDG = 1
 PLOTNEUTNUREACTIONCODES = 0
 PLOTNEUTANTINUREACTIONCODES = 0
+PLOTTOPOLOGY = 0
 
 # Display the ratio of Data/MC below histogram
 SHOW_RATIO_PLOT_BELOW = 1
@@ -154,10 +155,11 @@ def main(argv):
         particle_selections = GetLeptonCandidateSelectionList(current_sampleID)
         neut_nu_selections = GetNEUTNuSelectionList(current_sampleID)
         neut_antinu_selections = GetNEUTAntiNuSelectionList(current_sampleID)
+        topology_selecitons = GetTopologySelectionList(current_sampleID)
 
         # these are data/mc histograms
-        all_selection_sets = [particle_selections,
-                              neut_antinu_selections, neut_nu_selections]
+        all_selection_sets = [particle_selections, neut_antinu_selections,
+                              neut_nu_selections, topology_selecitons]
 
         # loop over sample classes
         for smpls in mc_data_sample_dict.values():
@@ -212,6 +214,9 @@ def main(argv):
                     if not PLOTNEUTANTINUREACTIONCODES:
                         continue
                     if not SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
+                        continue
+                if selection_name.Contains('Topology'):
+                    if not PLOTTOPOLOGY:
                         continue
 
                 # TN-328 Momentum
@@ -932,6 +937,25 @@ def GetNEUTAntiNuSelectionList(sampleID):
     for index in range(CUTS.NMAXNEUTSELECTIONS):
         neut_antinu_selections.append(CUTS.GetNEUTAntiNuSelection(index))
     return neut_antinu_selections
+
+
+def GetTopologySelectionList(sampleID):
+    """Make a list of true topology cuts """
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
+
+    if TN208_ANALYSIS:
+        more_cuts += CUTS.FVTN208
+
+    if USE_MOMENTUM_CUT:
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+
+    CUTS.FillTopologySelections('TrueTopology', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    topology_selections = list()
+    for index in range(CUTS.NMAXTOPOLOGYSELECTIONS):
+        topology_selections.append(CUTS.GetTopologySelection(index))
+    return topology_selections
 
 
 def ConfigureROOTHStack(hstack, anaBins, pot_str):

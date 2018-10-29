@@ -183,20 +183,24 @@ void DefineCuts::SetCuts()
                                       && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kMuon));
     TCut tNuBkgTopologyInAntiNuMode = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kAntiMuon));
     tBKGTopology = (tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode) && tFV;
+    tBKGTopology.SetName("True BKG Topology");
 
     TCut tZeroMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==0", pdg.kMesons));
     tCC0PiTopology = anyP0DSelection && tZeroMesonTopology && tFV;
+    tCC0PiTopology.SetName("True CC-0#pi Topology");
 
     TCut tCC1PiInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiPos));
     TCut tCC1PiInAntiNuModeTopology = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiNeg));
     TCut tOneMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kMesons));
     tCC1PiTopology = (tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology && tFV;
+    tCC1PiTopology.SetName("True CC-1#pi Topology");
 
     tCCOtherTopology = anyP0DSelection && (     !(tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode)
                                              && !(tZeroMesonTopology)
                                              && !((tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology)
                                           )
                                        && tFV;
+    tCCOtherTopology.SetName("True CC-Other Topology");
 
     tParNuMu = TCut(TString::Format("TrueNuPDGNom==%d&&tReactionCode>=%d", pdg.kNuMuPDG, pdg.kNEUTNu_CCQE)) && !tNEUTNC && tFV;
     tParNuMu.SetName("True #nu_{#mu} Cut");
@@ -580,6 +584,81 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
     if(entry != NMAXNEUTSELECTIONS)
     {
         P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTAntiNuSelections");
+    }
+
+}
+
+//**************************************************
+void DefineCuts::FillTopologySelections(const TString &name, const TString &title,
+       const SampleId::SampleEnum &sampleID, const TCut &additionalCuts)
+//**************************************************
+{
+    TCut all_nom_sel_cut;
+    std::vector<PlottingSelectionInfo*>::iterator it;
+    for(it = TopologySelections.begin(); it != TopologySelections.end(); ++it)
+    {
+        if(*it) delete *it;
+    }
+    TopologySelections.clear();
+    const SampleId sampleIDs;
+    if(sampleIDs.IsP0DNuMuSample(sampleID))
+        all_nom_sel_cut = muMinusSelection;
+    else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
+        all_nom_sel_cut = muMinusBkgInRHCSelection;
+    else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
+        all_nom_sel_cut = muPlusInRHCSelection;
+    else
+    {
+        P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
+        return;
+    }
+
+    TCut tFV_Correction = tFV;
+    TCut tOOFV_Correction = tOOFV;
+    if(TString(all_nom_sel_cut.GetTitle()).Contains(tFVTN208.GetTitle()))
+    {
+        tFV_Correction = tFVTN208;
+        tOOFV_Correction = tOOFVTN208;
+    }
+
+    TopologySelections.resize(NMAXTOPOLOGYSELECTIONS);
+    if(TString(additionalCuts.GetTitle()).Length() > 0)
+        all_nom_sel_cut = all_nom_sel_cut && additionalCuts;
+
+    UInt_t entry = 0;
+    // all selection events
+    PlottingSelectionInfo* all_nom_sel = new PlottingSelectionInfo(name, all_nom_sel_cut, title);
+    TopologySelections[entry++] = all_nom_sel;
+
+    TCut cc0pi_topology_sel_cut = all_nom_sel_cut && tCC0PiTopology && tFV_Correction;
+    PlottingSelectionInfo* cc0pi_topology_sel = new PlottingSelectionInfo("cc0pi_topology_sel", cc0pi_topology_sel_cut, "CC-0#pi");
+    TopologySelections[entry++] = cc0pi_topology_sel;
+
+    TCut cc1pi_topology_sel_cut = all_nom_sel_cut && tCC1PiTopology && tFV_Correction;
+    PlottingSelectionInfo* cc1pi_topology_sel = new PlottingSelectionInfo("cc1pi_topology_sel", cc1pi_topology_sel_cut, "CC-1#pi");
+    TopologySelections[entry++] = cc1pi_topology_sel;
+
+    TCut ccother_topology_sel_cut = all_nom_sel_cut && tCCOtherTopology && tFV_Correction;
+    PlottingSelectionInfo* ccother_topology_sel = new PlottingSelectionInfo("ccother_topology_sel", ccother_topology_sel_cut, "CC-Other");
+    TopologySelections[entry++] = ccother_topology_sel;
+
+    TCut bkg_topology_sel_cut = all_nom_sel_cut && tBKGTopology && tFV_Correction;
+    PlottingSelectionInfo* bkg_topology_sel = new PlottingSelectionInfo("bkg_topology_sel", bkg_topology_sel_cut, "BKG");
+    TopologySelections[entry++] = bkg_topology_sel;
+
+    // OOFV
+    TCut oofv_sel_cut = all_nom_sel_cut && tOOFV_Correction;
+    PlottingSelectionInfo* oofv_sel = new PlottingSelectionInfo("oofv_sel", oofv_sel_cut, "OOFV");
+    TopologySelections[entry++] = oofv_sel;
+
+    // sand muons
+    TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
+    PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
+    TopologySelections[entry++] = sandmu_sel;
+
+    if(entry != NMAXTOPOLOGYSELECTIONS)
+    {
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillTopologySelections");
     }
 
 }
