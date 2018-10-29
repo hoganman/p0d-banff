@@ -42,6 +42,7 @@ int main(int argc, char **argv){
     std::string inputFileName = "";
     std::string inputFileType = "kHighlandTree";
     std::string outputFileName= "";
+    std::string parameterFileOveride = "";
     Bool_t preload = kFALSE;
     Long64_t nmax = 100000000;
     Bool_t isData = false;
@@ -49,13 +50,13 @@ int main(int argc, char **argv){
 
     if(argc < 4)
     {
-        std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents) (-d isData)" << std::endl;
+        std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents) (-d isData) (-p parameterFileOveride)" << std::endl;
         throw;
     }
 
     for (;;)
     {
-        Int_t c = getopt(argc, argv, "n:o:i:d");
+        Int_t c = getopt(argc, argv, "n:o:i:p:d");
         if (c < 0)
             break;
         switch (c)
@@ -76,6 +77,11 @@ int main(int argc, char **argv){
                 inputFileName = optarg;
                 break;
             }
+            case 'p':
+            {
+                parameterFileOveride = optarg;
+                break;
+            }
             case 'd':
             {
                 isData = true;
@@ -89,7 +95,7 @@ int main(int argc, char **argv){
         }
     }//end for
 
-    std::cout << "is Data: " << isData << std::endl;
+if (debug) std::cout << "is Data: " << isData << std::endl;
 
 #ifndef MULTITHREAD
     if (preload)
@@ -105,8 +111,14 @@ int main(int argc, char **argv){
 #endif
 
     // Read the parameters files following the package hierarchy
-    // first the top level package. Set the parameters as fixed
-    ND::params().LoadParametersFiles(anaUtils::GetPackageHierarchy(), true);
+    // first the top level package
+    ND::params().LoadParametersFiles(anaUtils::GetPackageHierarchy());
+
+    if (parameterFileOveride.length() > 0 )
+    {
+        std::cout << "Using parameter override " << parameterFileOveride.c_str() << std::endl;
+        ND::params().ReadParamOverrideFile(parameterFileOveride);
+    }
 
     // Make sure no parameters have been accessed yet
     ND::params().SetReadParamOverrideFilePointPassed();
@@ -998,8 +1010,6 @@ std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentz
 
 void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles){
 
-  // if RooTrackerVtx is not available fill the new NPrimaryParticles (used in Categories.cxx) using TrueParticles
-
   for (Int_t i = 0; i < vertex->nTrueParticles; i++)
   {
       AnaTrueParticleB* trueTrack = vertex->TrueParticles[i];
@@ -1015,6 +1025,13 @@ void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryPa
       if (abs(trueTrack->PDG) > 10 && abs(trueTrack->PDG) < 19) NPrimaryParticles[ParticleId::kLeptons]++;
       if (trueTrack->PDG == +12 || trueTrack->PDG == +14 || trueTrack->PDG == +16) NPrimaryParticles[ParticleId::kNeutrinos]++;
       if (trueTrack->PDG == -12 || trueTrack->PDG == -14 || trueTrack->PDG == -16) NPrimaryParticles[ParticleId::kAntiNeutrinos]++;
+      if (trueTrack->PDG == ParticleId::kMuonPDG) NPrimaryParticles[ParticleId::kMuon]++;
+      if (trueTrack->PDG == ParticleId::kAntiMuonPDG) NPrimaryParticles[ParticleId::kAntiMuon]++;
+      if (trueTrack->PDG == ParticleId::kPiPlusPDG) NPrimaryParticles[ParticleId::kPiPos]++;
+      if (trueTrack->PDG == ParticleId::kPiMinusPDG) NPrimaryParticles[ParticleId::kPiNeg]++;
+      if (trueTrack->PDG == ParticleId::kPiZeroPDG) NPrimaryParticles[ParticleId::kPi0]++;
+      //if (trueTrack->PDG == ParticleId::kK0PDG) NPrimaryParticles[ParticleId::kK0]++;
+      //if (trueTrack->PDG == ParticleId::kAntiK0PDG) NPrimaryParticles[ParticleId::kAntiK0]++;
 
   } // end loop over vertex->TrueParticles
 
