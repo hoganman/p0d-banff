@@ -34,7 +34,7 @@ BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
 PSYCHESTEERINGROOT = os.getenv('PSYCHESTEERINGROOT')
-RUNSYSTNEW = '%s/Linux-x86_64/RunSyst_New.exe' %(PSYCHESTEERINGROOT)
+RUNSYSTNEW = '%s/Linux-x86_64/RunSyst_New.exe -p %s/parameters/psycheSteering.parameters.dat.P0D' %(PSYCHESTEERINGROOT, PSYCHESTEERINGROOT)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
 PYTHONPATH = '%s:%s/macros'%(os.getenv('PYTHONPATH'),BASE)
