@@ -15,7 +15,7 @@ import sys
 DRAW_ENU = 0
 DRAW_PMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 1
+DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
@@ -24,10 +24,10 @@ DRAW_P0DZ = 0
 
 # Apply event + flux weight
 APPLY_FLUX_WEIGHTS = 0
-APPLY_EVENT_WEIGHTS = 1
+APPLY_EVENT_WEIGHTS = 0
 
 PLOTLEPTONCANDIDATETRUEPDG = 1
-PLOTNEUTNUREACTIONCODES = 1
+PLOTNEUTNUREACTIONCODES = 0
 PLOTNEUTANTINUREACTIONCODES = 0
 
 # Display the ratio of Data/MC below histogram
@@ -44,7 +44,7 @@ MOMENTUM_CUT_VALUE = '5000.'
 ADDITIONAL_CUTS = None
 
 # Which selection to run
-RUNP0DWATERNUMUCCSELECTION = 1
+RUNP0DWATERNUMUCCSELECTION = 0
 RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
 RUNP0DAIRNUMUCCSELECTION = 1
@@ -385,9 +385,10 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         legend.AddEntry(data_hist, 'DATA', 'LPE')
     anaBins.Reset()
     anaBins.Sumw2(False)
+    data_integral = data_hist.Integral(1, data_hist.GetNbinsX())
     data_stats = TLegend(COORDS.PaveStats_Data_X1, COORDS.PaveStats_Data_Y1,
                          COORDS.PaveStats_Data_X2, COORDS.PaveStats_Data_Y2,
-                         'Integral %d' % data_hist.Integral())
+                         'Integral %d' % data_integral)
     data_stats.SetBorderSize(1)
     data_stats.SetFillColor(0)
     data_stats.SetMargin(0.1)
@@ -459,9 +460,10 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.Add(a_hist)
         h_total.Add(a_hist)
 
+    mc_integral = h_total.Integral(1, h_total.GetNbinsX())
     mc_stats = TLegend(COORDS.PaveStats_MC_X1, COORDS.PaveStats_MC_Y1,
                        COORDS.PaveStats_MC_X2, COORDS.PaveStats_MC_Y2,
-                       'Integral %.2f' % h_total.Integral())
+                       'Integral %.2f' % mc_integral)
     mc_stats.SetBorderSize(1)
     mc_stats.SetFillColor(0)
     mc_stats.SetMargin(0.1)
@@ -700,7 +702,7 @@ def GetMonteCarloSamples(sampleID):
     chn_NEUTRun2Wtr = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3bAir = T2KDATAMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3cAir = T2KDATAMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun4Air = T2KDATAMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun4Air = T2KDATAMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun4Wtr = T2KDATAMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun5cWtr = T2KDATAMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun6bAir = T2KDATAMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
@@ -798,7 +800,7 @@ def GetDATAsamples(sampleID):
     chn_DATARun2Wtr = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3bAir = T2KDATAMC.RUN3BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3cAir = T2KDATAMC.RUN3CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun4Air = T2KDATAMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun4Air = T2KDATAMC.RUN4ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun4Wtr = T2KDATAMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun5cWtr = T2KDATAMC.RUN5CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun6bAir = T2KDATAMC.RUN6BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
