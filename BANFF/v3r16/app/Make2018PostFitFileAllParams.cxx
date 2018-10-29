@@ -98,7 +98,7 @@ int main(int argc, char** argv){
         //2p2h_norm_C, 2p2h_norm_O
         //BeRPA_A, BeRPA_B, BeRPA_D, BeRPA_E, BeRPA_U
         //CC_norm_nu, CC_norm_nubar
-        //nue_numu, nuebar_numunar
+        //nue_numu, nuebar_numubar
         //CC_Coh_C, CC_Coh_O
         //NC_Coh, NC_1gamma
         //NC_other_near, NC_other_far
@@ -121,7 +121,8 @@ int main(int argc, char** argv){
 
         //Might as well include FSI and obsNorm too.
         else if(paramName.find("FEF") != std::string::npos
-                || paramName.find("OBS") != std::string::npos){
+                || paramName.find("OBS") != std::string::npos
+                || paramName.find("FSI") != std::string::npos){
 
             saveThisParam[i] = true;
             nParamsToSave++;

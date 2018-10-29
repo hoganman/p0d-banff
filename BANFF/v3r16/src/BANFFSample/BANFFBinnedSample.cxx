@@ -28,6 +28,15 @@ BANFFBinnedSample::BANFFBinnedSample(SampleId::SampleEnum sampleIDInput, int nOb
     rxnPredMC[i] = NULL;
   }
 
+  //Set up the array to store the reaction code energy breakdowns.  Make it size
+  //200, and fill it with NULL entries.  We will only actually create
+  //histograms as we need to fill them.
+  rxnPredMCTrueE = new THnD*[200];
+
+  for(int i = 0; i < 200; i++){
+    rxnPredMCTrueE[i] = NULL;
+  }
+
   //The observableInformationSaved variable needs to default to false.
   //If the "save observable information" method gets called, it will be
   //set to true.
@@ -120,6 +129,15 @@ BANFFBinnedSample::BANFFBinnedSample(std::string nameInput, int sampleIDInput, i
 
   for(int i = 0; i < 200; i++){
     rxnPredMC[i] = NULL;
+  }
+
+  //Set up the array to store the reaction code energy breakdowns.  Make it size
+  //200, and fill it with NULL entries.  We will only actually create
+  //histograms as we need to fill them.
+  rxnPredMCTrueE = new THnD*[200];
+
+  for(int i = 0; i < 200; i++){
+    rxnPredMCTrueE[i] = NULL;
   }
 
   //The observableInformationSaved variable needs to default to false.
@@ -519,6 +537,68 @@ void BANFFBinnedSample::AddMCEventToReactionCodeBreakdown(BANFFEventBase* event)
 
 }
 
+void BANFFBinnedSample::AddMCEventToReactionCodeTrueEnergyBreakdown(BANFFEventBase* event){
+
+
+  //First, check the event's reaction code and see whether a histogram exists
+  //to put the event into.  If the histogram does not exist, make it.
+  int evtRxnCode = event->GetReactionCode();
+
+  //The sand MC has a reaction code of -999, which breaks this.  So, just
+  //ignore it and any other non-sensical reaction code.
+  if((evtRxnCode < -99) || (evtRxnCode > 99)){
+    return;
+  }
+
+  //Set up a variable to store the reaction code bin, which is 100 + the
+  //reaction code.
+  int rcb = evtRxnCode + 100;
+
+  //Check whether a plot exists at that index.  If it does not, create one.
+  if(rxnPredMCTrueE[rcb] == NULL){
+
+    int     nEnergy  = 1;
+    int    *nBinsRxn = new int[nEnergy];
+    double *xMin     = new double[nEnergy];
+    double *xMax     = new double[nEnergy];
+
+    for(int i = 0; i < nEnergy; i++){
+
+      nBinsRxn[i] = 100;
+      xMin[i] = 0.0;
+      xMax[i] = 10.0;
+    }
+
+    rxnPredMCTrueE[rcb] = new THnD(Form("rxnPredMCTrueE_%d",rcb),Form("rxnPredMCTrueE_%d",rcb), nEnergy, nBinsRxn, xMin, xMax);
+
+    //Delete the unneeded initialization arrays.
+    delete[] nBinsRxn;
+    delete[] xMin;
+    delete[] xMax;
+
+  }
+
+  //In order to find the correct bin, set up the x axis from rxnPredMCTrueE
+  TAxis *rxnAxis = rxnPredMCTrueE[rcb]->GetAxis(0);
+  //std::cout << "Axis is: " << rxnAxis <<std::endl;
+
+  //Find bin that the neutrino energy falls in
+  int trueEBin = rxnAxis->FindBin(event->GetNuEnergy());
+
+  //By the time we get here, the histogram exists.  So fill it appropriately.
+  //If we have pre-saved information for the observable bin to use, use that
+  //to fill the histogram.
+  //NB: Although we should also increment the entries counter, we only really
+  //care about it if saving the histogram, so don't want to waste time on
+  //doing it here.  So, the number of entries just gets set to that of the
+  //nominal MC histogram, right before the predicted MC is saved.
+  if(event->observableBin != -1){
+    rxnPredMCTrueE[rcb]->SetBinContent(trueEBin, rxnPredMCTrueE[rcb]->GetBinContent(trueEBin) + event->GetTotalWeight());
+    rxnPredMCTrueE[rcb]->SetEntries(rxnPredMCTrueE[rcb]->GetEntries() + 1);
+  }
+
+}
+
 
 void BANFFBinnedSample::SaveNominalMC(std::string nomMCName){
 
@@ -718,6 +798,17 @@ void BANFFBinnedSample::SaveReactionCodeBreakdown(std::string nameBase){
 
       //Write out the histogram.
       rxnPredMC[i]->Write(outNameString.c_str());
+    }
+
+    if(rxnPredMCTrueE[i] != NULL){
+
+      std::stringstream outNameTrueE;
+      outNameTrueE << nameBase << "_rxnPredMCTrueE_" << i;
+
+      std::string outNameTrueEString(outNameTrueE.str());
+
+      //Write out the histogram.
+      rxnPredMCTrueE[i]->Write(outNameTrueEString.c_str());
     }
   }
 }

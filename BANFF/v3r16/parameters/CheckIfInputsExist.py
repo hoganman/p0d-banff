@@ -29,7 +29,7 @@ def get_input_files(input_file_name):
 
 def main(argv):
     """Runs the main program"""
-    input_files = get_input_files('BANFF.parameters_Data.dat')
+    input_files = get_input_files('BANFF.parameters.dat')
     print '------------------------------------------------------------'
     print '   Input                 Filename                   Exists  '
     print '------------------------------------------------------------'

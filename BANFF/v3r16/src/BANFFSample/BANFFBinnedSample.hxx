@@ -91,6 +91,12 @@ class BANFFBinnedSample: public BANFFSampleBase{
         ///index 100 + x
         THnD** rxnPredMC; 
 
+        ///An array of THnD for storing reaction code true energy breakdowns of the MC
+        ///prediction.
+        ///This is an array of length 200, with reaction code x being stored at
+        ///index 100 + x
+        THnD** rxnPredMCTrueE; 
+
         ///A bool for indicating whether this sample's
         ///SaveObservableInformation() function has been called, because this
         ///affects how histograms are filled and must be processed when saved
@@ -154,6 +160,10 @@ class BANFFBinnedSample: public BANFFSampleBase{
         ///Add an event to the reaction code breakdown.  This method will also
         ///create the histogram if it doesn't exist.
         void AddMCEventToReactionCodeBreakdown(BANFFEventBase* event);
+        
+        ///Add an event to the reaction code true energy breakdown.  This method will also
+        ///create the histogram if it doesn't exist.
+        void AddMCEventToReactionCodeTrueEnergyBreakdown(BANFFEventBase* event);
         
         ///Saves the events into histograms broken down by their reaction code.
         ///Supply naming information that will have "rxn_<code>_" prepended to

@@ -40,7 +40,7 @@ int* GetBins(THn* hist){
         axesNBins[i]  = axes[i]->GetNbins();
     }
 
-    //Follow a similar procedure used to load in 
+    //Follow a similar procedure used to load in
     //  the observable normalization parameters.
     //For each axis, bin zero is underflow, and bin Nbins+1 is overflow.
     bool firstBin = true;
@@ -49,7 +49,7 @@ int* GetBins(THn* hist){
 
         //Loop backward over each dimension, determining whether to increment.
         for(int k = nDim - 1; k >=0; k--){
-            //If it's our first pass through, do nothing, 
+            //If it's our first pass through, do nothing,
             //  since we started with the first bin of all of the axes.
             if(firstBin){
                 firstBin = false;

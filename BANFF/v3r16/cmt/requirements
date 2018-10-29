@@ -66,3 +66,6 @@ application Make2018PostFitFileAllParams ../app/Make2018PostFitFileAllParams.cxx
 application ThrowToys2017FitBinning ../app/untested/ThrowToys2017FitBinning.cxx
 
 application PerformPullValidation ../app/untested/PerformPullValidation.cxx
+
+application MakeND280Cov ../app/MakeND280Cov.cxx
+application MakeND280ErrorEnvelope ../app/MakeND280ErrorEnvelope.cxx

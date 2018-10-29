@@ -1068,6 +1068,8 @@ void BANFFEventBase::SaveTotalWeightFastLowMem(FitParameters* fitParameters, dou
         }
         if(tmp==tmp){
           totalWeightNoDiscreteParams *= tmp;
+          //std::cout << "Spline Param: " << fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName
+          //          << " Weight applied: " << tmp <<std::endl;
           xsecWeightNoDiscreteParams *= tmp;
         }
       }
@@ -1119,8 +1121,12 @@ void BANFFEventBase::SaveTotalWeightFastLowMem(FitParameters* fitParameters, dou
         }
         if(tmp==tmp){
           totalWeightNoDiscreteParams *= tmp;
+          //std::cout << "Spline Param: " << fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName
+          //          << " Weight applied: " << tmp <<std::endl;
           xsecWeightNoDiscreteParams *= tmp;
-          //std::cout << "Equidistant spline : " <<fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName<<" "<<fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->currentValue<<" "<<tmp << std::endl;
+          //if (fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName.find("FSI") != std::string::npos) {
+          //  std::cout << "Equidistant spline : " <<fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName<<" "<<fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->currentValue<<" "<<tmp << std::endl;
+          //}
         }
       }
     }
@@ -1140,6 +1146,8 @@ void BANFFEventBase::SaveTotalWeightFastLowMem(FitParameters* fitParameters, dou
       }
       if(tmp==tmp){
         totalWeightNoDiscreteParams *= tmp;
+        //std::cout << "Spline Param: " << fitParameters->fitParametersFast[contXSRTSpline3Indices[i]]->paramName
+        //          << " Weight applied: " << tmp <<std::endl;
         xsecWeightNoDiscreteParams *= tmp;
       }
     }
@@ -1155,6 +1163,8 @@ void BANFFEventBase::SaveTotalWeightFastLowMem(FitParameters* fitParameters, dou
       //Get position of the first BeRPA parameter
       int BeRPA = fitParameters->GetBeRPA();
       totalWeightNoDiscreteParams *= calcRPA(Q2, fitParameters->fitParametersFast[BeRPA]->currentValue, fitParameters->fitParametersFast[BeRPA+1]->currentValue, fitParameters->fitParametersFast[BeRPA+2]->currentValue, fitParameters->fitParametersFast[BeRPA+3]->currentValue, fitParameters->fitParametersFast[BeRPA+4]->currentValue);
+      //std::cout << "Response Param: " << fitParameters->fitParametersFast[BeRPA]->paramName
+      //          << " Weight applied: " << calcRPA(Q2, fitParameters->fitParametersFast[BeRPA]->currentValue, fitParameters->fitParametersFast[BeRPA+1]->currentValue, fitParameters->fitParametersFast[BeRPA+2]->currentValue, fitParameters->fitParametersFast[BeRPA+3]->currentValue, fitParameters->fitParametersFast[BeRPA+4]->currentValue) <<std::endl;
       xsecWeightNoDiscreteParams *= calcRPA(Q2, fitParameters->fitParametersFast[BeRPA]->currentValue, fitParameters->fitParametersFast[BeRPA+1]->currentValue, fitParameters->fitParametersFast[BeRPA+2]->currentValue, fitParameters->fitParametersFast[BeRPA+3]->currentValue, fitParameters->fitParametersFast[BeRPA+4]->currentValue);
       if(fitParameters->fitParametersFast[BeRPA]->paramName != "BeRPA_A" || fitParameters->fitParametersFast[BeRPA+1]->paramName != "BeRPA_B" || fitParameters->fitParametersFast[BeRPA+2]->paramName != "BeRPA_D" || fitParameters->fitParametersFast[BeRPA+3]->paramName != "BeRPA_E"|| fitParameters->fitParametersFast[BeRPA+4]->paramName != "BeRPA_U"){
         std::cout<<"CAUTION !! The hardcoded parameter number for BeRPA in src/BANFEventBase.cxx are wrong, the fit is not working properly "<<std::endl;
@@ -1190,6 +1200,8 @@ void BANFFEventBase::SaveTotalWeightFastLowMem(FitParameters* fitParameters, dou
         //std::cout << "Number of Normalization parameters to apply: " << xsecNormParameterNumElements <<std::endl;
         for(int index = 0; index < xsecNormParameterNumElements; index++){
             totalWeightNoDiscreteParams *= fitParameters->fitParametersFast[xsecNormParameter[index]]->currentValue;
+            //std::cout << "Norm Param: " << fitParameters->fitParametersFast[xsecNormParameter[index]]->paramName
+            //          << " Weight applied: " << fitParameters->fitParametersFast[xsecNormParameter[index]]->currentValue <<std::endl;
             xsecWeightNoDiscreteParams  *= fitParameters->fitParametersFast[xsecNormParameter[index]]->currentValue;
 	    //std::cout << "Norm applied: " << fitParameters->fitParametersFast[xsecNormParameter[index]]->paramName << " " <<fitParameters->fitParametersFast[xsecNormParameter[index]]->currentValue <<std::endl;
         }

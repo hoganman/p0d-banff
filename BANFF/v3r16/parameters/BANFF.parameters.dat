@@ -8,7 +8,7 @@ into run periods for loading.
 
 Doesnt fit
 < BANFF.SavePrefitAndExit = 0 >
-< BANFF.SavePrefitParamsAndExit = 0 >
+< BANFF.SavePrefitParamsAndExit = 1 >
 
 Do a likelihood scan of the likelihood as a function of the xsec parameters
 < BANFF.DoLikelihoodScan = 0 >

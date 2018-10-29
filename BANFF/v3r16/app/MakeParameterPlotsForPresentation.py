@@ -14,6 +14,7 @@ inFile = TFile(sys.argv[1])
 
 # Get prefit parameters, covariance, and errors
 prefit_params = inFile.Get("prefit_params")
+param_list    = inFile.Get('param_list')
 prefit_cov    = inFile.Get("prefit_cov")
 prefit_err    = TVectorD(prefit_params.GetNrows())
 
@@ -53,7 +54,7 @@ for i in xrange(0, param_list.GetEntriesFast()):
         BERPARAW = i
     elif param_list[i] == 'CC_DIS':
         CCDIS = i+1
-    elif param_list[i] == 'FEFQE':
+    elif param_list[i] == 'FEFQE' or param_list[i] == 'FSI_INEL_LO':
         FEFQE    = i+1
         FEFQERAW = i
     elif param_list[i] == 'NC_other_far':
@@ -114,10 +115,17 @@ prefitHist.SetBinContent(FEFQE+3,prefitHist.GetBinContent(FEFQE+3)+1)
 postfitHist.SetBinContent(FEFQE+3,postfitHist.GetBinContent(FEFQE+3)+1)
 prefitHist.SetBinContent(FEFQE+4,prefitHist.GetBinContent(FEFQE+4)+1)
 postfitHist.SetBinContent(FEFQE+4,postfitHist.GetBinContent(FEFQE+4)+1)
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    prefitHist.SetBinContent(FEFQE+5,prefitHist.GetBinContent(FEFQE+5)+1)
+    postfitHist.SetBinContent(FEFQE+5,postfitHist.GetBinContent(FEFQE+5)+1)
 
 #Set histo types, ranges, and bin labels
 histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux","SK ANuMode Flux","FSI","XSec","XSec"]
-paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+4],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
+paramRange = []
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+5],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
+else:
+    paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+4],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
 yRange = [[0.80,1.2],[0.80,1.2],[0.80,1.2],[0.80,1.2],[0,2.1],[0,2.1],[0,2.1]]
 binLabels = []
 for i in xrange(0, postfit_params.GetNrows()):
@@ -229,7 +237,11 @@ for i in xrange(0, len(histoTypes)):
 
 
 histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm FGD1","ObsNorm FGD2","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
-paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+paramRange = []
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+else:
+    paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 yRange = [[0.80,1.2],[0.5,1.5],[0.5,1.5],[0.0,2.1],[0.5,2.1],[0.5,2.1],[0.5,1.4]]
 
 binLabels[50] = "0, 400 MeV"

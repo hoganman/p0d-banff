@@ -1,2 +1,0 @@
-magnet /neut/data21/mscott/T2K/BANFF_Inputs/Run4_WaterIn_BeamC_NEUT_Final.root
-sand /neut/data21/mscott/T2K/BANFF_Inputs/Run4_WaterIn_BeamC_Sand_Final.root

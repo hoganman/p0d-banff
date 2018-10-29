@@ -112,6 +112,10 @@ class BANFFSampleBase{
         ///create the histogram if it doesn't exist.
         virtual void AddMCEventToReactionCodeBreakdown(BANFFEventBase* /*event*/){};
         
+        ///Add an event to the reaction code true energy breakdown.  This method will also
+        ///create the histogram if it doesn't exist.
+        virtual void AddMCEventToReactionCodeTrueEnergyBreakdown(BANFFEventBase* /*event*/){};
+        
         ///Saves the events into histograms broken down by their reaction code.
         ///Supply naming information that will have "rxn_<code>_" prepended to
         ///it.

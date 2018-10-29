@@ -447,19 +447,22 @@ void BANFFInterfaceBase::LoadSummaryTreeInfo(BANFFEventBase* event){
   event->SetTrueLepPDG(sumTree->TrueLepPDG);
 
   //The Q2 from the summary tree.
-  //event->SetQ2(sumTree->Q2);
+  event->SetQ2(sumTree->Q2);
 
   //Calculate Q2 here using shifted lepton momentum
-  Double_t* q2_old = new Double_t[sumTree->NSamples];
-  Double_t* q2_new = new Double_t[sumTree->NSamples];
-  for(int i = 0; i < sumTree->NSamples; i++){
-    q2_old[i] = sumTree->Q2[i];
-    q2_new[i] = sumTree->Q2[i];
-    if( q2_new[i] < -998 || event->sample == NULL )
-      continue;
-    q2_new[i] += ApplyCoulombShift(event, sumTree->Enu[i], sumTree->Pmu[i]/1.E3, sumTree->TgtMat[i], sumTree->ReactionCode[i], 1, q2_new[i]);
-  }
-  event->SetQ2(q2_new);
+  //TODO: Change this so it only uses the shifted lepton momentum
+  //      if the Coulomb shifts are turned ON
+  //      Currently, this ALWAYS shifts Q2
+  //Double_t* q2_old = new Double_t[sumTree->NSamples];
+  //Double_t* q2_new = new Double_t[sumTree->NSamples];
+  //for(int i = 0; i < sumTree->NSamples; i++){
+  //  q2_old[i] = sumTree->Q2[i];
+  //  q2_new[i] = sumTree->Q2[i];
+  //  if( q2_new[i] < -998 || event->sample == NULL )
+  //    continue;
+  //  q2_new[i] += ApplyCoulombShift(event, sumTree->Enu[i], sumTree->Pmu[i]/1.E3, sumTree->TgtMat[i], sumTree->ReactionCode[i], 1, q2_new[i]);
+  //}
+  //event->SetQ2(q2_new);
 
   //Load the relevant XSec response functions into the event.
   //If a program parameter has requested the low memory version, use that.
@@ -586,6 +589,8 @@ void BANFFInterfaceBase::BuildReactionCodeBreakdowns(){
 
     if(mcEvents[i]->sample != NULL){
       mcEvents[i]->sample->AddMCEventToReactionCodeBreakdown(mcEvents[i]);
+      mcEvents[i]->sample->AddMCEventToReactionCodeTrueEnergyBreakdown(mcEvents[i]);
+
     }
   }
 }

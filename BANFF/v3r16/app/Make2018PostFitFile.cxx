@@ -92,10 +92,12 @@ int main(int argc, char** argv){
         //The following xsec parameters we also include, but don't add anything
         //for.
         //CC_DIS
+        //BeRPA_A, BeRPA_B, BeRPA_D, BeRPA_E, BeRPA_U
+        //CC_norm_nu, CC_norm_nubar
+        //nue_numu, nuebar_numubar
         //CC_Coh_O
-        //NC_Coh
+        //NC_Coh, NC_1gamma
         //NC_other_far
-        //Might as well include FSI too.
         else if(paramName == "CC_DIS"
             	|| paramName.find("2p2h_norm") != std::string::npos
 	            || paramName.find("BeRPA") != std::string::npos
@@ -113,7 +115,8 @@ int main(int argc, char** argv){
         }
 
         //Include FSI too
-        else if(paramName.find("FEF") != std::string::npos){
+        else if(paramName.find("FEF") != std::string::npos
+                || paramName.find("FSI") != std::string::npos){
             saveThisParam[i] = true;
             nParamsToSave++;
         }

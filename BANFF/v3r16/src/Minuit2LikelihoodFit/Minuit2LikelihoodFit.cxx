@@ -129,7 +129,7 @@ void Minuit2LikelihoodFit::InitializeParameters(){
   //Make sure the fitParameters are reset as well.
   interface->fitParameters->ResetValues();
 
-  std::cout << "Initialize parameters" << std::endl;
+  std::cout << "Initialize " << interface->fitParameters->GetNumbSysts() << " parameters in MINUIT" << std::endl;
   for(int i=0; i < interface->fitParameters->GetNumbSysts(); i++){
 
     std::cout << interface->fitParameters->GetParamName(i) << " ("

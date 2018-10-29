@@ -20,417 +20,363 @@ BANFF::BinningDefinition::BinningDefinition(){
     std::cerr << "Change the parameter file (Do1DCheck)" << std::endl;
     throw;
   }
-
   FullToReduMap.clear();
-
   //FHCNumuCC0Pi
-  int    FHCNumuCC0Pi_Mom_NBin        = 29;
-  double FHCNumuCC0Pi_Mom_Bin[30]     = {0.   , 200. , 300. , 400. , 450. , 500. , 550. , 600. ,
-                                         650. , 700. , 750. , 800. , 850. , 900. , 950. , 1000.,
-                                         1050., 1100., 1200., 1300., 1400., 1500., 1600., 1700.,
-                                         1800., 2000., 2500., 3000., 5000., 30000.};
-  int    FHCNumuCC0Pi_Det_Mom_NBin    = 17;
-  double FHCNumuCC0Pi_Det_Mom_Bin[18] = {0.   , 200. , 300. , 400. , 450. , 550. , 600. , 650. ,
-                                         700. , 750. , 800. , 850. , 900. , 950. , 1000., 1400.,
-                                         5000., 30000.};
+  int    FHCNumuCC0Pi_Mom_NBin = 14;
+  double FHCNumuCC0Pi_Mom_Bin[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
+  int    FHCNumuCC0Pi_Det_Mom_NBin = 6;
+  double FHCNumuCC0Pi_Det_Mom_Bin[7] = {0, 1000, 1250, 2000, 3000, 5000, 30000};
   
-  int    FHCNumuCC0Pi_Cos_NBin = 29;
-  double FHCNumuCC0Pi_Cos_Bin[30];
-  int    FHCNumuCC0Pi_Det_Cos_NBin = 16;
-  double FHCNumuCC0Pi_Det_Cos_Bin[20];
-  if(!Do4PiFHC){ //FHC Multi Pi
-    FHCNumuCC0Pi_Cos_NBin =  29;        FHCNumuCC0Pi_Det_Cos_NBin =  16;
-    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0  ;  FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0  ;
-    FHCNumuCC0Pi_Cos_Bin[ 1] =  0.5  ;  FHCNumuCC0Pi_Det_Cos_Bin[ 1] =  0.5  ;
-    FHCNumuCC0Pi_Cos_Bin[ 2] =  0.6  ;  FHCNumuCC0Pi_Det_Cos_Bin[ 2] =  0.6  ;
-    FHCNumuCC0Pi_Cos_Bin[ 3] =  0.7  ;  FHCNumuCC0Pi_Det_Cos_Bin[ 3] =  0.7  ;
-    FHCNumuCC0Pi_Cos_Bin[ 4] =  0.76 ;  FHCNumuCC0Pi_Det_Cos_Bin[ 4] =  0.76 ;
-    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.78 ;  FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.8  ;
-    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.8  ;  FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.83 ;
-    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.83 ;  FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  0.85 ;
-    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.85 ;  FHCNumuCC0Pi_Det_Cos_Bin[ 8] =  0.88 ;
-    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.88 ;  FHCNumuCC0Pi_Det_Cos_Bin[ 9] =  0.965;
-    FHCNumuCC0Pi_Cos_Bin[10] =  0.89 ;  FHCNumuCC0Pi_Det_Cos_Bin[10] =  0.97 ;
-    FHCNumuCC0Pi_Cos_Bin[11] =  0.9  ;  FHCNumuCC0Pi_Det_Cos_Bin[11] =  0.975;
-    FHCNumuCC0Pi_Cos_Bin[12] =  0.91 ;  FHCNumuCC0Pi_Det_Cos_Bin[12] =  0.98 ;
-    FHCNumuCC0Pi_Cos_Bin[13] =  0.92 ;  FHCNumuCC0Pi_Det_Cos_Bin[13] =  0.985;
-    FHCNumuCC0Pi_Cos_Bin[14] =  0.925;  FHCNumuCC0Pi_Det_Cos_Bin[14] =  0.99 ;
-    FHCNumuCC0Pi_Cos_Bin[15] =  0.93 ;  FHCNumuCC0Pi_Det_Cos_Bin[15] =  0.995;
-    FHCNumuCC0Pi_Cos_Bin[16] =  0.935;  FHCNumuCC0Pi_Det_Cos_Bin[16] =  1.0  ;
-    FHCNumuCC0Pi_Cos_Bin[17] =  0.94 ;
-    FHCNumuCC0Pi_Cos_Bin[18] =  0.945;
-    FHCNumuCC0Pi_Cos_Bin[19] =  0.95 ;
-    FHCNumuCC0Pi_Cos_Bin[20] =  0.955;
-    FHCNumuCC0Pi_Cos_Bin[21] =  0.96 ;
-    FHCNumuCC0Pi_Cos_Bin[22] =  0.965;
-    FHCNumuCC0Pi_Cos_Bin[23] =  0.97 ;
-    FHCNumuCC0Pi_Cos_Bin[24] =  0.975;
-    FHCNumuCC0Pi_Cos_Bin[25] =  0.98 ;
-    FHCNumuCC0Pi_Cos_Bin[26] =  0.985;
-    FHCNumuCC0Pi_Cos_Bin[27] =  0.99 ;
-    FHCNumuCC0Pi_Cos_Bin[28] =  0.995;
-    FHCNumuCC0Pi_Cos_Bin[29] =  1.0  ;
-  }else{ //RHC 4pi
-    FHCNumuCC0Pi_Cos_NBin = 19;        FHCNumuCC0Pi_Det_Cos_NBin = 19;	      
-    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;   FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0;  
-    FHCNumuCC0Pi_Cos_Bin[ 1] = -0.6;   FHCNumuCC0Pi_Det_Cos_Bin[ 1] = -0.6;  
-    FHCNumuCC0Pi_Cos_Bin[ 2] = -0.4;   FHCNumuCC0Pi_Det_Cos_Bin[ 2] = -0.4;  
-    FHCNumuCC0Pi_Cos_Bin[ 3] = -0.2;   FHCNumuCC0Pi_Det_Cos_Bin[ 3] = -0.2;  
-    FHCNumuCC0Pi_Cos_Bin[ 4] = -0.1;   FHCNumuCC0Pi_Det_Cos_Bin[ 4] = -0.1;  
-    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.;    FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.;   
-    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.1;   FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.1;  
-    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.2;   FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  0.2;  
-    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.4;   FHCNumuCC0Pi_Det_Cos_Bin[ 8] =  0.4;  
-    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.6;   FHCNumuCC0Pi_Det_Cos_Bin[ 9] =  0.6;  
-    FHCNumuCC0Pi_Cos_Bin[10] =  0.7;   FHCNumuCC0Pi_Det_Cos_Bin[10] =  0.7;  
-    FHCNumuCC0Pi_Cos_Bin[11] =  0.8;   FHCNumuCC0Pi_Det_Cos_Bin[11] =  0.8;  
-    FHCNumuCC0Pi_Cos_Bin[12] =  0.85;  FHCNumuCC0Pi_Det_Cos_Bin[12] =  0.85; 
-    FHCNumuCC0Pi_Cos_Bin[13] =  0.90;  FHCNumuCC0Pi_Det_Cos_Bin[13] =  0.90; 
-    FHCNumuCC0Pi_Cos_Bin[14] =  0.92;  FHCNumuCC0Pi_Det_Cos_Bin[14] =  0.92; 
-    FHCNumuCC0Pi_Cos_Bin[15] =  0.94;  FHCNumuCC0Pi_Det_Cos_Bin[15] =  0.94; 
-    FHCNumuCC0Pi_Cos_Bin[16] =  0.96;  FHCNumuCC0Pi_Det_Cos_Bin[16] =  0.96; 
-    FHCNumuCC0Pi_Cos_Bin[17] =  0.98;  FHCNumuCC0Pi_Det_Cos_Bin[17] =  0.98; 
-    FHCNumuCC0Pi_Cos_Bin[18] =  0.99;  FHCNumuCC0Pi_Det_Cos_Bin[18] =  0.99; 
-    FHCNumuCC0Pi_Cos_Bin[19] =  1.0;   FHCNumuCC0Pi_Det_Cos_Bin[19] =  1.0;  
+  int    FHCNumuCC0Pi_Cos_NBin = 11;
+  double FHCNumuCC0Pi_Cos_Bin[25];
+  int    FHCNumuCC0Pi_Det_Cos_NBin = 7;
+  double FHCNumuCC0Pi_Det_Cos_Bin[25];
+  if(!Do4PiFHC){
+    FHCNumuCC0Pi_Cos_NBin = 11;
+    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC0Pi_Cos_Bin[ 1] =  0.6;
+    FHCNumuCC0Pi_Cos_Bin[ 2] =  0.7;
+    FHCNumuCC0Pi_Cos_Bin[ 3] =  0.8;
+    FHCNumuCC0Pi_Cos_Bin[ 4] =  0.85;
+    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.90;
+    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.92;
+    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.94;
+    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.96;
+    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.98;
+    FHCNumuCC0Pi_Cos_Bin[10] =  0.99;
+    FHCNumuCC0Pi_Cos_Bin[11] =  1.0;
+    FHCNumuCC0Pi_Det_Cos_NBin = 7;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 1] =  0.6;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 2] =  0.7;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 3] =  0.8;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 4] =  0.85;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.94;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.96;
+    FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  1.;
+  }else{
+    FHCNumuCC0Pi_Cos_NBin = 19;         FHCNumuCC0Pi_Det_Cos_NBin = 19;	      
+    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;    FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0;  
+    FHCNumuCC0Pi_Cos_Bin[ 1] = -0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 1] = -0.6;  
+    FHCNumuCC0Pi_Cos_Bin[ 2] = -0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 2] = -0.4;  
+    FHCNumuCC0Pi_Cos_Bin[ 3] = -0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 3] = -0.2;  
+    FHCNumuCC0Pi_Cos_Bin[ 4] = -0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 4] = -0.1;  
+    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.;     FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.;   
+    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.1;  
+    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  0.2;  
+    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 8] =  0.4;  
+    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 9] =  0.6;  
+    FHCNumuCC0Pi_Cos_Bin[10] =  0.7;    FHCNumuCC0Pi_Det_Cos_Bin[10] =  0.7;  
+    FHCNumuCC0Pi_Cos_Bin[11] =  0.8;    FHCNumuCC0Pi_Det_Cos_Bin[11] =  0.8;  
+    FHCNumuCC0Pi_Cos_Bin[12] =  0.85;   FHCNumuCC0Pi_Det_Cos_Bin[12] =  0.85; 
+    FHCNumuCC0Pi_Cos_Bin[13] =  0.90;   FHCNumuCC0Pi_Det_Cos_Bin[13] =  0.90; 
+    FHCNumuCC0Pi_Cos_Bin[14] =  0.92;   FHCNumuCC0Pi_Det_Cos_Bin[14] =  0.92; 
+    FHCNumuCC0Pi_Cos_Bin[15] =  0.94;   FHCNumuCC0Pi_Det_Cos_Bin[15] =  0.94; 
+    FHCNumuCC0Pi_Cos_Bin[16] =  0.96;   FHCNumuCC0Pi_Det_Cos_Bin[16] =  0.96; 
+    FHCNumuCC0Pi_Cos_Bin[17] =  0.98;   FHCNumuCC0Pi_Det_Cos_Bin[17] =  0.98; 
+    FHCNumuCC0Pi_Cos_Bin[18] =  0.99;   FHCNumuCC0Pi_Det_Cos_Bin[18] =  0.99; 
+    FHCNumuCC0Pi_Cos_Bin[19] =  1.0;    FHCNumuCC0Pi_Det_Cos_Bin[19] =  1.0;  
   }
+
   if(Do1DCheckMom){FHCNumuCC0Pi_Det_Cos_NBin=1; FHCNumuCC0Pi_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNumuCC0Pi_Det_Mom_NBin=1; FHCNumuCC0Pi_Det_Mom_Bin[1] = 30000;}
 
   //FHCNumuCC1Pi
-  int    FHCNumuCC1Pi_Mom_NBin        = 18;
-  double FHCNumuCC1Pi_Mom_Bin[19]     = {0.   , 300. , 350. , 400. , 500. , 600. , 650. , 700. ,
-                                         750. , 800. , 900. , 1000., 1100., 1200., 1500., 2000.,
-                                         3000., 5000., 30000.};
-  int    FHCNumuCC1Pi_Det_Mom_NBin    = 11;
-  double FHCNumuCC1Pi_Det_Mom_Bin[12] = {0.   , 300. , 350. , 400. , 500. , 600. , 650. , 700. ,
-                                         1100., 3000., 5000., 30000.};
+  int    FHCNumuCC1Pi_Mom_NBin = 13;
+  double FHCNumuCC1Pi_Mom_Bin[14] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 5000, 30000};
+  int    FHCNumuCC1Pi_Det_Mom_NBin = 5;
+  double FHCNumuCC1Pi_Det_Mom_Bin[6] = {0, 300, 1250, 1500, 5000, 30000};
     
-  int    FHCNumuCC1Pi_Cos_NBin = 16;
-  double FHCNumuCC1Pi_Cos_Bin[20];
-  int    FHCNumuCC1Pi_Det_Cos_NBin = 10;
-  double FHCNumuCC1Pi_Det_Cos_Bin[20];
-  if(!Do4PiFHC){ //FHC Multi Pi
-    FHCNumuCC1Pi_Cos_NBin = 16;         FHCNumuCC1Pi_Det_Cos_NBin = 10;
-    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0  ;  FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0 ;
-    FHCNumuCC1Pi_Cos_Bin[ 1] =  0.6  ;  FHCNumuCC1Pi_Det_Cos_Bin[ 1] =  0.6 ;
-    FHCNumuCC1Pi_Cos_Bin[ 2] =  0.7  ;  FHCNumuCC1Pi_Det_Cos_Bin[ 2] =  0.7 ;
-    FHCNumuCC1Pi_Cos_Bin[ 3] =  0.8  ;  FHCNumuCC1Pi_Det_Cos_Bin[ 3] =  0.8 ;
-    FHCNumuCC1Pi_Cos_Bin[ 4] =  0.85 ;  FHCNumuCC1Pi_Det_Cos_Bin[ 4] =  0.85;
-    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.88 ;  FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.88;
-    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.9  ;  FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.9 ;
-    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.92 ;  FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.92;
-    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.93 ;  FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  0.93;
-    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.94 ;  FHCNumuCC1Pi_Det_Cos_Bin[ 9] =  0.94;
-    FHCNumuCC1Pi_Cos_Bin[10] =  0.95 ;  FHCNumuCC1Pi_Det_Cos_Bin[10] =  1.0 ;
-    FHCNumuCC1Pi_Cos_Bin[11] =  0.96 ;  
-    FHCNumuCC1Pi_Cos_Bin[12] =  0.97 ;  
-    FHCNumuCC1Pi_Cos_Bin[13] =  0.98 ;  
-    FHCNumuCC1Pi_Cos_Bin[14] =  0.99 ;  
-    FHCNumuCC1Pi_Cos_Bin[15] =  0.995;  
-    FHCNumuCC1Pi_Cos_Bin[16] =  1.0  ;  
-  }else{ //FHC 4pi
-    FHCNumuCC1Pi_Cos_NBin = 19;        FHCNumuCC1Pi_Det_Cos_NBin = 19;	
-    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0;   FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0;	
-    FHCNumuCC1Pi_Cos_Bin[ 1] = -0.6;   FHCNumuCC1Pi_Det_Cos_Bin[ 1] = -0.6;	
-    FHCNumuCC1Pi_Cos_Bin[ 2] = -0.4;   FHCNumuCC1Pi_Det_Cos_Bin[ 2] = -0.4;	
-    FHCNumuCC1Pi_Cos_Bin[ 3] = -0.2;   FHCNumuCC1Pi_Det_Cos_Bin[ 3] = -0.2;	
-    FHCNumuCC1Pi_Cos_Bin[ 4] = -0.1;   FHCNumuCC1Pi_Det_Cos_Bin[ 4] = -0.1;	
-    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.;	   FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.;	
-    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.1;   FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.1;	
-    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.2;   FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.2;	
-    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.4;   FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  0.4;	
-    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.6;   FHCNumuCC1Pi_Det_Cos_Bin[ 9] =  0.6;	
-    FHCNumuCC1Pi_Cos_Bin[10] =  0.7;   FHCNumuCC1Pi_Det_Cos_Bin[10] =  0.7;	
-    FHCNumuCC1Pi_Cos_Bin[11] =  0.8;   FHCNumuCC1Pi_Det_Cos_Bin[11] =  0.8;	
-    FHCNumuCC1Pi_Cos_Bin[12] =  0.85;  FHCNumuCC1Pi_Det_Cos_Bin[12] =  0.85;	
-    FHCNumuCC1Pi_Cos_Bin[13] =  0.90;  FHCNumuCC1Pi_Det_Cos_Bin[13] =  0.90;	
-    FHCNumuCC1Pi_Cos_Bin[14] =  0.92;  FHCNumuCC1Pi_Det_Cos_Bin[14] =  0.92;	
-    FHCNumuCC1Pi_Cos_Bin[15] =  0.94;  FHCNumuCC1Pi_Det_Cos_Bin[15] =  0.94;	
-    FHCNumuCC1Pi_Cos_Bin[16] =  0.96;  FHCNumuCC1Pi_Det_Cos_Bin[16] =  0.96;	
-    FHCNumuCC1Pi_Cos_Bin[17] =  0.98;  FHCNumuCC1Pi_Det_Cos_Bin[17] =  0.98;	
-    FHCNumuCC1Pi_Cos_Bin[18] =  0.99;  FHCNumuCC1Pi_Det_Cos_Bin[18] =  0.99;	
-    FHCNumuCC1Pi_Cos_Bin[19] =  1.0;   FHCNumuCC1Pi_Det_Cos_Bin[19] =  1.0;  
+  int    FHCNumuCC1Pi_Cos_NBin = 11;
+  double FHCNumuCC1Pi_Cos_Bin[25];
+  int    FHCNumuCC1Pi_Det_Cos_NBin = 8;
+  double FHCNumuCC1Pi_Det_Cos_Bin[25];
+
+  if(!Do4PiFHC){
+    FHCNumuCC1Pi_Cos_NBin = 11;
+    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC1Pi_Cos_Bin[ 1] =  0.6;
+    FHCNumuCC1Pi_Cos_Bin[ 2] =  0.7;
+    FHCNumuCC1Pi_Cos_Bin[ 3] =  0.8;
+    FHCNumuCC1Pi_Cos_Bin[ 4] =  0.85;
+    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.90;
+    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.92;
+    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.94;
+    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.96;
+    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.98;
+    FHCNumuCC1Pi_Cos_Bin[10] =  0.99;
+    FHCNumuCC1Pi_Cos_Bin[11] =  1.0;
+    FHCNumuCC1Pi_Det_Cos_NBin = 8;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 1] =  0.7;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 2] =  0.85;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 3] =  0.9;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 4] =  0.92;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.96;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.98;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.99;
+    FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  1.0;
+  }else{
+    FHCNumuCC1Pi_Cos_NBin = 19;       FHCNumuCC1Pi_Det_Cos_NBin = 19;	
+    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0;	FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0;	
+    FHCNumuCC1Pi_Cos_Bin[ 1] = -0.6;	FHCNumuCC1Pi_Det_Cos_Bin[ 1] = -0.6;	
+    FHCNumuCC1Pi_Cos_Bin[ 2] = -0.4;	FHCNumuCC1Pi_Det_Cos_Bin[ 2] = -0.4;	
+    FHCNumuCC1Pi_Cos_Bin[ 3] = -0.2;	FHCNumuCC1Pi_Det_Cos_Bin[ 3] = -0.2;	
+    FHCNumuCC1Pi_Cos_Bin[ 4] = -0.1;	FHCNumuCC1Pi_Det_Cos_Bin[ 4] = -0.1;	
+    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.;	  FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.;	
+    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.1;	FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.1;	
+    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.2;	FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.2;	
+    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.4;	FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  0.4;	
+    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.6;	FHCNumuCC1Pi_Det_Cos_Bin[ 9] =  0.6;	
+    FHCNumuCC1Pi_Cos_Bin[10] =  0.7;	FHCNumuCC1Pi_Det_Cos_Bin[10] =  0.7;	
+    FHCNumuCC1Pi_Cos_Bin[11] =  0.8;	FHCNumuCC1Pi_Det_Cos_Bin[11] =  0.8;	
+    FHCNumuCC1Pi_Cos_Bin[12] =  0.85;	FHCNumuCC1Pi_Det_Cos_Bin[12] =  0.85;	
+    FHCNumuCC1Pi_Cos_Bin[13] =  0.90;	FHCNumuCC1Pi_Det_Cos_Bin[13] =  0.90;	
+    FHCNumuCC1Pi_Cos_Bin[14] =  0.92;	FHCNumuCC1Pi_Det_Cos_Bin[14] =  0.92;	
+    FHCNumuCC1Pi_Cos_Bin[15] =  0.94;	FHCNumuCC1Pi_Det_Cos_Bin[15] =  0.94;	
+    FHCNumuCC1Pi_Cos_Bin[16] =  0.96;	FHCNumuCC1Pi_Det_Cos_Bin[16] =  0.96;	
+    FHCNumuCC1Pi_Cos_Bin[17] =  0.98;	FHCNumuCC1Pi_Det_Cos_Bin[17] =  0.98;	
+    FHCNumuCC1Pi_Cos_Bin[18] =  0.99;	FHCNumuCC1Pi_Det_Cos_Bin[18] =  0.99;	
+    FHCNumuCC1Pi_Cos_Bin[19] =  1.0;  FHCNumuCC1Pi_Det_Cos_Bin[19] =  1.0;  
   }
   if(Do1DCheckMom){FHCNumuCC1Pi_Det_Cos_NBin=1; FHCNumuCC1Pi_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNumuCC1Pi_Det_Mom_NBin=1; FHCNumuCC1Pi_Det_Mom_Bin[1] = 30000;}
 
   //FHCNumuCCOth
-  int    FHCNumuCCOth_Mom_NBin       = 18;
-  double FHCNumuCCOth_Mom_Bin[19]    = {0.   , 300. , 400. , 500. , 600. , 650. , 700. , 750. ,
-                                        800. , 900. , 1000., 1100., 1250., 1500., 1750., 2000.,
-                                        3000., 5000., 30000.};
-  int    FHCNumuCCOth_Det_Mom_NBin   = 8;
-  double FHCNumuCCOth_Det_Mom_Bin[9] = {0.   , 300. , 400. , 600. , 650. , 1750., 2000., 5000.,
-                                        30000.};
+  int    FHCNumuCCOth_Mom_NBin = 14;
+  double FHCNumuCCOth_Mom_Bin[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
+  int    FHCNumuCCOth_Det_Mom_NBin = 5;
+  double FHCNumuCCOth_Det_Mom_Bin[6] = {0, 1500, 2000, 3000, 5000, 30000};
 
-  int    FHCNumuCCOth_Cos_NBin = 19;
-  double FHCNumuCCOth_Cos_Bin[20];
-  int    FHCNumuCCOth_Det_Cos_NBin = 9;
-  double FHCNumuCCOth_Det_Cos_Bin[20];
-  if(!Do4PiFHC){ //FHC Multi Pi
-    FHCNumuCCOth_Cos_NBin = 19;         FHCNumuCCOth_Det_Cos_NBin = 9;
-    FHCNumuCCOth_Cos_Bin[ 0] = -1.0  ;  FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0  ;
-    FHCNumuCCOth_Cos_Bin[ 1] =  0.6  ;  FHCNumuCCOth_Det_Cos_Bin[ 1] =  0.6  ;
-    FHCNumuCCOth_Cos_Bin[ 2] =  0.7  ;  FHCNumuCCOth_Det_Cos_Bin[ 2] =  0.93 ;
-    FHCNumuCCOth_Cos_Bin[ 3] =  0.76 ;  FHCNumuCCOth_Det_Cos_Bin[ 3] =  0.94 ;
-    FHCNumuCCOth_Cos_Bin[ 4] =  0.8  ;  FHCNumuCCOth_Det_Cos_Bin[ 4] =  0.95 ;
-    FHCNumuCCOth_Cos_Bin[ 5] =  0.85 ;  FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.96 ;
-    FHCNumuCCOth_Cos_Bin[ 6] =  0.88 ;  FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.98 ;
-    FHCNumuCCOth_Cos_Bin[ 7] =  0.89 ;  FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.99 ;
-    FHCNumuCCOth_Cos_Bin[ 8] =  0.9  ;  FHCNumuCCOth_Det_Cos_Bin[ 8] =  0.995;
-    FHCNumuCCOth_Cos_Bin[ 9] =  0.91 ;  FHCNumuCCOth_Det_Cos_Bin[ 9] =  1.0  ;
-    FHCNumuCCOth_Cos_Bin[10] =  0.92 ;  
-    FHCNumuCCOth_Cos_Bin[11] =  0.93 ;  
-    FHCNumuCCOth_Cos_Bin[12] =  0.94 ;  
-    FHCNumuCCOth_Cos_Bin[13] =  0.95 ;  
-    FHCNumuCCOth_Cos_Bin[14] =  0.96 ;  
-    FHCNumuCCOth_Cos_Bin[15] =  0.97 ;  
-    FHCNumuCCOth_Cos_Bin[16] =  0.98 ;
-    FHCNumuCCOth_Cos_Bin[17] =  0.99 ;
-    FHCNumuCCOth_Cos_Bin[18] =  0.995;
-    FHCNumuCCOth_Cos_Bin[19] =  1.0  ;
-  }else{ //FHC 4pi
-    FHCNumuCCOth_Cos_NBin = 19;        FHCNumuCCOth_Det_Cos_NBin = 19;	     
-    FHCNumuCCOth_Cos_Bin[ 0] = -1.0;   FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0; 
-    FHCNumuCCOth_Cos_Bin[ 1] = -0.6;   FHCNumuCCOth_Det_Cos_Bin[ 1] = -0.6; 
-    FHCNumuCCOth_Cos_Bin[ 2] = -0.4;   FHCNumuCCOth_Det_Cos_Bin[ 2] = -0.4; 
-    FHCNumuCCOth_Cos_Bin[ 3] = -0.2;   FHCNumuCCOth_Det_Cos_Bin[ 3] = -0.2; 
-    FHCNumuCCOth_Cos_Bin[ 4] = -0.1;   FHCNumuCCOth_Det_Cos_Bin[ 4] = -0.1; 
-    FHCNumuCCOth_Cos_Bin[ 5] =  0.;    FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.;  
-    FHCNumuCCOth_Cos_Bin[ 6] =  0.1;   FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.1; 
-    FHCNumuCCOth_Cos_Bin[ 7] =  0.2;   FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.2; 
-    FHCNumuCCOth_Cos_Bin[ 8] =  0.4;   FHCNumuCCOth_Det_Cos_Bin[ 8] =  0.4; 
-    FHCNumuCCOth_Cos_Bin[ 9] =  0.6;   FHCNumuCCOth_Det_Cos_Bin[ 9] =  0.6; 
-    FHCNumuCCOth_Cos_Bin[10] =  0.7;   FHCNumuCCOth_Det_Cos_Bin[10] =  0.7; 
-    FHCNumuCCOth_Cos_Bin[11] =  0.8;   FHCNumuCCOth_Det_Cos_Bin[11] =  0.8; 
-    FHCNumuCCOth_Cos_Bin[12] =  0.85;  FHCNumuCCOth_Det_Cos_Bin[12] =  0.85;
-    FHCNumuCCOth_Cos_Bin[13] =  0.90;  FHCNumuCCOth_Det_Cos_Bin[13] =  0.90;
-    FHCNumuCCOth_Cos_Bin[14] =  0.92;  FHCNumuCCOth_Det_Cos_Bin[14] =  0.92;
-    FHCNumuCCOth_Cos_Bin[15] =  0.94;  FHCNumuCCOth_Det_Cos_Bin[15] =  0.94;
-    FHCNumuCCOth_Cos_Bin[16] =  0.96;  FHCNumuCCOth_Det_Cos_Bin[16] =  0.96;
-    FHCNumuCCOth_Cos_Bin[17] =  0.98;  FHCNumuCCOth_Det_Cos_Bin[17] =  0.98;
-    FHCNumuCCOth_Cos_Bin[18] =  0.99;  FHCNumuCCOth_Det_Cos_Bin[18] =  0.99;
-    FHCNumuCCOth_Cos_Bin[19] =  1.0;   FHCNumuCCOth_Det_Cos_Bin[19] =  1.0; 
+  int    FHCNumuCCOth_Cos_NBin = 11;
+  double FHCNumuCCOth_Cos_Bin[25];
+  int    FHCNumuCCOth_Det_Cos_NBin = 8;
+  double FHCNumuCCOth_Det_Cos_Bin[25];
+  
+  if(!Do4PiFHC){
+    FHCNumuCCOth_Cos_NBin = 11;
+    FHCNumuCCOth_Cos_Bin[ 0] = -1.0;
+    FHCNumuCCOth_Cos_Bin[ 1] =  0.6;
+    FHCNumuCCOth_Cos_Bin[ 2] =  0.7;
+    FHCNumuCCOth_Cos_Bin[ 3] =  0.8;
+    FHCNumuCCOth_Cos_Bin[ 4] =  0.85;
+    FHCNumuCCOth_Cos_Bin[ 5] =  0.90;
+    FHCNumuCCOth_Cos_Bin[ 6] =  0.92;
+    FHCNumuCCOth_Cos_Bin[ 7] =  0.94;
+    FHCNumuCCOth_Cos_Bin[ 8] =  0.96;
+    FHCNumuCCOth_Cos_Bin[ 9] =  0.98;
+    FHCNumuCCOth_Cos_Bin[10] =  0.99;
+    FHCNumuCCOth_Cos_Bin[11] =  1.0;
+    
+    FHCNumuCCOth_Det_Cos_NBin = 8;
+    FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCCOth_Det_Cos_Bin[ 1] =  0.8;
+    FHCNumuCCOth_Det_Cos_Bin[ 2] =  0.85;
+    FHCNumuCCOth_Det_Cos_Bin[ 3] =  0.9;
+    FHCNumuCCOth_Det_Cos_Bin[ 4] =  0.92;
+    FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.96;
+    FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.98;
+    FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.99;
+    FHCNumuCCOth_Det_Cos_Bin[ 8] =  1.0;
+  }else{
+    FHCNumuCCOth_Cos_NBin = 19;       FHCNumuCCOth_Det_Cos_NBin = 19;	     
+    FHCNumuCCOth_Cos_Bin[ 0] = -1.0;  FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0; 
+    FHCNumuCCOth_Cos_Bin[ 1] = -0.6;  FHCNumuCCOth_Det_Cos_Bin[ 1] = -0.6; 
+    FHCNumuCCOth_Cos_Bin[ 2] = -0.4;  FHCNumuCCOth_Det_Cos_Bin[ 2] = -0.4; 
+    FHCNumuCCOth_Cos_Bin[ 3] = -0.2;  FHCNumuCCOth_Det_Cos_Bin[ 3] = -0.2; 
+    FHCNumuCCOth_Cos_Bin[ 4] = -0.1;  FHCNumuCCOth_Det_Cos_Bin[ 4] = -0.1; 
+    FHCNumuCCOth_Cos_Bin[ 5] =  0.;   FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.;  
+    FHCNumuCCOth_Cos_Bin[ 6] =  0.1;  FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.1; 
+    FHCNumuCCOth_Cos_Bin[ 7] =  0.2;  FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.2; 
+    FHCNumuCCOth_Cos_Bin[ 8] =  0.4;  FHCNumuCCOth_Det_Cos_Bin[ 8] =  0.4; 
+    FHCNumuCCOth_Cos_Bin[ 9] =  0.6;  FHCNumuCCOth_Det_Cos_Bin[ 9] =  0.6; 
+    FHCNumuCCOth_Cos_Bin[10] =  0.7;  FHCNumuCCOth_Det_Cos_Bin[10] =  0.7; 
+    FHCNumuCCOth_Cos_Bin[11] =  0.8;  FHCNumuCCOth_Det_Cos_Bin[11] =  0.8; 
+    FHCNumuCCOth_Cos_Bin[12] =  0.85; FHCNumuCCOth_Det_Cos_Bin[12] =  0.85;
+    FHCNumuCCOth_Cos_Bin[13] =  0.90; FHCNumuCCOth_Det_Cos_Bin[13] =  0.90;
+    FHCNumuCCOth_Cos_Bin[14] =  0.92; FHCNumuCCOth_Det_Cos_Bin[14] =  0.92;
+    FHCNumuCCOth_Cos_Bin[15] =  0.94; FHCNumuCCOth_Det_Cos_Bin[15] =  0.94;
+    FHCNumuCCOth_Cos_Bin[16] =  0.96; FHCNumuCCOth_Det_Cos_Bin[16] =  0.96;
+    FHCNumuCCOth_Cos_Bin[17] =  0.98; FHCNumuCCOth_Det_Cos_Bin[17] =  0.98;
+    FHCNumuCCOth_Cos_Bin[18] =  0.99; FHCNumuCCOth_Det_Cos_Bin[18] =  0.99;
+    FHCNumuCCOth_Cos_Bin[19] =  1.0;  FHCNumuCCOth_Det_Cos_Bin[19] =  1.0; 
   }
   if(Do1DCheckMom){FHCNumuCCOth_Det_Cos_NBin=1; FHCNumuCCOth_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNumuCCOth_Det_Mom_NBin=1; FHCNumuCCOth_Det_Mom_Bin[1] = 30000;}
 
   //RHCANumuCC1Tr
-  int    RHCANumuCC1Tr_Mom_NBin       = 10;
-  double RHCANumuCC1Tr_Mom_Bin[11]    = {0.   , 400. , 500. , 600. , 700. , 800. , 900. , 1100.,
-                                         1400., 2000., 10000.};
-  int    RHCANumuCC1Tr_Det_Mom_NBin   = 5;
-  double RHCANumuCC1Tr_Det_Mom_Bin[6] = {0.   , 400. , 900. , 1100., 2000., 10000.};
+  int    RHCANumuCC1Tr_Mom_NBin = 10;
+  double RHCANumuCC1Tr_Mom_Bin[11] = {0., 400., 500., 600., 700., 800., 900., 1100., 1400., 2000., 10000.};
+  int    RHCANumuCC1Tr_Det_Mom_NBin = 5;
+  double RHCANumuCC1Tr_Det_Mom_Bin[6] = { 0., 400., 900., 1100., 2000., 10000.};
       
-  int    RHCANumuCC1Tr_Cos_NBin       = 13;
-  double RHCANumuCC1Tr_Cos_Bin[14]    = {-1.0 , 0.6 , 0.7 , 0.8 , 0.85, 0.88, 0.91, 0.93,
-                                          0.95, 0.96, 0.97, 0.98, 0.99, 1.0};
-  int    RHCANumuCC1Tr_Det_Cos_NBin   = 8;
-  double RHCANumuCC1Tr_Det_Cos_Bin[9] = {-1.0 , 0.6 , 0.7 , 0.88, 0.95, 0.97, 0.98, 0.99,
-                                          1.0};
+  int    RHCANumuCC1Tr_Cos_NBin = 13;
+  double RHCANumuCC1Tr_Cos_Bin[14] = {-1., 0.6, 0.7, 0.8, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
+  int    RHCANumuCC1Tr_Det_Cos_NBin = 8;
+  double RHCANumuCC1Tr_Det_Cos_Bin[9] = { -1., 0.6, 0.7, 0.88, 0.95, 0.97, 0.98, 0.99, 1.00};
     
   if(Do1DCheckMom){RHCANumuCC1Tr_Det_Cos_NBin=1; RHCANumuCC1Tr_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCANumuCC1Tr_Det_Mom_NBin=1; RHCANumuCC1Tr_Det_Mom_Bin[1] = 30000;}
 
   //RHCANumuCCnTr
-  int    RHCANumuCCnTr_Mom_NBin       = 7;
-  double RHCANumuCCnTr_Mom_Bin[8]     = {0.   , 700. , 950. , 1200., 1500., 2000., 3000., 10000.};
-  int    RHCANumuCCnTr_Det_Mom_NBin   = 6;
-  double RHCANumuCCnTr_Det_Mom_Bin[7] = {0.   , 700. , 1200., 1500., 2000., 3000., 10000.};
+  int    RHCANumuCCnTr_Mom_NBin = 7;
+  double RHCANumuCCnTr_Mom_Bin[8] = {0., 700., 950., 1200., 1500., 2000., 3000., 10000.};
+  int    RHCANumuCCnTr_Det_Mom_NBin = 6;
+  double RHCANumuCCnTr_Det_Mom_Bin[7] = {0., 700., 1200., 1500., 2000., 3000., 10000.};
 
-  int    RHCANumuCCnTr_Cos_NBin       = 11;
-  double RHCANumuCCnTr_Cos_Bin[12]    = {-1.0 , 0.75, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96,
-                                          0.97, 0.98, 0.99, 1.0};
-  int    RHCANumuCCnTr_Det_Cos_NBin   = 6;
-  double RHCANumuCCnTr_Det_Cos_Bin[7] = {-1.0 , 0.85, 0.88, 0.93, 0.98, 0.99, 1.0};
+  int    RHCANumuCCnTr_Cos_NBin = 11;
+  double RHCANumuCCnTr_Cos_Bin[12] = {-1., 0.75, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
+  int    RHCANumuCCnTr_Det_Cos_NBin = 6;
+  double RHCANumuCCnTr_Det_Cos_Bin[7] = {-1., 0.85, 0.88, 0.93, 0.98, 0.99, 1.00};
 
   if(Do1DCheckMom){RHCANumuCCnTr_Det_Cos_NBin=1; RHCANumuCCnTr_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCANumuCCnTr_Det_Mom_NBin=1; RHCANumuCCnTr_Det_Mom_Bin[1] = 30000;}   
 
   //RHCNumuCC1Tr
-  int    RHCNumuCC1Tr_Mom_NBin       = 6;
-  double RHCNumuCC1Tr_Mom_Bin[7]     = {0.    , 400. , 600. , 800. , 1100., 2000., 10000.};
-  int    RHCNumuCC1Tr_Det_Mom_NBin   = 5;
-  double RHCNumuCC1Tr_Det_Mom_Bin[6] = {0.    , 400. , 800. , 1100., 2000., 10000.};
+  int    RHCNumuCC1Tr_Mom_NBin = 6;
+  double RHCNumuCC1Tr_Mom_Bin[7] = {0., 400., 600., 800., 1100., 2000., 10000.};
+  int    RHCNumuCC1Tr_Det_Mom_NBin = 5;
+  double RHCNumuCC1Tr_Det_Mom_Bin[6] = {0., 400., 800., 1100., 2000., 10000.};
 
-  int    RHCNumuCC1Tr_Cos_NBin       = 11;
-  double RHCNumuCC1Tr_Cos_Bin[12]    = {-1.0 , 0.7 , 0.8 , 0.85, 0.90, 0.93, 0.95, 0.96,
-                                         0.97, 0.98, 0.99, 1.0};
-  int    RHCNumuCC1Tr_Det_Cos_NBin   = 8;
-  double RHCNumuCC1Tr_Det_Cos_Bin[9] = {-1.0 , 0.7 , 0.85, 0.90, 0.93, 0.96, 0.98, 0.99,
-                                         1.0};
+  int    RHCNumuCC1Tr_Cos_NBin = 11;
+  double RHCNumuCC1Tr_Cos_Bin[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
+  int    RHCNumuCC1Tr_Det_Cos_NBin = 8;
+  double RHCNumuCC1Tr_Det_Cos_Bin[9] = {-1., 0.7, 0.85, 0.90, 0.93, 0.96, 0.98, 0.99, 1.00};
 
   if(Do1DCheckMom){RHCNumuCC1Tr_Det_Cos_NBin=1; RHCNumuCC1Tr_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCNumuCC1Tr_Det_Mom_NBin=1; RHCNumuCC1Tr_Det_Mom_Bin[1] = 30000;}   
 
-  //RHCNumuCCnTr
-  int    RHCNumuCCnTr_Mom_NBin       = 8;
-  double RHCNumuCCnTr_Mom_Bin[9]     = {0.   , 500. , 700. , 1000., 1250., 1500., 2000., 3000.,
-                                        10000.};
-  int    RHCNumuCCnTr_Det_Mom_NBin   = 5;
-  double RHCNumuCCnTr_Det_Mom_Bin[6] = {0.   , 1000., 1500., 2000., 3000., 10000.};
 
-  int    RHCNumuCCnTr_Cos_NBin       = 11;
-  double RHCNumuCCnTr_Cos_Bin[12]    = {-1.0 , 0.7 , 0.8 , 0.85, 0.90, 0.93, 0.95, 0.96,
-                                         0.97, 0.98, 0.99, 1.0};
-  int    RHCNumuCCnTr_Det_Cos_NBin   = 8;
-  double RHCNumuCCnTr_Det_Cos_Bin[9] = {-1.0 , 0.8 , 0.9 , 0.93, 0.95, 0.96, 0.97, 0.99,
-                                         1.0};
+  //RHCNumuCCnTr
+  int    RHCNumuCCnTr_Mom_NBin = 8;
+  double RHCNumuCCnTr_Mom_Bin[9] = {0., 500., 700., 1000., 1250., 1500., 2000., 3000., 10000.};
+  int    RHCNumuCCnTr_Det_Mom_NBin = 5;
+  double RHCNumuCCnTr_Det_Mom_Bin[6] = {0., 1000., 1500., 2000., 3000., 10000.};
+
+  int    RHCNumuCCnTr_Cos_NBin = 11;
+  double RHCNumuCCnTr_Cos_Bin[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
+  int    RHCNumuCCnTr_Det_Cos_NBin = 8;
+  double RHCNumuCCnTr_Det_Cos_Bin[9] = {-1., 0.8, 0.90, 0.93, 0.95, 0.96, 0.97, 0.99, 1.00};
   
   if(Do1DCheckMom){RHCNumuCCnTr_Det_Cos_NBin=1; RHCNumuCCnTr_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCNumuCCnTr_Det_Mom_NBin=1; RHCNumuCCnTr_Det_Mom_Bin[1] = 30000;} 
 
   //RHCANumuCC0Pi
-  int    RHCANumuCC0Pi_Mom_NBin       = 17;
-  double RHCANumuCC0Pi_Mom_Bin[18]    = {0.   , 300. , 400. , 500. , 550. , 600. , 650. , 700. ,
-                                         750. , 800. , 900. , 1000., 1100., 1200., 1500., 2000.,
-                                         4000., 30000.};
-  int    RHCANumuCC0Pi_Det_Mom_NBin   = 7;
-  double RHCANumuCC0Pi_Det_Mom_Bin[8] = {0.   , 300. , 400. , 500. , 550. , 2000., 4000., 30000.};
+  int    RHCANumuCC0Pi_Mom_NBin = 13;
+  double RHCANumuCC0Pi_Mom_Bin[14] = {0., 300., 400., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
   
-  int    RHCANumuCC0Pi_Cos_NBin       = 18;
-  double RHCANumuCC0Pi_Cos_Bin[19]    = {-1.0  , 0.6  , 0.7  , 0.8  , 0.85 , 0.9  , 0.92 , 0.93 ,
-                                          0.94 , 0.95 , 0.96 , 0.965, 0.97 , 0.975, 0.98 , 0.985,
-                                          0.99 , 0.995, 1.0};
-  int    RHCANumuCC0Pi_Det_Cos_NBin   = 7;
-  double RHCANumuCC0Pi_Det_Cos_Bin[8] = {-1.0 , 0.6 , 0.7 , 0.8 , 0.85, 0.9 , 0.96, 1.0};
+  int    RHCANumuCC0Pi_Cos_NBin = 10;
+  double RHCANumuCC0Pi_Cos_Bin[11] = {-1., 0.7, 0.8, 0.85, 0.9, 0.94, 0.96, 0.98, 0.99, 0.995, 1.};
 
-  if(Do1DCheckMom){RHCANumuCC0Pi_Det_Cos_NBin=1; RHCANumuCC0Pi_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCC0Pi_Det_Mom_NBin=1; RHCANumuCC0Pi_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCANumuCC0Pi_Cos_NBin=1; RHCANumuCC0Pi_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCANumuCC0Pi_Mom_NBin=1; RHCANumuCC0Pi_Mom_Bin[1] = 30000;} 
 
   //RHCANumuCC1Pi
-  int    RHCANumuCC1Pi_Mom_NBin       = 6;
-  double RHCANumuCC1Pi_Mom_Bin[7]     = {0.   , 500. , 700. , 900. , 1300., 2500., 30000.};
-  int    RHCANumuCC1Pi_Det_Mom_NBin   = 2;
-  double RHCANumuCC1Pi_Det_Mom_Bin[3] = {0.   , 500. , 30000.};
+  int    RHCANumuCC1Pi_Mom_NBin = 8;
+  double RHCANumuCC1Pi_Mom_Bin[9] = {0., 400., 600., 800., 1000., 1250., 1500., 2500., 30000.};
   
-  int    RHCANumuCC1Pi_Cos_NBin       = 8;
-  double RHCANumuCC1Pi_Cos_Bin[9]     = {-1.0 , 0.7 , 0.8 , 0.9 , 0.94, 0.96, 0.98,
-                                          0.99, 1.0};
-  int    RHCANumuCC1Pi_Det_Cos_NBin   = 2;
-  double RHCANumuCC1Pi_Det_Cos_Bin[3] = {-1.0 , 0.7 , 1.0};
+  int    RHCANumuCC1Pi_Cos_NBin = 4;
+  double RHCANumuCC1Pi_Cos_Bin[5] = {-1, 0.8, 0.9, 0.96, 1};
   
-  if(Do1DCheckMom){RHCANumuCC1Pi_Det_Cos_NBin=1; RHCANumuCC1Pi_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCC1Pi_Det_Mom_NBin=1; RHCANumuCC1Pi_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCANumuCC1Pi_Cos_NBin=1; RHCANumuCC1Pi_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCANumuCC1Pi_Mom_NBin=1; RHCANumuCC1Pi_Mom_Bin[1] = 30000;} 
 
   //RHCANumuCCOth
-  int    RHCANumuCCOth_Mom_NBin       = 8;
-  double RHCANumuCCOth_Mom_Bin[9]     = {0.   , 600. , 800. , 1000., 1250., 1500., 2000., 4000.,
-                                         30000.};
-  int    RHCANumuCCOth_Det_Mom_NBin   = 3;
-  double RHCANumuCCOth_Det_Mom_Bin[4] = {0.   , 600. , 800. , 30000.};
+  int    RHCANumuCCOth_Mom_NBin = 12;
+  double RHCANumuCCOth_Mom_Bin[13] = {0., 350., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
   
-  int    RHCANumuCCOth_Cos_NBin       = 10;
-  double RHCANumuCCOth_Cos_Bin[11]    = {-1.0 , 0.7 , 0.8, 0.85, 0.9, 0.93, 0.95, 0.97,
-                                          0.98, 0.99, 1.0};
-  int    RHCANumuCCOth_Det_Cos_NBin   = 2;
-  double RHCANumuCCOth_Det_Cos_Bin[3] = {-1.0 , 0.7 , 1.0};
+  int    RHCANumuCCOth_Cos_NBin = 5;
+  double RHCANumuCCOth_Cos_Bin[6] = {-1., 0.8, 0.9, 0.95, 0.98, 1.};
 
-  if(Do1DCheckMom){RHCANumuCCOth_Det_Cos_NBin=1; RHCANumuCCOth_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCCOth_Det_Mom_NBin=1; RHCANumuCCOth_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCANumuCCOth_Cos_NBin=1; RHCANumuCCOth_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCANumuCCOth_Mom_NBin=1; RHCANumuCCOth_Mom_Bin[1] = 30000;} 
 
   //RHCNumuCC0Pi
-  int    RHCNumuCC0Pi_Mom_NBin       = 10;
-  double RHCNumuCC0Pi_Mom_Bin[11]    = {0.   , 300. , 500. , 700. , 800. , 900. , 1250., 1500.,
-                                        2000., 4000., 30000.};
-  int    RHCNumuCC0Pi_Det_Mom_NBin   = 5;
-  double RHCNumuCC0Pi_Det_Mom_Bin[6] = {0.   , 300. , 500. , 700. , 800., 30000.};
+  int    RHCNumuCC0Pi_Mom_NBin = 11;
+  double RHCNumuCC0Pi_Mom_Bin[12] = {0., 350., 500., 650., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
   
-  int    RHCNumuCC0Pi_Cos_NBin       = 12;
-  double RHCNumuCC0Pi_Cos_Bin[13]    = {-1.0 , 0.7 , 0.8 , 0.85, 0.88, 0.9 , 0.92, 0.94,
-                                        0.96, 0.97, 0.98, 0.99, 1.0};
-  int    RHCNumuCC0Pi_Det_Cos_NBin   = 3;
-  double RHCNumuCC0Pi_Det_Cos_Bin[4] = {-1.0 , 0.7 , 0.8 , 1.0};
+  int    RHCNumuCC0Pi_Cos_NBin = 8;
+  double RHCNumuCC0Pi_Cos_Bin[9] = {-1, 0.75, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1};
 
-  if(Do1DCheckMom){RHCNumuCC0Pi_Det_Cos_NBin=1; RHCNumuCC0Pi_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCC0Pi_Det_Mom_NBin=1; RHCNumuCC0Pi_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCNumuCC0Pi_Cos_NBin=1; RHCNumuCC0Pi_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCNumuCC0Pi_Mom_NBin=1; RHCNumuCC0Pi_Mom_Bin[1] = 30000;} 
 
   //RHCNumuCC1Pi
-  int    RHCNumuCC1Pi_Mom_NBin       = 4;
-  double RHCNumuCC1Pi_Mom_Bin[5]     = {0.   , 600. , 800. , 1500., 30000.};
-  int    RHCNumuCC1Pi_Det_Mom_NBin   = 3;
-  double RHCNumuCC1Pi_Det_Mom_Bin[4] = {0.   , 600. , 800. , 30000.};
+  int    RHCNumuCC1Pi_Mom_NBin =  8;
+  double RHCNumuCC1Pi_Mom_Bin[9] = {0., 350., 500., 650., 800., 1000., 1250., 2000., 30000.};
 
-  int    RHCNumuCC1Pi_Cos_NBin       = 10;
-  double RHCNumuCC1Pi_Cos_Bin[11]    = {-1.0 , 0.7 , 0.8 , 0.86, 0.9 , 0.94, 0.96, 0.97,
-                                        0.98, 0.99, 1.0};
-  int    RHCNumuCC1Pi_Det_Cos_NBin   = 2;
-  double RHCNumuCC1Pi_Det_Cos_Bin[3] = {-1.0 , 0.7 , 1.0};
+  int    RHCNumuCC1Pi_Cos_NBin = 4;
+  double RHCNumuCC1Pi_Cos_Bin[5] = {-1, 0.8, 0.9, 0.95, 1.};
 
-  if(Do1DCheckMom){RHCNumuCC1Pi_Det_Cos_NBin=1; RHCNumuCC1Pi_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCC1Pi_Det_Mom_NBin=1; RHCNumuCC1Pi_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCNumuCC1Pi_Cos_NBin=1; RHCNumuCC1Pi_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCNumuCC1Pi_Mom_NBin=1; RHCNumuCC1Pi_Mom_Bin[1] = 30000;} 
 
   //RHCNumuCCOth
-  int    RHCNumuCCOth_Mom_NBin       = 6;
-  double RHCNumuCCOth_Mom_Bin[7]     = {0.   , 600. , 1000., 1250., 2000., 4000., 30000.};
-  int    RHCNumuCCOth_Det_Mom_NBin   = 2;
-  double RHCNumuCCOth_Det_Mom_Bin[3] = {0.   , 600. , 30000.};
+  int    RHCNumuCCOth_Mom_NBin =  10;
+  double RHCNumuCCOth_Mom_Bin[11] = {0., 300., 450., 600., 800., 1000., 1250., 1500., 2000., 5000., 30000.};
 
-  int    RHCNumuCCOth_Cos_NBin       = 9;
-  double RHCNumuCCOth_Cos_Bin[10]    = {-1.0, 0.7, 0.8, 0.86, 0.9 , 0.93, 0.95, 0.97,
-                                         0.99, 1.0};
-  int    RHCNumuCCOth_Det_Cos_NBin   = 2;
-  double RHCNumuCCOth_Det_Cos_Bin[3] = {-1.0 , 0.7 , 1.0};
+  int    RHCNumuCCOth_Cos_NBin = 8;
+  double RHCNumuCCOth_Cos_Bin[9] = {-1., 0.7, 0.8, 0.86, 0.92, 0.94, 0.96, 0.98, 1.};
 
-  if(Do1DCheckMom){RHCNumuCCOth_Det_Cos_NBin=1; RHCNumuCCOth_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCCOth_Det_Mom_NBin=1; RHCNumuCCOth_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckMom){RHCNumuCCOth_Cos_NBin=1; RHCNumuCCOth_Cos_Bin[1] = 1;}
+  if(Do1DCheckCos){RHCNumuCCOth_Mom_NBin=1; RHCNumuCCOth_Mom_Bin[1] = 30000;} 
 
   //FHC nue
-  int    FHCNueCC_Mom_NBin   = 6;
-  double FHCNueCC_Mom_Bin[7] = {200. , 400. , 600. , 800. , 1000., 1500., 30000.};
+  int    FHCNueCC_Mom_NBin = 6;
+  double FHCNueCC_Mom_Bin[7] = {200., 400., 600., 800., 1000., 1500., 30000.};
   
-  int    FHCNueCC_Cos_NBin   = 4;
-  double FHCNueCC_Cos_Bin[5] = {-1.0 , 0.8 , 0.9 , 0.95, 1.0};
+  int    FHCNueCC_Cos_NBin = 4;
+  double FHCNueCC_Cos_Bin[5] = {-1., 0.8, 0.9, 0.95, 1.};
 
   if(Do1DCheckMom){FHCNueCC_Cos_NBin=1; FHCNueCC_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNueCC_Mom_NBin=1; FHCNueCC_Mom_Bin[1] = 30000;} 
 
   //FHC anue
-  int    FHCANueCC_Mom_NBin   = 4;
+  int    FHCANueCC_Mom_NBin = 4;
   double FHCANueCC_Mom_Bin[5] = {200., 300., 400., 1000., 30000.};
   
-  int    FHCANueCC_Cos_NBin   = 1;
-  double FHCANueCC_Cos_Bin[2] = {-1.0 , 1.0};
+  int    FHCANueCC_Cos_NBin = 1;
+  double FHCANueCC_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){FHCANueCC_Cos_NBin=1; FHCANueCC_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCANueCC_Mom_NBin=1; FHCANueCC_Mom_Bin[1] = 30000;} 
 
   //FHC gamma
-  int    FHCGamma_Mom_NBin   = 5;
-  double FHCGamma_Mom_Bin[6] = {200. , 300. , 400. , 600. , 1000., 30000.};
+  int    FHCGamma_Mom_NBin = 5;
+  double FHCGamma_Mom_Bin[6] = {200., 300., 400., 600., 1000., 30000.};
   
-  int    FHCGamma_Cos_NBin   = 1;
-  double FHCGamma_Cos_Bin[2] = {-1.0 , 1.0};
+  int    FHCGamma_Cos_NBin = 1;
+  double FHCGamma_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){FHCGamma_Cos_NBin=1; FHCGamma_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCGamma_Mom_NBin=1; FHCGamma_Mom_Bin[1] = 30000;} 
 
   //RHC nue
-  int    RHCNueCC_Mom_NBin   = 6;
-  double RHCNueCC_Mom_Bin[7] = {200. , 400. , 600. , 800. , 1000., 2000., 30000.};
+  int    RHCNueCC_Mom_NBin = 6;
+  double RHCNueCC_Mom_Bin[7] = {200., 400., 600., 800., 1000., 2000., 30000.};
   
-  int    RHCNueCC_Cos_NBin   = 2;
-  double RHCNueCC_Cos_Bin[3] = {-1.0 , 0.9 , 1.0};
+  int    RHCNueCC_Cos_NBin = 2;
+  double RHCNueCC_Cos_Bin[3] = {-1., 0.9, 1.};
 
   if(Do1DCheckMom){RHCNueCC_Cos_NBin=1; RHCNueCC_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCNueCC_Mom_NBin=1; RHCNueCC_Mom_Bin[1] = 30000;} 
 
   //RHC anue
-  int    RHCANueCC_Mom_NBin   = 3;
-  double RHCANueCC_Mom_Bin[4] = {200. , 500. , 1000., 30000.};
+  int    RHCANueCC_Mom_NBin = 3;
+  double RHCANueCC_Mom_Bin[4] = {200., 500., 1000., 30000.};
   
-  int    RHCANueCC_Cos_NBin   = 2;
-  double RHCANueCC_Cos_Bin[3] = {-1.0 , 0.9 , 1.0};
+  int    RHCANueCC_Cos_NBin = 2;
+  double RHCANueCC_Cos_Bin[3] = {-1., 0.9, 1.};
 
   if(Do1DCheckMom){RHCANueCC_Cos_NBin=1; RHCANueCC_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCANueCC_Mom_NBin=1; RHCANueCC_Mom_Bin[1] = 30000;} 
 
   //RHC gamma
-  int    RHCGamma_Mom_NBin   = 5;
-  double RHCGamma_Mom_Bin[6] = {200. , 400. , 600. , 800. , 1000., 30000.};
+  int    RHCGamma_Mom_NBin = 5;
+  double RHCGamma_Mom_Bin[6] = {200., 400., 600., 800., 1000., 30000.};
   
-  int    RHCGamma_Cos_NBin   = 1;
-  double RHCGamma_Cos_Bin[2] = {-1.0 , 1.0};
+  int    RHCGamma_Cos_NBin = 1;
+  double RHCGamma_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){RHCGamma_Cos_NBin=1; RHCGamma_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;} 
@@ -480,35 +426,35 @@ BANFF::BinningDefinition::BinningDefinition(){
       
       bothAxis    [SampleId::kFGD1AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin    , RHCANumuCC0Pi_Mom_Bin,
                                                                RHCANumuCC0Pi_Cos_NBin    , RHCANumuCC0Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Det_Mom_NBin, RHCANumuCC0Pi_Det_Mom_Bin,
-                                                               RHCANumuCC0Pi_Det_Cos_NBin, RHCANumuCC0Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin, RHCANumuCC0Pi_Mom_Bin,
+                                                               RHCANumuCC0Pi_Cos_NBin, RHCANumuCC0Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD1AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Mom_NBin    , RHCANumuCC1Pi_Mom_Bin,
                                                                RHCANumuCC1Pi_Cos_NBin    , RHCANumuCC1Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Det_Mom_NBin, RHCANumuCC1Pi_Det_Mom_Bin,
-                                                               RHCANumuCC1Pi_Det_Cos_NBin, RHCANumuCC1Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Mom_NBin, RHCANumuCC1Pi_Mom_Bin,
+                                                               RHCANumuCC1Pi_Cos_NBin, RHCANumuCC1Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD1AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin    , RHCANumuCCOth_Mom_Bin,
                                                                  RHCANumuCCOth_Cos_NBin    , RHCANumuCCOth_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Det_Mom_NBin, RHCANumuCCOth_Det_Mom_Bin,
-                                                                 RHCANumuCCOth_Det_Cos_NBin, RHCANumuCCOth_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin, RHCANumuCCOth_Mom_Bin,
+                                                                 RHCANumuCCOth_Cos_NBin, RHCANumuCCOth_Cos_Bin);
 
   
 
       bothAxis    [SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin    , RHCNumuCC0Pi_Mom_Bin,
                                                                           RHCNumuCC0Pi_Cos_NBin    , RHCNumuCC0Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Det_Mom_NBin, RHCNumuCC0Pi_Det_Mom_Bin,
-                                                                          RHCNumuCC0Pi_Det_Cos_NBin, RHCNumuCC0Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin, RHCNumuCC0Pi_Mom_Bin,
+                                                                          RHCNumuCC0Pi_Cos_NBin, RHCNumuCC0Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD1NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Mom_NBin    , RHCNumuCC1Pi_Mom_Bin,
                                                                           RHCNumuCC1Pi_Cos_NBin    , RHCNumuCC1Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Det_Mom_NBin, RHCNumuCC1Pi_Det_Mom_Bin,
-                                                                          RHCNumuCC1Pi_Det_Cos_NBin, RHCNumuCC1Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Mom_NBin, RHCNumuCC1Pi_Mom_Bin,
+                                                                          RHCNumuCC1Pi_Cos_NBin, RHCNumuCC1Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD1NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Mom_NBin    , RHCNumuCCOth_Mom_Bin,
                                                                             RHCNumuCCOth_Cos_NBin    , RHCNumuCCOth_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Det_Mom_NBin, RHCNumuCCOth_Det_Mom_Bin,
-                                                                            RHCNumuCCOth_Det_Cos_NBin, RHCNumuCCOth_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Mom_NBin, RHCNumuCCOth_Mom_Bin,
+                                                                            RHCNumuCCOth_Cos_NBin, RHCNumuCCOth_Cos_Bin);
     }
  
 
@@ -556,35 +502,35 @@ BANFF::BinningDefinition::BinningDefinition(){
   
       bothAxis    [SampleId::kFGD2AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin    , RHCANumuCC0Pi_Mom_Bin,
                                                                RHCANumuCC0Pi_Cos_NBin    , RHCANumuCC0Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Det_Mom_NBin, RHCANumuCC0Pi_Det_Mom_Bin,
-                                                               RHCANumuCC0Pi_Det_Cos_NBin, RHCANumuCC0Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin, RHCANumuCC0Pi_Mom_Bin,
+                                                               RHCANumuCC0Pi_Cos_NBin, RHCANumuCC0Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD2AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Mom_NBin    , RHCANumuCC1Pi_Mom_Bin,
                                                                RHCANumuCC1Pi_Cos_NBin    , RHCANumuCC1Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Det_Mom_NBin, RHCANumuCC1Pi_Det_Mom_Bin,
-                                                               RHCANumuCC1Pi_Det_Cos_NBin, RHCANumuCC1Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2AntiNuMuCC1Pi] = new TAxis2D(RHCANumuCC1Pi_Mom_NBin, RHCANumuCC1Pi_Mom_Bin,
+                                                               RHCANumuCC1Pi_Cos_NBin, RHCANumuCC1Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD2AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin    , RHCANumuCCOth_Mom_Bin,
                                                                  RHCANumuCCOth_Cos_NBin    , RHCANumuCCOth_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Det_Mom_NBin, RHCANumuCCOth_Det_Mom_Bin,
-                                                                 RHCANumuCCOth_Det_Cos_NBin, RHCANumuCCOth_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin, RHCANumuCCOth_Mom_Bin,
+                                                                 RHCANumuCCOth_Cos_NBin, RHCANumuCCOth_Cos_Bin);
 
   
 
       bothAxis    [SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin    , RHCNumuCC0Pi_Mom_Bin,
                                                                           RHCNumuCC0Pi_Cos_NBin    , RHCNumuCC0Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Det_Mom_NBin, RHCNumuCC0Pi_Det_Mom_Bin,
-                                                                          RHCNumuCC0Pi_Det_Cos_NBin, RHCNumuCC0Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin, RHCNumuCC0Pi_Mom_Bin,
+                                                                          RHCNumuCC0Pi_Cos_NBin, RHCNumuCC0Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD2NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Mom_NBin    , RHCNumuCC1Pi_Mom_Bin,
                                                                           RHCNumuCC1Pi_Cos_NBin    , RHCNumuCC1Pi_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Det_Mom_NBin, RHCNumuCC1Pi_Det_Mom_Bin,
-                                                                          RHCNumuCC1Pi_Det_Cos_NBin, RHCNumuCC1Pi_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCC1Pi] = new TAxis2D(RHCNumuCC1Pi_Mom_NBin, RHCNumuCC1Pi_Mom_Bin,
+                                                                          RHCNumuCC1Pi_Cos_NBin, RHCNumuCC1Pi_Cos_Bin);
 
       bothAxis    [SampleId::kFGD2NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Mom_NBin    , RHCNumuCCOth_Mom_Bin,
                                                                             RHCNumuCCOth_Cos_NBin    , RHCNumuCCOth_Cos_Bin);
-      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Det_Mom_NBin, RHCNumuCCOth_Det_Mom_Bin,
-                                                                            RHCNumuCCOth_Det_Cos_NBin, RHCNumuCCOth_Det_Cos_Bin);
+      bothAxis_Det[SampleId::kFGD2NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Mom_NBin, RHCNumuCCOth_Mom_Bin,
+                                                                            RHCNumuCCOth_Cos_NBin, RHCNumuCCOth_Cos_Bin);
     }
   }
 
@@ -670,12 +616,12 @@ BANFF::BinningDefinition::BinningDefinition(){
       SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
       
       if(bothAxis.find(sample) != bothAxis.end()){
-        //bothAxis.erase(sample);
+//        bothAxis.erase(sample);
         bothAxis[sample] = new TAxis2D(nBinsFlatMomBinningForNuMuComp,FlatMomBinningForNuMuComp,
                                        nBinsFlatCosBinningForNuMuComp,FlatCosBinningForNuMuComp);
       }
       if(bothAxis_Det.find(sample) != bothAxis_Det.end()){
-        //bothAxis_Det.erase(sample);
+  //      bothAxis_Det.erase(sample);
         bothAxis_Det[sample] = new TAxis2D(nBinsFlatMomBinningForNuMuComp,FlatMomBinningForNuMuComp,
                                            nBinsFlatCosBinningForNuMuComp,FlatCosBinningForNuMuComp);
       }

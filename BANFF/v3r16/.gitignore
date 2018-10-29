@@ -5,11 +5,17 @@ cmt/setup.csh
 cmt/setup.sh
 src/BANFF_version.h
 cmt/Makefile
+app/latex/
+pbs/*
+store_code/*
 *~
 srcDepricated
 *Deprecated
 *.root
+*.txt
+*.tex
 inputs/*
+parameters/*
 BANFF.o*
 BANFF.e*
 .tramp*

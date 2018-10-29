@@ -30,11 +30,11 @@ int main(int argc, char** argv){
 
     //Create the observables we will use.
     psycheLeptonCandidateMomentum* pmu  = new psycheLeptonCandidateMomentum();
-    pmu->SetApplyCoulombShift();
-    pmu->SetShiftMuCarbon ();
-    pmu->SetShiftAMuCarbon();
-    pmu->SetShiftMuOxygen ();
-    pmu->SetShiftAMuOxygen();
+    //pmu->SetApplyCoulombShift();
+    //pmu->SetShiftMuCarbon ();
+    //pmu->SetShiftAMuCarbon();
+    //pmu->SetShiftMuOxygen ();
+    //pmu->SetShiftAMuOxygen();
 
     psycheLeptonCandidateCosTheta* thmu = new psycheLeptonCandidateCosTheta();
 
@@ -413,7 +413,8 @@ int main(int argc, char** argv){
                 fitParameters->SetDecompose(i,1);
                 std::cout << "    " << fitParameters->GetParamName(i) << ": YES" << std::endl;
             }
-            else if(fitParameters->GetParamName(i).find("FEF")!=std::string::npos){
+            else if(fitParameters->GetParamName(i).find("FEF")!=std::string::npos ||
+                    fitParameters->GetParamName(i).find("FSI")!=std::string::npos){
                 fitParameters->SetDecompose(i,1);
                 std::cout << "    " << fitParameters->GetParamName(i) << ": YES" << std::endl;
             }
@@ -435,7 +436,8 @@ int main(int argc, char** argv){
                 fitParameters->SetDecompose(i,0);
                 std::cout << "    " << fitParameters->GetParamName(i) << ": NO" << std::endl;
             }
-            else if(fitParameters->GetParamName(i).find("FEF")!=std::string::npos){
+            else if(fitParameters->GetParamName(i).find("FEF")!=std::string::npos ||
+                    fitParameters->GetParamName(i).find("FSI")!=std::string::npos){
                 fitParameters->SetDecompose(i,0);
                 std::cout << "    " << fitParameters->GetParamName(i) << ": NO" << std::endl;
             }
