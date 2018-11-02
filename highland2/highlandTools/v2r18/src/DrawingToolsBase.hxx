@@ -662,6 +662,10 @@ public :
     syst().DumpWeightSystematics();
   }
 
+  Int_t GetSystematicWeightIndex(const std::string &name){
+      return syst().GetSystematicWeightIndex(name);
+  }
+
   /// Print out all Systematics for a given configuration 
   void DumpSystematics(){
     syst().DumpSystematics();
