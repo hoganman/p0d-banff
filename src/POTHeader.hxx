@@ -1,19 +1,19 @@
 //A clone of the Psyche Header class
-#ifndef Header_hxx
-#define Header_hxx
+#ifndef POTHeader_hxx
+#define POTHeader_hxx
 
 #include "TChain.h"
 
 /// This class handles POT info, SoftwareVersion and IsMC
 
 //-------------------------------------------------------------------
-class Header: public TObject{
+class POTHeader: public TObject{
 public :
 
   /// constructor
-  Header();
+  POTHeader();
 
-  virtual ~Header(){}
+  virtual ~POTHeader(){}
 
   /// Read the "header" tree from the given file, but reset POT counting first
   void ReadHeader(const std::string& file);
@@ -113,7 +113,7 @@ public :
   /// iternal variable that tell us whether a file has been added previously
   bool _isFirstFile; //!
 
-  ClassDef(Header,2)
+  ClassDef(POTHeader,2)
 };
 
 #endif

@@ -1,19 +1,19 @@
-#include "Header.hxx"
-ClassImp(Header)
+#include "POTHeader.hxx"
+ClassImp(POTHeader)
 #include "P0DBANFFInterface.hxx"
 #include "TFile.h"
 #include <stdio.h>
 #include <iostream>
 
 //********************************************************************
-Header::Header()
+POTHeader::POTHeader()
 //********************************************************************
 {
     Reset();
 }
 
 //********************************************************************
-void Header::Reset()
+void POTHeader::Reset()
 //********************************************************************
 {
     _POT_CountedPerFile = 0;
@@ -37,7 +37,7 @@ void Header::Reset()
 }
 
 //********************************************************************
-bool Header::AddHeader(TTree* tree, bool bySpillPOT)
+bool POTHeader::AddHeader(TTree* tree, bool bySpillPOT)
 //********************************************************************
 {
     if (!tree)
@@ -107,7 +107,7 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT)
     }
     else
     {
-        Header *header=0;
+        POTHeader *header=0;
         TBranch* b_header = tree->GetBranch("POTInfo");
         b_header->SetAddress(&header);
 
@@ -140,7 +140,7 @@ bool Header::AddHeader(TTree* tree, bool bySpillPOT)
 }
 
 //********************************************************************
-void Header::ReadHeader(TTree* tree)
+void POTHeader::ReadHeader(TTree* tree)
 //********************************************************************
 {
     if (!tree) return;
@@ -149,7 +149,7 @@ void Header::ReadHeader(TTree* tree)
 }
 
 //********************************************************************
-bool Header::AddHeader(const std::string& file, bool bySpillPOT)
+bool POTHeader::AddHeader(const std::string& file, bool bySpillPOT)
 //********************************************************************
 {
     TFile* inFile = TFile::Open(file.c_str());
@@ -166,7 +166,7 @@ bool Header::AddHeader(const std::string& file, bool bySpillPOT)
 }
 
 //********************************************************************
-void Header::ReadHeader(const std::string& file)
+void POTHeader::ReadHeader(const std::string& file)
 //********************************************************************
 {
     TFile* inFile = TFile::Open(file.c_str());
@@ -182,7 +182,7 @@ void Header::ReadHeader(const std::string& file)
 }
 
 //********************************************************************
-void Header::DumpPOT()
+void POTHeader::DumpPOT()
 //********************************************************************
 {
   std::cout << "Initial POT (per File).. " << _POT_CountedPerFile << std::endl;
