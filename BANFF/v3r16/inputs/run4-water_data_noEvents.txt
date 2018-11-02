@@ -1,1 +1,0 @@
-/neut/data21/mscott/T2K/BANFF_Inputs/Prod6_Run4w_Data_FlatTree_Final_NoEvents.root
