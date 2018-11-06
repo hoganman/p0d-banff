@@ -3,14 +3,11 @@
 #include "AnalysisManager.hxx"
 #include "ND280AnalysisUtils.hxx"
 #include "ToyMakerExample.hxx"
+#include "ToyMakerCorrelatedSyst.hxx"
 #include "Parameters.hxx"
 #include "MultiThread.hxx"
 #include "EventBoxId.hxx"
 #include "EventBoxTracker.hxx"
-//#include "CategoriesUtils.hxx"
-//#include "DataClasses.hxx"
-#include <sys/time.h>
-#include <unistd.h>
 
 #include "TCanvas.h"
 #include "TH1F.h"
@@ -18,6 +15,8 @@
 #include "TDirectory.h"
 #include "TGeoManager.h"
 
+#include <sys/time.h>
+#include <unistd.h>
 #include <vector>
 
 #define DEBUG(X) std::cout << #X << " = " << X << std::endl;
@@ -28,35 +27,44 @@ inline Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLo
 Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles);
 
+namespace Reset
+{
+    const Int_t kInt = -1;
+    const UInt_t kUInt = 0;
+    const Double_t kDouble = -999;
+    const std::string kString = "";
+};
+
 int main(int argc, char **argv){
 
-    const Int_t nWeights = 23;
-    const Int_t nToys = 1000;
-    const Int_t debug = 0;
-    const Double_t kDoubleInit = -999;
-    const Int_t kIntInit = -1;
-    const UInt_t kUIntInit = 0;
+    const std::string programName = argv[0];
 
-    std::string programName = argv[0];
-    std::string paramFile = "";
-    std::string inputFileName = "";
-    std::string inputFileType = "kHighlandTree";
-    std::string outputFileName= "";
-    std::string parameterFileOveride = "";
-    Bool_t preload = kFALSE;
-    Long64_t nmax = 100000000;
-    Bool_t isData = false;
-    TGeoManager* geoManager = NULL;
+    const Int_t nWeights = 23;
+    const Int_t debug = 0;
+
+    Char_t usage[1024];
+    sprintf(usage, "Usage: %s  -i inputfile.root -o outputfile.root (-c correlations.xml -n nevents -d isData -p parameterFileOveride -t nToys)", programName.c_str());
 
     if(argc < 4)
     {
-        std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents) (-d isData) (-p parameterFileOveride)" << std::endl;
+        std::cerr << usage << std::endl;
         throw;
     }
 
+    std::string paramFile = Reset::kString;
+    std::string inputFileName = Reset::kString;
+    std::string outputFileName = Reset::kString;
+    std::string parameterFileOveride = Reset::kString;
+    std::string correlationFile = Reset::kString;
+    Long64_t nmax = 100000000;
+    Int_t nToys = 2000;
+    Bool_t preload = kFALSE;
+    Bool_t isData = false;
+    TGeoManager* geoManager = NULL;
+
     for (;;)
     {
-        Int_t c = getopt(argc, argv, "n:o:i:p:d");
+        Int_t c = getopt(argc, argv, "t:n:o:i:p:c:d");
         if (c < 0)
             break;
         switch (c)
@@ -65,6 +73,17 @@ int main(int argc, char **argv){
             {
                 std::istringstream tmp(optarg);
                 tmp >> nmax;
+                break;
+            }
+            case 't':
+            {
+                std::istringstream tmp(optarg);
+                tmp >> nToys;
+                break;
+            }
+            case 'c':
+            {
+                correlationFile = optarg;
                 break;
             }
             case 'o':
@@ -90,6 +109,7 @@ int main(int argc, char **argv){
             default:
             {
                 std::cerr << optarg << " is an unknown option" << std::endl;
+                std::cerr << usage << std::endl;
                 throw;
             }
         }
@@ -141,11 +161,10 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         ThrowToys                  = static_cast<Bool_t>(ND::params().GetParameterI("psycheSteering.RunSyst.ThrowToys"));
         if(!applyFluxWeightSystematics && !applyVariationSystematics && !applyWeightSystematics)
         {
-            std::cout<<" no systematics is set to be applied "<<std::endl;
+            std::cout << " no systematics is set to be applied, throwing..."<< std::endl;
             throw;
         }
     }
-
 
     TFile* inputFile = TFile::Open(inputFileName.c_str());
     if(!inputFile)
@@ -153,13 +172,15 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         std::cerr << "No input file, exiting..." << std::cerr;
         throw;
     }
-    TTree* RTV       = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
+
+    TTree* RTV = static_cast<TTree*>(inputFile->Get("NRooTrackerVtx"));
     if(!RTV && !isData)
     {
         std::cerr << "No NRooTrackerVtx in the file, exiting..." << std::cerr;
         throw;
     }
     inputFile->Close();
+
     // Initialize clock
     timeval tim;
     gettimeofday(&tim, NULL);
@@ -171,24 +192,42 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     if(ND::params().GetParameterI("psycheSteering.Selections.ForceFillEventSummary"))
       _man.sel().SetForceFillEventSummary(true);
 
-    // Initialize the InputManager by specifying the input type and the input
-    // file
-    if (!_man.input().Initialize(inputFileName,inputFileType, false)) return false;
+    // Initialize the InputManager by specifying the input type and the input file
+    const std::string inputFileType = "kHighlandTree";
+    if (!_man.input().Initialize(inputFileName,inputFileType, false))
+        return false;
+
     std::vector<EventVariationBase*> allVar  = _man.evar().GetEventVariations();
     std::vector<SystematicBase*>     allSyst = _man.syst().GetSystematics();
+
     _man.sel().DumpSelections();
     _man.syst().DumpSystematics();
-    ToyMaker* toyMaker = NULL;
+
+    //ToyMaker* toyMaker = NULL;
+    ToyMakerCorrelatedSyst* toyMaker = NULL;
     ToyMaker* ZeroVarToyMaker = NULL;
     ToyExperiment* ZeroVarToy = NULL;
-    std::vector<float> weights;
+
     if(!isData)
     {
+
+        //This is what came with RunSyst_New.exe
+        /*
         // Create a ToyMaker to configure the toy experiment. Initialize it
         // with a random seed
         toyMaker = new ToyMakerExample(static_cast<UInt_t>(ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed")),
                                        static_cast<Bool_t>(ND::params().GetParameterI("psycheSteering.Systematics.ZeroVariation"))
                                       );
+        */
+        const UInt_t seed = static_cast<UInt_t>(ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"));
+        toyMaker = new ToyMakerCorrelatedSyst(seed, _man.syst());
+        if (correlationFile.length() < 1)
+        {
+            correlationFile = ND::params().GetParameterS("psycheSteering.RunSyst.CorrelationXMLFile");
+        }
+        toyMaker->SetXMLFile(correlationFile);
+        toyMaker->ParseInputXMLFileAndCreateCorrelation();
+        toyMaker->InvertMatrix();
         // Create and fill the Toy experiment with the appropriate format
         // (number of systematics and number of parameters for each systematic)
         std::cout << "Creating " <<  nToys << " toy experiments" << std::endl;
@@ -197,7 +236,6 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         ZeroVarToyMaker = new ToyMakerExample(1, true);
         ZeroVarToyMaker->CreateToyExperiments(1, _man.syst().GetSystematics());
         ZeroVarToy = ZeroVarToyMaker->GetToyExperiment(0);
-
         // Print the steps for the different selections
         if (debug>0)
         {
@@ -214,14 +252,11 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         if(preload)
         {
             std::cout <<" preloading!!!! "<<std::endl;
-
             // Preload nmax events from the file
             if (!_man.ReadEvents(inputFileName, nmax))
                 return 0;
-
             if(nmax < 0)
                 nmax = _man.GetEntries();
-
             _man.SetNEventsToProcess(nmax);
         }
         else
@@ -245,56 +280,56 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     const Int_t NMAXPRIMARYPARTICLESSIZE = ParticleId::kLast + 1;
 
     std::cout << "The number of events = " << nmax << std::endl;
-    Int_t Run         = kDoubleInit;
-    Int_t SubRun      = kDoubleInit;
-    Int_t EventNumber = kDoubleInit;
-    UInt_t RooVertexIndex = kUIntInit;
+    Int_t Run         = Reset::kDouble;
+    Int_t SubRun      = Reset::kDouble;
+    Int_t EventNumber = Reset::kDouble;
+    UInt_t RooVertexIndex = Reset::kUInt;
 
-    Int_t    TrueVertexIDNom = kIntInit;
-    Int_t    SelectionNom    = kIntInit;
-    Int_t    TrueNuPDGNom    = kIntInit;
-    Double_t TrueEnuNom      = kDoubleInit;
-    Double_t WeightNom       = kDoubleInit;
-    Double_t FluxWeightNom   = kDoubleInit;
+    Int_t    TrueVertexIDNom = Reset::kInt;
+    Int_t    SelectionNom    = Reset::kInt;
+    Int_t    TrueNuPDGNom    = Reset::kInt;
+    Double_t TrueEnuNom      = Reset::kDouble;
+    Double_t WeightNom       = Reset::kDouble;
+    Double_t FluxWeightNom   = Reset::kDouble;
 
     //True quantities
-    Int_t tLeptonPDG = kIntInit;
-    Int_t tLeptonParentPDG = kIntInit;
-    Int_t tLeptonGParentPDG = kIntInit;
-    Double_t tLeptonMomentum = kDoubleInit;
-    Double_t tLeptonCosTheta = kDoubleInit;
-    Double_t tLeptonPhi = kDoubleInit;
-    Int_t tOnWaterTarget = kIntInit;
-    Double_t tLeptonPositionX = kDoubleInit;
-    Double_t tLeptonPositionY = kDoubleInit;
-    Double_t tLeptonPositionZ = kDoubleInit;
-    Double_t tVtxX = kDoubleInit;
-    Double_t tVtxY = kDoubleInit;
-    Double_t tVtxZ = kDoubleInit;
+    Int_t tLeptonPDG = Reset::kInt;
+    Int_t tLeptonParentPDG = Reset::kInt;
+    Int_t tLeptonGParentPDG = Reset::kInt;
+    Double_t tLeptonMomentum = Reset::kDouble;
+    Double_t tLeptonCosTheta = Reset::kDouble;
+    Double_t tLeptonPhi = Reset::kDouble;
+    Int_t tOnWaterTarget = Reset::kInt;
+    Double_t tLeptonPositionX = Reset::kDouble;
+    Double_t tLeptonPositionY = Reset::kDouble;
+    Double_t tLeptonPositionZ = Reset::kDouble;
+    Double_t tVtxX = Reset::kDouble;
+    Double_t tVtxY = Reset::kDouble;
+    Double_t tVtxZ = Reset::kDouble;
 
-    Int_t tReactionCode = kIntInit;
-    Double_t tNu = kDoubleInit;
-    Double_t tYbj = kDoubleInit;
-    Double_t tW2 = kDoubleInit;
-    Double_t tQ2 = kDoubleInit;
-    Double_t tXbj = kDoubleInit;
+    Int_t tReactionCode = Reset::kInt;
+    Double_t tNu = Reset::kDouble;
+    Double_t tYbj = Reset::kDouble;
+    Double_t tW2 = Reset::kDouble;
+    Double_t tQ2 = Reset::kDouble;
+    Double_t tXbj = Reset::kDouble;
 
     //reconstructed quantities
-    Double_t LeptonPositionX = kDoubleInit;
-    Double_t LeptonPositionY = kDoubleInit;
-    Double_t LeptonPositionZ = kDoubleInit;
-    Double_t LeptonMomNom    = kDoubleInit;
-    Double_t LeptonCosNom    = kDoubleInit;
-    Double_t LeptonTPC1MomNom = kDoubleInit;
-    Double_t vtxX = kDoubleInit;
-    Double_t vtxY = kDoubleInit;
-    Double_t vtxZ = kDoubleInit;
-    Int_t NumberOfTracks = kIntInit;
+    Double_t LeptonPositionX = Reset::kDouble;
+    Double_t LeptonPositionY = Reset::kDouble;
+    Double_t LeptonPositionZ = Reset::kDouble;
+    Double_t LeptonMomNom    = Reset::kDouble;
+    Double_t LeptonCosNom    = Reset::kDouble;
+    Double_t LeptonTPC1MomNom = Reset::kDouble;
+    Double_t vtxX = Reset::kDouble;
+    Double_t vtxY = Reset::kDouble;
+    Double_t vtxZ = Reset::kDouble;
+    Int_t NumberOfTracks = Reset::kInt;
     Int_t NPrimaryParticles[NMAXPRIMARYPARTICLESSIZE];
     for(Int_t index = 0; index < NMAXPRIMARYPARTICLESSIZE; ++index)
         NPrimaryParticles[index] = 0;
-    Int_t inFGD1 = kIntInit;
-    Int_t inFGD2 = kIntInit;
+    Int_t inFGD1 = Reset::kInt;
+    Int_t inFGD2 = Reset::kInt;
 
     Int_t    Toy            [nToys];
     Int_t    TrueVertexIDToy[nToys];
@@ -306,7 +341,8 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     Double_t WeightToy      [nToys];
     Int_t    nWeightSyst = _man.eweight().GetNEnabledEventWeights();
 
-    if(nWeights != nWeightSyst){
+    if(nWeights != nWeightSyst)
+    {
         std::cerr << "nWeights != nWeightSyst (" << nWeights << " != " << nWeightSyst << ")" << std::endl;
         std::cerr << "Change the hard coded value at the beginning of RunSyst_New.cxx" << std::endl;
         throw;
@@ -316,8 +352,10 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     for (ew_iter = _man.eweight().GetEventWeights().begin(); ew_iter != _man.eweight().GetEventWeights().end(); ++ew_iter)
     {
         EventWeightBase* ewb = *ew_iter;
-        if(!ewb) continue;
-        if(!(ewb->IsEnabled())) continue;
+        if(!ewb)
+            continue;
+        if(!ewb->IsEnabled())
+            continue;
         std::cout << ewb->GetName() << std::endl;
     }
 
@@ -326,17 +364,16 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
 
     for (Int_t iToy = 0; iToy < nToys; ++iToy)
     {
-        Toy                        [iToy] = kDoubleInit;
-        TrueVertexIDToy[iToy] = kDoubleInit;
-        SelectionToy     [iToy] = kDoubleInit;
-        LeptonMomToy     [iToy] = kDoubleInit;
-        TrueEnuToy         [iToy] = kDoubleInit;
-        TrueNuPDGToy     [iToy] = kDoubleInit;
-        LeptonCosToy     [iToy] = kDoubleInit;
-        WeightToy            [iToy] = kDoubleInit;
-        for (Int_t iSyst = 0; iSyst < nWeights; ++iSyst) {
-            WeightIndToy[iSyst][iToy] = kDoubleInit;
-        }
+        Toy            [iToy] = Reset::kDouble;
+        TrueVertexIDToy[iToy] = Reset::kDouble;
+        SelectionToy   [iToy] = Reset::kDouble;
+        LeptonMomToy   [iToy] = Reset::kDouble;
+        TrueEnuToy     [iToy] = Reset::kDouble;
+        TrueNuPDGToy   [iToy] = Reset::kDouble;
+        LeptonCosToy   [iToy] = Reset::kDouble;
+        WeightToy      [iToy] = Reset::kDouble;
+        for (Int_t iSyst = 0; iSyst < nWeights; ++iSyst)
+            WeightIndToy[iSyst][iToy] = Reset::kDouble;
     }
 
     TTree *tree = NULL;
@@ -353,40 +390,43 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
             systnametree.push_back(std::string((*evb_iter)->GetName()));
     }
 
+    const std::string weightTreeName = "weight";
+    const std::string allEventsTreeName = "all";
+    const std::string nominalTreeName = "nominal";
     if(RunOnInidividualSyst)
-        systnametree.push_back("weight");
+        systnametree.push_back(weightTreeName);
     if(RunAllSyst)
-        systnametree.push_back("all");
+        systnametree.push_back(allEventsTreeName);
     if(!ThrowToys)
     {
         systnametree.clear();
-        systnametree.push_back("nominal");
+        systnametree.push_back(nominalTreeName);
     }
     std::vector<Int_t> npassed(SampleId::kNSamples, 0);
     std::vector<std::string>::iterator str_iter;
     for (str_iter = systnametree.begin(); str_iter != systnametree.end(); ++str_iter)
     {
-        std::string syst_name = (*str_iter);
+        const std::string syst_name = (*str_iter);
         std::cout << "Running over " << syst_name << std::endl;
-        Bool_t WeightSyst = (syst_name == "weight");
-        Bool_t AllSyst        = (syst_name == "all");
+        const Bool_t WeightSyst = syst_name == weightTreeName;
+        const Bool_t AllSyst    = syst_name == allEventsTreeName;
 
         outfile->cd();
         tree = new TTree(syst_name.c_str(),syst_name.c_str());
-        tree->Branch("Run",                         &Run,                         "Run/I");
-        tree->Branch("SubRun",                    &SubRun,                    "SubRun/I");
-        tree->Branch("EventNumber",         &EventNumber,         "EventNumber/I");
-        tree->Branch("RooVertexIndex",    &RooVertexIndex,    "RooVertexIndex/i");
+        tree->Branch("Run",                           &Run, "Run/I");
+        tree->Branch("SubRun",                     &SubRun, "SubRun/I");
+        tree->Branch("EventNumber",           &EventNumber, "EventNumber/I");
+        tree->Branch("RooVertexIndex",     &RooVertexIndex, "RooVertexIndex/i");
 
-        tree->Branch("SelectionNom",        &SelectionNom,        "SelectionNom/I");
-        tree->Branch("TrueEnuNom",            &TrueEnuNom,            "TrueEnuNom/D");
-        tree->Branch("TrueNuPDGNom",        &TrueNuPDGNom,        "TrueNuPDGNom/I");
-        tree->Branch("TrueVertexIDNom", &TrueVertexIDNom, "TrueVertexIDNom/I");
-        tree->Branch("LeptonMomNom",        &LeptonMomNom,        "LeptonMomNom/D");
-        tree->Branch("LeptonTPC1MomNom",        &LeptonTPC1MomNom,        "LeptonTPC1MomNom/D");
-        tree->Branch("LeptonCosNom",        &LeptonCosNom,        "LeptonCosNom/D");
-        tree->Branch("WeightNom",             &WeightNom,             "WeightNom/D");
-        tree->Branch("FluxWeightNom",     &FluxWeightNom,     "FluxWeightNom/D");
+        tree->Branch("SelectionNom",         &SelectionNom, "SelectionNom/I");
+        tree->Branch("TrueEnuNom",             &TrueEnuNom, "TrueEnuNom/D");
+        tree->Branch("TrueNuPDGNom",         &TrueNuPDGNom, "TrueNuPDGNom/I");
+        tree->Branch("TrueVertexIDNom",   &TrueVertexIDNom, "TrueVertexIDNom/I");
+        tree->Branch("LeptonMomNom",         &LeptonMomNom, "LeptonMomNom/D");
+        tree->Branch("LeptonTPC1MomNom", &LeptonTPC1MomNom, "LeptonTPC1MomNom/D");
+        tree->Branch("LeptonCosNom",         &LeptonCosNom, "LeptonCosNom/D");
+        tree->Branch("WeightNom",               &WeightNom, "WeightNom/D");
+        tree->Branch("FluxWeightNom",       &FluxWeightNom, "FluxWeightNom/D");
 
         tree->Branch("tLeptonPDG", &tLeptonPDG, "tLeptonPDG/I");
         tree->Branch("tLeptonParentPDG", &tLeptonParentPDG, "tLeptonParentPDG/I");
@@ -477,10 +517,6 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
             else
                 event = static_cast<AnaEventB*>((_man.LoadSuperEvent(entry))->Event);
 if(debug) std::cout << "got event" << std::endl;
-            //for(Int_t vertexIndex = 0; vertexIndex < event->nTrueVertices; ++vertexIndex)
-            //{
-            //    std::cout << "Test reacCode =" << event->TrueVertices[vertexIndex]->ReacCode << std::endl;
-            //}
 
             // Fill the EventBox
             if (!preload)
@@ -503,58 +539,58 @@ if(debug) DEBUG(nmax)
                     _man.evar().Initialize(nmax);
 if(debug) std::cout << "Initialize The SystBox for EventVariations" << std::endl;
                     // Initialize The SystBox for EventVariations
-                    _man.evar().InitializeEvent(_man.sel(),*event);
+                    _man.evar().InitializeEvent(_man.sel(), *event);
                 }
 
                 if (_man.eweight().HasEventWeights())
                 {
 if(debug) DEBUG(_man.eweight().HasEventWeights())
                     // Create the SystBox array (only the first time it is called for each EventWeight)
-                    _man.eweight().Initialize(_man.sel(),nmax);
+                    _man.eweight().Initialize(_man.sel(), nmax);
 
 if(debug) std::cout << "Initialize The SystBox for variation systematics" << std::endl;
                     // Initialize The SystBox for variation systematics
-                    _man.eweight().InitializeEvent(_man.sel(),*event);
+                    _man.eweight().InitializeEvent(_man.sel(), *event);
                 }
             }
-            TrueEnuNom        = kDoubleInit;
-            TrueNuPDGNom      = kDoubleInit;
-            LeptonMomNom      = kDoubleInit;
-            LeptonTPC1MomNom  = kDoubleInit;
-            LeptonCosNom      = kDoubleInit;
-            SelectionNom      = kDoubleInit;
+
             FluxWeightNom     = 1.;
             WeightNom         = 1.;
-            TrueVertexIDNom   = kDoubleInit;
-            SelectionNom      = kDoubleInit;
-            tLeptonPDG        = kDoubleInit;
-            tLeptonParentPDG  = kDoubleInit;
-            tLeptonGParentPDG = kDoubleInit;
-            tLeptonMomentum   = kDoubleInit;
-            tLeptonCosTheta   = kDoubleInit;
-            tLeptonPhi        = kDoubleInit;
-            LeptonPositionX = kDoubleInit;
-            LeptonPositionY = kDoubleInit;
-            LeptonPositionZ = kDoubleInit;
-            tLeptonPositionX = kDoubleInit;
-            tLeptonPositionY = kDoubleInit;
-            tLeptonPositionZ = kDoubleInit;
-            tVtxX = kDoubleInit;
-            tVtxY = kDoubleInit;
-            tVtxZ = kDoubleInit;
-            tReactionCode = kIntInit;
-            tW2   = kDoubleInit;
-            tQ2   = kDoubleInit;
-            tNu   = kDoubleInit;
-            tYbj  = kDoubleInit;
-            tXbj  = kDoubleInit;
-            vtxX  =  kDoubleInit;
-            vtxY  =  kDoubleInit;
-            vtxZ  =  kDoubleInit;
-            NumberOfTracks = kIntInit;
-            tOnWaterTarget    = kIntInit;
-            RooVertexIndex    = kUIntInit;
-
+            TrueEnuNom        = Reset::kDouble;
+            TrueNuPDGNom      = Reset::kDouble;
+            LeptonMomNom      = Reset::kDouble;
+            LeptonTPC1MomNom  = Reset::kDouble;
+            LeptonCosNom      = Reset::kDouble;
+            SelectionNom      = Reset::kDouble;
+            TrueVertexIDNom   = Reset::kDouble;
+            SelectionNom      = Reset::kDouble;
+            tLeptonPDG        = Reset::kDouble;
+            tLeptonParentPDG  = Reset::kDouble;
+            tLeptonGParentPDG = Reset::kDouble;
+            tLeptonMomentum   = Reset::kDouble;
+            tLeptonCosTheta   = Reset::kDouble;
+            tLeptonPhi        = Reset::kDouble;
+            LeptonPositionX   = Reset::kDouble;
+            LeptonPositionY   = Reset::kDouble;
+            LeptonPositionZ   = Reset::kDouble;
+            tLeptonPositionX  = Reset::kDouble;
+            tLeptonPositionY  = Reset::kDouble;
+            tLeptonPositionZ  = Reset::kDouble;
+            tVtxX             = Reset::kDouble;
+            tVtxY             = Reset::kDouble;
+            tVtxZ             = Reset::kDouble;
+            tW2               = Reset::kDouble;
+            tQ2               = Reset::kDouble;
+            tNu               = Reset::kDouble;
+            tYbj              = Reset::kDouble;
+            tXbj              = Reset::kDouble;
+            vtxX              = Reset::kDouble;
+            vtxY              = Reset::kDouble;
+            vtxZ              = Reset::kDouble;
+            tReactionCode     = Reset::kInt;
+            NumberOfTracks    = Reset::kInt;
+            tOnWaterTarget    = Reset::kInt;
+            RooVertexIndex    = Reset::kUInt;
             for(Int_t index = 0; index < NMAXPRIMARYPARTICLESSIZE; ++index)
                 NPrimaryParticles[index] = 0;
 
@@ -574,13 +610,13 @@ if(debug) std::cout << "passednom = " << passednom << std::endl;
             if(passednom)
             {
 if(debug) std::cout << "passednom = " << passednom << std::endl;
-                FillTree=true;
+                FillTree = true;
                 //AnaVertexB** Vertices = event->Vertices;
                 const Int_t &nParticles = event->nParticles;
 if(debug) std::cout << "There are " << nParticles  << " particles in this event" <<std::endl;
                 AnaEventInfoB* eventInfo = static_cast<AnaEventInfoB*>(&event->EventInfo);
-                Run = eventInfo->Run;
-                SubRun = eventInfo->SubRun;
+                Run         = eventInfo->Run;
+                SubRun      = eventInfo->SubRun;
                 EventNumber = eventInfo->Event;
 
                 AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
@@ -683,7 +719,7 @@ if(debug) DEBUG(trueParticle->PDG)
 
             /// 2. ====================================================================
             /// Loop over toy experiments
-            for (Int_t iToy = 0; iToy < nToys && ThrowToys; iToy++)
+            for (Int_t iToy = 0; iToy < nToys && ThrowToys; ++iToy)
             {
                 ToyExperiment* toy = toyMaker->GetToyExperiment(iToy);
                 ToyExperiment* reducedtoy = new ToyExperiment(*toy);
@@ -698,73 +734,73 @@ if(debug) DEBUG(trueParticle->PDG)
                         if(!ZeroVarSyst)
                             continue;
 
-                        if(WeightSyst && ZeroVarSyst->Type() == SystematicBase::kVariation){
-                            for(UInt_t iparam = 0; iparam < ZeroVarSyst->GetNParameters(); iparam++)
+                        if(WeightSyst && ZeroVarSyst->Type() == SystematicBase::kVariation)
+                        {
+                            for(UInt_t iparam = 0; iparam < ZeroVarSyst->GetNParameters(); ++iparam)
                                 reducedtoy->SetToyVariation(ZeroVarSyst->GetIndex(), iparam, 0, 1);
                             continue;
                         }
                         // Doesnt deactivate if this is the current syst || Doesn't deactivate any if it's allsyst
                         if(ZeroVarSyst->Name() == syst_name || AllSyst || WeightSyst)
                             continue;
-                        for(UInt_t iparam = 0; iparam < ZeroVarSyst->GetNParameters(); iparam++)
+                        for(UInt_t iparam = 0; iparam < ZeroVarSyst->GetNParameters(); ++iparam)
                             reducedtoy->SetToyVariation(ZeroVarSyst->GetIndex(), iparam, 0, 1);
                     }
                 }
 
-                Toy[iToy] = iToy;
-                SelectionToy[iToy] = kDoubleInit;
-                TrueEnuToy[iToy] = kDoubleInit;
-                TrueNuPDGToy[iToy] = kDoubleInit;
-                LeptonMomToy[iToy] = kDoubleInit;
-                LeptonCosToy[iToy] = kDoubleInit;
-                WeightToy[iToy] = kDoubleInit;
-
+                Toy[iToy]             = iToy;
+                SelectionToy[iToy]    = Reset::kDouble;
+                TrueEnuToy[iToy]      = Reset::kDouble;
+                TrueNuPDGToy[iToy]    = Reset::kDouble;
+                LeptonMomToy[iToy]    = Reset::kDouble;
+                LeptonCosToy[iToy]    = Reset::kDouble;
+                WeightToy[iToy]       = Reset::kDouble;
+                FluxWeightToy[iToy]   = Reset::kDouble;
+                TrueVertexIDToy[iToy] = Reset::kInt;
                 for (Int_t iSyst = 0; iSyst < nWeights; ++iSyst)
-                {
-                    WeightIndToy[iSyst][iToy] = kDoubleInit;
-                }
+                    WeightIndToy[iSyst][iToy] = Reset::kDouble;
 
-                FluxWeightToy[iToy] = kDoubleInit;
-                TrueVertexIDToy[iToy] = kDoubleInit;
 
                 // 3. ====================================================================
                 // Process the current event (bunch). That means applying the systematics, the selections and computing the weights
-                Bool_t passed = false;
-                Weight_h* weights = new Weight_h[NMAXSYSTEMATICS];
+                Bool_t toyPassed = false;
+                Weight_h* weights = NULL;
                 // std::cout << "entry " << entry << std::endl;
 
                 if(!WeightSyst)
                 {
-                    passed = _man.ProcessEvent(*reducedtoy, *event, totalweight, fluxWeightSyst);
+                    toyPassed = _man.ProcessEvent(*reducedtoy, *event, totalweight, fluxWeightSyst);
                 }
                 else
                 {
-                    passed = _man.ProcessEventWithIndividualWeightSyst(*reducedtoy, *event, weights, fluxWeightSyst);
+                    weights = new Weight_h[NMAXSYSTEMATICS];
+                    toyPassed = _man.ProcessEventWithIndividualWeightSyst(*reducedtoy, *event, weights, fluxWeightSyst);
                 }
-                if(passed)
+                if(toyPassed)
                 {
-                    FillTree=true;
+                    FillTree = true;
                     AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
-                    if(summary && summary->EventSample){
-                        LeptonMomToy [iToy] = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum);
-                        LeptonCosToy [iToy] = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->DirectionStart[2]);
-                        SelectionToy [iToy] = (Int_t)     (summary->EventSample);
-                        FluxWeightToy[iToy] = (Double_t)(fluxWeightSyst.Correction);
+                    if(summary && summary->EventSample)
+                    {
+                        LeptonMomToy [iToy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum;
+                        LeptonCosToy [iToy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->DirectionStart[2];
+                        SelectionToy [iToy] = summary->EventSample;
+                        FluxWeightToy[iToy] = fluxWeightSyst.Correction;
                         if(!WeightSyst)
-                            WeightToy[iToy]     = (Double_t)(totalweight.Systematic);
+                            WeightToy[iToy] = totalweight.Systematic;
                         else
                         {
-                            Int_t ind=0;
+                            Int_t ind = 0;
                             for(UInt_t i = 0; i < NMAXSYSTEMATICS; ++i)
                             {
-                                if(weights[i].Systematic != kDoubleInit)
+                                if(weights[i].Systematic != Reset::kDouble)
                                 {
                                     WeightIndToy[ind][iToy] = weights[i].Systematic;
                                     //std::cout << "WeightIndToy[" << ind << "][" << iToy << "] " << WeightIndToy[ind][iToy] <<std::endl;
                                     ind++;
                                 }
                             }
-                            if(ind!=nWeights)
+                            if(ind != nWeights)
                             {
                                 std::cerr << "something wrong is happening" << std::endl;
                                 throw;
@@ -777,7 +813,7 @@ if(debug) DEBUG(trueParticle->PDG)
                             TrueNuPDGToy   [iToy] = summary->TrueVertex[summary->EventSample]->NuPDG;
                         }
                     }
-                }
+                } //end if toy passed selection
                 if(weights)
                     delete weights;
                 if(reducedtoy)

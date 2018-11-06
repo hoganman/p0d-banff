@@ -12,30 +12,34 @@
 #include "TRandom3.h"
 #include "MultiThread.hxx"
 
-const int nWeights = 20;
-const int nToys = 1000;
+const int nWeights = 12;
   
 int main(int argc, char *argv[]){
 
   std::string programName = argv[0];
   std::string paramFile = "";
   int nmax = 100000000;
+  int nToys = 2000;
   std::string inputFileName   = "";
   std::string inputFileType   = "kHighlandTree";
   std::string outputFileName  = "";
   std::string CorrelationFile = "";
-  Int_t ntoys;
   Int_t debug = 0;
-  Int_t preload = 1;
+  Int_t preload = 0;
   if(argc < 4){
-    std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents -c correlations.xml)" << std::endl;
+    std::cerr << "You have to specify: RunSyst_New.exe -i inputfile.root -o outputfile.root (-n nevents -c correlations.xml -t ntoys)" << std::endl;
     throw;
   }
   for (;;) {
-    int c = getopt(argc, argv, "n:o:i:c:");
+    int c = getopt(argc, argv, "t:n:o:i:c");
     if (c < 0)
       break;
     switch (c) {
+    case 't': {
+      std::istringstream tmp(optarg);
+      tmp >> nToys;
+      break;
+    }
     case 'n': {
       std::istringstream tmp(optarg);
       tmp >> nmax;
@@ -94,7 +98,10 @@ int main(int argc, char *argv[]){
 
   
   TFile* inputFile = new TFile(inputFileName.c_str(), "READ");
-  TTree* RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
+  TTree* RTV = (TTree*)inputFile->Get("NRooTrackerVtx");
+  TTree *def = (TTree*)inputFile->Get("flattree");
+  TTree *hdr = (TTree*)inputFile->Get("header");
+  TTree *con = (TTree*)inputFile->Get("config");
   if(!RTV){ std::cerr << "No NRooTrackerVtx in the file, exiting." << std::cerr; throw;}
   inputFile->Close();
 
@@ -125,7 +132,6 @@ int main(int argc, char *argv[]){
   
   toyMaker->ParseInputXMLFileAndCreateCorrelation();
   toyMaker->InvertMatrix();
-  toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics());
   std::cout << "Creating " <<  nToys << " toy experiments" << std::endl;
   toyMaker->CreateToyExperiments(nToys, _man.syst().GetSystematics()); 
 
@@ -270,9 +276,6 @@ int main(int argc, char *argv[]){
     std::vector<float> weights;
     Weight_h totalweight;
     Weight_h fluxWeightSyst;
-    int rtvi = 0;
-    int prevTruthID = -1;
-    int prevRTV = -1;
     
     //  ProfilerStart("prof.out");
     //--------- Loop over entries in the tree ----------------------------------
@@ -282,7 +285,6 @@ int main(int argc, char *argv[]){
     std::cout << "RunSyst: loop over " << nmax << " entries" << std::endl;
   
     Long64_t entry = 0;
-    Int_t NREntry=0;
     while (entry < nmax) {
       
       if(entry%100 == 0)
@@ -343,8 +345,10 @@ int main(int argc, char *argv[]){
           LeptonMomNom    = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum);
           LeptonCosNom    = (Double_t)(static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->DirectionStart[2]);
           SelectionNom    = (Int_t)   summary->EventSample;
-          FluxWeightNom   = (Double_t)totalweight   .Correction;
-          WeightNom       = (Double_t)fluxWeightSyst.Correction;
+          WeightNom       = (Double_t)totalweight   .Correction;
+          FluxWeightNom   = (Double_t)fluxWeightSyst.Correction;
+          Run             = (Int_t)   (*event).EventInfo.Run;
+          SubRun          = (Int_t)   (*event).EventInfo.SubRun;
           EventNumber     = (Int_t)   (*event).EventInfo.Event;
           if(summary->TrueVertex[summary->EventSample]){
             TrueEnuNom      = (Double_t)(summary->TrueVertex[summary->EventSample]->NuEnergy);
@@ -439,6 +443,7 @@ int main(int argc, char *argv[]){
           }
         }
         delete reducedtoy;
+        delete weights;
       } 
       
       
@@ -462,9 +467,15 @@ int main(int argc, char *argv[]){
   if((bool)ND::params().GetParameterI("psycheSteering.RunSyst.SaveAllTheNRooVtx")){
     std::cout << "Copying the NRooTrackerVtx Tree" << std::endl;
     inputFile = new TFile(inputFileName.c_str(), "READ");
-    RTV = (TTree*)(inputFile->Get("NRooTrackerVtx"));
+    RTV = (TTree*)inputFile->Get("NRooTrackerVtx");
+    def = (TTree*)inputFile->Get("flattree");
+    hdr = (TTree*)inputFile->Get("header");
+    con = (TTree*)inputFile->Get("config");
     outfile->cd();
     RTV->CloneTree()->Write();
+    def->CloneTree()->Write();
+    hdr->CloneTree()->Write();
+    con->CloneTree()->Write();
   }
 
   outfile->Close();
