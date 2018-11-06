@@ -8,7 +8,7 @@ into run periods for loading.
 
 Doesnt fit
 < BANFF.SavePrefitAndExit = 0 >
-< BANFF.SavePrefitParamsAndExit = 1 >
+< BANFF.SavePrefitParamsAndExit = 0 >
 
 Do a likelihood scan of the likelihood as a function of the xsec parameters
 < BANFF.DoLikelihoodScan = 0 >
@@ -35,7 +35,7 @@ and their covariance.
 
 The XSec input file, which contains the information about the xsec parameters
 and their covariance.
-< BANFF.XSecInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained.root >
+< BANFF.XSecInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/xsec_parameters_2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
 
 The Observable Normalization parameters input file, which contains information
 about those parameters and their covariance.
@@ -47,7 +47,7 @@ Default to false.
 < BANFF.ScaleMCPOT = 0 >
 
 The desired POT to scale the MC to.
-< BANFF.ScaledMCPOT = 6.49E20 >
+< BANFF.ScaledMCPOT = 5.90E20 >
 
 Whether to use the lower memory version of spline storage.  Only available for
 performing a fit.  There may be unexpected behaviour including but not limited
@@ -61,7 +61,7 @@ The number of toys to throw.
 < BANFF.ThrowToys.NToys = 10 >
 
 The name of the output file to put the toys in.
-< BANFF.ThrowToys.OutputFile = test_toys.root >
+< BANFF.ThrowToys.OutputFile = test_pvalue_toy_throwing_run3b.root >
 
 Whether to throw MC statistical errors or not.
 < BANFF.ThrowToys.ThrowMCStat = 0 >
@@ -95,11 +95,11 @@ loaded, this does nothing.)
 < BANFF.ThrowToys.ThrowXSecParams = 0 >
 
 Whether to load the detector parameters from the external interface.
-< BANFF.ThrowToys.LoadDetParams = 0 >
+< BANFF.ThrowToys.LoadDetParams = 1 >
 
 Whether to throw the detector parameters (NB: If they are not also loaded, this
 parameter does nothing.)
-< BANFF.ThrowToys.ThrowDetParams = 0 >
+< BANFF.ThrowToys.ThrowDetParams = 1 >
 
 Whether to load the ObsNorm parameters from the ObsNorm input file for
 throwing.
@@ -112,7 +112,7 @@ Whether to use a previous fit result as the prior for the parameters.
 < BANFF.ThrowToys.UseFitResult = 0 >
 
 Which file to take the fit result from.
-< BANFF.ThrowToys.FitResultFile = fit_output_run2_thru_5.root >
+< BANFF.ThrowToys.FitResultFile = fit_output_run4w.root >
 
 Which fit to take from the file.  If the file only contains one fit, set to 0.
 < BANFF.ThrowToys.FitNumber = 0 >
@@ -130,7 +130,7 @@ purposes).  NB: This only does anything if FitData above is false.
 
 If fitting to toy MC instead of data, the name of the file to load the MC file
 from.
-< BANFF.RunFit.ToyFile = P5DataAsPredMC.root >
+< BANFF.RunFit.ToyFile = /neut/data20/jmgwalker/banff-work/asimov_testing/0119_toy_throwing_0.root >
 
 If fitting toys, the first toy in the toy file to fit.
 < BANFF.RunFit.FirstToyToFit = 0 >
@@ -140,7 +140,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = DataFit_rhc_multi-pi_run2_run7.root >
+< BANFF.RunFit.OutputFile = dataFit_tracker_run2-6_siproton_sipion_off_xsec2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >
