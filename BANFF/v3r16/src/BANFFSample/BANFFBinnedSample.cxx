@@ -18,7 +18,7 @@ BANFFBinnedSample::BANFFBinnedSample(SampleId::SampleEnum sampleIDInput, int nOb
   axes = new TAxis*[2];
   axes[0] = (*ax2d)[0];
   axes[1] = (*ax2d)[1];
-  
+
   //Set up the array to store the reaction code breakdowns.  Make it size
   //200, and fill it with NULL entries.  We will only actually create
   //histograms as we need to fill them.
@@ -80,10 +80,10 @@ BANFFBinnedSample::BANFFBinnedSample(SampleId::SampleEnum sampleIDInput, int nOb
   nominalDetWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
   nameString = name + "_nominalCovWeights";
   nominalCovWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
-    
+
   //Change the histogram binning from the default NDimensional binning to the
   //axes supplied by the user.
-  for(int i = 0; i < nObs; i++){ 
+  for(int i = 0; i < nObs; i++){
     if(!axes[i]){
       std::cerr << "Binning for " << name << " observable " << i << " isnt defined!" << std::endl;
       throw;
@@ -183,7 +183,7 @@ BANFFBinnedSample::BANFFBinnedSample(std::string nameInput, int sampleIDInput, i
   nominalDetWeights  = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
   nameString = name + "_nominalCovWeights";
   nominalCovWeights = new TH1D(nameString.c_str(),nameString.c_str(),100,0.0,10.0);
-  
+
   //Change the histogram binning from the default NDimensional binning to the
   //axes supplied by the user.
   for(int i = 0; i < nObs; i++){
@@ -316,7 +316,7 @@ void BANFFBinnedSample::AddNominalMCEvent(BANFFEventBase* event){
 
     nomMCNomCovWeights->SetBinContent(event->observableBin, nomMCNomCovWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetObservableWeight()));
     nomMCNomCovWeights->SetEntries(nomMCNomDetWeights->GetEntries() + 1);
-    
+
     //The combination plots.
     nomMCNomFluxAndXSecWeights->SetBinContent(event->observableBin, nomMCNomFluxAndXSecWeights->GetBinContent(event->observableBin) + (event->GetPOTWeight())*(event->GetFluxWeight())*(event->GetXsecWeight()));
     nomMCNomFluxAndXSecWeights->SetEntries(nomMCNomFluxAndXSecWeights->GetEntries() + 1);
@@ -333,9 +333,9 @@ void BANFFBinnedSample::AddNominalMCEvent(BANFFEventBase* event){
     std::cout << "ReactionCode  " << event->GetReactionCode()  << std::endl;
     std::cout << "ObservableBin " << event->GetObservableBin() << std::endl;
     std::cout << "ObservableWeight " << event->GetObservableWeight() << std::endl;
-#endif 
+#endif
   }else{//Otherwise, use the full treatment.
-    
+
     //Create the array to feed to THnBase Fill method.
     double* obsVals = new double[nObs];
 
@@ -413,7 +413,7 @@ void BANFFBinnedSample::AddPredictedMCEvent(BANFFEventBase* event){
     //weight.
     //NB: We now increment the content manually below for manual error
     //calculation purposes.
-    //This way the incrementing of the 
+    //This way the incrementing of the
     //predMC->Fill(obsVals, event->GetTotalWeight());
 
     //Get the bin that this set of observables corresponds to.
@@ -422,11 +422,11 @@ void BANFFBinnedSample::AddPredictedMCEvent(BANFFEventBase* event){
     if(throwMCStatPoisson){
       double thisEventContrib = ((double)(gRandom->Poisson(1)))*(event->GetTotalWeight());
       predMC->SetBinContent(currentPredMCBin, predMC->GetBinContent(currentPredMCBin) + thisEventContrib);
-            
+
       //NB: Only need to set the bin error if we're using the other
       //method of throwing MC stat, which we will not be doing if we are
       //throwing them this way.
-        
+
     }
 
 

@@ -4,6 +4,188 @@
 // The static member pointer to the singleton.
 BANFF::BinningDefinition* BANFF::BinningDefinition::fBinningDefinition = NULL;
 
+BANFF::BinningDefinition::~BinningDefinition()
+{
+    for (SampleTAxisIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Mom.erase(it);
+    }
+
+    for (SampleTAxisIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Mom_Det.erase(it);
+    }
+    for (SampleTAxisIterator it=Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Cos.erase(it);
+    }
+
+    for (SampleTAxisIterator it=Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Cos_Det.erase(it);
+    }
+}
+
+BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
+{
+    FirstDim  = new TAxis(nbin1, bins1);
+    SecondDim = new TAxis(nbin2, bins2);
+}
+
+BANFF::TAxis2D::~TAxis2D()
+{
+    delete FirstDim;
+    delete SecondDim;
+};
+
+TAxis* BANFF::TAxis2D::operator[] (const unsigned int &d)
+{
+    if     (d == 0) return FirstDim;
+    else if(d == 1) return SecondDim;
+    else
+    {
+        std::cerr << "Can't acces more than 2D" << std::endl;
+        throw;
+    }
+}
+
+bool BANFF::BinningDefinition::IsActiveSample(const SampleId::SampleEnum &sample) const
+{
+    std::map<SampleId::SampleEnum, bool>::const_iterator it;
+    it = ActiveSample.find(sample);
+    if(it != ActiveSample.end())
+        return it->second;
+    else
+        return false;
+}
+
+bool BANFF::BinningDefinition::IsActiveSample(const int &sample) const
+{
+    if(sample >= SampleId::kUnassigned && sample < SampleId::kNSamples)
+    {
+        const SampleId::SampleEnum s = static_cast<SampleId::SampleEnum>(sample);
+        return IsActiveSample(s);
+    }
+    else
+        return false;
+};
+
+
+int BANFF::BinningDefinition::GetNbins_Mom (const SampleId::SampleEnum &sample) const
+{
+    if(IsActiveSample(sample))
+        return Axis_Mom.at(sample)->GetNbins();
+    else
+        return 0;
+}
+
+int BANFF::BinningDefinition::GetNbins_Mom_Det(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Mom_Det.at(sample)->GetNbins();
+  else
+      return 0;
+}
+
+int BANFF::BinningDefinition::GetNbins_Cos(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Cos.at(sample)->GetNbins();
+  else
+      return 0;
+}
+
+int BANFF::BinningDefinition::GetNbins_Cos_Det(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Cos_Det.at(sample)->GetNbins();
+  else
+      return 0;
+}
+
+int BANFF::BinningDefinition::GetNbins_Det(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
+  else
+      return 0;
+}
+
+int BANFF::BinningDefinition::GetNbins(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return GetNbins_Mom(sample) * GetNbins_Cos(sample);
+  else
+      return 0;
+};
+
+TAxis* BANFF::BinningDefinition::GetBinning_Mom(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Mom.at(sample);
+  else
+  {
+      std::cerr << "No momentum binning for the sample " << ConvertSample(sample) << std::endl;
+      throw;
+      return NULL;
+  }
+}
+
+TAxis* BANFF::BinningDefinition::GetBinning_Mom_Det(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return
+          Axis_Mom_Det.at(sample);
+  else
+  {
+    std::cerr << "No momentum (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+    return NULL;
+  }
+}
+
+TAxis* BANFF::BinningDefinition::GetBinning_Cos(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Cos.at(sample);
+  else{
+    std::cerr << "No costheta binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+    return NULL;
+  }
+}
+
+TAxis* BANFF::BinningDefinition::GetBinning_Cos_Det(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return Axis_Cos_Det.at(sample);
+  else
+  {
+    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+    return NULL;
+  }
+}
+
+BANFF::TAxis2D* BANFF::BinningDefinition::GetBinningArray(const SampleId::SampleEnum &sample) const
+{
+  if(IsActiveSample(sample))
+      return bothAxis.at(sample);
+  else
+  {
+    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+    return NULL;
+  }
+}
+
+BANFF::BinningDefinition& BANFF::BinningDefinition::Get() {
+  if (!fBinningDefinition)
+      fBinningDefinition = new BANFF::BinningDefinition;
+  return *(fBinningDefinition);
+}
+
+
 
 BANFF::BinningDefinition::BinningDefinition(){
   Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
@@ -26,7 +208,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double FHCNumuCC0Pi_Mom_Bin[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
   int    FHCNumuCC0Pi_Det_Mom_NBin = 6;
   double FHCNumuCC0Pi_Det_Mom_Bin[7] = {0, 1000, 1250, 2000, 3000, 5000, 30000};
-  
+
   int    FHCNumuCC0Pi_Cos_NBin = 11;
   double FHCNumuCC0Pi_Cos_Bin[25];
   int    FHCNumuCC0Pi_Det_Cos_NBin = 7;
@@ -55,27 +237,27 @@ BANFF::BinningDefinition::BinningDefinition(){
     FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.96;
     FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  1.;
   }else{
-    FHCNumuCC0Pi_Cos_NBin = 19;         FHCNumuCC0Pi_Det_Cos_NBin = 19;	      
-    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;    FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0;  
-    FHCNumuCC0Pi_Cos_Bin[ 1] = -0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 1] = -0.6;  
-    FHCNumuCC0Pi_Cos_Bin[ 2] = -0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 2] = -0.4;  
-    FHCNumuCC0Pi_Cos_Bin[ 3] = -0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 3] = -0.2;  
-    FHCNumuCC0Pi_Cos_Bin[ 4] = -0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 4] = -0.1;  
-    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.;     FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.;   
-    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.1;  
-    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  0.2;  
-    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 8] =  0.4;  
-    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 9] =  0.6;  
-    FHCNumuCC0Pi_Cos_Bin[10] =  0.7;    FHCNumuCC0Pi_Det_Cos_Bin[10] =  0.7;  
-    FHCNumuCC0Pi_Cos_Bin[11] =  0.8;    FHCNumuCC0Pi_Det_Cos_Bin[11] =  0.8;  
-    FHCNumuCC0Pi_Cos_Bin[12] =  0.85;   FHCNumuCC0Pi_Det_Cos_Bin[12] =  0.85; 
-    FHCNumuCC0Pi_Cos_Bin[13] =  0.90;   FHCNumuCC0Pi_Det_Cos_Bin[13] =  0.90; 
-    FHCNumuCC0Pi_Cos_Bin[14] =  0.92;   FHCNumuCC0Pi_Det_Cos_Bin[14] =  0.92; 
-    FHCNumuCC0Pi_Cos_Bin[15] =  0.94;   FHCNumuCC0Pi_Det_Cos_Bin[15] =  0.94; 
-    FHCNumuCC0Pi_Cos_Bin[16] =  0.96;   FHCNumuCC0Pi_Det_Cos_Bin[16] =  0.96; 
-    FHCNumuCC0Pi_Cos_Bin[17] =  0.98;   FHCNumuCC0Pi_Det_Cos_Bin[17] =  0.98; 
-    FHCNumuCC0Pi_Cos_Bin[18] =  0.99;   FHCNumuCC0Pi_Det_Cos_Bin[18] =  0.99; 
-    FHCNumuCC0Pi_Cos_Bin[19] =  1.0;    FHCNumuCC0Pi_Det_Cos_Bin[19] =  1.0;  
+    FHCNumuCC0Pi_Cos_NBin = 19;         FHCNumuCC0Pi_Det_Cos_NBin = 19;
+    FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;    FHCNumuCC0Pi_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC0Pi_Cos_Bin[ 1] = -0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 1] = -0.6;
+    FHCNumuCC0Pi_Cos_Bin[ 2] = -0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 2] = -0.4;
+    FHCNumuCC0Pi_Cos_Bin[ 3] = -0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 3] = -0.2;
+    FHCNumuCC0Pi_Cos_Bin[ 4] = -0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 4] = -0.1;
+    FHCNumuCC0Pi_Cos_Bin[ 5] =  0.;     FHCNumuCC0Pi_Det_Cos_Bin[ 5] =  0.;
+    FHCNumuCC0Pi_Cos_Bin[ 6] =  0.1;    FHCNumuCC0Pi_Det_Cos_Bin[ 6] =  0.1;
+    FHCNumuCC0Pi_Cos_Bin[ 7] =  0.2;    FHCNumuCC0Pi_Det_Cos_Bin[ 7] =  0.2;
+    FHCNumuCC0Pi_Cos_Bin[ 8] =  0.4;    FHCNumuCC0Pi_Det_Cos_Bin[ 8] =  0.4;
+    FHCNumuCC0Pi_Cos_Bin[ 9] =  0.6;    FHCNumuCC0Pi_Det_Cos_Bin[ 9] =  0.6;
+    FHCNumuCC0Pi_Cos_Bin[10] =  0.7;    FHCNumuCC0Pi_Det_Cos_Bin[10] =  0.7;
+    FHCNumuCC0Pi_Cos_Bin[11] =  0.8;    FHCNumuCC0Pi_Det_Cos_Bin[11] =  0.8;
+    FHCNumuCC0Pi_Cos_Bin[12] =  0.85;   FHCNumuCC0Pi_Det_Cos_Bin[12] =  0.85;
+    FHCNumuCC0Pi_Cos_Bin[13] =  0.90;   FHCNumuCC0Pi_Det_Cos_Bin[13] =  0.90;
+    FHCNumuCC0Pi_Cos_Bin[14] =  0.92;   FHCNumuCC0Pi_Det_Cos_Bin[14] =  0.92;
+    FHCNumuCC0Pi_Cos_Bin[15] =  0.94;   FHCNumuCC0Pi_Det_Cos_Bin[15] =  0.94;
+    FHCNumuCC0Pi_Cos_Bin[16] =  0.96;   FHCNumuCC0Pi_Det_Cos_Bin[16] =  0.96;
+    FHCNumuCC0Pi_Cos_Bin[17] =  0.98;   FHCNumuCC0Pi_Det_Cos_Bin[17] =  0.98;
+    FHCNumuCC0Pi_Cos_Bin[18] =  0.99;   FHCNumuCC0Pi_Det_Cos_Bin[18] =  0.99;
+    FHCNumuCC0Pi_Cos_Bin[19] =  1.0;    FHCNumuCC0Pi_Det_Cos_Bin[19] =  1.0;
   }
 
   if(Do1DCheckMom){FHCNumuCC0Pi_Det_Cos_NBin=1; FHCNumuCC0Pi_Det_Cos_Bin[1] = 1;}
@@ -86,7 +268,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double FHCNumuCC1Pi_Mom_Bin[14] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 5000, 30000};
   int    FHCNumuCC1Pi_Det_Mom_NBin = 5;
   double FHCNumuCC1Pi_Det_Mom_Bin[6] = {0, 300, 1250, 1500, 5000, 30000};
-    
+
   int    FHCNumuCC1Pi_Cos_NBin = 11;
   double FHCNumuCC1Pi_Cos_Bin[25];
   int    FHCNumuCC1Pi_Det_Cos_NBin = 8;
@@ -117,27 +299,27 @@ BANFF::BinningDefinition::BinningDefinition(){
     FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.99;
     FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  1.0;
   }else{
-    FHCNumuCC1Pi_Cos_NBin = 19;       FHCNumuCC1Pi_Det_Cos_NBin = 19;	
-    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0;	FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0;	
-    FHCNumuCC1Pi_Cos_Bin[ 1] = -0.6;	FHCNumuCC1Pi_Det_Cos_Bin[ 1] = -0.6;	
-    FHCNumuCC1Pi_Cos_Bin[ 2] = -0.4;	FHCNumuCC1Pi_Det_Cos_Bin[ 2] = -0.4;	
-    FHCNumuCC1Pi_Cos_Bin[ 3] = -0.2;	FHCNumuCC1Pi_Det_Cos_Bin[ 3] = -0.2;	
-    FHCNumuCC1Pi_Cos_Bin[ 4] = -0.1;	FHCNumuCC1Pi_Det_Cos_Bin[ 4] = -0.1;	
-    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.;	  FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.;	
-    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.1;	FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.1;	
-    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.2;	FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.2;	
-    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.4;	FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  0.4;	
-    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.6;	FHCNumuCC1Pi_Det_Cos_Bin[ 9] =  0.6;	
-    FHCNumuCC1Pi_Cos_Bin[10] =  0.7;	FHCNumuCC1Pi_Det_Cos_Bin[10] =  0.7;	
-    FHCNumuCC1Pi_Cos_Bin[11] =  0.8;	FHCNumuCC1Pi_Det_Cos_Bin[11] =  0.8;	
-    FHCNumuCC1Pi_Cos_Bin[12] =  0.85;	FHCNumuCC1Pi_Det_Cos_Bin[12] =  0.85;	
-    FHCNumuCC1Pi_Cos_Bin[13] =  0.90;	FHCNumuCC1Pi_Det_Cos_Bin[13] =  0.90;	
-    FHCNumuCC1Pi_Cos_Bin[14] =  0.92;	FHCNumuCC1Pi_Det_Cos_Bin[14] =  0.92;	
-    FHCNumuCC1Pi_Cos_Bin[15] =  0.94;	FHCNumuCC1Pi_Det_Cos_Bin[15] =  0.94;	
-    FHCNumuCC1Pi_Cos_Bin[16] =  0.96;	FHCNumuCC1Pi_Det_Cos_Bin[16] =  0.96;	
-    FHCNumuCC1Pi_Cos_Bin[17] =  0.98;	FHCNumuCC1Pi_Det_Cos_Bin[17] =  0.98;	
-    FHCNumuCC1Pi_Cos_Bin[18] =  0.99;	FHCNumuCC1Pi_Det_Cos_Bin[18] =  0.99;	
-    FHCNumuCC1Pi_Cos_Bin[19] =  1.0;  FHCNumuCC1Pi_Det_Cos_Bin[19] =  1.0;  
+    FHCNumuCC1Pi_Cos_NBin = 19;         FHCNumuCC1Pi_Det_Cos_NBin = 19;
+    FHCNumuCC1Pi_Cos_Bin[ 0] = -1.0;    FHCNumuCC1Pi_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCC1Pi_Cos_Bin[ 1] = -0.6;    FHCNumuCC1Pi_Det_Cos_Bin[ 1] = -0.6;
+    FHCNumuCC1Pi_Cos_Bin[ 2] = -0.4;    FHCNumuCC1Pi_Det_Cos_Bin[ 2] = -0.4;
+    FHCNumuCC1Pi_Cos_Bin[ 3] = -0.2;    FHCNumuCC1Pi_Det_Cos_Bin[ 3] = -0.2;
+    FHCNumuCC1Pi_Cos_Bin[ 4] = -0.1;    FHCNumuCC1Pi_Det_Cos_Bin[ 4] = -0.1;
+    FHCNumuCC1Pi_Cos_Bin[ 5] =  0.;      FHCNumuCC1Pi_Det_Cos_Bin[ 5] =  0.;
+    FHCNumuCC1Pi_Cos_Bin[ 6] =  0.1;    FHCNumuCC1Pi_Det_Cos_Bin[ 6] =  0.1;
+    FHCNumuCC1Pi_Cos_Bin[ 7] =  0.2;    FHCNumuCC1Pi_Det_Cos_Bin[ 7] =  0.2;
+    FHCNumuCC1Pi_Cos_Bin[ 8] =  0.4;    FHCNumuCC1Pi_Det_Cos_Bin[ 8] =  0.4;
+    FHCNumuCC1Pi_Cos_Bin[ 9] =  0.6;    FHCNumuCC1Pi_Det_Cos_Bin[ 9] =  0.6;
+    FHCNumuCC1Pi_Cos_Bin[10] =  0.7;    FHCNumuCC1Pi_Det_Cos_Bin[10] =  0.7;
+    FHCNumuCC1Pi_Cos_Bin[11] =  0.8;    FHCNumuCC1Pi_Det_Cos_Bin[11] =  0.8;
+    FHCNumuCC1Pi_Cos_Bin[12] =  0.85;    FHCNumuCC1Pi_Det_Cos_Bin[12] =  0.85;
+    FHCNumuCC1Pi_Cos_Bin[13] =  0.90;    FHCNumuCC1Pi_Det_Cos_Bin[13] =  0.90;
+    FHCNumuCC1Pi_Cos_Bin[14] =  0.92;    FHCNumuCC1Pi_Det_Cos_Bin[14] =  0.92;
+    FHCNumuCC1Pi_Cos_Bin[15] =  0.94;    FHCNumuCC1Pi_Det_Cos_Bin[15] =  0.94;
+    FHCNumuCC1Pi_Cos_Bin[16] =  0.96;    FHCNumuCC1Pi_Det_Cos_Bin[16] =  0.96;
+    FHCNumuCC1Pi_Cos_Bin[17] =  0.98;    FHCNumuCC1Pi_Det_Cos_Bin[17] =  0.98;
+    FHCNumuCC1Pi_Cos_Bin[18] =  0.99;    FHCNumuCC1Pi_Det_Cos_Bin[18] =  0.99;
+    FHCNumuCC1Pi_Cos_Bin[19] =  1.0;  FHCNumuCC1Pi_Det_Cos_Bin[19] =  1.0;
   }
   if(Do1DCheckMom){FHCNumuCC1Pi_Det_Cos_NBin=1; FHCNumuCC1Pi_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNumuCC1Pi_Det_Mom_NBin=1; FHCNumuCC1Pi_Det_Mom_Bin[1] = 30000;}
@@ -152,7 +334,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double FHCNumuCCOth_Cos_Bin[25];
   int    FHCNumuCCOth_Det_Cos_NBin = 8;
   double FHCNumuCCOth_Det_Cos_Bin[25];
-  
+
   if(!Do4PiFHC){
     FHCNumuCCOth_Cos_NBin = 11;
     FHCNumuCCOth_Cos_Bin[ 0] = -1.0;
@@ -167,7 +349,7 @@ BANFF::BinningDefinition::BinningDefinition(){
     FHCNumuCCOth_Cos_Bin[ 9] =  0.98;
     FHCNumuCCOth_Cos_Bin[10] =  0.99;
     FHCNumuCCOth_Cos_Bin[11] =  1.0;
-    
+
     FHCNumuCCOth_Det_Cos_NBin = 8;
     FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0;
     FHCNumuCCOth_Det_Cos_Bin[ 1] =  0.8;
@@ -179,19 +361,19 @@ BANFF::BinningDefinition::BinningDefinition(){
     FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.99;
     FHCNumuCCOth_Det_Cos_Bin[ 8] =  1.0;
   }else{
-    FHCNumuCCOth_Cos_NBin = 19;       FHCNumuCCOth_Det_Cos_NBin = 19;	     
-    FHCNumuCCOth_Cos_Bin[ 0] = -1.0;  FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0; 
-    FHCNumuCCOth_Cos_Bin[ 1] = -0.6;  FHCNumuCCOth_Det_Cos_Bin[ 1] = -0.6; 
-    FHCNumuCCOth_Cos_Bin[ 2] = -0.4;  FHCNumuCCOth_Det_Cos_Bin[ 2] = -0.4; 
-    FHCNumuCCOth_Cos_Bin[ 3] = -0.2;  FHCNumuCCOth_Det_Cos_Bin[ 3] = -0.2; 
-    FHCNumuCCOth_Cos_Bin[ 4] = -0.1;  FHCNumuCCOth_Det_Cos_Bin[ 4] = -0.1; 
-    FHCNumuCCOth_Cos_Bin[ 5] =  0.;   FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.;  
-    FHCNumuCCOth_Cos_Bin[ 6] =  0.1;  FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.1; 
-    FHCNumuCCOth_Cos_Bin[ 7] =  0.2;  FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.2; 
-    FHCNumuCCOth_Cos_Bin[ 8] =  0.4;  FHCNumuCCOth_Det_Cos_Bin[ 8] =  0.4; 
-    FHCNumuCCOth_Cos_Bin[ 9] =  0.6;  FHCNumuCCOth_Det_Cos_Bin[ 9] =  0.6; 
-    FHCNumuCCOth_Cos_Bin[10] =  0.7;  FHCNumuCCOth_Det_Cos_Bin[10] =  0.7; 
-    FHCNumuCCOth_Cos_Bin[11] =  0.8;  FHCNumuCCOth_Det_Cos_Bin[11] =  0.8; 
+    FHCNumuCCOth_Cos_NBin = 19;       FHCNumuCCOth_Det_Cos_NBin = 19;
+    FHCNumuCCOth_Cos_Bin[ 0] = -1.0;  FHCNumuCCOth_Det_Cos_Bin[ 0] = -1.0;
+    FHCNumuCCOth_Cos_Bin[ 1] = -0.6;  FHCNumuCCOth_Det_Cos_Bin[ 1] = -0.6;
+    FHCNumuCCOth_Cos_Bin[ 2] = -0.4;  FHCNumuCCOth_Det_Cos_Bin[ 2] = -0.4;
+    FHCNumuCCOth_Cos_Bin[ 3] = -0.2;  FHCNumuCCOth_Det_Cos_Bin[ 3] = -0.2;
+    FHCNumuCCOth_Cos_Bin[ 4] = -0.1;  FHCNumuCCOth_Det_Cos_Bin[ 4] = -0.1;
+    FHCNumuCCOth_Cos_Bin[ 5] =  0.;   FHCNumuCCOth_Det_Cos_Bin[ 5] =  0.;
+    FHCNumuCCOth_Cos_Bin[ 6] =  0.1;  FHCNumuCCOth_Det_Cos_Bin[ 6] =  0.1;
+    FHCNumuCCOth_Cos_Bin[ 7] =  0.2;  FHCNumuCCOth_Det_Cos_Bin[ 7] =  0.2;
+    FHCNumuCCOth_Cos_Bin[ 8] =  0.4;  FHCNumuCCOth_Det_Cos_Bin[ 8] =  0.4;
+    FHCNumuCCOth_Cos_Bin[ 9] =  0.6;  FHCNumuCCOth_Det_Cos_Bin[ 9] =  0.6;
+    FHCNumuCCOth_Cos_Bin[10] =  0.7;  FHCNumuCCOth_Det_Cos_Bin[10] =  0.7;
+    FHCNumuCCOth_Cos_Bin[11] =  0.8;  FHCNumuCCOth_Det_Cos_Bin[11] =  0.8;
     FHCNumuCCOth_Cos_Bin[12] =  0.85; FHCNumuCCOth_Det_Cos_Bin[12] =  0.85;
     FHCNumuCCOth_Cos_Bin[13] =  0.90; FHCNumuCCOth_Det_Cos_Bin[13] =  0.90;
     FHCNumuCCOth_Cos_Bin[14] =  0.92; FHCNumuCCOth_Det_Cos_Bin[14] =  0.92;
@@ -199,7 +381,7 @@ BANFF::BinningDefinition::BinningDefinition(){
     FHCNumuCCOth_Cos_Bin[16] =  0.96; FHCNumuCCOth_Det_Cos_Bin[16] =  0.96;
     FHCNumuCCOth_Cos_Bin[17] =  0.98; FHCNumuCCOth_Det_Cos_Bin[17] =  0.98;
     FHCNumuCCOth_Cos_Bin[18] =  0.99; FHCNumuCCOth_Det_Cos_Bin[18] =  0.99;
-    FHCNumuCCOth_Cos_Bin[19] =  1.0;  FHCNumuCCOth_Det_Cos_Bin[19] =  1.0; 
+    FHCNumuCCOth_Cos_Bin[19] =  1.0;  FHCNumuCCOth_Det_Cos_Bin[19] =  1.0;
   }
   if(Do1DCheckMom){FHCNumuCCOth_Det_Cos_NBin=1; FHCNumuCCOth_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){FHCNumuCCOth_Det_Mom_NBin=1; FHCNumuCCOth_Det_Mom_Bin[1] = 30000;}
@@ -209,12 +391,12 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCANumuCC1Tr_Mom_Bin[11] = {0., 400., 500., 600., 700., 800., 900., 1100., 1400., 2000., 10000.};
   int    RHCANumuCC1Tr_Det_Mom_NBin = 5;
   double RHCANumuCC1Tr_Det_Mom_Bin[6] = { 0., 400., 900., 1100., 2000., 10000.};
-      
+
   int    RHCANumuCC1Tr_Cos_NBin = 13;
   double RHCANumuCC1Tr_Cos_Bin[14] = {-1., 0.6, 0.7, 0.8, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
   int    RHCANumuCC1Tr_Det_Cos_NBin = 8;
   double RHCANumuCC1Tr_Det_Cos_Bin[9] = { -1., 0.6, 0.7, 0.88, 0.95, 0.97, 0.98, 0.99, 1.00};
-    
+
   if(Do1DCheckMom){RHCANumuCC1Tr_Det_Cos_NBin=1; RHCANumuCC1Tr_Det_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCANumuCC1Tr_Det_Mom_NBin=1; RHCANumuCC1Tr_Det_Mom_Bin[1] = 30000;}
 
@@ -230,7 +412,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCANumuCCnTr_Det_Cos_Bin[7] = {-1., 0.85, 0.88, 0.93, 0.98, 0.99, 1.00};
 
   if(Do1DCheckMom){RHCANumuCCnTr_Det_Cos_NBin=1; RHCANumuCCnTr_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCCnTr_Det_Mom_NBin=1; RHCANumuCCnTr_Det_Mom_Bin[1] = 30000;}   
+  if(Do1DCheckCos){RHCANumuCCnTr_Det_Mom_NBin=1; RHCANumuCCnTr_Det_Mom_Bin[1] = 30000;}
 
   //RHCNumuCC1Tr
   int    RHCNumuCC1Tr_Mom_NBin = 6;
@@ -244,7 +426,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCNumuCC1Tr_Det_Cos_Bin[9] = {-1., 0.7, 0.85, 0.90, 0.93, 0.96, 0.98, 0.99, 1.00};
 
   if(Do1DCheckMom){RHCNumuCC1Tr_Det_Cos_NBin=1; RHCNumuCC1Tr_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCC1Tr_Det_Mom_NBin=1; RHCNumuCC1Tr_Det_Mom_Bin[1] = 30000;}   
+  if(Do1DCheckCos){RHCNumuCC1Tr_Det_Mom_NBin=1; RHCNumuCC1Tr_Det_Mom_Bin[1] = 30000;}
 
 
   //RHCNumuCCnTr
@@ -257,49 +439,49 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCNumuCCnTr_Cos_Bin[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
   int    RHCNumuCCnTr_Det_Cos_NBin = 8;
   double RHCNumuCCnTr_Det_Cos_Bin[9] = {-1., 0.8, 0.90, 0.93, 0.95, 0.96, 0.97, 0.99, 1.00};
-  
+
   if(Do1DCheckMom){RHCNumuCCnTr_Det_Cos_NBin=1; RHCNumuCCnTr_Det_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCCnTr_Det_Mom_NBin=1; RHCNumuCCnTr_Det_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCNumuCCnTr_Det_Mom_NBin=1; RHCNumuCCnTr_Det_Mom_Bin[1] = 30000;}
 
   //RHCANumuCC0Pi
   int    RHCANumuCC0Pi_Mom_NBin = 13;
   double RHCANumuCC0Pi_Mom_Bin[14] = {0., 300., 400., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
-  
+
   int    RHCANumuCC0Pi_Cos_NBin = 10;
   double RHCANumuCC0Pi_Cos_Bin[11] = {-1., 0.7, 0.8, 0.85, 0.9, 0.94, 0.96, 0.98, 0.99, 0.995, 1.};
 
   if(Do1DCheckMom){RHCANumuCC0Pi_Cos_NBin=1; RHCANumuCC0Pi_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCC0Pi_Mom_NBin=1; RHCANumuCC0Pi_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCANumuCC0Pi_Mom_NBin=1; RHCANumuCC0Pi_Mom_Bin[1] = 30000;}
 
   //RHCANumuCC1Pi
   int    RHCANumuCC1Pi_Mom_NBin = 8;
   double RHCANumuCC1Pi_Mom_Bin[9] = {0., 400., 600., 800., 1000., 1250., 1500., 2500., 30000.};
-  
+
   int    RHCANumuCC1Pi_Cos_NBin = 4;
   double RHCANumuCC1Pi_Cos_Bin[5] = {-1, 0.8, 0.9, 0.96, 1};
-  
+
   if(Do1DCheckMom){RHCANumuCC1Pi_Cos_NBin=1; RHCANumuCC1Pi_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCC1Pi_Mom_NBin=1; RHCANumuCC1Pi_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCANumuCC1Pi_Mom_NBin=1; RHCANumuCC1Pi_Mom_Bin[1] = 30000;}
 
   //RHCANumuCCOth
   int    RHCANumuCCOth_Mom_NBin = 12;
   double RHCANumuCCOth_Mom_Bin[13] = {0., 350., 500., 600., 700., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
-  
+
   int    RHCANumuCCOth_Cos_NBin = 5;
   double RHCANumuCCOth_Cos_Bin[6] = {-1., 0.8, 0.9, 0.95, 0.98, 1.};
 
   if(Do1DCheckMom){RHCANumuCCOth_Cos_NBin=1; RHCANumuCCOth_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANumuCCOth_Mom_NBin=1; RHCANumuCCOth_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCANumuCCOth_Mom_NBin=1; RHCANumuCCOth_Mom_Bin[1] = 30000;}
 
   //RHCNumuCC0Pi
   int    RHCNumuCC0Pi_Mom_NBin = 11;
   double RHCNumuCC0Pi_Mom_Bin[12] = {0., 350., 500., 650., 800., 900., 1000., 1250., 1500., 2000., 4000., 30000.};
-  
+
   int    RHCNumuCC0Pi_Cos_NBin = 8;
   double RHCNumuCC0Pi_Cos_Bin[9] = {-1, 0.75, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 1};
 
   if(Do1DCheckMom){RHCNumuCC0Pi_Cos_NBin=1; RHCNumuCC0Pi_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCC0Pi_Mom_NBin=1; RHCNumuCC0Pi_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCNumuCC0Pi_Mom_NBin=1; RHCNumuCC0Pi_Mom_Bin[1] = 30000;}
 
   //RHCNumuCC1Pi
   int    RHCNumuCC1Pi_Mom_NBin =  8;
@@ -309,7 +491,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCNumuCC1Pi_Cos_Bin[5] = {-1, 0.8, 0.9, 0.95, 1.};
 
   if(Do1DCheckMom){RHCNumuCC1Pi_Cos_NBin=1; RHCNumuCC1Pi_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCC1Pi_Mom_NBin=1; RHCNumuCC1Pi_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCNumuCC1Pi_Mom_NBin=1; RHCNumuCC1Pi_Mom_Bin[1] = 30000;}
 
   //RHCNumuCCOth
   int    RHCNumuCCOth_Mom_NBin =  10;
@@ -319,69 +501,69 @@ BANFF::BinningDefinition::BinningDefinition(){
   double RHCNumuCCOth_Cos_Bin[9] = {-1., 0.7, 0.8, 0.86, 0.92, 0.94, 0.96, 0.98, 1.};
 
   if(Do1DCheckMom){RHCNumuCCOth_Cos_NBin=1; RHCNumuCCOth_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNumuCCOth_Mom_NBin=1; RHCNumuCCOth_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCNumuCCOth_Mom_NBin=1; RHCNumuCCOth_Mom_Bin[1] = 30000;}
 
   //FHC nue
   int    FHCNueCC_Mom_NBin = 6;
   double FHCNueCC_Mom_Bin[7] = {200., 400., 600., 800., 1000., 1500., 30000.};
-  
+
   int    FHCNueCC_Cos_NBin = 4;
   double FHCNueCC_Cos_Bin[5] = {-1., 0.8, 0.9, 0.95, 1.};
 
   if(Do1DCheckMom){FHCNueCC_Cos_NBin=1; FHCNueCC_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){FHCNueCC_Mom_NBin=1; FHCNueCC_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){FHCNueCC_Mom_NBin=1; FHCNueCC_Mom_Bin[1] = 30000;}
 
   //FHC anue
   int    FHCANueCC_Mom_NBin = 4;
   double FHCANueCC_Mom_Bin[5] = {200., 300., 400., 1000., 30000.};
-  
+
   int    FHCANueCC_Cos_NBin = 1;
   double FHCANueCC_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){FHCANueCC_Cos_NBin=1; FHCANueCC_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){FHCANueCC_Mom_NBin=1; FHCANueCC_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){FHCANueCC_Mom_NBin=1; FHCANueCC_Mom_Bin[1] = 30000;}
 
   //FHC gamma
   int    FHCGamma_Mom_NBin = 5;
   double FHCGamma_Mom_Bin[6] = {200., 300., 400., 600., 1000., 30000.};
-  
+
   int    FHCGamma_Cos_NBin = 1;
   double FHCGamma_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){FHCGamma_Cos_NBin=1; FHCGamma_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){FHCGamma_Mom_NBin=1; FHCGamma_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){FHCGamma_Mom_NBin=1; FHCGamma_Mom_Bin[1] = 30000;}
 
   //RHC nue
   int    RHCNueCC_Mom_NBin = 6;
   double RHCNueCC_Mom_Bin[7] = {200., 400., 600., 800., 1000., 2000., 30000.};
-  
+
   int    RHCNueCC_Cos_NBin = 2;
   double RHCNueCC_Cos_Bin[3] = {-1., 0.9, 1.};
 
   if(Do1DCheckMom){RHCNueCC_Cos_NBin=1; RHCNueCC_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCNueCC_Mom_NBin=1; RHCNueCC_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCNueCC_Mom_NBin=1; RHCNueCC_Mom_Bin[1] = 30000;}
 
   //RHC anue
   int    RHCANueCC_Mom_NBin = 3;
   double RHCANueCC_Mom_Bin[4] = {200., 500., 1000., 30000.};
-  
+
   int    RHCANueCC_Cos_NBin = 2;
   double RHCANueCC_Cos_Bin[3] = {-1., 0.9, 1.};
 
   if(Do1DCheckMom){RHCANueCC_Cos_NBin=1; RHCANueCC_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCANueCC_Mom_NBin=1; RHCANueCC_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCANueCC_Mom_NBin=1; RHCANueCC_Mom_Bin[1] = 30000;}
 
   //RHC gamma
   int    RHCGamma_Mom_NBin = 5;
   double RHCGamma_Mom_Bin[6] = {200., 400., 600., 800., 1000., 30000.};
-  
+
   int    RHCGamma_Cos_NBin = 1;
   double RHCGamma_Cos_Bin[2] = {-1., 1.};
 
   if(Do1DCheckMom){RHCGamma_Cos_NBin=1; RHCGamma_Cos_Bin[1] = 1;}
-  if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;} 
+  if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;}
 
-  
+
   if(!DoOnlyNue){
     bothAxis    [SampleId::kFGD1NuMuCC0Pi] = new TAxis2D(FHCNumuCC0Pi_Mom_NBin    , FHCNumuCC0Pi_Mom_Bin,
                                                          FHCNumuCC0Pi_Cos_NBin    , FHCNumuCC0Pi_Cos_Bin);
@@ -398,7 +580,7 @@ BANFF::BinningDefinition::BinningDefinition(){
     bothAxis_Det[SampleId::kFGD1NuMuCCOther] = new TAxis2D(FHCNumuCCOth_Det_Mom_NBin, FHCNumuCCOth_Det_Mom_Bin,
                                                            FHCNumuCCOth_Det_Cos_NBin, FHCNumuCCOth_Det_Cos_Bin);
 
-  
+
     if(!DoMultiPiRHC){
       bothAxis    [SampleId::kFGD1AntiNuMuCC1Track] = new TAxis2D(RHCANumuCC1Tr_Mom_NBin    , RHCANumuCC1Tr_Mom_Bin,
                                                                   RHCANumuCC1Tr_Cos_NBin    , RHCANumuCC1Tr_Cos_Bin);
@@ -410,7 +592,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       bothAxis_Det[SampleId::kFGD1AntiNuMuCCNTracks] = new TAxis2D(RHCANumuCCnTr_Det_Mom_NBin, RHCANumuCCnTr_Det_Mom_Bin,
                                                                    RHCANumuCCnTr_Det_Cos_NBin, RHCANumuCCnTr_Det_Cos_Bin);
 
-  
+
 
       bothAxis    [SampleId::kFGD1NuMuBkgInAntiNuModeCC1Track] = new TAxis2D(RHCNumuCC1Tr_Mom_NBin     , RHCNumuCC1Tr_Mom_Bin,
                                                                              RHCNumuCC1Tr_Cos_NBin     , RHCNumuCC1Tr_Cos_Bin);
@@ -423,7 +605,7 @@ BANFF::BinningDefinition::BinningDefinition(){
                                                                               RHCNumuCCnTr_Det_Cos_NBin , RHCNumuCCnTr_Det_Cos_Bin);
 
     }else{
-      
+
       bothAxis    [SampleId::kFGD1AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin    , RHCANumuCC0Pi_Mom_Bin,
                                                                RHCANumuCC0Pi_Cos_NBin    , RHCANumuCC0Pi_Cos_Bin);
       bothAxis_Det[SampleId::kFGD1AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin, RHCANumuCC0Pi_Mom_Bin,
@@ -439,7 +621,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       bothAxis_Det[SampleId::kFGD1AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin, RHCANumuCCOth_Mom_Bin,
                                                                  RHCANumuCCOth_Cos_NBin, RHCANumuCCOth_Cos_Bin);
 
-  
+
 
       bothAxis    [SampleId::kFGD1NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin    , RHCNumuCC0Pi_Mom_Bin,
                                                                           RHCNumuCC0Pi_Cos_NBin    , RHCNumuCC0Pi_Cos_Bin);
@@ -456,7 +638,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       bothAxis_Det[SampleId::kFGD1NuMuBkgInAntiNuModeCCOther] = new TAxis2D(RHCNumuCCOth_Mom_NBin, RHCNumuCCOth_Mom_Bin,
                                                                             RHCNumuCCOth_Cos_NBin, RHCNumuCCOth_Cos_Bin);
     }
- 
+
 
     bothAxis    [SampleId::kFGD2NuMuCC0Pi] = new TAxis2D(FHCNumuCC0Pi_Mom_NBin    , FHCNumuCC0Pi_Mom_Bin,
                                                          FHCNumuCC0Pi_Cos_NBin    , FHCNumuCC0Pi_Cos_Bin);
@@ -473,7 +655,7 @@ BANFF::BinningDefinition::BinningDefinition(){
     bothAxis_Det[SampleId::kFGD2NuMuCCOther] = new TAxis2D(FHCNumuCCOth_Det_Mom_NBin, FHCNumuCCOth_Det_Mom_Bin,
                                                            FHCNumuCCOth_Det_Cos_NBin, FHCNumuCCOth_Det_Cos_Bin);
 
-  
+
     if(!DoMultiPiRHC){
 
       bothAxis    [SampleId::kFGD2AntiNuMuCC1Track] = new TAxis2D(RHCANumuCC1Tr_Mom_NBin    , RHCANumuCC1Tr_Mom_Bin,
@@ -486,7 +668,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       bothAxis_Det[SampleId::kFGD2AntiNuMuCCNTracks] = new TAxis2D(RHCANumuCCnTr_Det_Mom_NBin, RHCANumuCCnTr_Det_Mom_Bin,
                                                                    RHCANumuCCnTr_Det_Cos_NBin, RHCANumuCCnTr_Det_Cos_Bin);
 
-  
+
 
       bothAxis    [SampleId::kFGD2NuMuBkgInAntiNuModeCC1Track] = new TAxis2D(RHCNumuCC1Tr_Mom_NBin     , RHCNumuCC1Tr_Mom_Bin,
                                                                              RHCNumuCC1Tr_Cos_NBin     , RHCNumuCC1Tr_Cos_Bin);
@@ -499,7 +681,7 @@ BANFF::BinningDefinition::BinningDefinition(){
                                                                               RHCNumuCCnTr_Det_Cos_NBin , RHCNumuCCnTr_Det_Cos_Bin);
     }else{
 
-  
+
       bothAxis    [SampleId::kFGD2AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin    , RHCANumuCC0Pi_Mom_Bin,
                                                                RHCANumuCC0Pi_Cos_NBin    , RHCANumuCC0Pi_Cos_Bin);
       bothAxis_Det[SampleId::kFGD2AntiNuMuCC0Pi] = new TAxis2D(RHCANumuCC0Pi_Mom_NBin, RHCANumuCC0Pi_Mom_Bin,
@@ -515,7 +697,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       bothAxis_Det[SampleId::kFGD2AntiNuMuCCOther] = new TAxis2D(RHCANumuCCOth_Mom_NBin, RHCANumuCCOth_Mom_Bin,
                                                                  RHCANumuCCOth_Cos_NBin, RHCANumuCCOth_Cos_Bin);
 
-  
+
 
       bothAxis    [SampleId::kFGD2NuMuBkgInAntiNuModeCC0Pi] = new TAxis2D(RHCNumuCC0Pi_Mom_NBin    , RHCNumuCC0Pi_Mom_Bin,
                                                                           RHCNumuCC0Pi_Cos_NBin    , RHCNumuCC0Pi_Cos_Bin);
@@ -539,82 +721,82 @@ BANFF::BinningDefinition::BinningDefinition(){
                                                      FHCNueCC_Cos_NBin      , FHCNueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1NuECC] = new TAxis2D(FHCNueCC_Mom_NBin  , FHCNueCC_Mom_Bin,
                                                      FHCNueCC_Cos_NBin  , FHCNueCC_Cos_Bin);
-  
+
     bothAxis    [SampleId::kFGD1AntiNuEBkgInNuModeCC] = new TAxis2D(FHCANueCC_Mom_NBin     , FHCANueCC_Mom_Bin,
                                                                     FHCANueCC_Cos_NBin     , FHCANueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1AntiNuEBkgInNuModeCC] = new TAxis2D(FHCANueCC_Mom_NBin , FHCANueCC_Mom_Bin,
                                                                     FHCANueCC_Cos_NBin , FHCANueCC_Cos_Bin);
-			     			                    
+
     bothAxis    [SampleId::kFGD1Gamma] = new TAxis2D(FHCGamma_Mom_NBin      , FHCGamma_Mom_Bin,
                                                      FHCGamma_Cos_NBin      , FHCGamma_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1Gamma] = new TAxis2D(FHCGamma_Mom_NBin  , FHCGamma_Mom_Bin,
                                                      FHCGamma_Cos_NBin  , FHCGamma_Cos_Bin);
 
 
-  
+
     bothAxis    [SampleId::kFGD1NuEBkgInAntiNuModeCC] = new TAxis2D(RHCNueCC_Mom_NBin      , RHCNueCC_Mom_Bin,
                                                                     RHCNueCC_Cos_NBin      , RHCNueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1NuEBkgInAntiNuModeCC] = new TAxis2D(RHCNueCC_Mom_NBin  , RHCNueCC_Mom_Bin,
                                                                     RHCNueCC_Cos_NBin  , RHCNueCC_Cos_Bin);
-  
+
     bothAxis    [SampleId::kFGD1AntiNuECC] = new TAxis2D(RHCANueCC_Mom_NBin, RHCANueCC_Mom_Bin,
                                                          RHCANueCC_Cos_NBin, RHCANueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1AntiNuECC] = new TAxis2D(RHCANueCC_Mom_NBin, RHCANueCC_Mom_Bin,
                                                          RHCANueCC_Cos_NBin, RHCANueCC_Cos_Bin);
-			     			                    
+
     bothAxis    [SampleId::kFGD1GammaInAntiNuMode] = new TAxis2D(RHCGamma_Mom_NBin, RHCGamma_Mom_Bin,
                                                                  RHCGamma_Cos_NBin, RHCGamma_Cos_Bin);
     bothAxis_Det[SampleId::kFGD1GammaInAntiNuMode] = new TAxis2D(RHCGamma_Mom_NBin, RHCGamma_Mom_Bin,
                                                                  RHCGamma_Cos_NBin, RHCGamma_Cos_Bin);
 
 
-  
+
     bothAxis    [SampleId::kFGD2NuECC] = new TAxis2D(FHCNueCC_Mom_NBin, FHCNueCC_Mom_Bin,
                                                      FHCNueCC_Cos_NBin, FHCNueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2NuECC] = new TAxis2D(FHCNueCC_Mom_NBin, FHCNueCC_Mom_Bin,
                                                      FHCNueCC_Cos_NBin, FHCNueCC_Cos_Bin);
-  
+
     bothAxis    [SampleId::kFGD2AntiNuEBkgInNuModeCC] = new TAxis2D(FHCANueCC_Mom_NBin, FHCANueCC_Mom_Bin,
                                                                     FHCANueCC_Cos_NBin, FHCANueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2AntiNuEBkgInNuModeCC] = new TAxis2D(FHCANueCC_Mom_NBin, FHCANueCC_Mom_Bin,
                                                                     FHCANueCC_Cos_NBin, FHCANueCC_Cos_Bin);
-			     			                    
+
     bothAxis    [SampleId::kFGD2Gamma] = new TAxis2D(FHCGamma_Mom_NBin, FHCGamma_Mom_Bin,
                                                      FHCGamma_Cos_NBin, FHCGamma_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2Gamma] = new TAxis2D(FHCGamma_Mom_NBin, FHCGamma_Mom_Bin,
                                                      FHCGamma_Cos_NBin, FHCGamma_Cos_Bin);
 
 
-  
+
     bothAxis    [SampleId::kFGD2NuEBkgInAntiNuModeCC] = new TAxis2D(RHCNueCC_Mom_NBin, RHCNueCC_Mom_Bin,
                                                                     RHCNueCC_Cos_NBin, RHCNueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2NuEBkgInAntiNuModeCC] = new TAxis2D(RHCNueCC_Mom_NBin, RHCNueCC_Mom_Bin,
                                                                     RHCNueCC_Cos_NBin, RHCNueCC_Cos_Bin);
-  
+
     bothAxis    [SampleId::kFGD2AntiNuECC] = new TAxis2D(RHCANueCC_Mom_NBin, RHCANueCC_Mom_Bin,
                                                          RHCANueCC_Cos_NBin, RHCANueCC_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2AntiNuECC] = new TAxis2D(RHCANueCC_Mom_NBin, RHCANueCC_Mom_Bin,
                                                          RHCANueCC_Cos_NBin, RHCANueCC_Cos_Bin);
-			     			                    
+
     bothAxis    [SampleId::kFGD2GammaInAntiNuMode] = new TAxis2D(RHCGamma_Mom_NBin, RHCGamma_Mom_Bin,
                                                                  RHCGamma_Cos_NBin, RHCGamma_Cos_Bin);
     bothAxis_Det[SampleId::kFGD2GammaInAntiNuMode] = new TAxis2D(RHCGamma_Mom_NBin, RHCGamma_Mom_Bin,
                                                                  RHCGamma_Cos_NBin, RHCGamma_Cos_Bin);
   }
-  
+
   int nBinsFlatMomBinningForNuMuComp = 20;
   double FlatMomBinningForNuMuComp[21];
   for(int i = 0; i < nBinsFlatMomBinningForNuMuComp+1; ++i){
     FlatMomBinningForNuMuComp[i] = 250*i;
   }
-  
+
   if(UseFlatNuMuBinning){
     int nBinsFlatCosBinningForNuMuComp = 1;
     double FlatCosBinningForNuMuComp[2]= {-1,1};
 
     for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; ++i){
       SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
-      
+
       if(bothAxis.find(sample) != bothAxis.end()){
 //        bothAxis.erase(sample);
         bothAxis[sample] = new TAxis2D(nBinsFlatMomBinningForNuMuComp,FlatMomBinningForNuMuComp,
@@ -630,10 +812,10 @@ BANFF::BinningDefinition::BinningDefinition(){
 
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
     SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
-    
 
-    std::map<SampleId::SampleEnum, TAxis2D*>::iterator it0 = bothAxis    .find(sample);
-    std::map<SampleId::SampleEnum, TAxis2D*>::iterator it1 = bothAxis_Det.find(sample);
+
+    std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it0 = bothAxis    .find(sample);
+    std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it1 = bothAxis_Det.find(sample);
 
     ActiveSample[sample] = (it0 != bothAxis.end() && it1 != bothAxis_Det.end());
 
@@ -646,7 +828,7 @@ BANFF::BinningDefinition::BinningDefinition(){
       Axis_Cos_Det[sample] = (*ax2)[1];
     }
   }
-  
+
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))){
     ActiveSample[SampleId::kFGD1NuMuCC0Pi  ] = false;
     ActiveSample[SampleId::kFGD1NuMuCC1Pi  ] = false;
@@ -745,17 +927,17 @@ BANFF::BinningDefinition::BinningDefinition(){
     ActiveSample[SampleId::kFGD2Gamma            ] = false;
     ActiveSample[SampleId::kFGD2GammaInAntiNuMode] = false;
   }
-  
+
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(SampleId::SampleEnum sample, double Mom, double Cos){
+int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample, double Mom, double Cos){
   /// This gets the global bin number in the detector matrix
   int row = 0;
   if(Mom < 0     || Cos < -1) return -1;
   if(Mom > 30000 || Cos >  1) return -1;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::const_iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     if(sample == (*it).first){
       TAxis* MomAxis = Axis_Mom_Det[(*it).first]; //Makes the code faster by not calling endless time the map?
       TAxis* CosAxis = Axis_Cos_Det[(*it).first];
@@ -767,17 +949,17 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(SampleId::SampleEnum 
       row = row + GetNbins_Det((*it).first);
     }
   }
-  return -1; 
+  return -1;
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnum sample, const double Mom, const double Cos){
+int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample, const double Mom, const double Cos){
   /// This gets the global bin number in the matrix
   int row = 0;
   if(Mom < 0     || Cos < -1) return -1;
   if(Mom > 30000 || Cos >  1) return -1;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     if(sample == (*it).first){
       TAxis* MomAxis = Axis_Mom[(*it).first]; //Makes the code faster by not calling endless time the map?
       TAxis* CosAxis = Axis_Cos[(*it).first];
@@ -789,16 +971,16 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnu
       row = row + GetNbins((*it).first);
     }
   }
-  return -1; 
+  return -1;
 
 }
 
-void BANFF::BinningDefinition::GetLocalBinMatrixMomCos(const int GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
-  
+void BANFF::BinningDefinition::GetLocalBinMatrixMomCos(const int &GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
+
   Sample = SampleId::kUnassigned;
   MomBin = -1;
   CosBin = -1;
-  
+
   if(GlobalBin > GetNbins()){
     return;
   }
@@ -806,37 +988,9 @@ void BANFF::BinningDefinition::GetLocalBinMatrixMomCos(const int GlobalBin, Samp
   // Gets the first index in the matrix with this sample
   int Ind = GetGlobalBinMatrix(Sample);
   int LocalIndex = GlobalBin - Ind;
-  
+
   int nMomBin = GetNbins_Mom((SampleId::SampleEnum)Sample);
-  int nCosBin = GetNbins_Cos((SampleId::SampleEnum)Sample); 
-
-  for(int i = 0; i < nMomBin; ++i){
-    for(int j = 0; j < nCosBin; ++j){
-      if(j * nMomBin + i == LocalIndex){
-        MomBin = i;
-        CosBin = j;       
-        return;
-      }
-    }    
-  }
-  return;
-
-}
-void BANFF::BinningDefinition::GetLocalBinMatrixMomCos_Det(const int GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
-  
-  Sample = SampleId::kUnassigned;
-  MomBin = -1;
-  CosBin = -1;
-  
-  if(GlobalBin > GetNbins_Det()){
-    return;
-  }
-  Sample = GetSampleFromIndex_Det(GlobalBin);
-  // Gets the first index in the matrix with this sample
-  int Ind = GetGlobalBinMatrix_Det(Sample);
-  int LocalIndex = GlobalBin - Ind;
-  int nMomBin = GetNbins_Mom_Det((SampleId::SampleEnum)Sample);
-  int nCosBin = GetNbins_Cos_Det((SampleId::SampleEnum)Sample); 
+  int nCosBin = GetNbins_Cos((SampleId::SampleEnum)Sample);
 
   for(int i = 0; i < nMomBin; ++i){
     for(int j = 0; j < nCosBin; ++j){
@@ -845,128 +999,161 @@ void BANFF::BinningDefinition::GetLocalBinMatrixMomCos_Det(const int GlobalBin, 
         CosBin = j;
         return;
       }
-    }    
+    }
+  }
+  return;
+
+}
+void BANFF::BinningDefinition::GetLocalBinMatrixMomCos_Det(const int &GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
+
+  Sample = SampleId::kUnassigned;
+  MomBin = -1;
+  CosBin = -1;
+
+  if(GlobalBin > GetNbins_Det()){
+    return;
+  }
+  Sample = GetSampleFromIndex_Det(GlobalBin);
+  // Gets the first index in the matrix with this sample
+  int Ind = GetGlobalBinMatrix_Det(Sample);
+  int LocalIndex = GlobalBin - Ind;
+  int nMomBin = GetNbins_Mom_Det((SampleId::SampleEnum)Sample);
+  int nCosBin = GetNbins_Cos_Det((SampleId::SampleEnum)Sample);
+
+  for(int i = 0; i < nMomBin; ++i){
+    for(int j = 0; j < nCosBin; ++j){
+      if(j * nMomBin + i == LocalIndex){
+        MomBin = i;
+        CosBin = j;
+        return;
+      }
+    }
   }
   return;
 
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrix_Det(const SampleId::SampleEnum sample){
+int BANFF::BinningDefinition::GetGlobalBinMatrix_Det(const SampleId::SampleEnum &sample) const {
   /// This gets the global bin number in the detector matrix
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     if(sample == it->first)
       return row;
     row = row + GetNbins_Det(it->first);
   }
-  return -1; 
+  return -1;
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrix(const SampleId::SampleEnum sample){
+int BANFF::BinningDefinition::GetGlobalBinMatrix(const SampleId::SampleEnum &sample) const {
   /// This gets the global bin number in the matrix
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     if(sample == it->first)
       return row;
     row = row + GetNbins(it->first);
   }
-  return -1; 
+  return -1;
 
 }
 
 
-int BANFF::BinningDefinition::GetNbins_Det(){
+int BANFF::BinningDefinition::GetNbins_Det() const{
   /// This gets the total number of bins in the detector matrix
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     row = row + GetNbins_Det(it->first);
   }
-  return row; 
+  return row;
 
 }
 
 
-int BANFF::BinningDefinition::GetNbins(){
+int BANFF::BinningDefinition::GetNbins() const{
   /// This gets the total number of bins in the matrix
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     row = row + GetNbins(it->first);
   }
-  return row; 
+  return row;
 
 }
 
-SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex(const int index){
+SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex(const int &index) const
+{
 
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it)
+  {
     row = row + GetNbins(it->first);
     if(index < row)
       return it->first;
   }
-  return SampleId::kUnassigned; 
+  return SampleId::kUnassigned;
 }
 
-SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex_Det(const int index){
+SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex_Det(const int &index) const
+{
 
   int row = 0;
 
-  for (std::map<SampleId::SampleEnum, TAxis*>::iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleTAxisCIterator it = Axis_Mom_Det.begin(); it != Axis_Mom_Det.end(); ++it){
     row = row + GetNbins_Det(it->first);
     if(index < row)
       return it->first;
   }
-  return SampleId::kUnassigned; 
-  
+  return SampleId::kUnassigned;
+
 }
 
-std::vector<std::string> BANFF::BinningDefinition::GetListOfBins(){
+std::vector<std::string> BANFF::BinningDefinition::GetListOfBins()
+{
 
   std::vector<std::string> BinList;
-  
+
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
     SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
     if(ActiveSample[sample]){
       std::string samplename = ConvertSample(sample);
       for(int ibin = 0; ibin < GetNbins(sample); ibin++)
-	BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
+        BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
     }
   }
-  
+
   return BinList;
-  
+
 }
 
-std::vector<std::string> BANFF::BinningDefinition::GetListOfBins_Det(){
-
+std::vector<std::string> BANFF::BinningDefinition::GetListOfBins_Det()
+{
   std::vector<std::string> BinList;
-  
+
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
     SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
-    if(ActiveSample[sample]){
-      std::string samplename = ConvertSample(sample);
-      for(int ibin = 0; ibin < GetNbins_Det(sample); ibin++)
-	BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
+    if(IsActiveSample(sample))
+    {
+        std::string samplename = ConvertSample(sample);
+        for(int ibin = 0; ibin < GetNbins_Det(sample); ibin++)
+            BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
     }
   }
-  
+
   return BinList;
-  
 }
 
 // A map to be able to go from full -> reduced binning
-std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap(){
+std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap()
+{
 
   if(FullToReduMap.size() > 0)
     return FullToReduMap;
-  
+
   //int nBinsRedu = GetNbins_Det();
   int nBinsFull = GetNbins();
 
@@ -1004,11 +1191,11 @@ std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap(){
     int binmom_det, bincos_det;
     SampleId::SampleEnum sample_det;
     GetLocalBinMatrixMomCos_Det(bin_det, sample_det, binmom_det, bincos_det);
-    
+
     if(bin_det != bin2_det){
       std::cerr << "The fine binning is more coarse than the detector binning!!!" << std::endl;
       std::cerr << "Maybe epilson is too large for the Cos binning?" << std::endl;
-      
+
       std::cerr << "First detector cov bin corresponds to (low edge of the fine binning): Global bin " << bin_det << std::endl;
       std::cerr << "DET: Sample "<<SampleId::ConvertSample(sample_det)<<"Mom Binning->GetBinLowEdge("<<binmom_det<<") " << GetBinning_Mom_Det(sample_det)->GetBinLowEdge(binmom_det+1) << std::endl;
       std::cerr << "DET: Sample "<<SampleId::ConvertSample(sample_det)<<"Mom Binning->GetBinUpEdge ("<<binmom_det<<") " << GetBinning_Mom_Det(sample_det)->GetBinUpEdge (binmom_det+1) << std::endl;
