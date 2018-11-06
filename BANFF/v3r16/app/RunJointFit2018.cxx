@@ -8,7 +8,7 @@
 #include "Parameters.hxx"
 #include <sstream>
 
-//Set up the samples and observables with proper binning, 
+//Set up the samples and observables with proper binning,
 //  then load the parameters and perform the fit.
 int main(int argc, char** argv){
 
@@ -66,12 +66,12 @@ int main(int argc, char** argv){
     bool likelihoodscan = (bool)ND::params().GetParameterI("BANFF.DoLikelihoodScan");
 
     //Map for storing the sample IDs
-    std::map<SampleId::SampleEnum,BANFFBinnedSample*> SampleMap;
+    std::map<SampleId::SampleEnum, BANFFBinnedSample*> SampleMap;
 
     //Keep track of the number of samples
     int nSample = 6;
 
-    //FHC NuMu selections 
+    //FHC NuMu selections
     if(!Do4PiFHC && !DoOnlyNue){ //FHC Multi Pi selections
         std::cout << "---------------------------------" << std::endl;
         std::cout << "Applying FHC CCMultiPi selections" << std::endl;
@@ -146,7 +146,7 @@ int main(int argc, char** argv){
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 0 ||
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGamma")         == 0 ||
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECCFGD2")     == 0 ||
-           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 0 || 
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECCFGD2") == 0 ||
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerGammaFGD2")     == 0){
             std::cout << "Nue not activated in psycheSteering!" << std::endl;
             throw;
@@ -342,7 +342,7 @@ int main(int argc, char** argv){
                                                   ND::params().GetParameterI("BANFF.RunFit.FitFluxParams"));
     }
 
-    //Load the ObsNorm parameters and specify whether to fit them. 
+    //Load the ObsNorm parameters and specify whether to fit them.
     if(ND::params().GetParameterI("BANFF.RunFit.LoadObsNormParams")){
         fitParameters->LoadObsNormParametersFromFile(ND::params().GetParameterS("BANFF.ObsNormInputFile"),
                                                      nSample, samples,
@@ -365,9 +365,9 @@ int main(int argc, char** argv){
     if(DoNue)    { outputName = "NuE_" + outputName;      }
 
     if(!DoOnlyNue){
-        if(DoMultiPiRHC) { outputName = "MultiPiRHC_"+outputName;    } 
+        if(DoMultiPiRHC) { outputName = "MultiPiRHC_"+outputName;    }
         else             { outputName = "MultiTrackRHC_"+outputName; }
-    } 
+    }
     else{ outputName = "ONLY"+outputName; }
 
     if(likelihoodscan) { outputName = "SCAN_"+outputName; }
@@ -451,7 +451,7 @@ int main(int argc, char** argv){
 
     //Create the psyche interface.
     //Do not load in or vary the detector parameters from psyche.
-    //NB: Although there are program parameters for this, 
+    //NB: Although there are program parameters for this,
     //    it is something that would never be done.
 
     std::string diagnostic_name = "diagnostic_" + outputName;
