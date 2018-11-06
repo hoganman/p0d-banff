@@ -11,11 +11,13 @@ from ROOT import TCut, TLegend, gSystem
 from ROOTHStack import ROOTHStack
 import sys
 
+P0DBANFFROOT = getenv('P0DBANFFROOT')
+
 # toggle these to draw particular variables
 DRAW_ENU = 0
 DRAW_PMU = 1
+DRAW_COSTHETAMU = 1
 DRAW_THETAMU = 0
-DRAW_COSTHETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
@@ -23,16 +25,16 @@ DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
 # Apply event + flux weight
-APPLY_FLUX_WEIGHTS = 0
+APPLY_FLUX_WEIGHTS = 1
 APPLY_EVENT_WEIGHTS = 0
 
-PLOTLEPTONCANDIDATETRUEPDG = 0
-PLOTNEUTNUREACTIONCODES = 0
+PLOTLEPTONCANDIDATETRUEPDG = 1
+PLOTNEUTNUREACTIONCODES = 1
 PLOTNEUTANTINUREACTIONCODES = 0
 PLOTTOPOLOGY = 1
 
 # Display the ratio of Data/MC below histogram
-SHOW_RATIO_PLOT_BELOW = 1
+SHOW_RATIO_PLOT_BELOW = 0
 
 # use the TN-208 runs
 TN208_ANALYSIS = 0
@@ -45,7 +47,7 @@ MOMENTUM_CUT_VALUE = '5000.'
 ADDITIONAL_CUTS = None
 
 # Which selection to run
-RUNP0DWATERNUMUCCSELECTION = 0
+RUNP0DWATERNUMUCCSELECTION = 1
 RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
 RUNP0DAIRNUMUCCSELECTION = 1
@@ -74,14 +76,13 @@ CUTS = None
 
 def main(argv):
     """main"""
-    helpstatement = "plotRunSyst_NewResults.py (no args)"
+    helpstatement = "plotRunSyst_NewResults.py (no args). Please read the code to understand how to plot"
     if len(argv) > 0:
         print helpstatement
-    p0dbanffroot = getenv('P0DBANFFROOT')
     LoadP0DBANFF()
     LoadSampleIDs()
 
-    binningLocation = '%s/config/Binning.xml' % p0dbanffroot
+    binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
     cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
     # cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
@@ -703,8 +704,8 @@ def GetMonteCarloSamples(sampleID):
 
     chn_SANDRun3AirFHC = T2KDATAMC.SANDFHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_SANDRun3AirRHC = T2KDATAMC.SANDRHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Air = T2KDATAMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Wtr = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Air = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Wtr = T2KDATAMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3bAir = T2KDATAMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3cAir = T2KDATAMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun4Air = T2KDATAMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
@@ -801,8 +802,8 @@ def GetDATAsamples(sampleID):
     """
     file_path = getenv('SYSTEMATICSROOT')
     RunSyst_New_DATA_TTree = 'nominal'
-    chn_DATARun2Air = T2KDATAMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun2Wtr = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Air = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Wtr = T2KDATAMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3bAir = T2KDATAMC.RUN3BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3cAir = T2KDATAMC.RUN3CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun4Air = T2KDATAMC.RUN4ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
@@ -976,6 +977,9 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
 
 def LoadP0DBANFF():
     """Load in the necessary classes"""
+    if len(P0DBANFFROOT) <= 0:
+        print 'P0DBANFFROOT NOT exported. Please export it now'
+        sys.exit(1)
     global ENGINE
     ENGINE = ROOT.TXMLEngine()
     loadStatus = gSystem.Load("libP0DBANFF")
