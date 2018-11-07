@@ -51,13 +51,12 @@ int main(int argc, char **argv){
         throw;
     }
 
-    std::string paramFile = Reset::kString;
     std::string inputFileName = Reset::kString;
     std::string outputFileName = Reset::kString;
     std::string parameterFileOveride = Reset::kString;
     std::string correlationFile = Reset::kString;
     Long64_t nmax = 100000000;
-    Int_t nToys = 2000;
+    Int_t nToys = 0;
     Bool_t preload = kFALSE;
     Bool_t isData = false;
     TGeoManager* geoManager = NULL;
@@ -660,12 +659,12 @@ if(debug) DEBUG(trueParticle->PDG)
                         TrueNuPDGNom    = trVtx->NuPDG;
                         tQ2 = trVtx->Q2;
 
-                        const Float_t &Mmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trueParticle->PDG));
+                        const Float_t Mmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trueParticle->PDG));
                         if(Mmu > 0)
                         {
                             // Get the target mass for CC-QE
                             // anti-nu CCQE on neutron or nu CCQE on proton
-                            const Float_t &M_N = (TrueNuPDGNom < 0) ?
+                            const Float_t M_N = (TrueNuPDGNom < 0) ?
                                                  anaUtils::GetParticleMass(ParticleId::kNeutron) :
                                                  anaUtils::GetParticleMass(ParticleId::kProton);
                             tNu  = trVtx->NuEnergy - std::sqrt(tLeptonMomentum*tLeptonMomentum+Mmu*Mmu);
@@ -808,7 +807,8 @@ if(debug) DEBUG(trueParticle->PDG)
                         }
                         if(summary->TrueVertex[summary->EventSample])
                         {
-                            TrueVertexIDToy[iToy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->GetTrueParticle()->VertexID;
+                            const AnaParticleMomB* momB = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
+                            TrueVertexIDToy[iToy] = momB->GetTrueParticle()->VertexID;
                             TrueEnuToy     [iToy] = summary->TrueVertex[summary->EventSample]->NuEnergy;
                             TrueNuPDGToy   [iToy] = summary->TrueVertex[summary->EventSample]->NuPDG;
                         }
