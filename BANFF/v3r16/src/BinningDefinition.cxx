@@ -1,193 +1,218 @@
+#define BINNINGDEFINITION_CXX
+
 #include <BinningDefinition.hxx>
 
-
-// The static member pointer to the singleton.
-BANFF::BinningDefinition* BANFF::BinningDefinition::fBinningDefinition = NULL;
-
-BANFF::BinningDefinition::~BinningDefinition()
+//*****************************************************************************
+BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
+//*****************************************************************************
 {
-    for (SampleTAxisIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+    FirstDim  = new TAxis(nbin1, bins1);
+    SecondDim = new TAxis(nbin2, bins2);
+    Array = new TAxis*[ArraySize];
+    Array[0] = FirstDim;
+    Array[1] = SecondDim;
+}
+
+//*****************************************************************************
+BANFF::TAxis2D::~TAxis2D()
+//*****************************************************************************
+{
+    delete FirstDim;
+    delete SecondDim;
+    delete Array;
+};
+
+//*****************************************************************************
+TAxis* BANFF::TAxis2D::operator[] (const unsigned int &d)
+//*****************************************************************************
+{
+    if(d >= ArraySize)
+    {
+        std::cerr << "Can't acces more than 2D" << std::endl;
+        throw;
+    }
+    return Array[d];
+}
+
+//*****************************************************************************
+BANFF::BinningDefinition::~BinningDefinition()
+//*****************************************************************************
+{
+    SampleEnumToTAxisMap_t::iterator it;
+    for (it = Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
       if(it->second) delete it->second;
       Axis_Mom.erase(it);
     }
 
-    for (SampleTAxisIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+    for (it = Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
       if(it->second) delete it->second;
       Axis_Mom_Det.erase(it);
     }
-    for (SampleTAxisIterator it=Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
+    for (it = Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
       if(it->second) delete it->second;
       Axis_Cos.erase(it);
     }
 
-    for (SampleTAxisIterator it=Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
+    for (it = Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
       if(it->second) delete it->second;
       Axis_Cos_Det.erase(it);
     }
 }
 
-BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
-{
-    FirstDim  = new TAxis(nbin1, bins1);
-    SecondDim = new TAxis(nbin2, bins2);
-}
-
-BANFF::TAxis2D::~TAxis2D()
-{
-    delete FirstDim;
-    delete SecondDim;
-};
-
-TAxis* BANFF::TAxis2D::operator[] (const unsigned int &d)
-{
-    if     (d == 0) return FirstDim;
-    else if(d == 1) return SecondDim;
-    else
-    {
-        std::cerr << "Can't acces more than 2D" << std::endl;
-        throw;
-    }
-}
-
+//*****************************************************************************
 bool BANFF::BinningDefinition::IsActiveSample(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
     std::map<SampleId::SampleEnum, bool>::const_iterator it;
     it = ActiveSample.find(sample);
     if(it != ActiveSample.end())
         return it->second;
-    else
-        return false;
+    return false;
 }
 
+//*****************************************************************************
 bool BANFF::BinningDefinition::IsActiveSample(const int &sample) const
+//*****************************************************************************
 {
     if(sample >= SampleId::kUnassigned && sample < SampleId::kNSamples)
     {
         const SampleId::SampleEnum s = static_cast<SampleId::SampleEnum>(sample);
         return IsActiveSample(s);
     }
-    else
-        return false;
+    return false;
 };
 
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Mom (const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
     if(IsActiveSample(sample))
         return Axis_Mom.at(sample)->GetNbins();
-    else
-        return 0;
+    return 0;
 }
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Mom_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
   if(IsActiveSample(sample))
-      return Axis_Mom_Det.at(sample)->GetNbins();
-  else
-      return 0;
+    return Axis_Mom_Det.at(sample)->GetNbins();
+  return 0;
 }
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Cos(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
   if(IsActiveSample(sample))
-      return Axis_Cos.at(sample)->GetNbins();
-  else
-      return 0;
+    return Axis_Cos.at(sample)->GetNbins();
+  return 0;
 }
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Cos_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
   if(IsActiveSample(sample))
-      return Axis_Cos_Det.at(sample)->GetNbins();
-  else
-      return 0;
+    return Axis_Cos_Det.at(sample)->GetNbins();
+  return 0;
 }
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
   if(IsActiveSample(sample))
-      return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
-  else
-      return 0;
+    return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
+  return 0;
 }
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
   if(IsActiveSample(sample))
-      return GetNbins_Mom(sample) * GetNbins_Cos(sample);
-  else
-      return 0;
+    return GetNbins_Mom(sample) * GetNbins_Cos(sample);
+  return 0;
 };
 
+//*****************************************************************************
 TAxis* BANFF::BinningDefinition::GetBinning_Mom(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
-  if(IsActiveSample(sample))
-      return Axis_Mom.at(sample);
-  else
+  if(!IsActiveSample(sample))
   {
       std::cerr << "No momentum binning for the sample " << ConvertSample(sample) << std::endl;
       throw;
-      return NULL;
   }
+  return Axis_Mom.at(sample);
 }
 
+//*****************************************************************************
 TAxis* BANFF::BinningDefinition::GetBinning_Mom_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
-  if(IsActiveSample(sample))
-      return
-          Axis_Mom_Det.at(sample);
-  else
+  if(!IsActiveSample(sample))
   {
     std::cerr << "No momentum (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
     throw;
-    return NULL;
   }
+  return Axis_Mom_Det.at(sample);
 }
 
+//*****************************************************************************
 TAxis* BANFF::BinningDefinition::GetBinning_Cos(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
-  if(IsActiveSample(sample))
-      return Axis_Cos.at(sample);
-  else{
+  if(!IsActiveSample(sample))
+  {
     std::cerr << "No costheta binning for the sample " << ConvertSample(sample) << std::endl;
     throw;
-    return NULL;
   }
+  return Axis_Cos.at(sample);
 }
 
+//*****************************************************************************
 TAxis* BANFF::BinningDefinition::GetBinning_Cos_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
-  if(IsActiveSample(sample))
-      return Axis_Cos_Det.at(sample);
-  else
+  if(!IsActiveSample(sample))
   {
     std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
     throw;
-    return NULL;
   }
+  return Axis_Cos_Det.at(sample);
 }
 
+//*****************************************************************************
 BANFF::TAxis2D* BANFF::BinningDefinition::GetBinningArray(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
 {
-  if(IsActiveSample(sample))
-      return bothAxis.at(sample);
-  else
+  if(!IsActiveSample(sample))
   {
     std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
     throw;
-    return NULL;
   }
+  return bothAxis.at(sample);
 }
 
+///The static member pointer to the singleton.
+//*****************************************************************************
+BANFF::BinningDefinition* BANFF::BinningDefinition::fBinningDefinition = NULL;
+//*****************************************************************************
+
+//*****************************************************************************
 BANFF::BinningDefinition& BANFF::BinningDefinition::Get() {
+//*****************************************************************************
   if (!fBinningDefinition)
-      fBinningDefinition = new BANFF::BinningDefinition;
+    fBinningDefinition = new BANFF::BinningDefinition();
   return *(fBinningDefinition);
 }
 
-
-
+//*****************************************************************************
 BANFF::BinningDefinition::BinningDefinition(){
+//*****************************************************************************
   Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
   DoNue        = (bool)ND::params().GetParameterI("BANFF.DoNueSelections");
   DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
@@ -203,6 +228,18 @@ BANFF::BinningDefinition::BinningDefinition(){
     throw;
   }
   FullToReduMap.clear();
+
+  //P0D FHC numuCC-Inclusive
+  int    P0DFHCNumuCCInclusive_Mom_NBin = 9;
+  double P0DFHCNumuCCInclusive_Mom_Bin[10] = {0, 450, 700, 1100, 1600, 2200, 3000, 4000, 5000, 30000};
+  int    P0DFHCNumuCCInclusive_Det_Mom_NBin = 6;
+  double P0DFHCNumuCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 4000, 5000, 30000};
+
+  int    P0DFHCNumuCCInclusive_Cos_NBin = 6;
+  double P0DFHCNumuCCInclusive_Cos_Bin[7] = {-1.0, +0.55, +0.7, +0.82, +0.94, +0.986, +1.0};
+  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 4;
+  double P0DFHCNumuCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.55, +0.82, +0.94, +1.0};
+
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
   double FHCNumuCC0Pi_Mom_Bin[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
@@ -563,6 +600,15 @@ BANFF::BinningDefinition::BinningDefinition(){
   if(Do1DCheckMom){RHCGamma_Cos_NBin=1; RHCGamma_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;}
 
+  bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
+                                                        P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
+  bothAxis_Det[SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
+                                                        P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+
+  bothAxis    [SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
+                                                        P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
+  bothAxis_Det[SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
+                                                        P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
 
   if(!DoOnlyNue){
     bothAxis    [SampleId::kFGD1NuMuCC0Pi] = new TAxis2D(FHCNumuCC0Pi_Mom_NBin    , FHCNumuCC0Pi_Mom_Bin,
@@ -813,7 +859,6 @@ BANFF::BinningDefinition::BinningDefinition(){
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
     SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
 
-
     std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it0 = bothAxis    .find(sample);
     std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it1 = bothAxis_Det.find(sample);
 
@@ -827,6 +872,16 @@ BANFF::BinningDefinition::BinningDefinition(){
       Axis_Mom_Det[sample] = (*ax2)[0];
       Axis_Cos_Det[sample] = (*ax2)[1];
     }
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DWater")))
+  {
+      ActiveSample[SampleId::kP0DWaterNuMuCC] = false;
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DAir")))
+  {
+      ActiveSample[SampleId::kP0DAirNuMuCC  ] = false;
   }
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))){
@@ -931,13 +986,17 @@ BANFF::BinningDefinition::BinningDefinition(){
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample, double Mom, double Cos){
+//*****************************************************************************
+int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample,
+        const double &Mom, const double &Cos)
+//*****************************************************************************
+{
   /// This gets the global bin number in the detector matrix
   int row = 0;
   if(Mom < 0     || Cos < -1) return -1;
   if(Mom > 30000 || Cos >  1) return -1;
 
-  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     if(sample == (*it).first){
       TAxis* MomAxis = Axis_Mom_Det[(*it).first]; //Makes the code faster by not calling endless time the map?
       TAxis* CosAxis = Axis_Cos_Det[(*it).first];
@@ -953,13 +1012,17 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::Sampl
 }
 
 
-int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample, const double Mom, const double Cos){
+//*****************************************************************************
+int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample,
+        const double &Mom, const double &Cos)
+//*****************************************************************************
+{
   /// This gets the global bin number in the matrix
   int row = 0;
   if(Mom < 0     || Cos < -1) return -1;
   if(Mom > 30000 || Cos >  1) return -1;
 
-  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     if(sample == (*it).first){
       TAxis* MomAxis = Axis_Mom[(*it).first]; //Makes the code faster by not calling endless time the map?
       TAxis* CosAxis = Axis_Cos[(*it).first];
@@ -975,7 +1038,9 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnu
 
 }
 
+//*****************************************************************************
 void BANFF::BinningDefinition::GetLocalBinMatrixMomCos(const int &GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
+//*****************************************************************************
 
   Sample = SampleId::kUnassigned;
   MomBin = -1;
@@ -1001,10 +1066,11 @@ void BANFF::BinningDefinition::GetLocalBinMatrixMomCos(const int &GlobalBin, Sam
       }
     }
   }
-  return;
 
 }
+//*****************************************************************************
 void BANFF::BinningDefinition::GetLocalBinMatrixMomCos_Det(const int &GlobalBin, SampleId::SampleEnum& Sample, int& MomBin, int& CosBin){
+//*****************************************************************************
 
   Sample = SampleId::kUnassigned;
   MomBin = -1;
@@ -1029,16 +1095,17 @@ void BANFF::BinningDefinition::GetLocalBinMatrixMomCos_Det(const int &GlobalBin,
       }
     }
   }
-  return;
 
 }
 
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetGlobalBinMatrix_Det(const SampleId::SampleEnum &sample) const {
+//*****************************************************************************
   /// This gets the global bin number in the detector matrix
   int row = 0;
 
-  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     if(sample == it->first)
       return row;
     row = row + GetNbins_Det(it->first);
@@ -1047,11 +1114,13 @@ int BANFF::BinningDefinition::GetGlobalBinMatrix_Det(const SampleId::SampleEnum 
 }
 
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetGlobalBinMatrix(const SampleId::SampleEnum &sample) const {
+//*****************************************************************************
   /// This gets the global bin number in the matrix
   int row = 0;
 
-  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     if(sample == it->first)
       return row;
     row = row + GetNbins(it->first);
@@ -1061,11 +1130,13 @@ int BANFF::BinningDefinition::GetGlobalBinMatrix(const SampleId::SampleEnum &sam
 }
 
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins_Det() const{
+//*****************************************************************************
   /// This gets the total number of bins in the detector matrix
   int row = 0;
 
-  for (SampleTAxisCIterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     row = row + GetNbins_Det(it->first);
   }
   return row;
@@ -1073,23 +1144,27 @@ int BANFF::BinningDefinition::GetNbins_Det() const{
 }
 
 
+//*****************************************************************************
 int BANFF::BinningDefinition::GetNbins() const{
+//*****************************************************************************
   /// This gets the total number of bins in the matrix
   int row = 0;
 
-  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     row = row + GetNbins(it->first);
   }
   return row;
 
 }
 
+//*****************************************************************************
 SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex(const int &index) const
+//*****************************************************************************
 {
 
   int row = 0;
 
-  for (SampleTAxisCIterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it)
+  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it)
   {
     row = row + GetNbins(it->first);
     if(index < row)
@@ -1098,12 +1173,14 @@ SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex(const int &ind
   return SampleId::kUnassigned;
 }
 
+//*****************************************************************************
 SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex_Det(const int &index) const
+//*****************************************************************************
 {
 
   int row = 0;
 
-  for (SampleTAxisCIterator it = Axis_Mom_Det.begin(); it != Axis_Mom_Det.end(); ++it){
+  for (SampleEnumToTAxisMap_t::const_iterator it = Axis_Mom_Det.begin(); it != Axis_Mom_Det.end(); ++it){
     row = row + GetNbins_Det(it->first);
     if(index < row)
       return it->first;
@@ -1112,45 +1189,49 @@ SampleId::SampleEnum BANFF::BinningDefinition::GetSampleFromIndex_Det(const int 
 
 }
 
-std::vector<std::string> BANFF::BinningDefinition::GetListOfBins()
+//*****************************************************************************
+std::vector<std::string> BANFF::BinningDefinition::GetListOfBins() const
+//*****************************************************************************
 {
 
   std::vector<std::string> BinList;
 
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
-    SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
-    if(ActiveSample[sample]){
-      std::string samplename = ConvertSample(sample);
-      for(int ibin = 0; ibin < GetNbins(sample); ibin++)
-        BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
-    }
+    const SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
+    if(!IsActiveSample(sample))
+      continue;
+    const std::string samplename = ConvertSample(sample);
+    for(int ibin = 0; ibin < GetNbins(sample); ibin++)
+      BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
   }
 
   return BinList;
 
 }
 
-std::vector<std::string> BANFF::BinningDefinition::GetListOfBins_Det()
+//*****************************************************************************
+std::vector<std::string> BANFF::BinningDefinition::GetListOfBins_Det() const
+//*****************************************************************************
 {
   std::vector<std::string> BinList;
 
   for(int i = SampleId::kUnassigned; i < SampleId::kNSamples; i++){
-    SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
-    if(IsActiveSample(sample))
-    {
-        std::string samplename = ConvertSample(sample);
-        for(int ibin = 0; ibin < GetNbins_Det(sample); ibin++)
-            BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
-    }
+    const SampleId::SampleEnum sample = static_cast<SampleId::SampleEnum>(i);
+    if(!IsActiveSample(sample))
+      continue;
+    const std::string samplename = ConvertSample(sample);
+    for(int ibin = 0; ibin < GetNbins_Det(sample); ibin++)
+      BinList.push_back(std::string(Form("%s_%d", samplename.c_str(), ibin)));
   }
 
   return BinList;
 }
 
-// A map to be able to go from full -> reduced binning
+//*****************************************************************************
 std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap()
+//*****************************************************************************
 {
-
+  /// A map to be able to go from full -> reduced binning
   if(FullToReduMap.size() > 0)
     return FullToReduMap;
 
@@ -1233,7 +1314,3 @@ std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap()
   }
   return FullToReduMap;
 }
-
-
-
-
