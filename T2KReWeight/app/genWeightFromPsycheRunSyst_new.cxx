@@ -12,7 +12,7 @@
 #include "T2KReWeight.h"
 #include "T2KSyst.h"
 
-#include "T2KGenieReWeight.h" 
+#include "T2KGenieReWeight.h"
 #include "T2KNeutReWeight.h"
 #include "T2KJNuBeamReWeight.h"
 #include "T2KNIWGReWeight.h"
@@ -38,7 +38,7 @@ double calcRPA(double Q2, double A, double B, double D, double E, double U) {
 
   // Kept for convenience
   double eRPA = 1.;
- 
+
   // Q2 transition; less than U -> polynominal
   if (Q2 < U) {
     // xprime as prescribed by Callum
@@ -65,7 +65,7 @@ double calcRPA(ND::NRooTrackerVtx *vtx=NULL) {
 void ReweightTree(){
 
   std::vector< t2krew::ET2KSyst > dials;
-  t2krew::T2KReWeight rw; 
+  t2krew::T2KReWeight rw;
   rw.AdoptWghtEngine("neut_rw", new t2krew::T2KNeutReWeight());
   rw.AdoptWghtEngine("niwg_rw", new t2krew::T2KNIWGReWeight());
 
@@ -77,8 +77,8 @@ void ReweightTree(){
   rw.Systematics().Include(t2krew::kNIWG2014a_Eb_C12);
   rw.Systematics().Include(t2krew::kNIWG2014a_Eb_O16);
   rw.Systematics().Include(t2krew::kNIWGMEC_Norm_C12);
-  rw.Systematics().Include(t2krew::kNIWGMEC_Norm_O16);  
-  rw.Systematics().Include(t2krew::kNIWGMEC_q3Cut);  
+  rw.Systematics().Include(t2krew::kNIWGMEC_Norm_O16);
+  rw.Systematics().Include(t2krew::kNIWGMEC_q3Cut);
   rw.Systematics().Include(t2krew::kNXSec_MaCCQE);
   rw.Systematics().Include(t2krew::kNXSec_VecFFCCQE); // used to set MAQE to act according to for RFG MC (2) or SF MC (402)
 
@@ -90,13 +90,13 @@ void ReweightTree(){
   // nue/numu uncertainties
   rw.Systematics().Include(t2krew::kNXSec_SCCVecQE);
   rw.Systematics().Include(t2krew::kNXSec_SCCAxlQE);
-  rw.Systematics().Include(t2krew::kNIWG2012a_ccnueE0); 
+  rw.Systematics().Include(t2krew::kNIWG2012a_ccnueE0);
 
   // All other CC and NC
   rw.Systematics().Include(t2krew::kNIWG2012a_dismpishp);
   rw.Systematics().Include(t2krew::kNIWG2012a_cccohE0);
   rw.Systematics().Include(t2krew::kNIWG2012a_nccohE0);
-  rw.Systematics().Include(t2krew::kNIWG2012a_ncotherE0); 
+  rw.Systematics().Include(t2krew::kNIWG2012a_ncotherE0);
 
   rw.Systematics().Include(t2krew::kNIWG2014a_SF_RFG);
   rw.Systematics().Include(t2krew::kNIWG_rpaCCQE_norm);
@@ -121,8 +121,8 @@ void ReweightTree(){
   dials.push_back(t2krew::kNIWG2014a_Eb_C12);
   dials.push_back(t2krew::kNIWG2014a_Eb_O16);
   dials.push_back(t2krew::kNIWGMEC_Norm_C12);
-  dials.push_back(t2krew::kNIWGMEC_Norm_O16);  
-  dials.push_back(t2krew::kNIWGMEC_q3Cut);  
+  dials.push_back(t2krew::kNIWGMEC_Norm_O16);
+  dials.push_back(t2krew::kNIWGMEC_q3Cut);
   dials.push_back(t2krew::kNXSec_MaCCQE);
   dials.push_back(t2krew::kNXSec_VecFFCCQE); // used to set MAQE to act according to for RFG MC (2) or SF MC (402)
   dials.push_back(t2krew::kNXSec_CA5RES);
@@ -130,11 +130,11 @@ void ReweightTree(){
   dials.push_back(t2krew::kNXSec_BgSclRES);
   dials.push_back(t2krew::kNXSec_SCCVecQE);
   dials.push_back(t2krew::kNXSec_SCCAxlQE);
-  dials.push_back(t2krew::kNIWG2012a_ccnueE0); 
+  dials.push_back(t2krew::kNIWG2012a_ccnueE0);
   dials.push_back(t2krew::kNIWG2012a_dismpishp);
   dials.push_back(t2krew::kNIWG2012a_cccohE0);
   dials.push_back(t2krew::kNIWG2012a_nccohE0);
-  dials.push_back(t2krew::kNIWG2012a_ncotherE0); 
+  dials.push_back(t2krew::kNIWG2012a_ncotherE0);
   dials.push_back(t2krew::kNIWG2014a_SF_RFG);
   dials.push_back(t2krew::kNIWG_rpaCCQE_norm);
   dials.push_back(t2krew::kNIWG_rpaCCQE_shape);
@@ -148,15 +148,15 @@ void ReweightTree(){
   dials.push_back(t2krew::kNIWGMEC_PDDWeight_O16);
   dials.push_back(t2krew::kNNucl_CCQEBindingEnergy_C12);
   dials.push_back(t2krew::kNNucl_CCQEBindingEnergy_O16);
-  
+
   // CCQE:
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_pF_C12);
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_pF_O16);
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_Eb_C12);
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_Eb_O16);
   rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_C12);
-  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_O16);  
-  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_q3Cut);  
+  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_O16);
+  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_q3Cut);
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_MaCCQE);
 
   // CC and NC single pion resonance:
@@ -167,7 +167,7 @@ void ReweightTree(){
   // nue/numu uncertainties
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_SCCVecQE);
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_SCCAxlQE);
-  rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_ccnueE0); 
+  rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_ccnueE0);
 
   // All other CC and NC
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_dismpishp);
@@ -191,7 +191,7 @@ void ReweightTree(){
   rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_PDDWeight_O16);
   rw.Systematics().SetAbsTwk(t2krew::kNNucl_CCQEBindingEnergy_C12);
   rw.Systematics().SetAbsTwk(t2krew::kNNucl_CCQEBindingEnergy_O16);
-  
+
 
   // Initialise dials to nominal
   for(unsigned int sys_iter1=0; sys_iter1<dials.size(); sys_iter1++){
@@ -237,7 +237,7 @@ void ReweightTree(){
   double LeptonCosToy   [2000];
   double WeightToy      [2000];
   double FluxWeightToy  [2000];
-    
+
   all_syst->SetBranchAddress("Run"            , &Run            );
   all_syst->SetBranchAddress("SubRun"         , &SubRun         );
   all_syst->SetBranchAddress("EventNumber"    , &EventNumber    );
@@ -270,11 +270,12 @@ void ReweightTree(){
   int nToy=2000;
   int Toy[2000];
 
-  TFile* FileFDS_1p1h_carbon = new TFile("/neut/data20/jmgwalker/banff-work/T2KReWeight/app/numu_C12_MA1030_MDLQE0002_theta.root", "READ");
-  TFile* FileFDS_1p1h_oxygen = new TFile("/neut/data20/jmgwalker/banff-work/T2KReWeight/app/numu_O16_MA1030_MDLQE0002_theta.root", "READ");
+  const char* T2KREWEIGHT = getenv("T2KREWEIGHT");
+  TFile* FileFDS_1p1h_carbon = TFile::Open(TString::Format("%s/app/numu_C12_MA1030_MDLQE0002_theta.root", T2KREWEIGHT));
+  TFile* FileFDS_1p1h_oxygen = TFile::Open(TString::Format("%s/app/numu_O16_MA1030_MDLQE0002_theta.root", T2KREWEIGHT));
   TGraph2DErrors* FDS_1p1h_carbon = (TGraph2DErrors*)FileFDS_1p1h_carbon->Get("nieves_minus_neut_graph");
   TGraph2DErrors* FDS_1p1h_oxygen = (TGraph2DErrors*)FileFDS_1p1h_oxygen->Get("nieves_minus_neut_graph");
-  
+
   NIWGWeightTree->Branch("T2KRW_NIWGWeightNom"   , &NIWGWeightNom   , "T2KRW_NIWGWeightNom/D");
   NIWGWeightTree->Branch("T2KRW_EnuNom"          , &EnuNom          , "T2KRW_EnuNom/D");
   NIWGWeightTree->Branch("T2KRW_LeptonMom1p1hFDS", &LeptonMom1p1hFDS, "T2KRW_LeptonMom1p1hFDS/D");
@@ -282,7 +283,7 @@ void ReweightTree(){
   NIWGWeightTree->Branch("T2KRW_Toy"             ,  Toy             , "T2KRW_Toy[T2KRW_nToys]/I");
   NIWGWeightTree->Branch("T2KRW_NIWGWeightToy"   ,  NIWGWeightToy   , "T2KRW_NIWGWeightToy[T2KRW_nToys]/D");
   NIWGWeightTree->Branch("T2KRW_EnuToy"          ,  EnuToy          , "T2KRW_EnuToy[T2KRW_nToys]/D");
-  
+
   for(int iEntry = 0; iEntry < (int)all_syst->GetEntries(); ++iEntry){
     NIWGWeightNom = 1;
     EnuNom = -999;
@@ -292,14 +293,14 @@ void ReweightTree(){
       NIWGWeightToy[iToy] = 1;
       EnuToy       [iToy] = -999;
     }
-    
+
     all_syst->GetEntry(iEntry);
-    
+
     if(Sand){
       NIWGWeightTree->Fill();
       continue;
     }
-    
+
 
     if(SelectionNom > SampleId::kUnassigned){
       bool foundvtx = false;
@@ -338,7 +339,7 @@ void ReweightTree(){
             if(vtx->TruthVertexID == TrueVertexIDNom &&
                fabs(vtx->StdHepP4[0][3]*1000 - TrueEnuNom) < 0.1){
               break;
-            } 
+            }
           }
         }
         if(vtx != NULL){
@@ -384,7 +385,7 @@ void ReweightTree(){
         NIWGWeightNom   =1;
         LeptonMom1p1hFDS=LeptonMomNom;
       }
-    
+
       if(!IndividualThrow){
         NIWGWeightTree->Fill();
         continue;
@@ -432,7 +433,7 @@ void ReweightTree(){
               if(vtx->TruthVertexID == TrueVertexIDToy[iToy] &&
                  fabs(vtx->StdHepP4[0][3]*1000 - TrueEnuToy[iToy]) < 0.1){
                 break;
-              } 
+              }
             }
           }
           if(vtx != NULL){
@@ -442,7 +443,7 @@ void ReweightTree(){
               NIWGWeightToy[iToy]=1;
             }
             EnuToy       [iToy] = vtx->StdHepP4[0][3]*1000;
-          
+
             //Add Kendall's pion tuning stuff
             double piEnergy = -1.0;
             if(fabs(atoi(((vtx->EvtCode)->String()).Data() )) == 16){
@@ -472,7 +473,7 @@ void ReweightTree(){
   FileOut->cd();
   NIWGWeightTree->Write();
   FileOut->Close();
-  
+
 }
 
 
@@ -501,7 +502,7 @@ int ParseArgs(int argc, char **argv){
     case 'i':{
       FileInStr = optarg;
       break;
-    }  
+    }
     case 'o':{
       FileOutStr = optarg;
       break;
