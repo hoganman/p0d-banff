@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 """
-Usage: iterateGenerateP0DTFBOffsets.py [options] output input1 input2 input3 ...
+Usage: hadd2.py [options] output input1 input2 input3 ...
 
 Options:
   -h, --help            show this help message and exit
@@ -38,43 +38,50 @@ def main(argv):
     if len(argv) < 2:
         usage(parser, 1)
     options = get_options(parser)
+    if argv[0] == '-f':
+        del argv[0]
     outputFileName = argv[0]
     del argv[0]
     inputFilesList = list(argv)
     force = options.force
-    print outputFileName
-    print 'force = ', force
-    print inputFilesList
 
     merger = TFileMerger(False)
     outputFile = ROOTFile(outputFileName)
-    if outputFile.valid and not force:
+    if outputFile.valid(False) and not force:
         print 'Output file \"%s\" is a valid file, must set force override to proceed' % (outputFileName)
         sys.exit(1)
-    run('rm -f %s' % (outputFileName))
     del outputFile
 
     proceedWithMerge = True
     for aFileName in inputFilesList:
         testFile = ROOTFile(aFileName)
-        if not testFile.valid:
+        if not testFile.valid():
             proceedWithMerge = False
             print 'File \"%s\" is NOT valid, please check your inputs!'
 
     if not proceedWithMerge:
         sys.exit(1)
-    createFileSuccess = bool(merger.OutputFile(outputFileName))
+    createFileSuccess = bool(merger.OutputFile(outputFileName, force))
     if not createFileSuccess:
         print 'Unable to create output file \"%s\"' % (outputFileName)
         sys.exit(1)
 
+    index = 0
     for aFileName in inputFilesList:
-        print 'Adding file \"%s\"' % (aFileName)
+        print 'Source file %d: %s' % (index, aFileName)
+        index += 1
         merger.AddFile(aFileName)
+    print 'Target: ', outputFileName
 
-    mergeFileSuccess = bool(merger.Merge())
-    if not mergeFileSuccess:
-        print 'The program TFileMerger::Merge was unsuccessful. Unable to successfully write \"%s\"' % (outputFileName)
+    try:
+        mergeFileSuccess = bool(merger.Merge())
+        if not mergeFileSuccess:
+            print 'The program TFileMerger::Merge was unsuccessful.\
+Unable to successfully write \"%s\"' % (outputFileName)
+            sys.exit(1)
+    except MemoryError as memerr:
+        print 'MemoryError exception encountered'
+        print memerr
         sys.exit(1)
     sys.exit(0)
 
@@ -86,7 +93,7 @@ def get_options(parser):
 
 
 def usage(parser, exit_status):
-    """"""
+    """Print usage for -h, --help, or too few inputs"""
     parser.print_help()
     sys.exit(exit_status)
 
