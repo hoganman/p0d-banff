@@ -56,7 +56,10 @@ public:
     void DrawCopy(TString options="") {if(hist) hist->DrawCopy(options.Data());}
 
     ///Draws a 3x1 TCanvas with each histogram
-    TCanvas* DrawAll(TString twoDimOptions, TString oneDimOptions);
+    TCanvas* Draw2D(TString twoDimOptions="COLZ");
+
+    ///Draws a 3x1 TCanvas with each histogram
+    TCanvas* DrawAll(TString twoDimOptions="COLZ", TString oneDimOptions="");
 
     ///Clone the AnalysisBins histogram
     TH2D* GetTH2DClone(TString histName) {return (hist) ? static_cast<TH2D*>(hist->Clone(histName)) : NULL;}

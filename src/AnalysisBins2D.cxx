@@ -38,7 +38,7 @@ AnalysisBins2D::AnalysisBins2D(TString xBinsName, TString yBinsName, TString con
 
     if(new_xml_inst)
     {
-        std::cout << "Cleaning new XMLTools instance" << std::endl;
+        P0DBANFFInterface::Warning(this, "Cleaning new XMLTools instance");
         delete new_xml_inst;
     }
 }
@@ -81,6 +81,15 @@ void AnalysisBins2D::Reset()
     anaBinsX->Reset();
     anaBinsY->Reset();
     hist->Reset();
+}
+
+//**************************************************
+TCanvas* AnalysisBins2D::Draw2D(TString twoDimOptions)
+//**************************************************
+{
+    TCanvas* canvas = new TCanvas(TString::Format("%s_canvas", binningName.Data()), "", 800, 600);
+    hist->Draw(twoDimOptions.Data());
+    return canvas;
 }
 
 //**************************************************
