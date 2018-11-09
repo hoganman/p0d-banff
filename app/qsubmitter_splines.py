@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt,os,datetime,math,glob,time,subprocess 
+import NaturalSorting
 
 #######################
 inOptions = {
@@ -44,7 +45,7 @@ nNodes = 43
 nFreeUseNodes = 19
 physicsNodes = [40,41,42,43]
 GenWeightss = []
-fileList = {} # a dictionary with a oaAnalysis file as the key and 0(unused) or 1(used) as the value
+fileList = {} # a dictionary with a flattree file as the key and 0(unused) or 1(used) as the value
 totalTimeInHours = 0
 
 class computeNode:
@@ -346,20 +347,21 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
             useHostName = useHostName[0:len(useHostName)-1]
     globalFileListIndex = 0
     global fileList
-    oaAnalysisFiles = fileList.keys()
+    flattreeFiles = fileList.keys()
+    NaturalSorting.naturalsort(flattreeFiles)
     for jobNum in range(0,numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
         fileCounter = 0
         while fileCounter < numFilesPerJob:
             if globalFileListIndex == len(fileList):
                 break
-            aoaAnalysisFile = oaAnalysisFiles[globalFileListIndex]
-            if fileList[aoaAnalysisFile] == 1:
-                print "You should not be calling an already used oaAnalysis file"
+            aflattreeFile = flattreeFiles[globalFileListIndex]
+            if fileList[aflattreeFile] == 1:
+                print "You should not be calling an already used flattree file"
                 print "   going to the next one "
             else:
-                subFileList.append(aoaAnalysisFile)
-                fileList[aoaAnalysisFile] = 1
+                subFileList.append(aflattreeFile)
+                fileList[aflattreeFile] = 1
                 fileCounter = fileCounter + 1
             globalFileListIndex = globalFileListIndex + 1
 
