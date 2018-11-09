@@ -235,10 +235,10 @@ BANFF::BinningDefinition::BinningDefinition(){
   int    P0DFHCNumuCCInclusive_Det_Mom_NBin = 6;
   double P0DFHCNumuCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 4000, 5000, 30000};
 
-  int    P0DFHCNumuCCInclusive_Cos_NBin = 6;
-  double P0DFHCNumuCCInclusive_Cos_Bin[7] = {-1.0, +0.55, +0.7, +0.82, +0.94, +0.986, +1.0};
-  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 4;
-  double P0DFHCNumuCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.55, +0.82, +0.94, +1.0};
+  int    P0DFHCNumuCCInclusive_Cos_NBin = 5;
+  double P0DFHCNumuCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
+  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 3;
+  double P0DFHCNumuCCInclusive_Det_Cos_Bin[4] = {-1.0, +0.5, +0.94, +1.0};
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
