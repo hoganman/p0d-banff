@@ -9,7 +9,7 @@ from ShellCommand import ShellCommand
 import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-QUEUE = '\"physics.q|short.q|defaultfaculty.q\"'
+QUEUE = '\"physics.q|short.q\"'
 HOSTS = '\"node42|node27\"'
 EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
