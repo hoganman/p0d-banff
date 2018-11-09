@@ -68,17 +68,16 @@
         </TN328CosTheta>
         <P0DFitFHCMomentum>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0.0,0.450.,0.700.,1.100,1.600,2.200,3.000,4.000,5.000" />
-            <nBinEdges attr="9" />
+            <binEdges attr="0.0,0.450.,0.700.,1.100,1.600,2.200,3.000,5.000" />
+            <nBinEdges attr="8" />
             <uniformWidth attr="0"/>
             <divideByBinWidth attr="1"/>
             <units attr="GeV/c"/>
         </P0DFitFHCMomentum>
         <P0DFitFHCCosTheta>
             <comment> Testing P-Theta binning </comment>
-            <comment> "BACKUP: +0.6,+0.8,+0.85,+0.90,+0.94,+0.96,+0.97,+0.98,+0.99,+1.0" </comment>
-            <binEdges attr="+0.55,+0.7,+0.82,+0.94,+0.986,+1.0" />
-            <nBinEdges attr="6" />
+            <binEdges attr="+0.5,+0.82,+0.94,+0.986,+1.0" />
+            <nBinEdges attr="5" />
             <uniformWidth attr="0"/>
             <divideByBinWidth attr="1"/>
             <units attr="cos(#theta)"/>
