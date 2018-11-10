@@ -183,7 +183,6 @@ P0D
  < psycheSteering.Weights.EnableP0DELossResol      = 1 >
  < psycheSteering.Weights.EnableP0DOOFV            = 1 >
  < psycheSteering.Weights.EnableP0DVeto            = 1 >
-
 -------------------------------------------------------------
 Parameters to control Other Systematics
 
