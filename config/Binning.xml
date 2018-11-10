@@ -68,19 +68,32 @@
         </TN328CosTheta>
         <P0DFitFHCMomentum>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0.0,0.450.,0.700.,1.100,1.600,2.200,3.000,5.000" />
+            <binEdges attr="0.0,0.450,0.700,1.100,1.600,2.200,3.000,5.000" />
             <nBinEdges attr="8" />
-            <uniformWidth attr="0"/>
-            <divideByBinWidth attr="1"/>
+            <divideByBinWidth attr="0"/>
             <units attr="GeV/c"/>
         </P0DFitFHCMomentum>
         <P0DFitFHCCosTheta>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="+0.5,+0.82,+0.94,+0.986,+1.0" />
-            <nBinEdges attr="5" />
-            <uniformWidth attr="0"/>
-            <divideByBinWidth attr="1"/>
+            <binEdges attr="-1.0,+0.5,+0.82,+0.94,+0.986,+1.0" />
+            <nBinEdges attr="6" />
+            <divideByBinWidth attr="0"/>
             <units attr="cos(#theta)"/>
         </P0DFitFHCCosTheta>
+        <P0DCovFHCMomentum>
+            <comment> Testing P-Theta binning </comment>
+            <binEdges attr="0.0,0.450,1.100,2.200,3.000,5.000" />
+            <nBinEdges attr="6" />
+            <divideByBinWidth attr="0"/>
+            <units attr="GeV/c"/>
+        </P0DCovFHCMomentum>
+        <P0DCovFHCCosTheta>
+            <comment> Testing P-Theta binning </comment>
+            <binEdges attr="-1.0, +0.5, +0.82, +0.94, +1.0" />
+            <nBinEdges attr="5" />
+            <divideByBinWidth attr="0"/>
+            <units attr="cos(#theta)"/>
+        </P0DCovFHCCosTheta>
+
     </Binning>
 </main>
