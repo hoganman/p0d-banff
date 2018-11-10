@@ -4,6 +4,7 @@
 ClassImp(AnalysisBins2D)
 #include "AnalysisBins.hxx"
 #include "P0DBANFFInterface.hxx"
+#include "TMath.h"
 #include <iostream>
 
 //**************************************************
@@ -44,6 +45,35 @@ AnalysisBins2D::AnalysisBins2D(TString xBinsName, TString yBinsName, TString con
 }
 
 //**************************************************
+AnalysisBins2D::AnalysisBins2D(AnalysisBins* inputAnaBinsX, AnalysisBins* inputAnaBinsY)
+//**************************************************
+{
+    Init();
+    binningName = TString::Format("%s_and_%s", inputAnaBinsX->GetBinningName().Data(), inputAnaBinsY->GetBinningName().Data());
+
+    anaBinsX = new AnalysisBins(*inputAnaBinsX);
+    anaBinsY = new AnalysisBins(*inputAnaBinsY);
+
+    binEdgesX = anaBinsX->GetBinEdgesVect();
+    binEdgesY = anaBinsY->GetBinEdgesVect();
+
+    nBinsX = anaBinsX->GetNbins();
+    nBinsY = anaBinsY->GetNbins();
+
+    unitsX = anaBinsX->GetUnits();
+    unitsY = anaBinsY->GetUnits();
+
+    hist = new TH2D(binningName.Data(), "", nBinsX, GetBinEdgesX(), nBinsY, GetBinEdgesY());
+    nBins = nBinsX * nBinsY;
+
+    divideByBinWidth = anaBinsX->GetDivideByBinWidth() && anaBinsY->GetDivideByBinWidth();
+    Sumw2 = anaBinsX->GetSumw2() && anaBinsY->GetSumw2();
+    if(Sumw2)
+        hist->Sumw2();
+
+}
+
+//**************************************************
 AnalysisBins2D::~AnalysisBins2D()
 //**************************************************
 {
@@ -63,6 +93,7 @@ void AnalysisBins2D::Init()
     hist = NULL;
     anaBinsX = NULL;
     anaBinsY = NULL;
+    divideByBinWidth = kFALSE;
 }
 
 //**************************************************
@@ -105,4 +136,27 @@ TCanvas* AnalysisBins2D::DrawAll(TString twoDimOptions, TString oneDimOptions)
     canvas->cd(3);
     anaBinsY->DrawCopy(oneDimOptions);
     return canvas;
+}
+
+//**************************************************
+void AnalysisBins2D::DivideByBinWidth(Bool_t sumw2)
+//**************************************************
+{
+    for(Int_t xBin = 1; xBin <= nBinsX; ++xBin)
+    {
+        for(Int_t yBin = 1; yBin <= nBinsY; ++yBin)
+        {
+            const Double_t old_content = hist->GetBinContent(xBin, yBin);
+            const Double_t xHeight = hist->GetXaxis()->GetBinWidth(xBin);
+            const Double_t yHeight = hist->GetYaxis()->GetBinWidth(yBin);
+            const Double_t binArea = xHeight * yHeight;
+            hist->SetBinContent(xBin, yBin, old_content/binArea);
+            if(Sumw2)
+            {
+                const Double_t new_error = std::sqrt(old_content)/std::fabs(binArea);
+                hist->SetBinError(xBin, yBin, new_error);
+            }
+        }
+    }
+
 }
