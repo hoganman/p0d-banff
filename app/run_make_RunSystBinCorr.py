@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""submits the mc flattree files to run RunSyst_New.exe"""
+"""submits the mc flattree files to run RunSystBinCorr.exe"""
 
 import os
 from os.path import join
@@ -11,7 +11,7 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 QUEUE = '\"physics.q|short.q\"'
 HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node29|node30\"'
-EXCLUDEHOSTS = [6, 7, 10, 19]
+# EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
 # for x in range(1, 20) + range(27, 31) + range(40, 46):
 #     if x in EXCLUDEHOSTS:
@@ -22,14 +22,12 @@ EXCLUDEHOSTS = [6, 7, 10, 19]
 
 MEM = '1024'
 NEUT = 'NEUT'
-MCMIN = str(60*8)
+MCMIN = str(int(60*8))
 SAND = 'mcp6_Spin_B/sand'
 FLATTREEBASE = os.getenv('FLATTREEROOT')
 RUNSYSTBINCORRBASE = os.getenv('BINCORRROOT')
 NEUT_6B = 'mcp6_Spin_B/neut'
 NEUT_6L = 'mcp6_Spin_L/neut'
-DATA_6M = 'rdp6_Spin_M'
-DATA_6N = 'rdp6_Spin_N'
 QSUBRUNSYSTBINCORR = 'python qsubmitter_RunSystBinCorr.py'
 
 
@@ -51,20 +49,20 @@ def submit_runsyst_new_mc():
     sand_fhc_mc = make_qsub(RN.SANDFHC, SAND, DATATYPES.MC)
     sand_rhc_mc = make_qsub(RN.SANDRHC, SAND, DATATYPES.MC)
 
-    # run2w_mc.run(ShellCommand.IN_BKG)
-    # run2a_mc.run(ShellCommand.IN_BKG)
-    # run3b_mc.run(ShellCommand.IN_BKG)
+    run2w_mc.run(ShellCommand.IN_BKG)
+    run2a_mc.run(ShellCommand.IN_BKG)
+    run3b_mc.run(ShellCommand.IN_BKG)
     run3c_mc.run(ShellCommand.IN_BKG)
     run4w_mc.run(ShellCommand.IN_BKG)
     run4a_mc.run(ShellCommand.IN_BKG)
-    # run5c_mc.run(ShellCommand.IN_BKG)
-    # run6b_mc.run(ShellCommand.IN_BKG)
-    # run6c_mc.run(ShellCommand.IN_BKG)
-    # run6d_mc.run(ShellCommand.IN_BKG)
-    # run6e_mc.run(ShellCommand.IN_BKG)
-    # run7b_mc.run(ShellCommand.IN_BKG)
-    # sand_fhc_mc.run(ShellCommand.IN_BKG)
-    # sand_rhc_mc.run(ShellCommand.IN_BKG)
+    run5c_mc.run(ShellCommand.IN_BKG)
+    run6b_mc.run(ShellCommand.IN_BKG)
+    run6c_mc.run(ShellCommand.IN_BKG)
+    run6d_mc.run(ShellCommand.IN_BKG)
+    run6e_mc.run(ShellCommand.IN_BKG)
+    run7b_mc.run(ShellCommand.IN_BKG)
+    sand_fhc_mc.run(ShellCommand.IN_BKG)
+    sand_rhc_mc.run(ShellCommand.IN_BKG)
 
 
 def main(argv):
