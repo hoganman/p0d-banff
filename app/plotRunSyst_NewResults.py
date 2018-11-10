@@ -29,9 +29,17 @@ DRAW_P0DX = 0
 DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
+# Display the ratio of Data/MC below histogram
+# only available for 1D
+SHOW_RATIO_PLOT_BELOW = 0
+
 # toggle these to draw particular variables
 # 2D histograms
-DRAW_PMU_COSTHETAMU = 1
+DRAW_P0DFITFHC_PMU_COSTHETAMU = 1
+DRAW_P0DCOVFHC_PMU_COSTHETAMU = 1
+
+# option only for 2D
+SHOW_LOGZ = 1
 
 # Apply event + flux weight
 APPLY_FLUX_WEIGHTS = 1
@@ -40,10 +48,7 @@ APPLY_EVENT_WEIGHTS = 1
 PLOTLEPTONCANDIDATETRUEPDG = 0
 PLOTNEUTNUREACTIONCODES = 0
 PLOTNEUTANTINUREACTIONCODES = 0
-PLOTTOPOLOGY = 1
-
-# Display the ratio of Data/MC below histogram
-SHOW_RATIO_PLOT_BELOW = 1
+PLOTTOPOLOGY = 0
 
 # use the TN-208 runs
 TN208_ANALYSIS = 0
@@ -59,7 +64,7 @@ ADDITIONAL_CUTS = None
 RUNP0DWATERNUMUCCSELECTION = 1
 RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
-RUNP0DAIRNUMUCCSELECTION = 0
+RUNP0DAIRNUMUCCSELECTION = 1
 RUNP0DAIRNUMUBARINANTINUMODECCSELECTION = 0
 RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION = 0
 
@@ -92,21 +97,24 @@ def main(argv):
     LoadSampleIDs()
 
     binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
-    # cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
-    cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
+    cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
     pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, XML)
-    # pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
-    pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
+    pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
     cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, XML)
     thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, XML)
     p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, XML)
     p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, XML)
     p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, XML)
 
-    pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D('P0DFitFHCMomentum',
-                                                   'P0DFitFHCCosTheta',
-                                                   binningLocation, XML)
+    P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
+    P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
+    P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, XML)
+    P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, XML)
+    P0DFitFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFitFHC_pMu_AnaBins,
+                                                             P0DFitFHC_cosThetaMu_AnaBins)
+    P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins,
+                                                             P0DCovFHC_cosThetaMu_AnaBins)
 
     evts_p_bin = 'Events / bin'
     mc_data_sample_dict_MC_key = 'MC'
@@ -203,16 +211,25 @@ def main(argv):
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
-            if DRAW_PMU_COSTHETAMU:
+            if DRAW_P0DFITFHC_PMU_COSTHETAMU:
                 hist2D_pmu_costhetamu = ROOTH2()
                 hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
                 hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
                 hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
                 hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
-                hist2D_pmu_costhetamu.z_title = pot_str
-                ConfigureROOTH2(hist2D_pmu_costhetamu, pMu_cosThetaMu_AnaBins2D)
-                make_mc_only_H2D(smpls, all_selection_sets[0], pMu_cosThetaMu_AnaBins2D,
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DFitFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DFitFHC_pMu_cosThetaMu_AnaBins2D,
                                  hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_MC_only')
+                del hist2D_pmu_costhetamu
+            if DRAW_P0DCOVFHC_PMU_COSTHETAMU:
+                hist2D_pmu_costhetamu = ROOTH2()
+                hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
+                hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
+                hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
+                hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCovFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DCovFHC_pMu_cosThetaMu_AnaBins2D,
+                                 hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
 
             for a_selection_set in all_selection_sets:
                 selection_name = ROOT.TString(a_selection_set[0].name)
@@ -831,9 +848,12 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
                     weight *= mc_systematic_weights[entry_in_draw]
                 anaBins2D.Fill(mc_varX[entry_in_draw], mc_varY[entry_in_draw], weight)
             name_fmt = 'mc_h2d_%s_%s'
+            if anaBins2D.GetDivideByBinWidth():
+                anaBins2D.DivideByBinWidth()
             mc_hist = anaBins2D.GetTH2DClone(
                     name_fmt % (tmp_save_name, mc_sample.CPPClass.saveTitle))
             mc_hist.Scale(mc_sample.CPPClass.scale)
+            anaBins2D.Reset()
 
         elif ROOT.TString(a_selection.cuts.GetName()).Contains('Sand'):
             sandTChain = sand_sample.getTChain()
@@ -854,25 +874,35 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
                     name_fmt % (tmp_save_name,
                                 sand_sample.CPPClass.saveTitle))
             mc_hist.Scale(sand_sample.CPPClass.scale)
+            anaBins2D.Reset()
         else:
             continue
         # INTERFACE.PrettyUpTH2(mc_hist, hist2D.x_title, hist2D.y_title)
-
         mc_hists.append(mc_hist)
-        anaBins2D.Reset()
 
     h_total = anaBins2D.GetTH2DClone("h_total_%s" % save_title)
     INTERFACE.PrettyUpTH2(h_total, hist2D.x_title, hist2D.y_title)
+    new_title = '%s MC: %s' % (mc_sample.CPPClass.plotTitle, hist2D.z_title)
+    print 'new_title =', new_title
+    h_total.SetTitle(new_title)
+
     for a_hist in mc_hists:
         h_total.Add(a_hist)
     mc_stats = TLegend(0.7, 0.9, 0.9, 0.95, 'Integral %.2f' % h_total.Integral())
     mc_stats.SetBorderSize(1)
     mc_stats.SetFillColor(0)
     mc_stats.SetMargin(0.1)
+    plot_title = TLegend(0.100251, 0.910683, 0.689223, 0.980736, new_title)
+    plot_title.SetBorderSize(1)
+    plot_title.SetFillColor(0)
+    plot_title.SetMargin(0.1)
 
     canvas.cd()
     h_total.Draw('COLZ')
     mc_stats.Draw()
+    plot_title.Draw()
+    if SHOW_LOGZ:
+        canvas.SetLogz(1)
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
     h_total.Delete()
@@ -1167,15 +1197,16 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     hstack.plot_var += '*%f' % HEPCONSTANTS.Convert(units)
     hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
-        y_title = 'Events / %s / %s'
+        y_title = 'Events / %s / (%s)'
         y_title_tuple = (units, pot_str)
         hstack.y_title = y_title % y_title_tuple
 
 
-def ConfigureROOTH2(hist2D, anaBins2D):
+def ConfigureROOTH2(hist2D, anaBins2D, pot_str):
     """
     For the hist2D (ROOTH2), get options from anaBins2D (AnalysisBins2D)
     """
+    unitsX, unitsY = None, None
     if len(anaBins2D.anaBinsX.GetUnits()) > 1:
         unitsX = anaBins2D.anaBinsX.GetUnits()
         hist2D.varX += '*%f' % HEPCONSTANTS.Convert(unitsX)
@@ -1184,6 +1215,13 @@ def ConfigureROOTH2(hist2D, anaBins2D):
         unitsY = anaBins2D.anaBinsY.GetUnits()
         hist2D.varY += '*%f' % HEPCONSTANTS.Convert(unitsY)
         hist2D.y_title += ' [%s]' % unitsY
+    if unitsX and unitsY:
+        print 'anaBins2D.GetDivideByBinWidth() =', anaBins2D.GetDivideByBinWidth()
+        if anaBins2D.GetDivideByBinWidth():
+            hist2D.z_title = 'Events / ( %s ) / ( %s ) / ( %s )' % (unitsX, unitsY, pot_str)
+        else:
+            hist2D.z_title = 'Events / bin / (%s)' % (pot_str)
+    print 'hist2D.z_title =', hist2D.z_title
 
 
 def LoadP0DBANFF():
