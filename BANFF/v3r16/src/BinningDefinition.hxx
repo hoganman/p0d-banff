@@ -124,12 +124,12 @@ namespace BANFF
         ///Return the global Det bin index for a given SampleId, momentum,
         ///and Costheta
         int GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample,
-                const double &Mom, const double &Cos);
+                const double &Mom, const double &Cos) const;
 
         ///Return the global bin index for a given SampleId, momentum, and
         ///Costheta
         int GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample,
-                const double &Mom, const double &Cos);
+                const double &Mom, const double &Cos) const;
 
         ///All the bins and SampleIds in the matrix
         std::vector<std::string> GetListOfBins() const;
@@ -149,6 +149,9 @@ namespace BANFF
         ///and Costheta bin indices
         void GetLocalBinMatrixMomCos_Det(const int &GlobalBin,
                 SampleId::SampleEnum& Sample, int& MomBin, int& CosBin);
+
+        ///DEBUGGING: Print the active samples
+        void DumpActiveSamples() const;
 
     private:
 
@@ -190,6 +193,10 @@ namespace BANFF
         ///Parameter defined in BANFF/parameters/BANFF.parameters.dat
         ///override file to run ONLY NuE samples
         bool DoOnlyNue;
+
+        ///Parameter defined in BANFFparameters/BANFF.parameters.dat or
+        ///override file to run ONLY P0D FHC samples
+        bool DoOnlyP0DFHC;
 
         ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
         ///override file to run on Multi-pi in RHC
