@@ -88,7 +88,7 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetPadBorderMode(0);
     P0DBANFFStyle->SetPadColor(0);
     P0DBANFFStyle->SetCanvasColor(0);
-    P0DBANFFStyle->SetTitleColor(0);
+    //P0DBANFFStyle->SetTitleColor(0);
     P0DBANFFStyle->SetStatColor(0);
     //</plain>
     gROOT->SetStyle("P0DBANFFStyle");

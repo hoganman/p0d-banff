@@ -88,7 +88,7 @@ libP0DBANFF.so: $(ALLOBJS)
 
 #add a rule to clean all generated files from your directory
 clean:
-	$(RM) app/*pyc
+	$(RM) app/*pyc lib/*o lib/*so
 
 distclean:
 	$(RM) bin/*exe lib/*o src/*.d src/*.o ./*.o ./*.d dict/*dict.* ./*dict.* app/*pyc lib/*.d
