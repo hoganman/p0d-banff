@@ -26,8 +26,8 @@ inOptions = {
 }
 
 
-SECONDS_BTN_RUN = 10
-SECONDS_BTN_SUBMIT = 16
+SECONDS_BTN_RUN = 1
+SECONDS_BTN_SUBMIT = 1
 csuhpc = -1
 isSand = 0
 queueTag = '$'
@@ -293,9 +293,7 @@ def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     INPUT = subFileList[0]
     runType = ''
     if isSand:
-        runType = '-s 1'
-    else:
-        runType = '-s 0'
+        runType = ' -s 1'
     #create job
     jobFileName = 'ajob_'+str(jobNum)+'.sh'
     job = open(jobFileName,'w')
@@ -306,7 +304,7 @@ def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    command = '%s -i %s -o %s %s\n' %(APPLYNIWGWEIGHTS, INPUT, OUTPUT, runType)
+    command = '%s -i %s -o %s%s\n' %(APPLYNIWGWEIGHTS, INPUT, OUTPUT, runType)
     job.write(command)
     job.write('fi\n')
     job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
