@@ -41,9 +41,13 @@ char * fOutputFile;
 char * fRunPeriod;
 bool data = 0;
 
+const Double_t MAXWEIGHT = 30;
+const Bool_t RESTRICTWEIGHT = kTRUE;
+
 void Usage();
 void ParseArgs(int argc, char **argv);
 int GetPThetaBin(double p, double th);
+Bool_t ValidWeightRange(const Double_t &weight);
 
 int main(int argc, char *argv[]){
 
@@ -313,7 +317,7 @@ int main(int argc, char *argv[]){
   Double_t TrueNeutrinoDirX;
   Double_t TrueNeutrinoDirY;
   Double_t TrueNeutrinoDirZ;
-                                
+
   Int_t    TrueLepPDG;
   Double_t TrueLepMom[SampleId::kNSamples];
   Double_t TrueCosThetamu[SampleId::kNSamples];
@@ -324,7 +328,7 @@ int main(int argc, char *argv[]){
   Double_t RecoLepDirX;
   Double_t RecoLepDirY;
   Double_t RecoLepDirZ[SampleId::kNSamples];
-                                
+
   Int_t    TruePreFSIPiPDG;
   Double_t TruePreFSIPiMom;
   Double_t TruePreFSIPiDirX;
@@ -339,7 +343,7 @@ int main(int argc, char *argv[]){
   Double_t RecoPiDirX;
   Double_t RecoPiDirY;
   Double_t RecoPiDirZ;
-                                
+
   Int_t    ReactionCode         [SampleId::kNSamples];
   Int_t    NuParent             [SampleId::kNSamples];
   Double_t Q2                   [SampleId::kNSamples];
@@ -353,7 +357,7 @@ int main(int argc, char *argv[]){
   Double_t RFGTuningWeight      [SampleId::kNSamples];
   Double_t RelRPATuningWeight   [SampleId::kNSamples];
   Double_t NonRelRPATuningWeight[SampleId::kNSamples];
-  Double_t pFTuningWeight       [SampleId::kNSamples];  
+  Double_t pFTuningWeight       [SampleId::kNSamples];
   Double_t MECCTuningWeight     [SampleId::kNSamples];
   Double_t MECOTuningWeight     [SampleId::kNSamples];
   Double_t MaQETuningWeight     [SampleId::kNSamples];
@@ -372,8 +376,8 @@ int main(int argc, char *argv[]){
   //    rw.Systematics().Include(t2krew::kNIWG2014a_Eb_C12);
   //    rw.Systematics().Include(t2krew::kNIWG2014a_Eb_O16);
   rw.Systematics().Include(t2krew::kNIWGMEC_Norm_C12);
-  rw.Systematics().Include(t2krew::kNIWGMEC_Norm_O16);  
-  rw.Systematics().Include(t2krew::kNIWGMEC_q3Cut);  
+  rw.Systematics().Include(t2krew::kNIWGMEC_Norm_O16);
+  rw.Systematics().Include(t2krew::kNIWGMEC_q3Cut);
   rw.Systematics().Include(t2krew::kNXSec_MaCCQE);
   rw.Systematics().Include(t2krew::kNXSec_VecFFCCQE); // used to set MAQE to act according to for RFG MC (2) or SF MC (402)
 
@@ -385,13 +389,13 @@ int main(int argc, char *argv[]){
   // nue/numu uncertainties
   rw.Systematics().Include(t2krew::kNXSec_SCCVecQE);
   rw.Systematics().Include(t2krew::kNXSec_SCCAxlQE);
-  rw.Systematics().Include(t2krew::kNIWG2012a_ccnueE0); 
+  rw.Systematics().Include(t2krew::kNIWG2012a_ccnueE0);
 
   // All other CC and NC
   rw.Systematics().Include(t2krew::kNIWG2012a_dismpishp);
   rw.Systematics().Include(t2krew::kNIWG2012a_cccohE0);
   rw.Systematics().Include(t2krew::kNIWG2012a_nccohE0);
-  rw.Systematics().Include(t2krew::kNIWG2012a_ncotherE0); 
+  rw.Systematics().Include(t2krew::kNIWG2012a_ncotherE0);
 
   rw.Systematics().Include(t2krew::kNIWG2014a_SF_RFG);
   rw.Systematics().Include(t2krew::kNIWG_rpaCCQE_norm);
@@ -411,10 +415,10 @@ int main(int argc, char *argv[]){
   //    rw.Systematics().Include(t2krew::kNNucl_CCQEBindingEnergy_C12);
   //    rw.Systematics().Include(t2krew::kNNucl_CCQEBindingEnergy_O16);
 
-  // Absolute tweak dials set the fractional uncertainty, instead of 
+  // Absolute tweak dials set the fractional uncertainty, instead of
   // in units of "sigma", defined in the code.
   // Useful so that you define the uncertainty within the code, as what is
-  // hardcoded may not be the same as what is used for analysis. 
+  // hardcoded may not be the same as what is used for analysis.
 
   // CCQE:
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_pF_C12);
@@ -422,8 +426,8 @@ int main(int argc, char *argv[]){
   //    rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_Eb_C12);
   //    rw.Systematics().SetAbsTwk(t2krew::kNIWG2014a_Eb_O16);
   rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_C12);
-  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_O16);  
-  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_q3Cut);  
+  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_Norm_O16);
+  rw.Systematics().SetAbsTwk(t2krew::kNIWGMEC_q3Cut);
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_MaCCQE);
 
   // CC and NC single pion resonance:
@@ -434,7 +438,7 @@ int main(int argc, char *argv[]){
   // nue/numu uncertainties
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_SCCVecQE);
   rw.Systematics().SetAbsTwk(t2krew::kNXSec_SCCAxlQE);
-  rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_ccnueE0); 
+  rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_ccnueE0);
 
   // All other CC and NC
   rw.Systematics().SetAbsTwk(t2krew::kNIWG2012a_dismpishp);
@@ -471,26 +475,26 @@ int main(int argc, char *argv[]){
     throw;
   }
   int nWeightSyst=0;
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableChargeConf"       )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableMichelEleEff"     )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcClusterEff"    )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcTrackEff"      )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdTrackEff"      )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdHybridTrackEff")){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcFgdMatchEff"   )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnablePileUp"           )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdMass"          )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableOOFV"             )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSIPion"           )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSIProton"         )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSandMuons"        )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableECalPID"          )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcECalMatchEff"  )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableECalEmHipPID"     )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"       )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"     )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"     )){ nWeightSyst++; }  
-  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp"    )){ nWeightSyst++; }  
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableChargeConf"       )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableMichelEleEff"     )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcClusterEff"    )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcTrackEff"      )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdTrackEff"      )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdHybridTrackEff")){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcFgdMatchEff"   )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnablePileUp"           )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFgdMass"          )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableOOFV"             )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSIPion"           )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSIProton"         )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableSandMuons"        )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableECalPID"          )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableTpcECalMatchEff"  )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableECalEmHipPID"     )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"       )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"     )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"     )){ nWeightSyst++; }
+  if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp"    )){ nWeightSyst++; }
   if((bool)ND::params().GetParameterI("psycheSteering.Weights.EnableNuEOOFV"          )){ nWeightSyst++; }
 
   if(nWeightSyst == 0) {
@@ -517,8 +521,8 @@ int main(int argc, char *argv[]){
   }
 
   std::cout << " We will process ";
-  if (nmax_events==-1){ 
-    // Get the numer of events 
+  if (nmax_events==-1){
+    // Get the numer of events
     nmax_events=_man.input().GetNEvents(nmax_entries);
     std::cout << nmax_entries << " entries." << std::endl;
   }
@@ -544,7 +548,7 @@ int main(int argc, char *argv[]){
   //Start at the 0th RooTrackerVtx tree entry.
   Int_t rtvi = 0;
 
-  TFile *inputFile = TFile::Open(fInputFile); 
+  TFile *inputFile = TFile::Open(fInputFile);
 
   TTree *def = (TTree*)inputFile->Get("flattree");
   TTree *hdr = (TTree*)inputFile->Get("header");
@@ -563,7 +567,7 @@ int main(int argc, char *argv[]){
   TTree* config = (TTree*)((inputfile->Get("config"))->Clone());
   fout.cd();
   config->Write();
-    
+
   TTree* enabledsampleid = new TTree("EnabledSampleID", "EnabledSampleID");
   int  selectionID = -999;
   int  enabledselection = 0;
@@ -578,7 +582,7 @@ int main(int argc, char *argv[]){
   }
   fout.cd();
   enabledsampleid->Write();
-      
+
   TTree *def1 = def->CloneTree(0);
   TTree *hdr1 = hdr->CloneTree(0);
 
@@ -647,17 +651,17 @@ int main(int argc, char *argv[]){
   ssum_tree.Branch("CohTuningWeight",       CohTuningWeight,       "CohTuningWeight[NSamples]/D");
   ssum_tree.Branch("RFGTuningWeight",       RFGTuningWeight,       "RFGTuningWeight[NSamples]/D");
   ssum_tree.Branch("RelRPATuningWeight",    RelRPATuningWeight,    "RelRPATuningWeight[NSamples]/D");
-  ssum_tree.Branch("NonRelRPATuningWeight", NonRelRPATuningWeight, "NonRelRPATuningWeight[NSamples]/D"); 
+  ssum_tree.Branch("NonRelRPATuningWeight", NonRelRPATuningWeight, "NonRelRPATuningWeight[NSamples]/D");
   ssum_tree.Branch("pFTuningWeight",        pFTuningWeight,        "pFTuningWeight[NSamples]/D");
   ssum_tree.Branch("MECCTuningWeight",      MECCTuningWeight,      "MECCTuningWeight[NSamples]/D");
   ssum_tree.Branch("MECOTuningWeight",      MECOTuningWeight,      "MECOTuningWeight[NSamples]/D");
-  ssum_tree.Branch("MaQETuningWeight",      MaQETuningWeight,      "MaQETuningWeight[NSamples]/D"); 
+  ssum_tree.Branch("MaQETuningWeight",      MaQETuningWeight,      "MaQETuningWeight[NSamples]/D");
 
   for(unsigned int i=0; i<dial_graphs.size(); i++){
     ssum_tree.Branch(Form("%sGraph",dial_names[i].c_str()), "TClonesArray", &(dial_graphs[i]), 256000, 0);
   }
 
-  int evtNumber = -1; 
+  int evtNumber = -1;
   unsigned int nDials = dial_names.size();
 
   inputFile->cd();
@@ -669,7 +673,7 @@ int main(int argc, char *argv[]){
   ToyMaker* toyMaker = new ToyMakerExample((UInt_t)ND::params().GetParameterI("psycheSteering.Systematics.RandomSeed"), zero_var);
 
   // Create and fill the Toy experiment with the appropriate format (number of systematics and number of parameters for each systematic)
-  toyMaker->CreateToyExperiments(fToys, _man.syst().GetSystematics()); 
+  toyMaker->CreateToyExperiments(fToys, _man.syst().GetSystematics());
 
   // Create the array of PreviousToyBox
   _man.sel().CreateToyBoxArray(nmax_events);
@@ -684,7 +688,7 @@ int main(int argc, char *argv[]){
     if(entry%100 == 0)
       std::cout << "Processed " << 100.*((double)entry) / ((double)ProcessEntries) << "% -> "
                 << entry << " entries out of " << (nmax_entries>nmax_events? nmax_entries:nmax_events) << std::endl;
- 
+
     Weight_h totalWeightSyst;
     Weight_h fluxWeightSyst;
 
@@ -697,7 +701,7 @@ int main(int argc, char *argv[]){
 
     // Fill the event structure
     if (!_man.LoadEvent(entry)) continue;
-	
+
     // Get the event to be modified. This is the only one used in the analysis
     AnaEventB* event = static_cast<AnaEventB*>(_man.input().GetSuperEvent().Event);
 
@@ -896,7 +900,7 @@ int main(int argc, char *argv[]){
         if(TruthVtx[sample] > -1){
           int rtv_curr = rtvi;
           while(vtx == NULL){
-            RTV->GetEntry(rtvi); 
+            RTV->GetEntry(rtvi);
             //Use the TruthVertexID to get the RooTrackerVertex corresponding to this
             //event.
             for(int i = 0; i < NRooVtx; ++i){
@@ -924,7 +928,7 @@ int main(int argc, char *argv[]){
             rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm,0);
             rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_shape,0);
           }
-          else{                      
+          else{
             rw.Systematics().SetTwkDial(dials[sys_iter1], 0.);
           }
         }
@@ -940,7 +944,7 @@ int main(int argc, char *argv[]){
             for(int piter=(graph->GetN()-1); piter>=0; piter--) graph->RemovePoint(piter);
             graph->SetPoint(0,0.0,1.0);
           }
-        } 
+        }
         else{
           //std::cout << "Found NRooTrackerVtx object!" << std::endl;;
           //Save the truth information
@@ -952,16 +956,18 @@ int main(int argc, char *argv[]){
           else if( vtx->NuParentDecMode < 50) { NeutrinoCode[sample]= -12; flavor=3; }
           Enu[sample] = vtx->StdHepP4[0][3];
           FluxWeight[sample] = fluxWeightSyst.Correction;
-          TVector3 nu(vtx->StdHepP4[0][0],vtx->StdHepP4[0][1],vtx->StdHepP4[0][2]);
-          TVector3 mu(vtx->StdHepP4[3][0],vtx->StdHepP4[3][1],vtx->StdHepP4[3][2]);
-          TrueLepMom[sample]  = mu.Mag();
-          TrueLepDirX = mu.X() / mu.Mag();
-          TrueLepDirY = mu.Y() / mu.Mag();
-          TrueLepDirZ = mu.Z() / mu.Mag();
-          TrueNeutrinoDirX = nu.X() / nu.Mag();
-          TrueNeutrinoDirY = nu.Y() / nu.Mag();
-          TrueNeutrinoDirZ = nu.Z() / nu.Mag();
-          TrueCosThetamu[sample] = (nu * mu)/(nu.Mag()*mu.Mag());
+          const TVector3 nu(vtx->StdHepP4[0][0],vtx->StdHepP4[0][1],vtx->StdHepP4[0][2]);
+          const TVector3 mu(vtx->StdHepP4[3][0],vtx->StdHepP4[3][1],vtx->StdHepP4[3][2]);
+          const Double_t muMag = mu.Mag();
+          TrueLepMom[sample]  = muMag;
+          TrueLepDirX = mu.X() / muMag;
+          TrueLepDirY = mu.Y() / muMag;
+          TrueLepDirZ = mu.Z() / muMag;
+          const Double_t nuMag = nu.Mag();
+          TrueNeutrinoDirX = nu.X() / nuMag;
+          TrueNeutrinoDirY = nu.Y() / nuMag;
+          TrueNeutrinoDirZ = nu.Z() / nuMag;
+          TrueCosThetamu[sample] = (nu * mu)/(nuMag*muMag);
           Q2      [sample] = T2KNIWGUtils::Q2  (vtx);
           Q2QE    [sample] = T2KNIWGUtils::Q2QE(vtx);
           TgtMat  [sample] = T2KNIWGUtils::TgtA(*vtx);
@@ -972,21 +978,21 @@ int main(int argc, char *argv[]){
             if(TMath::Abs(vtx->NEipvc[ipart]) != 211 &&
                TMath::Abs(vtx->NEipvc[ipart]) != 111)
               continue;
-            TVector3 pi(vtx->NEpvc[ipart][0], vtx->NEpvc[ipart][1], vtx->NEpvc[ipart][2]);
-
+            const TVector3 pi(vtx->NEpvc[ipart][0], vtx->NEpvc[ipart][1], vtx->NEpvc[ipart][2]);
+            const Double_t piMag = pi.Mag();
             if(vtx->NEicrnvc[ipart] == 1 && pi.Mag() > TruePostFSIPiMom){ // the pion exits the nucleus (takes the most energetic)
               TruePostFSIPiPDG      = vtx->NEipvc[ipart];
-              TruePostFSIPiMom      = pi.Mag();
-              TruePostFSIPiDirX     = pi.X() / pi.Mag();
-              TruePostFSIPiDirY     = pi.Y() / pi.Mag();
-              TruePostFSIPiDirZ     = pi.Z() / pi.Mag();
+              TruePostFSIPiMom      = piMag;
+              TruePostFSIPiDirX     = pi.X() / piMag;
+              TruePostFSIPiDirY     = pi.Y() / piMag;
+              TruePostFSIPiDirZ     = pi.Z() / piMag;
             }
             if(vtx->NEiorgvc[ipart]-1 == 1 && pi.Mag() > TruePreFSIPiMom){ // take the one whose parent is the initial state (primary)
               TruePreFSIPiPDG       = vtx->NEipvc[ipart];
               TruePreFSIPiMom       = pi.Mag();
-              TruePreFSIPiDirX      = pi.X() / pi.Mag();
-              TruePreFSIPiDirY      = pi.Y() / pi.Mag();
-              TruePreFSIPiDirZ      = pi.Z() / pi.Mag();
+              TruePreFSIPiDirX      = pi.X() / piMag;
+              TruePreFSIPiDirY      = pi.Y() / piMag;
+              TruePreFSIPiDirZ      = pi.Z() / piMag;
             }
           }
 
@@ -1002,10 +1008,8 @@ int main(int argc, char *argv[]){
           // std::cout << " - PY[1]            " << vtx->NEpvc[ipart][1]  << std::endl;
           // std::cout << " - PZ[2]            " << vtx->NEpvc[ipart][2]  << std::endl;
 
-
-
           //Add Kendall's pion tuning stuff
-          double piEnergy = -1.0;                    
+          double piEnergy = -1.0;
 
           if(reac == 16){
             for(int ipart = 0; ipart < event->nTrueParticles; ++ipart){
@@ -1021,7 +1025,7 @@ int main(int argc, char *argv[]){
             else if(piEnergy < 0.75){ CohTuningWeight[sample] = 0.294; }
             else if(piEnergy < 1.00){ CohTuningWeight[sample] = 1.206; }
           }
-          //Iterate through the systematics to make splines 
+          //Iterate through the systematics to make splines
           for(unsigned int sys_iter=0; sys_iter<nDials; sys_iter++){
             //Set name of TGraph
             TGraph* graph = (TGraph*) dial_graphs[sys_iter]->ConstructedAt(sample);
@@ -1034,7 +1038,7 @@ int main(int argc, char *argv[]){
                 rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm,0);
                 rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_shape,0);
               }
-              else{                      
+              else{
                 rw.Systematics().SetTwkDial(dials[sys_iter1], 0.);
               }
             }
@@ -1050,6 +1054,7 @@ int main(int argc, char *argv[]){
                 rw.Reconfigure();
                 weight = rw.CalcWeight(vtx);
                 if( fabs(weight-1.0) > 1.e-5 ) flat = false;
+                if(RESTRICTWEIGHT && !ValidWeightRange(weight)) weight = MAXWEIGHT;
                 if(k < 0) graph->SetPoint(1, 0, weight);
                 else if(k > 0) graph->SetPoint(2, 1, weight);
                 else graph->SetPoint(0, -1, weight);
@@ -1068,6 +1073,7 @@ int main(int argc, char *argv[]){
                 rw.Reconfigure();
                 weight = rw.CalcWeight(vtx);
                 if( fabs(weight-1.0) > 1.e-5 ) flat = false;
+                if(RESTRICTWEIGHT && !ValidWeightRange(weight)) weight = MAXWEIGHT;
                 if(sys_iter==nDials-2){
                   graph->SetPoint(dial_iter, dial_iter, weight);
                 }
@@ -1085,13 +1091,13 @@ int main(int argc, char *argv[]){
                   graph->SetPoint(dial_iter, dial_values[sys_iter][dial_iter], weight);
                 }
               }
-              //If the response is flat, only save a single point  
+              //If the response is flat, only save a single point
               if(flat && sys_iter<nDials-2){
                 for(int piter=(graph->GetN()-1); piter>=0; piter--) graph->RemovePoint(piter);
                 graph->SetPoint(0,0.0,1.0);
               }
             }
-          }  
+          }
         }
 
         // Reset dials to nominal
@@ -1100,7 +1106,7 @@ int main(int argc, char *argv[]){
             rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm,0);
             rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_shape,0);
           }
-          else{                      
+          else{
             rw.Systematics().SetTwkDial(dials[sys_iter1], 0.);
           }
         }
@@ -1143,12 +1149,12 @@ int main(int argc, char *argv[]){
           rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_shape,0); // Relativistic
           rw.Systematics().SetTwkDial(t2krew::kNIWG2014a_pF_C12, (217.-217.)/217.);
           rw.Systematics().SetTwkDial(t2krew::kNIWGMEC_Norm_C12, (1.0-1.0)/1.0);
-          rw.Systematics().SetTwkDial(t2krew::kNIWGMEC_Norm_O16, (1.0-1.0)/1.0);  
+          rw.Systematics().SetTwkDial(t2krew::kNIWGMEC_Norm_O16, (1.0-1.0)/1.0);
           rw.Systematics().SetTwkDial(t2krew::kNXSec_MaCCQE, (1.2-1.2)/1.2);
 
           rw.Reconfigure();
           CCQETuningWeight[sample] = rw.CalcWeight(vtx);
- 
+
           // Reset to nominal
           rw.Systematics().SetTwkDial(t2krew::kNIWG2014a_SF_RFG,0); //SF->RFG
           rw.Systematics().SetTwkDial(t2krew::kNIWG_rpaCCQE_norm,0); //RPA correction
@@ -1197,10 +1203,10 @@ int main(int argc, char *argv[]){
     }
     // Delete the SystBox array
     _man.syst().FinalizeEventSystematics(*event);
-        
+
     // Reset the PreviousToyBox
     _man.sel().FinalizeEvent(*event);
-        
+
     evt++;
   } // number of events
   std::cout << "Event loop done!!" << std::endl;
@@ -1236,7 +1242,7 @@ void ParseArgs(int argc, char **argv){
   fInputFile  = null;
   fOutputFile = null;
   fRunPeriod  = null;
-    
+
   if(argc<(nargs*2+1)){ Usage(); exit(1); }
   for(int i = 1; i < argc; i+=2){
     if     (string(argv[i]) == "-p") fInputFile  = argv[i+1];
@@ -1245,7 +1251,7 @@ void ParseArgs(int argc, char **argv){
     else if(string(argv[i]) == "-n") fNEvts = atoi(argv[i+1]);
     else if(string(argv[i]) == "-m") fMirror = (bool)atoi(argv[i+1]);
     else if(string(argv[i]) == "-t") fToys = atoi(argv[i+1]);
-    else {  
+    else {
       std::cout << "Invalid argument:" << argv[i] << " "<< argv[i+1] << std::endl;
       Usage();
       exit(1);
@@ -1276,5 +1282,15 @@ int GetPThetaBin(double p, double th){
 
   return pbin*4+thbin;
 
+}
+
+Bool_t ValidWeightRange(const Double_t &weight)
+{
+    if(!TMath::Finite(weight) || TMath::IsNaN(weight))
+        return kFALSE;
+    else if(weight > MAXWEIGHT)
+        return kFALSE;
+    else
+        return kTRUE;
 }
 
