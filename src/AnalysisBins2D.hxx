@@ -19,6 +19,8 @@ public:
     ///The main constructor
     AnalysisBins2D(TString xBinsName, TString yBinsName, TString configFile, XMLTools* xml=NULL);
 
+    AnalysisBins2D(AnalysisBins* inputAnaBinsX, AnalysisBins* inputAnaBinsY);
+
     ///Destructor
     virtual ~AnalysisBins2D();
 
@@ -56,10 +58,25 @@ public:
     void DrawCopy(TString options="") {if(hist) hist->DrawCopy(options.Data());}
 
     ///Draws a 3x1 TCanvas with each histogram
-    TCanvas* DrawAll(TString twoDimOptions, TString oneDimOptions);
+    TCanvas* Draw2D(TString twoDimOptions="COLZ");
+
+    ///Draws a 3x1 TCanvas with each histogram
+    TCanvas* DrawAll(TString twoDimOptions="COLZ", TString oneDimOptions="");
 
     ///Clone the AnalysisBins histogram
     TH2D* GetTH2DClone(TString histName) {return (hist) ? static_cast<TH2D*>(hist->Clone(histName)) : NULL;}
+
+    ///Gets status flag to divide bins by bin width
+    Bool_t GetDivideByBinWidth() const {return divideByBinWidth;}
+
+    ///Indicates to divide by bin widths
+    void SetDivideByBinWidth(Bool_t setDivideByBinWidth = kTRUE) {divideByBinWidth = setDivideByBinWidth;}
+
+    ///Divide each bin by its width and height
+    void DivideByBinWidth(Bool_t sumw2=kTRUE);
+
+    ///Divide each bin by its width and height
+    Bool_t GetSumw2() const {return Sumw2;}
 
     AnalysisBins* anaBinsX;
     AnalysisBins* anaBinsY;
@@ -75,6 +92,8 @@ protected:
     TString unitsY;
     AnalysisBins::BinEdges binEdgesX;
     AnalysisBins::BinEdges binEdgesY;
+    Bool_t divideByBinWidth;
+    Bool_t Sumw2;
 
 public:
     ClassDef(AnalysisBins2D, 1)

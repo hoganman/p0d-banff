@@ -28,6 +28,10 @@ void HEPConstants::Init()
     convert["mm"] = mm;
     convert["m"] = meter;
     convert["meter"] = meter;
+    convert["cos(#theta)"] = 1.;
+    convert["cos(theta)"] = 1.;
+    convert["cos(q)"] = 1.;
+    convert["cos #theta"] = 1.;
 
     PDGINDEX    = 0;
     MASSINDEX   = 1;

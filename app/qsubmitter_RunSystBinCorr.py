@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
-import sys, getopt,os,datetime,math,glob,time,subprocess
-import random
-
+import sys, getopt,os,datetime,math,glob,time,subprocess 
+import NaturalSorting
 #######################
 inOptions = {
         'c:':['cluster=','which computing cluster currently supported are either "csuhpc" OR "csuhep"'],
@@ -10,37 +9,30 @@ inOptions = {
         'h:':['help=','this help message'],
         'H:':['hours=','max time limit in hours'],
         'j:':['other=','other options separated by the # (pound) character'],
-        'L:':['list=','input file list'],
+        'L:':['list=','input file directory'],
         'm:':['memory=','per-job maximum memory limit in MEGAbytes'],
         'M:':['minutes=','max time in minutes'],
-        'n:':['num-jobs=','number of jobs at max'],
         'N:':['hostname=','sets the node/hostname (no defaults set)'],
         'o:':['output-name-prefix=','output file prefix (example -o naME produces naME_1.root)'],
         'O:':['opportunistic-nodes=','Use opportunistic nodes (default=0)'],
         'p:':['output-path=','path for output files'],
         'P:':['priority=','job priority'],
-        'q:':['qname=','sets which queue (default=\"physics.q|short.q\")'],
+        'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run=','run number'],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
-#       s_cpu     The per-process CPU time limit in seconds.
-#       s_data    The per-process maximum memory limit in bytes.
-#       s_vmem    The same as s_data (if both are set the minimum is used).
-#       h_cpu     The per-job CPU time limit in seconds.
-#       h_data    The per-job maximum memory limit in bytes.
-#       h_vmem    The same as h_data (if both are set the minimum is used).
 
-SECONDS_BTN_RUN = 10
-SECONDS_BTN_QSUB = 0
+
+SECONDS_BTN_RUN = 1
+SECONDS_BTN_SUBMIT = 16
 csuhpc = -1
 queueTag = '$'
-HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
-RUNCREATEFLATTREE = subprocess.Popen(['which','RunCreateFlatTree.exe'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]
+PSYCHESTEERINGROOT = os.getenv('PSYCHESTEERINGROOT')
+RUNSYSTBINCORR = '%s/Linux-x86_64/RunSystBinCorr.exe' %(PSYCHESTEERINGROOT)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
 PYTHONPATH = '%s:%s/macros'%(os.getenv('PYTHONPATH'),BASE)
@@ -50,8 +42,8 @@ LD_LIBRARY_PATH=os.getenv('LD_LIBRARY_PATH')
 nNodes = 43
 nFreeUseNodes = 19
 physicsNodes = [40,41,42,43]
-FlatTrees = []
-fileList = {} # a dictionary with a oaAnalysis file as the key and 0(unused) or 1(used) as the value
+GenWeightss = []
+fileList = {} # a dictionary with a flattree file as the key and 0(unused) or 1(used) as the value
 totalTimeInHours = 0
 
 class computeNode:
@@ -107,7 +99,7 @@ class queueOptions:
         self.otherRequirementsList  =  otherRequirementsList
         self.emailAddress           =  emailAddress
     def GetQueueTag(self):
-        return self.queueTag
+        return self.queueTag 
 
 nodes = {} # a dictionary with nodes in the range node1 - node43
 
@@ -151,19 +143,20 @@ def InitNodes():
     	queueName = ''
     	if line.find('.q@') == -1:
     		continue
-        if '-NA-' in line:
-            continue
     	index = line.find('@')-1
     	queueName = line[0:line.find('@')]
     	index = line.find('@')
     	while line[index] != ' ':
-    		index += 1
+    		index += 1	
     	index -= 1
     	hostName = line[line.find('@')+1:index+2].strip()
     	if hostName not in nodes.keys():
     		continue
     	jobsAndSlots = line.split('BIP   ')[1].split('.')[0]
     	jobsAndSlots = jobsAndSlots[0:len(jobsAndSlots)-2].strip().split('/')
+        print line
+        if '-NA-' in line:
+            continue
     	state = line.split('lx-amd64')[1].strip()
     	#reserved = jobsAndSlots[0]
     	#jobs = jobsAndSlots[1]
@@ -210,7 +203,7 @@ def CreateExportedPathsScript(submissionFileName):
 
 
 
-def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
+def CreateGenWeightsSubmissionScript(jobNum,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress):
 
     CWD = os.getcwd()
     #create the submission script
@@ -276,11 +269,7 @@ def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltim
             submission.write('\n')
     submission.write('source %s/ExportedPaths.sh \n'%(CWD))
     submission.write('source %s/Setup-P0DBANFF.sh\n'%(BASE))
-    #submission.write('source %s/nd280Highland2/%s/cmt/setup.sh\n'%(BASE, os.getenv('HIGHLAND2VERSION')))
-    # ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
-    #                                 datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
-    #                                ).total_seconds()))
-    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs))
+    # submission.write('%s \'$P0DBANFFROOT/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN * 100))
     submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
@@ -288,7 +277,7 @@ def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltim
     submission.close()
     os.system('chmod +x %s'%(submissionFileName))
 
-def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
+def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
     #create filelist
     CWD = os.getcwd()
     subFileListName = '%s/filelists/filelist_%d.txt'%(CWD,jobNum)
@@ -296,23 +285,27 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
     for fileEntry in subFileList:
         subFile.write(fileEntry+'\n')
     subFile.close()
+    if(len(subFileList)) != 1:
+        print 'ERROR: Wrong size of file list for job '+str(jobNum+1)
+    INPUT = subFileList[0]
+    runType = ''
     #create job
     jobFileName = 'ajob_'+str(jobNum)+'.sh'
     job = open(jobFileName,'w')
     job.write('#!/bin/sh\n')
     outputFile = '%s_%d.root'%(outputName,jobNum)
     outputFileAndPath = '%s/%s'%(outputPath,outputFile)
-    FTOUTPUT = '%s/%s'%(outputPath,outputFile)
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
+    OUTPUT = '%s/%s'%(outputPath,outputFile)
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    command = '  %s -v -o %s %s \n'%(RUNCREATEFLATTREE,outputFileAndPath,subFileListName)
+    command = '%s -i %s -o %s \n' %(RUNSYSTBINCORR, INPUT, OUTPUT)
     job.write(command)
     job.write('fi\n')
-    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,FTOUTPUT))
+    job.write('%s \'%s/CheckFileShell.C("%s")\'\n'%(ROOT,MACROS,OUTPUT))
     job.write('FILEGOOD=$?\n')
     job.write('if [ $FILEGOOD -eq 0 ]; then\n')
-    job.write('  echo "The FlatTree failed! There was some kind of crash!"\n')
+    job.write('  echo "The GenWeights failed! There was some kind of crash!"\n')
     job.write('  exit 1\n')
     job.write('fi\n')
     job.write('\n')
@@ -320,7 +313,7 @@ def CreateFlatTreeJobScript(jobNum,subFileList,runNumber,outputPath,outputName):
     os.system('chmod +x %s'%(jobFileName))
 
 
-def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
+def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName):
 
     subFileList = []
     os.mkdir('filelists')
@@ -350,38 +343,38 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
             useHostName = useHostName[0:len(useHostName)-1]
     globalFileListIndex = 0
     global fileList
-    oaAnalysisFiles = fileList.keys()
+    flattreeFiles = fileList.keys()
+    NaturalSorting.naturalsort(flattreeFiles)
     for jobNum in range(0,numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
         fileCounter = 0
         while fileCounter < numFilesPerJob:
             if globalFileListIndex == len(fileList):
                 break
-            aoaAnalysisFile = oaAnalysisFiles[globalFileListIndex]
-            if fileList[aoaAnalysisFile] == 1:
-                print "You should not be calling an already used oaAnalysis file"
+            aflattreeFile = flattreeFiles[globalFileListIndex]
+            if fileList[aflattreeFile] == 1:
+                print "You should not be calling an already used flattree file"
                 print "   going to the next one "
             else:
-                subFileList.append(aoaAnalysisFile)
-                fileList[aoaAnalysisFile] = 1
+                subFileList.append(aflattreeFile)
+                fileList[aflattreeFile] = 1
                 fileCounter = fileCounter + 1
             globalFileListIndex = globalFileListIndex + 1
 
         if len(subFileList) == 0:
             break
         #create submit script
-        CreateFlatTreeSubmissionScript(jobNum+1,numJobs,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
+        CreateGenWeightsSubmissionScript(jobNum+1,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useQueueName,useHostName,otherRequirementsList,emailAddress)
 
         #create job script
-        FlatTrees.append(outputFile)
-        CreateFlatTreeJobScript(jobNum+1,subFileList,runNumber,outputPath,outputName)
+        GenWeightss.append(outputFile)
+        CreateGenWeightsJobScript(jobNum+1,subFileList,outputPath,outputName)
 
         #submit job
         SubmitJob('submit_ajob_%d.sh'%(jobNum+1))
 
-        if jobNum+1 != numJobs:
-            print "sleeping for", SECONDS_BTN_QSUB, "seconds till next job sub"
-            time.sleep(SECONDS_BTN_QSUB)  # seconds
+        print "sleeping for %d seconds till next job sub" % SECONDS_BTN_SUBMIT
+        time.sleep(SECONDS_BTN_SUBMIT)  # seconds
 
         #restart list
         del subFileList[0:]
@@ -413,23 +406,22 @@ def MakeHaddScript(outputPath,outputName,ExportedPathsName,lastJobNumber,jobSubm
 
 def GetListofFiles(inputlistfile):
     filelist = []
-    if not os.path.isfile(inputlistfile):
-        return filelist
-    infile = open(inputlistfile)
-    line = infile.readline()
-    while len(line) > 0:
-        #skip comment lines
-        if line.find('#') == -1:
-            filelist.append(line.split('\n')[0])
+    if os.path.isfile(inputlistfile):
+        infile = open(inputlistfile)
         line = infile.readline()
-    infile.close()
+        while len(line) > 0:
+            #skip comment lines
+            if line.find('#') == -1:
+                filelist.append(line.split('\n')[0])
+            line = infile.readline()
+        infile.close()
+    elif os.path.isdir(inputlistfile):
+        for file in glob.glob('%s/*.root' %(inputlistfile)):
+            filelist.append(file)
+    filelist = sorted(filelist)
     return filelist
 
 def main(argv):
-    if HIGHLANDIOROOT.find('None') == 0:
-        print 'You must have HIGHLANDIOROOT exported for this script to work'
-        print helpstatement
-        sys.exit(2)
     shortArgsList = []
     longArgsList = []
     argDescriptionList = []
@@ -439,8 +431,7 @@ def main(argv):
         longArgsList.insert(0,sublist[0])
         argDescriptionList.insert(0,sublist[1])
     shortArgs = ''.join(shortArgsList)
-    inputList = ''
-    runNumber = -1
+    inputDirectory = ''
     outputPath = ''
     outputName = ''
     numJobs = -1
@@ -454,12 +445,13 @@ def main(argv):
     otherRequirements = ''
     emailAddress = ''
     clusterName = ''
+    is_data = 0
     global csuhpc
     global queueTag
     useQueueName = ''
     useHostName = ''
     useOpportunisticNodes = 0
-    helpstatement = 'qsubmitter.py [OPTIONS]\n'
+    helpstatement = 'qsubmitter_splines.py [OPTIONS]\n'
     for ele in range(0,len(shortArgsList)):
         helpstatement=helpstatement+'-%s/--%s == %s \n'%(shortArgsList[ele][0:1],longArgsList[ele][0:len(longArgsList[ele])-1],argDescriptionList[ele])
     try:
@@ -481,17 +473,13 @@ def main(argv):
             print helpstatement
             sys.exit()
         elif opt in ('-L',GetLongOption('-L')):
-            inputList = arg
-        elif opt in ('-r',GetLongOption('-r')):
-            runNumber = int(arg)
+            inputDirectory = arg
         elif opt in ('-p',GetLongOption('-p')):
             outputPath = arg
         elif opt in ('-P',GetLongOption('-P')):
 	    priority = int(arg)
         elif opt in ('-o',GetLongOption('-o')):
             outputName = arg
-        elif opt in ('-n',GetLongOption('-n')):
-            numJobs = int(arg)
         elif opt in ('-Q',GetLongOption('-Q')):
             numFilesPerJob = int(arg)
         elif opt in ('-H',GetLongOption('-H')):
@@ -522,13 +510,16 @@ def main(argv):
             sys.exit()
     #end loop over options
 
-    localFileList = GetListofFiles(inputList)
+    localFileList = GetListofFiles(inputDirectory)
     global fileList
     for aFile in localFileList:
         fileList[aFile] = 0
     otherRequirementsList = []
+    numJobs = len(localFileList)
+    print 'There are '+str(len(localFileList))+' files to process\n'
+    #print localFileList
 
-    if len(inputList) == 0 or len(fileList) == 0:
+    if len(inputDirectory) == 0 or len(fileList) == 0:
         print 'ERROR: Invalid file list! Check the file name or contents.'
         print helpstatement
         sys.exit()
@@ -545,8 +536,9 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(outputPath) == 0:
-        print 'WARNING: Output path is the CWD.'
-        outputPath = '.'
+        print 'ERROR: No output path set!'
+        print helpstatement
+        sys.exit()
     if len(clusterName) == 0:
         print 'WARNING: No cluster name specified! Using csuhpc as default'
         clusterName = 'csuhpc'
@@ -583,8 +575,8 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(useQueueName) == 0 and len(useHostName) == 0:
-	print 'Assuming the parameter qname=\"physics.q|short.q\"'
-	useQueueName = 'physics.q|short.q'
+	print 'Assuming the parameter qname=\"physics.q\"'
+	useQueueName = 'physics.q'
     if len(useHostName) > 1:
         if len(useQueueName) > 1:
             print 'WARNING: Be careful about specifying the hostname and qname together'
@@ -597,10 +589,11 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
+
     InitNodes()
     #make directory for new jobs
     currentTime = datetime.datetime.now()
-    submissionDirName = 'qsubmitter_%s_%d%s%s_%s%s'%(outputName,currentTime.year,str(currentTime.month).zfill(2),str(currentTime.day).zfill(2),str(currentTime.hour).zfill(2),str(currentTime.minute).zfill(2))
+    submissionDirName = 'qsubmitter_RunSystBinCorr_%s_%d%s%s_%s%s'%(outputName,currentTime.year,str(currentTime.month).zfill(2),str(currentTime.day).zfill(2),str(currentTime.hour).zfill(2),str(currentTime.minute).zfill(2))
     ExportedPathsName = 'ExportedPaths.sh'
     os.mkdir(submissionDirName)
     os.system('chmod +rw %s'%(submissionDirName))
@@ -612,9 +605,10 @@ def main(argv):
     walltimeMinutes = walltimeMinutes if walltimeMinutes >= 0 else 0
     walltimeHours = walltimeHours if walltimeHours >= 0 else 0
     totalTimeInHours = float(walltimeHours + 1./60. * walltimeMinutes)
-    MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
+    MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours,walltimeMinutes,maxMemory,softRequirements,hardRequirements,useOpportunisticNodes,useQueueName,useHostName,otherRequirementsList,emailAddress,ExportedPathsName)
     MakeHaddScript(outputPath,outputName,ExportedPathsName,numJobs,"submit_ajob")
     os.chdir('../')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+

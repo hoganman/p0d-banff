@@ -88,7 +88,7 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetPadBorderMode(0);
     P0DBANFFStyle->SetPadColor(0);
     P0DBANFFStyle->SetCanvasColor(0);
-    //P0DBANFFStyle->SetTitleColor(0);
+    P0DBANFFStyle->SetTitleColor(0);
     P0DBANFFStyle->SetStatColor(0);
     //</plain>
     gROOT->SetStyle("P0DBANFFStyle");
@@ -235,14 +235,14 @@ void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
 //**************************************************
 {
     if(!inHist)
-    {
-	const Int_t dimension = inHist->GetDimension();
-        std::cerr << Form("ERROR: Invalid input TH%d*", dimension) << std::endl;
         return;
-    }
+	//const Int_t dimension = inHist->GetDimension();
+    //std::cerr << Form("ERROR: Invalid input TH%d*", dimension) << std::endl;
     inHist->SetTitle("");
     inHist->GetXaxis()->SetTitleOffset(0.85);
     inHist->GetYaxis()->SetTitleOffset(0.85);
+    inHist->GetXaxis()->SetTitleColor(kcbBlack);
+    inHist->GetYaxis()->SetTitleColor(kcbBlack);
     if(!xAxisTitle.Contains("none"))
     {
         inHist->GetXaxis()->SetTitle(xAxisTitle.Data());
@@ -594,6 +594,8 @@ void P0DBANFFInterface::PrettyUpTH2(TString inFileName, TString outputName,
 
     const UInt_t dummy = 0;
     PrettyUpTH1(static_cast<TH1*>(htemp), xAxisTitle, yAxisTitle, dummy, dummy, dummy, textSizeChange);
+    htemp->GetXaxis()->SetTitleColor(kcbBlack);
+    htemp->GetYaxis()->SetTitleColor(kcbBlack);
     canvas->cd();
     htemp->Draw("COLZ");
 
@@ -620,6 +622,8 @@ void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
     const UInt_t dummy = 0;
     PrettyUpTH1(static_cast<TH1*>(inHist), xAxisTitle, yAxisTitle,
 	    dummy, dummy, dummy, textSizeChange);
+    inHist->GetXaxis()->SetTitleColor(kcbBlack);
+    inHist->GetYaxis()->SetTitleColor(kcbBlack);
 }
 
 //**************************************************
