@@ -57,6 +57,7 @@ int main(int argc, char** argv){
     bool DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
     bool DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
     bool Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
+    bool DoOnlyP0DFHCSelections = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DFHCSelections");
 
     //Define whether to throw MC statistical errors and/or statistical errors
     bool throwMCStat  = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
@@ -72,14 +73,15 @@ int main(int argc, char** argv){
     int nSample = 6;
 
     //FHC NuMu selections
-    if(!Do4PiFHC && !DoOnlyNue){ //FHC Multi Pi selections
+    if(!Do4PiFHC && !DoOnlyNue && !DoOnlyP0DFHCSelections) //FHC Multi Pi selections
+    {
         std::cout << "---------------------------------" << std::endl;
         std::cout << "Applying FHC CCMultiPi selections" << std::endl;
         std::cout << "---------------------------------" << std::endl;
 
         // Some idiot proof check...
         if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi")     == 0 ||
-           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 0){
+            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPiFGD2") == 0){
             std::cout << "FHC MultiPi is not activated in psycheSteering!" << std::endl;
             throw;
         }
@@ -103,7 +105,9 @@ int main(int argc, char** argv){
         SampleMap[SampleId::kFGD2NuMuCCOther] = new BANFFBinnedSample(SampleId::kFGD2NuMuCCOther, 2,
                                                                       observables, throwMCStat, throwStat);
     }
-    else if(!DoOnlyNue){ //FHC 4pi selections
+    //FHC 4pi selections
+    else if(!DoOnlyNue && !DoOnlyP0DFHCSelections)
+    {
         std::cout << "-----------------------------" << std::endl;
         std::cout << "Applying FHC CC4Pi selections" << std::endl;
         std::cout << "-----------------------------" << std::endl;
@@ -136,7 +140,8 @@ int main(int argc, char** argv){
 
     }
 
-    if(DoNue){ //NuE selections
+    if(DoNue)
+    { //NuE selections
         std::cout << "-----------------------" << std::endl;
         std::cout << "Applying NuE selections" << std::endl;
         std::cout << "-----------------------" << std::endl;
@@ -180,7 +185,8 @@ int main(int argc, char** argv){
         SampleMap[SampleId::kFGD2GammaInAntiNuMode   ] = new BANFFBinnedSample(SampleId::kFGD2GammaInAntiNuMode   , 2,
                                                                                observables, throwMCStat, throwStat);
     }
-    else{ //Make sure NuE selections are turned off
+    else
+    { //Make sure NuE selections are turned off
         // Some idiot proof check...
         if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNuECC")         == 1 ||
            ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNuECC")     == 1 ||
@@ -194,8 +200,10 @@ int main(int argc, char** argv){
     }
 
     // RHC NuMu selections
-    if(!DoOnlyNue){
-        if(DoMultiPiRHC){ //RHC MultiPi Selections
+    if(!DoOnlyNue && !DoOnlyP0DFHCSelections)
+    {
+        if(DoMultiPiRHC)
+        { //RHC MultiPi Selections
             std::cout << "---------------------------------" << std::endl;
             std::cout << "Applying RHC CCMultiPi selections" << std::endl;
             std::cout << "---------------------------------" << std::endl;
@@ -205,16 +213,16 @@ int main(int argc, char** argv){
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 0 ||
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 0 ||
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 0){
-                std::cout << "MultiPi RHC not activated in psycheSteering!" << std::endl;
-                throw;
+               std::cout << "MultiPi RHC not activated in psycheSteering!" << std::endl;
+               throw;
             }
             // Some idiot proof check...
             if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrack")             == 1 ||
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrack")     == 1 ||
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiTrackFGD2")         == 1 ||
                ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiTrackFGD2") == 1){
-                std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
-                throw;
+               std::cout << "MultiTrack RHC is activated in psycheSteering!" << std::endl;
+               throw;
             }
 
             //Add RHC MultiPi samples to the counter
@@ -245,7 +253,8 @@ int main(int argc, char** argv){
             SampleMap[SampleId::kFGD2AntiNuMuCCOther            ] = new BANFFBinnedSample(SampleId::kFGD2AntiNuMuCCOther           , 2,
                                                                                           observables, throwMCStat, throwStat);
         }
-        else{ //RHC MultiTrack Selections
+        else
+        { //RHC MultiTrack Selections
             std::cout << "---------------------------------" << std::endl;
             std::cout << "Applying RHC MultiTrack selection" << std::endl;
             std::cout << "---------------------------------" << std::endl;
@@ -287,6 +296,30 @@ int main(int argc, char** argv){
             SampleMap[SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks] = new BANFFBinnedSample(SampleId::kFGD2NuMuBkgInAntiNuModeCCNTracks, 2,
                                                                                            observables, throwMCStat, throwStat);
         }
+    }
+    else if(DoOnlyP0DFHCSelections)
+    {
+        std::cout << "-------------------------------------" << std::endl;
+        std::cout << "Applying P0D FHC selection" << std::endl;
+        std::cout << "-------------------------------------" << std::endl;
+        // Some idiot proof check...
+        if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPi")     == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPiFGD2")         == 1 ||
+           ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuInAntiNuModeCCMultiPiFGD2") == 1){
+            std::cout << "MultiPi RHC is activated in psycheSteering!" << std::endl;
+            throw;
+        }
+        if(SampleMap.size() != 0)
+        {
+            std::cout << "Other samples loaded that are NOT P0D only!" << std::endl;
+            throw;
+        }
+        nSample = 2;
+        SampleMap[SampleId::kP0DWaterNuMuCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuCC  , 2,
+                                                                     observables, throwMCStat, throwStat);
     }
     else{ // ONLY NUE SELECTIONS
         // Some idiot proof check...
@@ -364,6 +397,10 @@ int main(int argc, char** argv){
     if(Do4PiFHC) { outputName = "CC4PiFHC_" + outputName; }
     if(DoNue)    { outputName = "NuE_" + outputName;      }
 
+    if(DoOnlyP0DFHCSelections)
+    {
+        outputName = "P0DFHCOnly_Fit_" + outputName;
+    }
     if(!DoOnlyNue){
         if(DoMultiPiRHC) { outputName = "MultiPiRHC_"+outputName;    }
         else             { outputName = "MultiTrackRHC_"+outputName; }
