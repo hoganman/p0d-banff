@@ -1,6 +1,7 @@
+#define GENWEIGHTFROMPSYCHERUNSYST_NEW_CXX
+
 #include <stdlib.h>
 #include <cstdlib>
-
 #include <iostream>
 
 #include "TFile.h"
@@ -28,6 +29,17 @@ bool IndividualThrow;
 bool Sand;
 int nEvents;
 
+// Print the cmd line syntax
+void Usage(){
+  std::cout << "USAGE: genWeightFromPsycheRunSyst_new.exe [OPTIONS] "               << std::endl;
+  std::cout << "OPTIONS: MANADATORY"                                                << std::endl;
+  std::cout << "         -i INPUT_FILE_NAME: RunSystBinCorr file name"              << std::endl;
+  std::cout << "         -o OUTPUT_FILE_NAME: Output file name"                     << std::endl;
+  std::cout << "OPTIONS: OPTIONAL"                                                  << std::endl;
+  std::cout << "         -n N_EVENTS: Limit number of processed events to N_EVENTS" << std::endl;
+  std::cout << "         -s: Toggles running with Sand MC" << std::endl;
+}
+
 double calcRPA(double Q2, double A, double B, double D, double E, double U) {
   // Callum's fitted nominals
   // A = 0.59 +/- 20%
@@ -42,8 +54,8 @@ double calcRPA(double Q2, double A, double B, double D, double E, double U) {
   // Q2 transition; less than U -> polynominal
   if (Q2 < U) {
     // xprime as prescribed by Callum
-    double xprime = Q2/U;
-    double C      = D + U*E*(D-1)/3.;
+    const double xprime = Q2/U;
+    const double C      = D + U*E*(D-1)/3.;
     eRPA          = A*(1-xprime)*(1-xprime)*(1-xprime) + 3*B*(1-xprime)*(1-xprime)*xprime + 3*C*(1-xprime)*xprime*xprime + D*xprime*xprime*xprime;
   } else {
     eRPA = 1 + (D-1)*exp(-E*(Q2-U));
@@ -284,10 +296,11 @@ void ReweightTree(){
   NIWGWeightTree->Branch("T2KRW_NIWGWeightToy"   ,  NIWGWeightToy   , "T2KRW_NIWGWeightToy[T2KRW_nToys]/D");
   NIWGWeightTree->Branch("T2KRW_EnuToy"          ,  EnuToy          , "T2KRW_EnuToy[T2KRW_nToys]/D");
 
-  for(int iEntry = 0; iEntry < (int)all_syst->GetEntries(); ++iEntry){
+  const Long64_t nEntries = all_syst->GetEntries();
+  for(Long64_t iEntry = 0; iEntry < nEntries; ++iEntry){
     NIWGWeightNom = 1;
     EnuNom = -999;
-    if(iEntry%100==0) std::cout << "Progress " << (double)iEntry*100./(int)all_syst->GetEntries() << "%" << std::endl;
+    if(iEntry%100==0) std::cout << "Progress " << (double)iEntry * 100./ nEntries << "%" << std::endl;
     for(int iToy = 0; iToy < 2000; ++iToy){
       Toy[iToy]           = -999;
       NIWGWeightToy[iToy] = 1;
@@ -476,13 +489,6 @@ void ReweightTree(){
 
 }
 
-
-// Print the cmd line syntax
-void Usage(){
-  std::cout << "Cmd line syntax should be:" << std::endl;
-  std::cout << "genWeightFromPsycheRunSyst_new.exe -i RunSyst_New_file.root "
-    "-o outputfile.root [-n nevents] [-s if running on sand]" << std::endl;
-}
 
 int ParseArgs(int argc, char **argv){
 
