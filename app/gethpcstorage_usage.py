@@ -23,27 +23,27 @@ def signal_handler(signal, frame):
     sys.exit(0)
 
 
-def gethpcstorage_usage(diff_time):
+def gethpcstorage_usage(diff_time=600):
     """
     Returns the current CSU ENS-HPC 'hpc-storage' usage (nprocesses/cores)
+    diff_time in units of seconds
     """
     # This is the ganglia URL to get CSV data
     url = 'http://ens-hpc.engr.colostate.edu/ganglia/graph.php\
 ?r=hour&h=hpc-storage&m=load_one&s=by+name&mc=2&g=load_report&c=ens-hpc&csv=1'
     csv_contents = list()
-    iterations = 0
-    while iterations < 3:
+    iterations = 1
+    while iterations < 4:
         try:
-            time.sleep(5*(iterations))
-            urlrequest = requests.get(url, allow_redirects=True)
+            urlrequest = requests.get(url, allow_redirects=True, timeout=10)
             csv_contents = urlrequest.content.split('\n')
             iterations += 1
             if type(csv_contents) is list and len(csv_contents) > 2:
                 break
         except requests.RequestException as req_exp:
             print str(req_exp)
-            print 'Unable to complete process'
-            return 0
+            print 'Unable to complete process, trying again...'
+            time.sleep(5)
     if len(csv_contents) < 2:
         print 'Unable to complete process'
         return 0
@@ -141,6 +141,9 @@ and last recorded usage')
     parser.add_option('-l', '--load', dest='load',
                       default=1.0,  # in processes / cpus
                       help='The normalized load (N procs/CPUs) to wait for')
+    parser.add_option('-q', '--quit', dest='quit',
+                      action='store_true', default=False,
+                      help='Quit after one check')
     options, args = parser.parse_args()
     if len(args) > 0:
         print 'ERROR: Unaccepted input'
@@ -158,6 +161,8 @@ and last recorded usage')
         return 1
 
     load = gethpcstorage_usage(options.diff)
+    if options.quit:
+        return 0
     while load >= load_max:
         sleeptime = options.sleep * load
         print 'The load is too high, waiting for', sleeptime, 'seconds'

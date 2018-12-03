@@ -1,6 +1,7 @@
 #define BINNINGDEFINITION_CXX
 
 #include <BinningDefinition.hxx>
+#include "sys/types.h"
 
 //*****************************************************************************
 BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
@@ -216,6 +217,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
   DoNue        = (bool)ND::params().GetParameterI("BANFF.DoNueSelections");
   DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
+  DoOnlyP0DFHC = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DFHCSelections");
   DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
 
   Do1DCheckMom       = (bool)ND::params().GetParameterI("BANFF.Do1DCheckMom");
@@ -230,15 +232,15 @@ BANFF::BinningDefinition::BinningDefinition(){
   FullToReduMap.clear();
 
   //P0D FHC numuCC-Inclusive
-  int    P0DFHCNumuCCInclusive_Mom_NBin = 9;
-  double P0DFHCNumuCCInclusive_Mom_Bin[10] = {0, 450, 700, 1100, 1600, 2200, 3000, 4000, 5000, 30000};
+  int    P0DFHCNumuCCInclusive_Mom_NBin = 8;
+  double P0DFHCNumuCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
   int    P0DFHCNumuCCInclusive_Det_Mom_NBin = 6;
-  double P0DFHCNumuCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 4000, 5000, 30000};
+  double P0DFHCNumuCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
 
   int    P0DFHCNumuCCInclusive_Cos_NBin = 5;
   double P0DFHCNumuCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
-  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 3;
-  double P0DFHCNumuCCInclusive_Det_Cos_Bin[4] = {-1.0, +0.5, +0.94, +1.0};
+  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 4;
+  double P0DFHCNumuCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
@@ -250,6 +252,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double FHCNumuCC0Pi_Cos_Bin[25];
   int    FHCNumuCC0Pi_Det_Cos_NBin = 7;
   double FHCNumuCC0Pi_Det_Cos_Bin[25];
+
   if(!Do4PiFHC){
     FHCNumuCC0Pi_Cos_NBin = 11;
     FHCNumuCC0Pi_Cos_Bin[ 0] = -1.0;
@@ -600,15 +603,20 @@ BANFF::BinningDefinition::BinningDefinition(){
   if(Do1DCheckMom){RHCGamma_Cos_NBin=1; RHCGamma_Cos_Bin[1] = 1;}
   if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;}
 
-  bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
-                                                        P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
-  bothAxis_Det[SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
-                                                        P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+  //Added by MH
+  if(DoOnlyP0DFHC)
+  {
 
-  bothAxis    [SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
-                                                        P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
-  bothAxis_Det[SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
-                                                        P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+    bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+
+    bothAxis    [SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+  }
 
   if(!DoOnlyNue){
     bothAxis    [SampleId::kFGD1NuMuCC0Pi] = new TAxis2D(FHCNumuCC0Pi_Mom_NBin    , FHCNumuCC0Pi_Mom_Bin,
@@ -862,9 +870,11 @@ BANFF::BinningDefinition::BinningDefinition(){
     std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it0 = bothAxis    .find(sample);
     std::map<SampleId::SampleEnum, TAxis2D*>::const_iterator it1 = bothAxis_Det.find(sample);
 
-    ActiveSample[sample] = (it0 != bothAxis.end() && it1 != bothAxis_Det.end());
+    const bool isActiveSample = it0 != bothAxis.end() && it1 != bothAxis_Det.end();
+    ActiveSample[sample] = isActiveSample;
 
-    if(ActiveSample[sample]){
+    if(isActiveSample)
+    {
       TAxis2D* ax1 = bothAxis    [sample];
       TAxis2D* ax2 = bothAxis_Det[sample];
       Axis_Mom    [sample] = (*ax1)[0];
@@ -876,11 +886,21 @@ BANFF::BinningDefinition::BinningDefinition(){
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DWater")))
   {
+      if(DoOnlyP0DFHC)
+      {
+          std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DFHCSelections = 1 >" << std::endl;
+          throw;
+      }
       ActiveSample[SampleId::kP0DWaterNuMuCC] = false;
   }
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DAir")))
   {
+      if(DoOnlyP0DFHC)
+      {
+          std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DFHCSelections = 1 >" << std::endl;
+          throw;
+      }
       ActiveSample[SampleId::kP0DAirNuMuCC  ] = false;
   }
 
@@ -988,18 +1008,18 @@ BANFF::BinningDefinition::BinningDefinition(){
 
 //*****************************************************************************
 int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample,
-        const double &Mom, const double &Cos)
+        const double &Mom, const double &Cos) const
 //*****************************************************************************
 {
   /// This gets the global bin number in the detector matrix
   int row = 0;
   if(Mom < 0     || Cos < -1) return -1;
   if(Mom > 30000 || Cos >  1) return -1;
-
-  for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+  SampleEnumToTAxisMap_t::const_iterator it;
+  for (it=Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
     if(sample == (*it).first){
-      TAxis* MomAxis = Axis_Mom_Det[(*it).first]; //Makes the code faster by not calling endless time the map?
-      TAxis* CosAxis = Axis_Cos_Det[(*it).first];
+      TAxis* MomAxis = Axis_Mom_Det.at((*it).first); //Makes the code faster by not calling endless time the map?
+      TAxis* CosAxis = Axis_Cos_Det.at((*it).first);
       int binmom = MomAxis->FindBin(Mom); int nbinmom = MomAxis->GetNbins();
       int bincos = CosAxis->FindBin(Cos); int nbincos = CosAxis->GetNbins();
       if(bincos==0 || bincos>nbincos || binmom==0 || binmom>nbinmom){ return -1; }
@@ -1014,7 +1034,7 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos_Det(const SampleId::Sampl
 
 //*****************************************************************************
 int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample,
-        const double &Mom, const double &Cos)
+        const double &Mom, const double &Cos) const
 //*****************************************************************************
 {
   /// This gets the global bin number in the matrix
@@ -1024,8 +1044,8 @@ int BANFF::BinningDefinition::GetGlobalBinMatrixMomCos(const SampleId::SampleEnu
 
   for (SampleEnumToTAxisMap_t::const_iterator it=Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
     if(sample == (*it).first){
-      TAxis* MomAxis = Axis_Mom[(*it).first]; //Makes the code faster by not calling endless time the map?
-      TAxis* CosAxis = Axis_Cos[(*it).first];
+      TAxis* MomAxis = Axis_Mom.at((*it).first); //Makes the code faster by not calling endless time the map?
+      TAxis* CosAxis = Axis_Cos.at((*it).first);
       int binmom = MomAxis->FindBin(Mom); int nbinmom = MomAxis->GetNbins();
       int bincos = CosAxis->FindBin(Cos); int nbincos = CosAxis->GetNbins();
       if(bincos==0 || bincos>nbincos || binmom==0 || binmom>nbinmom){ return -1; }
@@ -1313,4 +1333,17 @@ std::map<int,int> BANFF::BinningDefinition::GetFullToReduMap()
     FullToReduMap[j] = bin_det;
   }
   return FullToReduMap;
+}
+
+void BANFF::BinningDefinition::DumpActiveSamples() const
+{
+    std::map<SampleId::SampleEnum, bool>::const_iterator it;
+    for(it = ActiveSample.begin(); it != ActiveSample.end(); ++it)
+    {
+        if(it->second)
+        {
+            const SampleId::SampleEnum sample = it->first;
+            std::cout << "Active sample " << sample << " of type " << SampleId::ConvertSample(sample).c_str() << std::endl;
+        }
+    }
 }

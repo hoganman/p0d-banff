@@ -148,20 +148,23 @@ binLabels[80] = "SK #bar{#nu}_{#mu}, RHC"
 binLabels[91] = "SK #nu_{e}, RHC"
 binLabels[93] = "SK #bar{#nu}_{e}, RHC"
 
-binLabels[100] = "FGD 1 CC-0#pi, FHC"
-binLabels[143] = "FGD 1 CC-1#pi, FHC"
-binLabels[184] = "FGD 1 CC-Other, FHC"
-binLabels[225] = "FGD 1 #bar{#nu}_{#mu} CC-1Track, RHC"
-binLabels[266] = "FGD 1 #bar{#nu}_{#mu} CC-NTracks, RHC"
-binLabels[302] = "FGD 1 #nu_{#mu} CC-1Track, RHC"
-binLabels[333] = "FGD 1 #nu_{#mu} CC-NTracks, RHC"
-binLabels[374] = "FGD 2 CC-0#pi, FHC"
-binLabels[415] = "FGD 2 CC-1#pi, FHC"
-binLabels[456] = "FGD 2 CC-Other, FHC"
-binLabels[497] = "FGD 2 #bar{#nu}_{#mu} CC-1Track, RHC"
-binLabels[538] = "FGD 2 #bar{#nu}_{#mu} CC-NTracks, RHC"
-binLabels[575] = "FGD 2 #nu_{#mu} CC-1Track, RHC"
-binLabels[616] = "FGD 2 #nu_{#mu} CC-NTracks, RHC"
+binLabels[100] = "P0D Water-In"
+binLabels[124] = "P0D Water-Out"
+
+# binLabels[100] = "FGD 1 CC-0#pi, FHC"
+# binLabels[143] = "FGD 1 CC-1#pi, FHC"
+# binLabels[184] = "FGD 1 CC-Other, FHC"
+# binLabels[225] = "FGD 1 #bar{#nu}_{#mu} CC-1Track, RHC"
+# binLabels[266] = "FGD 1 #bar{#nu}_{#mu} CC-NTracks, RHC"
+# binLabels[302] = "FGD 1 #nu_{#mu} CC-1Track, RHC"
+# binLabels[333] = "FGD 1 #nu_{#mu} CC-NTracks, RHC"
+# binLabels[374] = "FGD 2 CC-0#pi, FHC"
+# binLabels[415] = "FGD 2 CC-1#pi, FHC"
+# binLabels[456] = "FGD 2 CC-Other, FHC"
+# binLabels[497] = "FGD 2 #bar{#nu}_{#mu} CC-1Track, RHC"
+# binLabels[538] = "FGD 2 #bar{#nu}_{#mu} CC-NTracks, RHC"
+# binLabels[575] = "FGD 2 #nu_{#mu} CC-1Track, RHC"
+# binLabels[616] = "FGD 2 #nu_{#mu} CC-NTracks, RHC"
 
 for i in xrange(FEFQERAW,NCOTHERRAW+1):
     binLabels[i] = param_list.At(i).GetString().Data()
@@ -236,12 +239,15 @@ for i in xrange(0, len(histoTypes)):
     c1.Print(sys.argv[2])
 
 
-histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm FGD1","ObsNorm FGD2","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
+# histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm FGD1","ObsNorm FGD2","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
+histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm P0D Water-In","ObsNorm P0D Water-Out","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
 paramRange = []
 if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
-    paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+23],[100+24,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 else:
-    paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+23],[100+24,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 yRange = [[0.80,1.2],[0.5,1.5],[0.5,1.5],[0.0,2.1],[0.5,2.1],[0.5,2.1],[0.5,1.4]]
 
 binLabels[50] = "0, 400 MeV"

@@ -1,3 +1,5 @@
+#define MAKEND280COV_CXX
+
 #include <iostream>
 #include <fstream>
 
@@ -29,11 +31,16 @@ bool ApplyNIWG = false;
 bool Apply1p1h = false;
 const int nThrows = 2000;
 
-void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
-        char* Cov1P1HStr,     char* OutFileStr){
+bool IsFiniteWeight(const Double_t& weight);
+bool IsValidWeight(const Double_t& weight);
+
+void MakeCovariance(const char* MCFilesListStr, const char* NIWGFilesListStr,
+        const char* Cov1P1HStr, const char* OutFileStr)
+{
 
     ND::params().SetReadParamOverrideFilePointPassed();
     BANFF::BinningDefinition& bd = BANFF::BinningDefinition::Get();
+    bd.DumpActiveSamples();
 
     std::vector<std::string> name_vector = bd.GetListOfBins();
     std::vector<std::string> name_vector_det = bd.GetListOfBins_Det();
@@ -50,7 +57,8 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
     TH2D* Nominal_Plots[14];
     TH2D* Fake_Plots[14];
 
-    if(Apply1p1h){
+    if(Apply1p1h)
+    {
         std::cout << "Fake1P1H File " << Cov1P1HStr << std::endl;
         fake = new TFile(Cov1P1HStr);
 
@@ -91,11 +99,10 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
             Nominal_Plots[i] = (TH2D*) Nominal_Plots_In[i]->Projection(1,0)->Clone(Form("%s_2D",Nominal_Plots_In[i]->GetName()));
             Fake_Plots[i] = (TH2D*) Fake_Plots_In[i]->Projection(1,0)->Clone(Form("%s_2D",Nominal_Plots_In[i]->GetName()));
         }
-    }
 
-    if(Apply1p1h){
         fake_cov = new TH1D("fake_error","fake_error",bd.GetNbins(), 0, bd.GetNbins());
-        for(int i = 0; i < 14; ++i){
+        for(int i = 0; i < 14; ++i)
+        {
             SampleId::SampleEnum sample;
             switch(i){
                 case 0:
@@ -149,7 +156,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                 }
             }
         }
-    }
+    } //end of Apply1p1h
 
     ifstream MCFilesList;
     MCFilesList.open(MCFilesListStr);
@@ -178,7 +185,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                     // Now that we are only using the all tree
                     std::cout << "Adding syst " << name << " to TChain map" << std::endl;
                     MCChains.insert(std::pair<std::string, TChain*>(name, new TChain(name.c_str())));
-                } 
+                }
             }
             //std::cout << "Adding the file " << line << " to the TChain" << std::endl;
             for(std::map<std::string, TChain*>::iterator it = MCChains.begin(); it != MCChains.end(); ++it){
@@ -306,7 +313,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
         TH1D* fake_error_redu    = new TH1D("1p1h_fake_Error_redu",            "1p1h systematic error",                         nBinsRedu, 0, nBinsRedu);
         TH1D* nominal            = new TH1D("Nominal",                         "Nominal Events",                                nBinsRedu, 0, nBinsRedu);
         TH1D* mc_sys_error       = new TH1D("MC_Sys_Error",                    "MC systematic error",                           nBinsRedu, 0, nBinsRedu);
-        TH1D* mc_stat_error_redu = new TH1D("MC_Stat_Error_Redu",              "MC statistical error",                          nBinsRedu, 0, nBinsRedu); 
+        TH1D* mc_stat_error_redu = new TH1D("MC_Stat_Error_Redu",              "MC statistical error",                          nBinsRedu, 0, nBinsRedu);
         TH1D* var_mean           = new TH1D("Varied_Mean",                     "Varied Mean",                                   nBinsRedu, 0, nBinsRedu);
         TH1D* zero_point         = new TH1D("Zero_Point",                      "Zero Point",                                    nBinsRedu, 0, nBinsRedu);
         TH1D* var_mean_offset    = new TH1D("Varied_Mean_over_Nominal",        "Varied Mean normalised by nominal",             nBinsRedu, 0, nBinsRedu);
@@ -348,19 +355,19 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                 varied[iToy]->SetBinContent(iBin, 0);
             }
         }
-        MCChain->GetEntries();
+        const Long64_t nEntries = MCChain->GetEntries();
 
         double POT_Weight = 1;
 
         std::cout << "Looping through entries" <<std::endl;
-        for(int i = 0; i < (int)MCChain->GetEntries(); ++i){
-            MCChain->GetEntry(i);
+        for(Long64_t entry = 0; entry < nEntries; ++entry){
+            MCChain->GetEntry(entry);
             if(nThrows != nToys){
                 std::cerr << "nThrows should be equal to nToys, change this in the beginning MakeND280Cov and recompile" << std::endl;
                 throw;
             }
-            if(i%10000 == 0)
-                std::cout << "Progress " << 100. * ((double) i) / MCChain->GetEntries() << "%" << std::endl;
+            if(entry % 10000 == 0)
+                std::cout << "Progress " << 100. * ((double) entry) / nEntries << "%" << std::endl;
             bool isSand = 0;
             Int_t runp = anaUtils::GetRunPeriod(Run, SubRun);
 
@@ -377,17 +384,17 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                 case 2://run2 air
                     POT_Weight = 3.59337e+19/9.23937e+20;
                     if(isSand) POT_Weight = 3.59337e+19/3.7132e+19;
-                    break;       
+                    break;
                 case 3://run3b air
                     POT_Weight = 2.1705e+19/4.44873e+20;
                     if(isSand) POT_Weight = 2.1705e+19/2.35053e+19;
-                    break;       
+                    break;
                 case 4://run3c air
                     POT_Weight = 1.36398e+20/2.63027e+21;
                     if(isSand) POT_Weight = 1.36398e+20/1.31337e+20;
                     break;
                 case 5://run4 water
-                    POT_Weight = 1.64277e+20/2.26216e+21;	
+                    POT_Weight = 1.64277e+20/2.26216e+21;
                     if(isSand) POT_Weight = 1.64277e+20/1.59801e+20;
                     break;
                 case 6://run4 air
@@ -440,7 +447,8 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                 exit(1);
             }
 
-            if(bd.IsActiveSample(SelectionNom)){
+            if(bd.IsActiveSample(SelectionNom))
+            {
                 Selection->Fill(SelectionNom);
                 int BinRedu = bd.GetGlobalBinMatrixMomCos_Det((SampleId::SampleEnum)SelectionNom, LeptonMomNom, LeptonCosNom) + 1;
                 if(BinRedu > nBinsRedu){
@@ -452,10 +460,26 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                     std::cout << "BinFull > nBinsFull" << std::endl;
                     throw;
                 }
-                if(TMath::IsNaN(WeightNom    ) || !TMath::Finite(WeightNom    ) || WeightNom      == -999 || WeightNom      > 1000){ std::cerr << "WeightNom isn't finite: "     << WeightNom     << std::endl; throw;}
-                if(TMath::IsNaN(NIWGWeightNom) || !TMath::Finite(NIWGWeightNom) || NIWGWeightNom  == -999 || NIWGWeightNom  > 1000){ std::cerr << "NIWGWeightNom isn't finite: " << NIWGWeightNom << std::endl; throw;}
-                if(TMath::IsNaN(FluxWeightNom) || !TMath::Finite(FluxWeightNom) || FluxWeightNom  == -999 || FluxWeightNom  > 1000){ std::cerr << "FluxWeightNom isn't finite: " << FluxWeightNom << std::endl; throw;}
-                if(TMath::IsNaN(POT_Weight   ) || !TMath::Finite(POT_Weight   ) || POT_Weight     == -999 || POT_Weight     > 1000){ std::cerr << "POT_Weight isn't finite: "    << POT_Weight    << std::endl; throw;}
+                if(!IsValidWeight(WeightNom))
+                {
+                    std::cerr << "WeightNom isn't finite: "     << WeightNom << std::endl;
+                    throw;
+                }
+                if(!IsValidWeight(NIWGWeightNom))
+                {
+                    std::cerr << "NIWGWeightNom isn't finite: " << NIWGWeightNom << std::endl;
+                    throw;
+                }
+                if(!IsValidWeight(FluxWeightNom))
+                {
+                    std::cerr << "FluxWeightNom isn't finite: " << FluxWeightNom << std::endl;
+                    throw;
+                }
+                if(!IsValidWeight(POT_Weight))
+                {
+                    std::cerr << "POT_Weight isn't finite: "    << POT_Weight << std::endl;
+                    throw;
+                }
 
 
                 number_events_redu->Fill(BinRedu);
@@ -473,14 +497,29 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
                         std::cout << "BinRedu > nBinsRedu" << std::endl;
                         throw;
                     }
-                    if(!TMath::IsNaN(WeightToy[iToy]) && TMath::Finite(WeightToy[iToy])){
-
+                    if(IsFiniteWeight(WeightToy[iToy])){
                         if(WeightToy[iToy] < 100){
                             varied[iToy]->SetBinContent(BinRedu, varied[iToy]->GetBinContent(BinRedu) + POT_Weight * FluxWeightToy[iToy] * NIWGWeightToy[iToy] * WeightToy[iToy]);
-                            if(TMath::IsNaN(WeightToy[iToy]    ) || !TMath::Finite(WeightToy[iToy]    ) || WeightToy[iToy]      == -999 || WeightNom      > 1000){ std::cerr << "WeightToy["     << iToy << "] isn't finite: " << WeightToy[iToy]     << std::endl; throw;}
-                            if(TMath::IsNaN(NIWGWeightToy[iToy]) || !TMath::Finite(NIWGWeightToy[iToy]) || NIWGWeightToy[iToy]  == -999 || NIWGWeightNom  > 1000){ std::cerr << "NIWGWeightToy[" << iToy << "] isn't finite: " << NIWGWeightToy[iToy] << std::endl; throw;}
-                            if(TMath::IsNaN(FluxWeightToy[iToy]) || !TMath::Finite(FluxWeightToy[iToy]) || FluxWeightToy[iToy]  == -999 || FluxWeightNom  > 1000){ std::cerr << "FluxWeightToy[" << iToy << "] isn't finite: " << FluxWeightToy[iToy] << std::endl; throw;}
-                            if(TMath::IsNaN(POT_Weight         ) || !TMath::Finite(POT_Weight         ) || POT_Weight           == -999 || POT_Weight     > 1000){ std::cerr << "POT_Weight isn't finite: "                    << POT_Weight          << std::endl; throw;}
+                            if(!IsValidWeight(WeightToy[iToy]))
+                            {
+                                std::cerr << "WeightToy["     << iToy << "] isn't valid: " << WeightToy[iToy]     << std::endl;
+                                throw;
+                            }
+                            if(!IsValidWeight(NIWGWeightToy[iToy]))
+                            {
+                                std::cerr << "NIWGWeightToy[" << iToy << "] isn't valid: " << NIWGWeightToy[iToy] << std::endl;
+                                throw;
+                            }
+                            if(!IsValidWeight(FluxWeightToy[iToy]))
+                            {
+                                std::cerr << "FluxWeightToy[" << iToy << "] isn't valid: " << FluxWeightToy[iToy] << std::endl;
+                                throw;
+                            }
+                            if(!IsValidWeight(POT_Weight))
+                            {
+                                std::cerr << "POT_Weight isn't valid: "                    << POT_Weight          << std::endl;
+                                throw;
+                            }
                         }else{
                             varied[iToy]->SetBinContent(BinRedu, varied[iToy]->GetBinContent(BinRedu) + FluxWeightToy[iToy] * NIWGWeightToy[iToy] * POT_Weight);
                         }
@@ -542,7 +581,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
 
                 if(staterr > mc_stat_error_redu->GetBinContent(k + 1)){
                     mc_stat_error_redu->SetBinContent(k + 1, staterr);
-                } 
+                }
                 if(Apply1p1h){
                     if(fabs(fakeerr) > fabs(fake_error_redu->GetBinContent(k + 1))){
                         fake_error_redu->SetBinContent(k + 1, fakeerr);
@@ -557,7 +596,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
         if(Apply1p1h){
             fake_error_redu->Write("Fake_Error_Lin");
 
-            TH1D* fake_lin = new TH1D("Lin_1p1h","Lin_1p1h",nBinsRedu,0,nBinsRedu); 
+            TH1D* fake_lin = new TH1D("Lin_1p1h","Lin_1p1h",nBinsRedu,0,nBinsRedu);
 
             for(int j = 1; j <= nBinsRedu; ++j){
                 for(int k = j+1; k <= nBinsRedu; ++k){
@@ -669,7 +708,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
         cov_nofake         ->Write();
         nominal            ->Write();
         mc_sys_error       ->Write();
-        mc_stat_error_redu ->Write(); 
+        mc_stat_error_redu ->Write();
         var_mean           ->Write();
         var_mean_offset    ->Write();
         number_events_redu ->Write();
@@ -691,7 +730,7 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
         Double_t Blue_p[Number_p]   = { 1.00, 0.70, 0.50, 0.30, 0.100 };
         Double_t Length_p[Number_p] = { 0.00, 0.10, 0.4,  0.8,  1.00  };
         Int_t nb_p = 400;
-        TColor::CreateGradientColorTable(Number_p,Length_p,Red_p,Green_p,Blue_p,nb_p);  
+        TColor::CreateGradientColorTable(Number_p,Length_p,Red_p,Green_p,Blue_p,nb_p);
         const Int_t NCont = 255;
         gStyle->SetNumberContours(NCont);
         gStyle->SetOptStat(0);
@@ -832,17 +871,29 @@ void MakeCovariance(char* MCFilesListStr, char* NIWGFilesListStr,
 }
 
 
-void MakeCovariance4Arg(char* MCFilesListStr, char* NIWGFilesListStr,
-        char* Cov1P1HStr,     char* OutFileStr){
+inline void MakeCovariance4Arg(const char* MCFilesListStr, const char* NIWGFilesListStr,
+        const char* Cov1P1HStr, const char* OutFileStr){
     MakeCovariance(MCFilesListStr, NIWGFilesListStr, Cov1P1HStr, OutFileStr);
 }
 
-void MakeCovariance3Arg(char* MCFilesListStr, char* NIWGFilesListStr, char* OutFileStr){
+inline void MakeCovariance3Arg(const char* MCFilesListStr, const char* NIWGFilesListStr, const char* OutFileStr)
+{
     MakeCovariance(MCFilesListStr, NIWGFilesListStr, "", OutFileStr);
 }
 
-void MakeCovariance2Arg(char* MCFilesListStr, char* OutFileStr){
+inline void MakeCovariance2Arg(const char* MCFilesListStr, const char* OutFileStr)
+{
     MakeCovariance(MCFilesListStr, "", "", OutFileStr);
+}
+
+inline bool IsFiniteWeight(const Double_t& weight)
+{
+    return !TMath::IsNaN(weight) && TMath::Finite(weight);
+}
+
+inline bool IsValidWeight(const Double_t& weight)
+{
+    return IsFiniteWeight(weight) && !(TMath::AreEqualAbs(weight, -999, 1.0) || weight > 1000);
 }
 
 int main(int argn, char** arg){
@@ -877,5 +928,3 @@ int main(int argn, char** arg){
     return 0;
 
 }
-
-

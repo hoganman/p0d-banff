@@ -74,22 +74,22 @@ void P0DELossResolSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
         }
     }
 
+#ifdef DEBUG
     if(!tpcParticle)
-    {
         std::cout << "P0DELossResolsystematics::Warning Could not find a TPC1 track" << std::endl;
-    }
-    // Get a reference to the momentum to be varied
+#endif
+    // Get the reference to the momentum to be varied
     Float_t& p = track->Momentum;
-    Float_t trueMomentum = track->GetTrueParticle()->Momentum;
+    const Float_t trueMomentum = track->GetTrueParticle()->Momentum;
 
-    Float_t p0dlength = p0d->Length;
-    Float_t p0dEloss = p0d->ELoss;
+    const Float_t p0dlength = p0d->Length;
+    const Float_t p0dEloss = p0d->ELoss;
     // Check index before using
     AnaDetCrossingB* cross = track->GetTrueParticle()->DetCrossings[1];
-    Float_t postP0DMomentum = sqrt(cross->EntranceMomentum[0]*cross->EntranceMomentum[0] +
-                                   cross->EntranceMomentum[1]*cross->EntranceMomentum[1] +
-                                   cross->EntranceMomentum[2]*cross->EntranceMomentum[2]);
-    Float_t trueP0dEloss = trueMomentum - postP0DMomentum;
+    const Float_t postP0DMomentum = sqrt(cross->EntranceMomentum[0]*cross->EntranceMomentum[0] +
+                                         cross->EntranceMomentum[1]*cross->EntranceMomentum[1] +
+                                         cross->EntranceMomentum[2]*cross->EntranceMomentum[2]);
+    const Float_t trueP0dEloss = trueMomentum - postP0DMomentum;
 
     Float_t scale, scaleError;
 
@@ -106,12 +106,12 @@ void P0DELossResolSystematics::Apply(const ToyExperiment& toy, AnaEventC& event)
       std::cout <<"In TPC1? "<< anaUtils::InDetVolume(SubDetId::kTPC1,cross->EntrancePosition)<<std::endl;
 #endif
 
-    if (!GetBinValues(p0dlength,scale,scaleError))
+    if (!GetBinValues(p0dlength, scale, scaleError))
         continue;
     //if (!GetParametersForBin(0,scale,scaleError)) continue;
 #ifdef DEBUG
       std::cout <<"Bin values retrieved"<<std::endl;
-      std::cout << "Scale = "<<scale<<" Scale Err = " <<scaleError<<std::endl;
+      std::cout << "Scale = "<< scale << " Scale Err = " << scaleError<<std::endl;
 #endif
     // Apply the momentum scale factor
     p += (scale + scaleError * toy.GetToyVariations(_index)->Variations[0]) * (p0dEloss - trueP0dEloss);
