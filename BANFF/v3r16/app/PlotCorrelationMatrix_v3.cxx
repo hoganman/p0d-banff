@@ -3,7 +3,12 @@
 #include "TPad.h"
 #include "TCanvas.h"
 #include "TAxis.h"
+#include "TFile.h"
 #include "TMatrixDSym.h"
+#include "TStyle.h"
+#include "TROOT.h"
+#include "TObjString.h"
+#include "TObjArray.h"
 #include <string>
 #include <iostream>
 
@@ -34,7 +39,7 @@ void PlotCorrelationMatrix_v3() {
     TH2D cov_pref("Prefit_Covariance_Matrix"  , "Prefit Covariance Matrix"  ,n_total, 0, n_total, n_total, 0, n_total);
     TH2D cov_post("Postfit_Covariance_Matrix" , "Postfit Covariance Matrix" ,n_total, 0, n_total, n_total, 0, n_total);
 
-	string binLabels[31];
+    std::string binLabels[31];
 	for (int i = n_flux+n_dete; i<n_total; i++){
 		binLabels[i-n_flux-n_dete] = (((TObjString*)(params->At(i)))->GetString()).Data();
 		//std::cout<<binLabels[i-n_flux-n_dete]<<std::endl;
@@ -90,10 +95,10 @@ void PlotCorrelationMatrix_v3() {
 		}
 	}
     std::cout << "Finished prefit and postfit" <<std::endl;
-	
+
     TCanvas dummy("dummy","dummy",800,600);
     dummy.Print("v3_correlation_matrices.pdf[");
-    
+
     TCanvas c0("c0","Prefit",800,600);
     cov_pref.GetXaxis()->SetRangeUser(0,n_total);
     cov_pref.GetYaxis()->SetRangeUser(0,n_total);
@@ -156,7 +161,7 @@ void PlotCorrelationMatrix_v3() {
 	cov_dete.GetYaxis()->SetTitle("Parameter Number");
     cov_dete.Draw("COLZ");
     c6.Print("v3_correlation_matrices.pdf");
-	
+
     TCanvas c7("c7","Detector Postfit",800,600);
     corr_dete.GetXaxis()->SetRangeUser(n_flux+n_xsec,n_total);
     corr_dete.GetYaxis()->SetRangeUser(n_flux+n_xsec,n_total);
@@ -165,7 +170,7 @@ void PlotCorrelationMatrix_v3() {
 	corr_dete.GetYaxis()->SetTitle("Parameter Number");
     corr_dete.Draw("COLZ");
     c7.Print("v3_correlation_matrices.pdf");
-	
+
     TCanvas c8("c8","Xsec Postfit",800,600);
 	c8.SetLeftMargin(0.17);
 	c8.SetBottomMargin(0.2);
@@ -177,7 +182,7 @@ void PlotCorrelationMatrix_v3() {
 	cov_xsec.Draw("COLZ");
 	cov_xsec.SetMarkerSize(0.5);
 	cov_xsec.Draw("TEXT,SAME");
-	
+
 	TPad *grid1 = new TPad("grid1","",0,0,1,1);
 	grid1->SetLeftMargin(0.17);
 	grid1->SetBottomMargin(0.2);
@@ -193,7 +198,7 @@ void PlotCorrelationMatrix_v3() {
 	hgrid1->GetYaxis()->SetLabelOffset(999.);
 	hgrid1->GetXaxis()->SetLabelOffset(999.);
 	c8.Print("v3_correlation_matrices.pdf");
-	
+
     TCanvas c9("c9","Xsec Postfit",800,600);
     corr_xsec.GetXaxis()->LabelsOption("v");
     corr_xsec.GetYaxis()->LabelsOption("v");
@@ -205,7 +210,7 @@ void PlotCorrelationMatrix_v3() {
 	corr_xsec.Draw("COLZ");
 	corr_xsec.SetMarkerSize(0.5);
 	corr_xsec.Draw("TEXT,SAME");
-	
+
 	TPad *grid2 = new TPad("grid2","",0,0,1,1);
 	grid2->SetLeftMargin(0.17);
 	grid2->SetBottomMargin(0.2);
@@ -221,6 +226,6 @@ void PlotCorrelationMatrix_v3() {
 	hgrid2->GetYaxis()->SetLabelOffset(999.);
 	hgrid2->GetXaxis()->SetLabelOffset(999.);
 	c9.Print("v3_correlation_matrices.pdf");
-	
+
     dummy.Print("v3_correlation_matrices.pdf]");
 }
