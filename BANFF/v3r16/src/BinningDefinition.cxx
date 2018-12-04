@@ -4,214 +4,6 @@
 #include "sys/types.h"
 
 //*****************************************************************************
-BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
-//*****************************************************************************
-{
-    FirstDim  = new TAxis(nbin1, bins1);
-    SecondDim = new TAxis(nbin2, bins2);
-    Array = new TAxis*[ArraySize];
-    Array[0] = FirstDim;
-    Array[1] = SecondDim;
-}
-
-//*****************************************************************************
-BANFF::TAxis2D::~TAxis2D()
-//*****************************************************************************
-{
-    delete FirstDim;
-    delete SecondDim;
-    delete Array;
-};
-
-//*****************************************************************************
-TAxis* BANFF::TAxis2D::operator[] (const unsigned int &d)
-//*****************************************************************************
-{
-    if(d >= ArraySize)
-    {
-        std::cerr << "Can't acces more than 2D" << std::endl;
-        throw;
-    }
-    return Array[d];
-}
-
-//*****************************************************************************
-BANFF::BinningDefinition::~BinningDefinition()
-//*****************************************************************************
-{
-    SampleEnumToTAxisMap_t::iterator it;
-    for (it = Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
-      if(it->second) delete it->second;
-      Axis_Mom.erase(it);
-    }
-
-    for (it = Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
-      if(it->second) delete it->second;
-      Axis_Mom_Det.erase(it);
-    }
-    for (it = Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
-      if(it->second) delete it->second;
-      Axis_Cos.erase(it);
-    }
-
-    for (it = Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
-      if(it->second) delete it->second;
-      Axis_Cos_Det.erase(it);
-    }
-}
-
-//*****************************************************************************
-bool BANFF::BinningDefinition::IsActiveSample(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-    std::map<SampleId::SampleEnum, bool>::const_iterator it;
-    it = ActiveSample.find(sample);
-    if(it != ActiveSample.end())
-        return it->second;
-    return false;
-}
-
-//*****************************************************************************
-bool BANFF::BinningDefinition::IsActiveSample(const int &sample) const
-//*****************************************************************************
-{
-    if(sample >= SampleId::kUnassigned && sample < SampleId::kNSamples)
-    {
-        const SampleId::SampleEnum s = static_cast<SampleId::SampleEnum>(sample);
-        return IsActiveSample(s);
-    }
-    return false;
-};
-
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins_Mom (const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-    if(IsActiveSample(sample))
-        return Axis_Mom.at(sample)->GetNbins();
-    return 0;
-}
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins_Mom_Det(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(IsActiveSample(sample))
-    return Axis_Mom_Det.at(sample)->GetNbins();
-  return 0;
-}
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins_Cos(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(IsActiveSample(sample))
-    return Axis_Cos.at(sample)->GetNbins();
-  return 0;
-}
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins_Cos_Det(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(IsActiveSample(sample))
-    return Axis_Cos_Det.at(sample)->GetNbins();
-  return 0;
-}
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins_Det(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(IsActiveSample(sample))
-    return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
-  return 0;
-}
-
-//*****************************************************************************
-int BANFF::BinningDefinition::GetNbins(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(IsActiveSample(sample))
-    return GetNbins_Mom(sample) * GetNbins_Cos(sample);
-  return 0;
-};
-
-//*****************************************************************************
-TAxis* BANFF::BinningDefinition::GetBinning_Mom(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(!IsActiveSample(sample))
-  {
-      std::cerr << "No momentum binning for the sample " << ConvertSample(sample) << std::endl;
-      throw;
-  }
-  return Axis_Mom.at(sample);
-}
-
-//*****************************************************************************
-TAxis* BANFF::BinningDefinition::GetBinning_Mom_Det(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(!IsActiveSample(sample))
-  {
-    std::cerr << "No momentum (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
-    throw;
-  }
-  return Axis_Mom_Det.at(sample);
-}
-
-//*****************************************************************************
-TAxis* BANFF::BinningDefinition::GetBinning_Cos(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(!IsActiveSample(sample))
-  {
-    std::cerr << "No costheta binning for the sample " << ConvertSample(sample) << std::endl;
-    throw;
-  }
-  return Axis_Cos.at(sample);
-}
-
-//*****************************************************************************
-TAxis* BANFF::BinningDefinition::GetBinning_Cos_Det(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(!IsActiveSample(sample))
-  {
-    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
-    throw;
-  }
-  return Axis_Cos_Det.at(sample);
-}
-
-//*****************************************************************************
-BANFF::TAxis2D* BANFF::BinningDefinition::GetBinningArray(const SampleId::SampleEnum &sample) const
-//*****************************************************************************
-{
-  if(!IsActiveSample(sample))
-  {
-    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
-    throw;
-  }
-  return bothAxis.at(sample);
-}
-
-///The static member pointer to the singleton.
-//*****************************************************************************
-BANFF::BinningDefinition* BANFF::BinningDefinition::fBinningDefinition = NULL;
-//*****************************************************************************
-
-//*****************************************************************************
-BANFF::BinningDefinition& BANFF::BinningDefinition::Get() {
-//*****************************************************************************
-  if (!fBinningDefinition)
-    fBinningDefinition = new BANFF::BinningDefinition();
-  return *(fBinningDefinition);
-}
-
-//*****************************************************************************
 BANFF::BinningDefinition::BinningDefinition(){
 //*****************************************************************************
   Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
@@ -1103,6 +895,215 @@ BANFF::BinningDefinition::BinningDefinition(){
   }
 
 }
+
+//*****************************************************************************
+BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
+//*****************************************************************************
+{
+    FirstDim  = new TAxis(nbin1, bins1);
+    SecondDim = new TAxis(nbin2, bins2);
+    Array = new TAxis*[ArraySize];
+    Array[0] = FirstDim;
+    Array[1] = SecondDim;
+}
+
+//*****************************************************************************
+BANFF::TAxis2D::~TAxis2D()
+//*****************************************************************************
+{
+    delete FirstDim;
+    delete SecondDim;
+    delete Array;
+};
+
+//*****************************************************************************
+TAxis* BANFF::TAxis2D::operator[] (const unsigned int &d)
+//*****************************************************************************
+{
+    if(d >= ArraySize)
+    {
+        std::cerr << "Can't acces more than 2D" << std::endl;
+        throw;
+    }
+    return Array[d];
+}
+
+//*****************************************************************************
+BANFF::BinningDefinition::~BinningDefinition()
+//*****************************************************************************
+{
+    SampleEnumToTAxisMap_t::iterator it;
+    for (it = Axis_Mom.begin(); it!=Axis_Mom.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Mom.erase(it);
+    }
+
+    for (it = Axis_Mom_Det.begin(); it!=Axis_Mom_Det.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Mom_Det.erase(it);
+    }
+    for (it = Axis_Cos.begin(); it!=Axis_Cos.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Cos.erase(it);
+    }
+
+    for (it = Axis_Cos_Det.begin(); it!=Axis_Cos_Det.end(); ++it){
+      if(it->second) delete it->second;
+      Axis_Cos_Det.erase(it);
+    }
+}
+
+//*****************************************************************************
+bool BANFF::BinningDefinition::IsActiveSample(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+    std::map<SampleId::SampleEnum, bool>::const_iterator it;
+    it = ActiveSample.find(sample);
+    if(it != ActiveSample.end())
+        return it->second;
+    return false;
+}
+
+//*****************************************************************************
+bool BANFF::BinningDefinition::IsActiveSample(const int &sample) const
+//*****************************************************************************
+{
+    if(sample >= SampleId::kUnassigned && sample < SampleId::kNSamples)
+    {
+        const SampleId::SampleEnum s = static_cast<SampleId::SampleEnum>(sample);
+        return IsActiveSample(s);
+    }
+    return false;
+};
+
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins_Mom (const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+    if(IsActiveSample(sample))
+        return Axis_Mom.at(sample)->GetNbins();
+    return 0;
+}
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins_Mom_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(IsActiveSample(sample))
+    return Axis_Mom_Det.at(sample)->GetNbins();
+  return 0;
+}
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins_Cos(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(IsActiveSample(sample))
+    return Axis_Cos.at(sample)->GetNbins();
+  return 0;
+}
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins_Cos_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(IsActiveSample(sample))
+    return Axis_Cos_Det.at(sample)->GetNbins();
+  return 0;
+}
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(IsActiveSample(sample))
+    return GetNbins_Mom_Det(sample) * GetNbins_Cos_Det(sample);
+  return 0;
+}
+
+//*****************************************************************************
+int BANFF::BinningDefinition::GetNbins(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(IsActiveSample(sample))
+    return GetNbins_Mom(sample) * GetNbins_Cos(sample);
+  return 0;
+};
+
+//*****************************************************************************
+TAxis* BANFF::BinningDefinition::GetBinning_Mom(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(!IsActiveSample(sample))
+  {
+      std::cerr << "No momentum binning for the sample " << ConvertSample(sample) << std::endl;
+      throw;
+  }
+  return Axis_Mom.at(sample);
+}
+
+//*****************************************************************************
+TAxis* BANFF::BinningDefinition::GetBinning_Mom_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(!IsActiveSample(sample))
+  {
+    std::cerr << "No momentum (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+  }
+  return Axis_Mom_Det.at(sample);
+}
+
+//*****************************************************************************
+TAxis* BANFF::BinningDefinition::GetBinning_Cos(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(!IsActiveSample(sample))
+  {
+    std::cerr << "No costheta binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+  }
+  return Axis_Cos.at(sample);
+}
+
+//*****************************************************************************
+TAxis* BANFF::BinningDefinition::GetBinning_Cos_Det(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(!IsActiveSample(sample))
+  {
+    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+  }
+  return Axis_Cos_Det.at(sample);
+}
+
+//*****************************************************************************
+BANFF::TAxis2D* BANFF::BinningDefinition::GetBinningArray(const SampleId::SampleEnum &sample) const
+//*****************************************************************************
+{
+  if(!IsActiveSample(sample))
+  {
+    std::cerr << "No costheta (det cov) binning for the sample " << ConvertSample(sample) << std::endl;
+    throw;
+  }
+  return bothAxis.at(sample);
+}
+
+///The static member pointer to the singleton.
+//*****************************************************************************
+BANFF::BinningDefinition* BANFF::BinningDefinition::fBinningDefinition = NULL;
+//*****************************************************************************
+
+//*****************************************************************************
+BANFF::BinningDefinition& BANFF::BinningDefinition::Get() {
+//*****************************************************************************
+  if (!fBinningDefinition)
+    fBinningDefinition = new BANFF::BinningDefinition();
+  return *(fBinningDefinition);
+}
+
 
 
 //*****************************************************************************
