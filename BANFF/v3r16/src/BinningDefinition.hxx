@@ -195,8 +195,8 @@ namespace BANFF
         bool DoOnlyNue;
 
         ///Parameter defined in BANFFparameters/BANFF.parameters.dat or
-        ///override file to run ONLY P0D FHC samples
-        bool DoOnlyP0DFHC;
+        ///override file to run ONLY P0D CC-Inc samples
+        bool DoOnlyP0D;
 
         ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
         ///override file to run on Multi-pi in RHC

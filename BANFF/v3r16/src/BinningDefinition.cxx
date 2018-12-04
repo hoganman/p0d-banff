@@ -217,7 +217,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
   DoNue        = (bool)ND::params().GetParameterI("BANFF.DoNueSelections");
   DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
-  DoOnlyP0DFHC = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DFHCSelections");
+  DoOnlyP0D    = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DSelections");
   DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
 
   Do1DCheckMom       = (bool)ND::params().GetParameterI("BANFF.Do1DCheckMom");
@@ -241,6 +241,28 @@ BANFF::BinningDefinition::BinningDefinition(){
   double P0DFHCNumuCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
   int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 4;
   double P0DFHCNumuCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
+
+  //P0D RHC numu BKG CC-Inclusive
+  int    P0DRHCNumuBkgCCInclusive_Mom_NBin = 8;
+  double P0DRHCNumuBkgCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
+  int    P0DRHCNumuBkgCCInclusive_Det_Mom_NBin = 6;
+  double P0DRHCNumuBkgCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
+
+  int    P0DRHCNumuBkgCCInclusive_Cos_NBin = 5;
+  double P0DRHCNumuBkgCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
+  int    P0DRHCNumuBkgCCInclusive_Det_Cos_NBin = 4;
+  double P0DRHCNumuBkgCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
+
+  //P0D RHC numubar CC-Inclusive
+  int    P0DRHCNumubarCCInclusive_Mom_NBin = 8;
+  double P0DRHCNumubarCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
+  int    P0DRHCNumubarCCInclusive_Det_Mom_NBin = 6;
+  double P0DRHCNumubarCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
+
+  int    P0DRHCNumubarCCInclusive_Cos_NBin = 5;
+  double P0DRHCNumubarCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
+  int    P0DRHCNumubarCCInclusive_Det_Cos_NBin = 4;
+  double P0DRHCNumubarCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
@@ -604,18 +626,55 @@ BANFF::BinningDefinition::BinningDefinition(){
   if(Do1DCheckCos){RHCGamma_Mom_NBin=1; RHCGamma_Mom_Bin[1] = 30000;}
 
   //Added by MH
-  if(DoOnlyP0DFHC)
+  if(DoOnlyP0D)
   {
 
-    bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
+    // P0D numu FHC
+    bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin,     P0DFHCNumuCCInclusive_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Cos_NBin,     P0DFHCNumuCCInclusive_Cos_Bin);
     bothAxis_Det[SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
                                                           P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
 
-    bothAxis    [SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin    , P0DFHCNumuCCInclusive_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Cos_NBin    , P0DFHCNumuCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
+    bothAxis    [SampleId::kP0DAirNuMuCC] =   new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin,     P0DFHCNumuCCInclusive_Mom_Bin,
+                                                          P0DFHCNumuCCInclusive_Cos_NBin,     P0DFHCNumuCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuCC] =   new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
                                                           P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
+
+    // P0D numu BKG in RHC
+    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
+    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
+
+    // P0D numubar in RHC
+    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_Bin);
+    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_Bin);
   }
 
   if(!DoOnlyNue){
@@ -886,9 +945,9 @@ BANFF::BinningDefinition::BinningDefinition(){
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DWater")))
   {
-      if(DoOnlyP0DFHC)
+      if(DoOnlyP0D)
       {
-          std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DFHCSelections = 1 >" << std::endl;
+          std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
       ActiveSample[SampleId::kP0DWaterNuMuCC] = false;
@@ -896,12 +955,52 @@ BANFF::BinningDefinition::BinningDefinition(){
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DAir")))
   {
-      if(DoOnlyP0DFHC)
+      if(DoOnlyP0D)
       {
-          std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DFHCSelections = 1 >" << std::endl;
+          std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
       ActiveSample[SampleId::kP0DAirNuMuCC  ] = false;
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater")))
+  {
+      if(DoOnlyP0D)
+      {
+          std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
+          throw;
+      }
+      ActiveSample[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = false;
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir")))
+  {
+      if(DoOnlyP0D)
+      {
+          std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
+          throw;
+      }
+      ActiveSample[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] = false;
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater")))
+  {
+      if(DoOnlyP0D)
+      {
+          std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
+          throw;
+      }
+      ActiveSample[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = false;
+  }
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir")))
+  {
+      if(DoOnlyP0D)
+      {
+          std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
+          throw;
+      }
+      ActiveSample[SampleId::kP0DAirNuMuBarInAntiNuModeCC] = false;
   }
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))){
