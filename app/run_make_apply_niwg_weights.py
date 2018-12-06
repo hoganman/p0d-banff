@@ -97,6 +97,9 @@ def submit_niwg_weights_mc():
     run2w_nw_mc.run(not ShellCommand.IN_BKG)
     run2a_nw_mc.run(not ShellCommand.IN_BKG)
     run3b_nw_mc.run(not ShellCommand.IN_BKG)
+    run3c_nw_mc.run(not ShellCommand.IN_BKG)
+    run4w_nw_mc.run(not ShellCommand.IN_BKG)
+    run4a_nw_mc.run(not ShellCommand.IN_BKG)
     run5c_nw_mc.run(not ShellCommand.IN_BKG)
     run6b_nw_mc.run(not ShellCommand.IN_BKG)
     run6c_nw_mc.run(not ShellCommand.IN_BKG)
@@ -105,9 +108,6 @@ def submit_niwg_weights_mc():
     run7b_nw_mc.run(not ShellCommand.IN_BKG)
     sand_fhc_nw_mc.run(not ShellCommand.IN_BKG)
     sand_rhc_nw_mc.run(not ShellCommand.IN_BKG)
-    run3c_nw_mc.run(not ShellCommand.IN_BKG)
-    run4w_nw_mc.run(not ShellCommand.IN_BKG)
-    run4a_nw_mc.run(not ShellCommand.IN_BKG)
 
 
 class RUNTYPE(object):
