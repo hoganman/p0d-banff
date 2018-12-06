@@ -34,20 +34,20 @@ QSUBRUNSYSTBINCORR = 'python qsubmitter_RunSystBinCorr.py'
 def submit_runsyst_new_mc():
     """submits MC RunSyst_New.exe jobs"""
 
-    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B, DATATYPES.MC)
-    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B, DATATYPES.MC)
-    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B, DATATYPES.MC)
-    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B, DATATYPES.MC)
-    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B, DATATYPES.MC)
-    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B, DATATYPES.MC)
-    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B, DATATYPES.MC)
-    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B, DATATYPES.MC)
-    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B, DATATYPES.MC)
-    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, DATATYPES.MC)
-    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, DATATYPES.MC)
-    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, DATATYPES.MC)
-    sand_fhc_mc = make_qsub(RN.SANDFHC, SAND, DATATYPES.MC)
-    sand_rhc_mc = make_qsub(RN.SANDRHC, SAND, DATATYPES.MC)
+    run2w_mc = make_qsub(RN.RUN2W, NEUT_6B)
+    run2a_mc = make_qsub(RN.RUN2A, NEUT_6B)
+    run3b_mc = make_qsub(RN.RUN3B, NEUT_6B)
+    run3c_mc = make_qsub(RN.RUN3C, NEUT_6B)
+    run4w_mc = make_qsub(RN.RUN4W, NEUT_6B)
+    run4a_mc = make_qsub(RN.RUN4A, NEUT_6B)
+    run5c_mc = make_qsub(RN.RUN5C, NEUT_6B)
+    run6b_mc = make_qsub(RN.RUN6B, NEUT_6B)
+    run6c_mc = make_qsub(RN.RUN6C, NEUT_6B)
+    run6d_mc = make_qsub(RN.RUN6D, NEUT_6B)
+    run6e_mc = make_qsub(RN.RUN6E, NEUT_6B)
+    run7b_mc = make_qsub(RN.RUN7B, NEUT_6L)
+    sand_fhc_mc = make_qsub(RN.SANDFHC, SAND)
+    sand_rhc_mc = make_qsub(RN.SANDRHC, SAND)
 
     run2w_mc.run(ShellCommand.IN_BKG)
     run2a_mc.run(ShellCommand.IN_BKG)
@@ -70,7 +70,7 @@ def main(argv):
     submit_runsyst_new_mc()
 
 
-def make_qsub(run_name, production, is_mc):
+def make_qsub(run_name, production):
     """makes a MC qsubmitter.py command class
     for a particular RN class input"""
     flattree_dir = Directory(join(FLATTREEBASE,
