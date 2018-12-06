@@ -45,7 +45,7 @@ if [ "${LOCATION}" = "" ] || [ "${OUTFILE}" = "" ]; then
   exit 1
 fi
 
-for RUN in "run2-air" "run2-water" "run3b-air" "run3c-air" "run4-air" "run4-water" "run5c-water" "run6b-air" "run6c-air" "run6d-air" "run6e-air"; do
+for RUN in "run2-air" "run2-water" "run3b-air" "run3c-air" "run4-air" "run4-water" "run5c-water" "run6b-air" "run6c-air" "run6d-air" "run6e-air" "run7b-water"; do
   DIRECTORY=${LOCATION}/${RUN}
   for FILE in `ls -v ${DIRECTORY}`; do
     echo ${DIRECTORY}/${FILE} >> ${OUTFILE}
