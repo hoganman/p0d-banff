@@ -41,7 +41,7 @@ char * fOutputFile;
 char * fRunPeriod;
 bool data = 0;
 
-const Double_t MAXWEIGHT = 30;
+const Double_t MAXWEIGHT = 100;
 const Bool_t RESTRICTWEIGHT = kTRUE;
 
 void Usage();
@@ -788,6 +788,8 @@ int main(int argc, char *argv[]){
     RecoPiDirZ            = -999;
 
     DetNomWeight = -999;;
+    // If data event doesn't pass selection, need to set selected to be false
+    bool data_passed = false;
 
     for(int itoy=0; itoy<fToys; itoy++){
       //  Gets the ToyExperiment with index itoy from the ToyMaker
@@ -808,6 +810,8 @@ int main(int argc, char *argv[]){
       int sample = int(summary->EventSample);
 
       //AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
+      // Data event made it past the selection, want to selected to be true
+      if(data) { data_passed = true; }
 
       if(!data){
 
@@ -956,8 +960,13 @@ int main(int argc, char *argv[]){
           else if( vtx->NuParentDecMode < 50) { NeutrinoCode[sample]= -12; flavor=3; }
           Enu[sample] = vtx->StdHepP4[0][3];
           FluxWeight[sample] = fluxWeightSyst.Correction;
-          const TVector3 nu(vtx->StdHepP4[0][0],vtx->StdHepP4[0][1],vtx->StdHepP4[0][2]);
-          const TVector3 mu(vtx->StdHepP4[3][0],vtx->StdHepP4[3][1],vtx->StdHepP4[3][2]);
+          const Int_t MuonIndex = T2KNIWGUtils::IdxFsl(*vtx);
+          const TVector3 nu(vtx->StdHepP4[0][0],
+                            vtx->StdHepP4[0][1],
+                            vtx->StdHepP4[0][2]);
+          const TVector3 mu(vtx->StdHepP4[MuonIndex][0],
+                            vtx->StdHepP4[MuonIndex][1],
+                            vtx->StdHepP4[MuonIndex][2]);
           const Double_t muMag = mu.Mag();
           TrueLepMom[sample]  = muMag;
           TrueLepDirX = mu.X() / muMag;
@@ -1173,7 +1182,7 @@ int main(int argc, char *argv[]){
     //Fill summary tree
     bool selected = false;
     if(data){
-      selected = true;
+        if (data_passed) { selected = true; }
     }
     else{
       for(int sample = 0; sample < SampleId::kNSamples; ++sample){
