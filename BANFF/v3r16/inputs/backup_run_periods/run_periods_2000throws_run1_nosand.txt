@@ -1,1 +1,0 @@
-run1_data.txt run1_mc_2000throws_nosand.txt run1

@@ -1,13 +1,10 @@
-#define MakeClSampleSummary_cxx
+#define MAKECLSAMPLESUMMARY_CXX
 #include "MakeClSampleSummary.hxx"
 ClassImp(MakeClSampleSummary)
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
 
-MakeClSampleSummary::MakeClSampleSummary(TString fileName) : fChain(0)
+MakeClSampleSummary::MakeClSampleSummary(TString filename) : fChain(0)
 {
-    TFile* f = TFile::Open(fileName.Data());
+    TFile* f = TFile::Open(filename.Data());
     TTree* tree = static_cast<TTree*>(f->Get("sample_sum"));
     Init(tree);
 }
@@ -46,8 +43,8 @@ Long64_t MakeClSampleSummary::LoadTree(Long64_t entry)
     Long64_t centry = fChain->LoadTree(entry);
     if (centry < 0) return centry;
     if (fChain->GetTreeNumber() != fCurrent) {
-        fCurrent = fChain->GetTreeNumber();
-        Notify();
+       fCurrent = fChain->GetTreeNumber();
+       Notify();
     }
     return centry;
 }
@@ -85,34 +82,63 @@ void MakeClSampleSummary::Init(TTree *tree)
     SF_RFGGraph = 0;
     RPAGraph = 0;
     // Set branch addresses and branch pointers
-    if (!tree)
-         return;
+    if (!tree) return;
     fChain = tree;
     fCurrent = -1;
     fChain->SetMakeClass(1);
 
-    fChain->SetBranchAddress("NSamples", &NSamples, &b_NSamples);
     fChain->SetBranchAddress("SelectedSample", &SelectedSample, &b_SelectedSample);
-    fChain->SetBranchAddress("Enu", Enu, &b_Enu);
     fChain->SetBranchAddress("Pmu", Pmu, &b_Pmu);
     fChain->SetBranchAddress("CosThetamu", CosThetamu, &b_CosThetamu);
-    fChain->SetBranchAddress("ReactionCode", ReactionCode, &b_ReactionCode);
+
+    fChain->SetBranchAddress("NSamples", &NSamples, &b_NSamples);
+    fChain->SetBranchAddress("Run", &Run, &b_Run);
+    fChain->SetBranchAddress("DetNomWeight", &DetNomWeight, &b_DetNomWeight);
     fChain->SetBranchAddress("NeutrinoCode", NeutrinoCode, &b_NeutrinoCode);
-    fChain->SetBranchAddress("FluxWeight", FluxWeight, &b_FluxWeight);
+    fChain->SetBranchAddress("Enu", Enu, &b_Enu);
+    fChain->SetBranchAddress("TrueNeutrinoDirX", &TrueNeutrinoDirX, &b_TrueNeutrinoDirX);
+    fChain->SetBranchAddress("TrueNeutrinoDirY", &TrueNeutrinoDirY, &b_TrueNeutrinoDirY);
+    fChain->SetBranchAddress("TrueNeutrinoDirZ", &TrueNeutrinoDirZ, &b_TrueNeutrinoDirZ);
+    fChain->SetBranchAddress("TrueLepPDG", &TrueLepPDG, &b_TrueLepPDG);
     fChain->SetBranchAddress("TruePmu", TruePmu, &b_TruePmu);
+    fChain->SetBranchAddress("TrueLepDirX", &TrueLepDirX, &b_TrueLepDirX);
+    fChain->SetBranchAddress("TrueLepDirY", &TrueLepDirY, &b_TrueLepDirY);
+    fChain->SetBranchAddress("TrueLepDirZ", &TrueLepDirZ, &b_TrueLepDirZ);
     fChain->SetBranchAddress("TrueCosThetamu", TrueCosThetamu, &b_TrueCosThetamu);
+    fChain->SetBranchAddress("RecoLepDirX", &RecoLepDirX, &b_RecoLepDirX);
+    fChain->SetBranchAddress("RecoLepDirY", &RecoLepDirY, &b_RecoLepDirY);
+    fChain->SetBranchAddress("RecoLepDirZ", RecoLepDirZ, &b_RecoLepDirZ);
+    fChain->SetBranchAddress("TruePostFSIPiPDG", &TruePostFSIPiPDG, &b_TruePostFSIPiPDG);
+    fChain->SetBranchAddress("TruePostFSIPiMom", &TruePostFSIPiMom, &b_TruePostFSIPiMom);
+    fChain->SetBranchAddress("TruePostFSIPiDirX", &TruePostFSIPiDirX, &b_TruePostFSIPiDirX);
+    fChain->SetBranchAddress("TruePostFSIPiDirY", &TruePostFSIPiDirY, &b_TruePostFSIPiDirY);
+    fChain->SetBranchAddress("TruePostFSIPiDirZ", &TruePostFSIPiDirZ, &b_TruePostFSIPiDirZ);
+    fChain->SetBranchAddress("TruePreFSIPiPDG", &TruePreFSIPiPDG, &b_TruePreFSIPiPDG);
+    fChain->SetBranchAddress("TruePreFSIPiMom", &TruePreFSIPiMom, &b_TruePreFSIPiMom);
+    fChain->SetBranchAddress("TruePreFSIPiDirX", &TruePreFSIPiDirX, &b_TruePreFSIPiDirX);
+    fChain->SetBranchAddress("TruePreFSIPiDirY", &TruePreFSIPiDirY, &b_TruePreFSIPiDirY);
+    fChain->SetBranchAddress("TruePreFSIPiDirZ", &TruePreFSIPiDirZ, &b_TruePreFSIPiDirZ);
+    fChain->SetBranchAddress("RecoPiMom", &RecoPiMom, &b_RecoPiMom);
+    fChain->SetBranchAddress("RecoPiDirX", &RecoPiDirX, &b_RecoPiDirX);
+    fChain->SetBranchAddress("RecoPiDirY", &RecoPiDirY, &b_RecoPiDirY);
+    fChain->SetBranchAddress("RecoPiDirZ", &RecoPiDirZ, &b_RecoPiDirZ);
+    fChain->SetBranchAddress("ReactionCode", ReactionCode, &b_ReactionCode);
+    fChain->SetBranchAddress("NuParent", NuParent, &b_NuParent);
     fChain->SetBranchAddress("Q2", Q2, &b_Q2);
     fChain->SetBranchAddress("Q2QE", Q2QE, &b_Q2QE);
     fChain->SetBranchAddress("HaveTruth", HaveTruth, &b_HaveTruth);
     fChain->SetBranchAddress("TgtMat", TgtMat, &b_TgtMat);
-    fChain->SetBranchAddress("NuParent", NuParent, &b_NuParent);
-    fChain->SetBranchAddress("Run", &Run, &b_Run);
+    fChain->SetBranchAddress("FluxWeight", FluxWeight, &b_FluxWeight);
     fChain->SetBranchAddress("TruthVtx", TruthVtx, &b_TruthVtx);
     fChain->SetBranchAddress("CCQETuningWeight", CCQETuningWeight, &b_CCQETuningWeight);
     fChain->SetBranchAddress("CohTuningWeight", CohTuningWeight, &b_CohTuningWeight);
     fChain->SetBranchAddress("RFGTuningWeight", RFGTuningWeight, &b_RFGTuningWeight);
     fChain->SetBranchAddress("RelRPATuningWeight", RelRPATuningWeight, &b_RelRPATuningWeight);
     fChain->SetBranchAddress("NonRelRPATuningWeight", NonRelRPATuningWeight, &b_NonRelRPATuningWeight);
+    fChain->SetBranchAddress("pFTuningWeight", pFTuningWeight, &b_pFTuningWeight);
+    fChain->SetBranchAddress("MECCTuningWeight", MECCTuningWeight, &b_MECCTuningWeight);
+    fChain->SetBranchAddress("MECOTuningWeight", MECOTuningWeight, &b_MECOTuningWeight);
+    fChain->SetBranchAddress("MaQETuningWeight", MaQETuningWeight, &b_MaQETuningWeight);
     fChain->SetBranchAddress("MAQEGraph", &MAQEGraph, &b_MAQEGraph);
     fChain->SetBranchAddress("Q3CUTGraph", &Q3CUTGraph, &b_Q3CUTGraph);
     fChain->SetBranchAddress("MEC_CGraph", &MEC_CGraph, &b_MEC_CGraph);
@@ -134,7 +160,6 @@ void MakeClSampleSummary::Init(TTree *tree)
     fChain->SetBranchAddress("PDD_OGraph", &PDD_OGraph, &b_PDD_OGraph);
     fChain->SetBranchAddress("SF_RFGGraph", &SF_RFGGraph, &b_SF_RFGGraph);
     fChain->SetBranchAddress("RPAGraph", &RPAGraph, &b_RPAGraph);
-    Notify();
 }
 
 Bool_t MakeClSampleSummary::Notify()

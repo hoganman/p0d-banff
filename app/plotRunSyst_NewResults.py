@@ -9,29 +9,46 @@ from os.path import join
 import ROOT
 from ROOT import TCut, TLegend, gSystem
 from ROOTHStack import ROOTHStack
+from ROOTH2 import ROOTH2
 import sys
 
+P0DBANFFROOT = getenv('P0DBANFFROOT')
+
+# Show data points in the plot
+PLOTDATA = 0
+
 # toggle these to draw particular variables
+# 1D histograms
 DRAW_ENU = 0
-DRAW_PMU = 1
-DRAW_THETAMU = 0
+DRAW_PMU = 0
 DRAW_COSTHETAMU = 0
+DRAW_THETAMU = 0
 DRAW_PMU_TN328 = 0
 DRAW_COSTHETAMU_TN328 = 0
 DRAW_P0DX = 0
 DRAW_P0DY = 0
 DRAW_P0DZ = 0
 
+# Display the ratio of Data/MC below histogram
+# only available for 1D
+SHOW_RATIO_PLOT_BELOW = 0
+
+# toggle these to draw particular variables
+# 2D histograms
+DRAW_P0DFITFHC_PMU_COSTHETAMU = 1
+DRAW_P0DCOVFHC_PMU_COSTHETAMU = 1
+
+# option only for 2D
+SHOW_LOGZ = 1
+
 # Apply event + flux weight
 APPLY_FLUX_WEIGHTS = 1
-APPLY_EVENT_WEIGHTS = 0
+APPLY_EVENT_WEIGHTS = 1
 
-PLOTLEPTONCANDIDATETRUEPDG = 1
+PLOTLEPTONCANDIDATETRUEPDG = 0
 PLOTNEUTNUREACTIONCODES = 0
 PLOTNEUTANTINUREACTIONCODES = 0
-
-# Display the ratio of Data/MC below histogram
-SHOW_RATIO_PLOT_BELOW = 1
+PLOTTOPOLOGY = 0
 
 # use the TN-208 runs
 TN208_ANALYSIS = 0
@@ -73,25 +90,31 @@ CUTS = None
 
 def main(argv):
     """main"""
-    helpstatement = "plotRunSyst_NewResults.py (no args)"
+    helpstatement = "plotRunSyst_NewResults.py (no args). Please read the code to understand how to plot"
     if len(argv) > 0:
         print helpstatement
-    p0dbanffroot = getenv('P0DBANFFROOT')
     LoadP0DBANFF()
     LoadSampleIDs()
 
-    binningLocation = '%s/config/Binning.xml' % p0dbanffroot
+    binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
     cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
-    # cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
     pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, XML)
     pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
-    # pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
     cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, XML)
     thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, XML)
     p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, XML)
     p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, XML)
     p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, XML)
+
+    P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
+    P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
+    P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, XML)
+    P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, XML)
+    P0DFitFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFitFHC_pMu_AnaBins,
+                                                             P0DFitFHC_cosThetaMu_AnaBins)
+    P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins,
+                                                             P0DCovFHC_cosThetaMu_AnaBins)
 
     evts_p_bin = 'Events / bin'
     mc_data_sample_dict_MC_key = 'MC'
@@ -118,8 +141,12 @@ def main(argv):
                 not RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION:
             continue
 
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
+        INTERFACE.Announce(INTERFACE, '--- You can ignore these errors ---')
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
         mc_samples_dict = GetMonteCarloSamples(current_sampleID)
         data_samples_dict = GetDATAsamples(current_sampleID)
+        INTERFACE.Announce(INTERFACE, '-----------------------------------')
         SELECTIONSAVENAME = SELECTIONSAVENAMEDICT[current_sampleID]
 
         mc_data_sample_dict = dict()
@@ -150,10 +177,11 @@ def main(argv):
         particle_selections = GetLeptonCandidateSelectionList(current_sampleID)
         neut_nu_selections = GetNEUTNuSelectionList(current_sampleID)
         neut_antinu_selections = GetNEUTAntiNuSelectionList(current_sampleID)
+        topology_selecitons = GetTopologySelectionList(current_sampleID)
 
         # these are data/mc histograms
-        all_selection_sets = [particle_selections,
-                              neut_antinu_selections, neut_nu_selections]
+        all_selection_sets = [particle_selections, neut_antinu_selections,
+                              neut_nu_selections, topology_selecitons]
 
         # loop over sample classes
         for smpls in mc_data_sample_dict.values():
@@ -183,15 +211,25 @@ def main(argv):
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
-            # neutrino energy
-            if DRAW_ENU:
-                histstack_Enu = ROOTHStack()
-                histstack_Enu.plot_var = 'TrueEnuNom'
-                histstack_Enu.x_title = 'True Neutrino Energy'
-                histstack_Enu.y_title = evts_p_bin_p_pot
-                ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
-                make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
-                                   histstack_Enu, 'trueE_nu')
+            if DRAW_P0DFITFHC_PMU_COSTHETAMU:
+                hist2D_pmu_costhetamu = ROOTH2()
+                hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
+                hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
+                hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
+                hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DFitFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DFitFHC_pMu_cosThetaMu_AnaBins2D,
+                                 hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_MC_only')
+                del hist2D_pmu_costhetamu
+            if DRAW_P0DCOVFHC_PMU_COSTHETAMU:
+                hist2D_pmu_costhetamu = ROOTH2()
+                hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
+                hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
+                hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
+                hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCovFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DCovFHC_pMu_cosThetaMu_AnaBins2D,
+                                 hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
 
             for a_selection_set in all_selection_sets:
                 selection_name = ROOT.TString(a_selection_set[0].name)
@@ -209,6 +247,19 @@ def main(argv):
                         continue
                     if not SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
                         continue
+                if selection_name.Contains('Topology'):
+                    if not PLOTTOPOLOGY:
+                        continue
+
+                # neutrino energy
+                if DRAW_ENU:
+                    histstack_Enu = ROOTHStack()
+                    histstack_Enu.plot_var = 'TrueEnuNom'
+                    histstack_Enu.x_title = 'True Neutrino Energy'
+                    histstack_Enu.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
+                    make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+                                       histstack_Enu, 'trueE_nu')
 
                 # TN-328 Momentum
                 if DRAW_PMU_TN328:
@@ -218,9 +269,15 @@ def main(argv):
                     histstack_pMu_TN328.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_pMu_TN328, pMu_TN328_AnaBins,
                                         pot_str)
-                    make_data_mc_stack(smpls, a_selection_set,
-                                       pMu_TN328_AnaBins, histstack_pMu_TN328,
-                                       'recoP_mu_TN328')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set,
+                                           pMu_TN328_AnaBins,
+                                           histstack_pMu_TN328,
+                                           'recoP_mu_TN328')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set,
+                                           pMu_TN328_AnaBins,
+                                           histstack_pMu_TN328)
 
                 # lepton candidate momentum
                 if DRAW_PMU:
@@ -229,8 +286,12 @@ def main(argv):
                     histstack_pMu.x_title = 'Lepton Candidate Momentum'
                     histstack_pMu.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_pMu, pMu_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set, pMu_AnaBins,
-                                       histstack_pMu, 'recoP_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set, pMu_AnaBins,
+                                           histstack_pMu, 'recoP_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set, pMu_AnaBins,
+                                           histstack_pMu, 'recoP_mu')
 
                 # TN-328 cos(theta)
                 if DRAW_COSTHETAMU_TN328:
@@ -240,10 +301,16 @@ def main(argv):
                     histstack_cosThetaMu_TN328.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_cosThetaMu_TN328,
                                         cosThetaMu_TN328_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set,
-                                       cosThetaMu_TN328_AnaBins,
-                                       histstack_cosThetaMu_TN328,
-                                       'recocosq_mu_TN328')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set,
+                                           cosThetaMu_TN328_AnaBins,
+                                           histstack_cosThetaMu_TN328,
+                                           'recocosq_mu_TN328')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set,
+                                           cosThetaMu_TN328_AnaBins,
+                                           histstack_cosThetaMu_TN328,
+                                           'recocosq_mu_TN328')
 
                 # lepton candidate cos(theta)
                 if DRAW_COSTHETAMU:
@@ -253,9 +320,14 @@ def main(argv):
                     histstack_cosThetaMu.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_cosThetaMu, cosThetaMu_AnaBins,
                                         pot_str)
-                    make_data_mc_stack(smpls, a_selection_set,
-                                       cosThetaMu_AnaBins, histstack_cosThetaMu,
-                                       'recocosq_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set,
+                                           cosThetaMu_AnaBins, histstack_cosThetaMu,
+                                           'recocosq_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set,
+                                           cosThetaMu_AnaBins, histstack_cosThetaMu,
+                                           'recocosq_mu')
 
                 # lepton candidate thetaMu
                 if DRAW_THETAMU:
@@ -265,8 +337,12 @@ def main(argv):
                     histstack_thetaMu.x_title = 'Lepton Candidate Track Angle'
                     histstack_thetaMu.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_thetaMu, thetaMu_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set, thetaMu_AnaBins,
-                                       histstack_thetaMu, 'recothetaMu_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set, thetaMu_AnaBins,
+                                           histstack_thetaMu, 'recothetaMu_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set, thetaMu_AnaBins,
+                                           histstack_thetaMu, 'recothetaMu_mu')
 
                 # lepton p0d position Z
                 if DRAW_P0DZ:
@@ -275,8 +351,12 @@ def main(argv):
                     histstack_p0dZ.x_title = 'Vertex Z'
                     histstack_p0dZ.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_p0dZ, p0dZ_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set, p0dZ_AnaBins,
-                                       histstack_p0dZ, 'recoZ_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set, p0dZ_AnaBins,
+                                           histstack_p0dZ, 'recoZ_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set, p0dZ_AnaBins,
+                                           histstack_p0dZ, 'recoZ_mu')
 
                 # lepton p0d position X
                 if DRAW_P0DX:
@@ -285,8 +365,12 @@ def main(argv):
                     histstack_p0dX.x_title = 'Vertex X'
                     histstack_p0dX.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_p0dX, p0dX_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set, p0dX_AnaBins,
-                                       histstack_p0dX, 'recoX_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set, p0dX_AnaBins,
+                                           histstack_p0dX, 'recoX_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set, p0dX_AnaBins,
+                                           histstack_p0dX, 'recoX_mu')
 
                 # lepton p0d position Y
                 if DRAW_P0DY:
@@ -295,8 +379,12 @@ def main(argv):
                     histstack_p0dY.x_title = 'Vertex Y'
                     histstack_p0dY.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_p0dY, p0dY_AnaBins, pot_str)
-                    make_data_mc_stack(smpls, a_selection_set, p0dY_AnaBins,
-                                       histstack_p0dY, 'recoY_mu')
+                    if PLOTDATA:
+                        make_data_mc_stack(smpls, a_selection_set, p0dY_AnaBins,
+                                           histstack_p0dY, 'recoY_mu')
+                    else:
+                        make_mc_only_stack(smpls, a_selection_set, p0dY_AnaBins,
+                                           histstack_p0dY, 'recoY_mu')
 
 
 class sample(object):
@@ -381,9 +469,10 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         legend.AddEntry(data_hist, 'DATA', 'LPE')
     anaBins.Reset()
     anaBins.Sumw2(False)
+    data_integral = data_hist.Integral(1, data_hist.GetNbinsX())
     data_stats = TLegend(COORDS.PaveStats_Data_X1, COORDS.PaveStats_Data_Y1,
                          COORDS.PaveStats_Data_X2, COORDS.PaveStats_Data_Y2,
-                         'Integral %d' % data_hist.Integral())
+                         'Integral %d' % data_integral)
     data_stats.SetBorderSize(1)
     data_stats.SetFillColor(0)
     data_stats.SetMargin(0.1)
@@ -455,9 +544,10 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.Add(a_hist)
         h_total.Add(a_hist)
 
+    mc_integral = h_total.Integral(1, h_total.GetNbinsX())
     mc_stats = TLegend(COORDS.PaveStats_MC_X1, COORDS.PaveStats_MC_Y1,
                        COORDS.PaveStats_MC_X2, COORDS.PaveStats_MC_Y2,
-                       'Integral %.2f' % h_total.Integral())
+                       'Integral %.2f' % mc_integral)
     mc_stats.SetBorderSize(1)
     mc_stats.SetFillColor(0)
     mc_stats.SetMargin(0.1)
@@ -477,7 +567,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
     else:
-        new_max = max(1.2 * data_hist.GetMaximum(), 1.1 * old_max)
+        new_max = 1.1 * old_max
         h_stack.SetMaximum(new_max)
         # h_total.SetMaximum(new_max)
         # data_hist.SetMaximum(new_max)
@@ -581,12 +671,16 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     canvas.Close()
 
 
-def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
+def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title):
     """Take samples dictionary (mc_sand_sample) and separate it by
     selection (true_selections). The histogram is stored in
     anaBins (AnaysisBins) with the histogram labels in hstack (ROOTHStack)
     Saved as save_title.root
     """
+
+    mc_sample = evt_sample['MC']['Magnet']
+    sand_sample = evt_sample['MC']['Sand']
+
     save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
     canvas = ROOT.TCanvas("canvas", "", 800, 600)
     legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
@@ -599,29 +693,70 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
 
     plot_var = hstack.plot_var
 
-    hists = list()
+    mc_hists = list()
+    # MC loop over true_selections to create stack,
+    #    first entry is full selection
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
-        tmp_save_name = '%s_%s' % (save_title, a_selection.CPPClass.name)
-        nEntries = mc_sample.getTChain().Draw(plot_var, a_selection.CPPClass.cuts, 'goff')
-        v1 = mc_sample.getTChain().GetV1()
-        for entry_in_draw in range(nEntries):
-            anaBins.Fill(v1[entry_in_draw])
-        a_hist = anaBins.GetTH1DClone('h1d_%s_%s' % (tmp_save_name, mc_sample.CPPClass.saveTitle))
-        INTERFACE.PrettyUpTH1(a_hist, hstack.x_title, hstack.y_title,
-                              BLACK, STACK_COLORS[index])
-        legend.AddEntry(a_hist, a_selection.CPPClass.legendLabel, 'f')
-        a_hist.Scale(mc_sample.CPPClass.scale)
-        hists.append(a_hist)
+        tmp_save_name = '%s_%s' % (save_title, a_selection.name)
+        mc_hist = None
+
+        if not ROOT.TString(a_selection.cuts.GetName()).\
+                Contains('Sand'):
+            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom:FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
+            mc_var = mc_sample.getTChain().GetV1()
+            mc_systematic_weights = mc_sample.getTChain().GetV2()
+            mc_flux_weights = mc_sample.getTChain().GetV3()
+            for entry_in_draw in range(mc_nEntries):
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= mc_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= mc_systematic_weights[entry_in_draw]
+                anaBins.Fill(mc_var[entry_in_draw], weight)
+            if anaBins.GetDivideByBinWidth():
+                anaBins.DivideByBinWidth()
+            name_fmt = 'mc_h1d_%s_%s'
+            mc_hist = anaBins.GetTH1DClone(
+                    name_fmt % (tmp_save_name, mc_sample.CPPClass.saveTitle))
+            mc_hist.Scale(mc_sample.CPPClass.scale)
+
+        else:
+            sandTChain = sand_sample.getTChain()
+            sand_nEntries = sandTChain.Draw('%s:WeightNom:FluxWeightNom' % plot_var,
+                                            a_selection.cuts,
+                                            'goff')
+            sand_var = sand_sample.getTChain().GetV1()
+            sand_systematic_weights = sand_sample.getTChain().GetV2()
+            sand_flux_weights = sand_sample.getTChain().GetV3()
+            for entry_in_draw in range(sand_nEntries):
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= sand_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= sand_systematic_weights[entry_in_draw]
+                anaBins.Fill(sand_var[entry_in_draw], weight)
+            if anaBins.GetDivideByBinWidth():
+                anaBins.DivideByBinWidth()
+            name_fmt = 'sand_h1d_%s_%s'
+            mc_hist = anaBins.GetTH1DClone(
+                    name_fmt % (tmp_save_name,
+                                sand_sample.CPPClass.saveTitle))
+            mc_hist.Scale(sand_sample.CPPClass.scale)
+
+        INTERFACE.PrettyUpTH1(mc_hist, hstack.x_title, hstack.y_title, BLACK,
+                              STACK_COLORS[index])
+        mc_hists.append(mc_hist)
+        legend.AddEntry(mc_hist, a_selection.legendLabel, 'f')
         anaBins.Reset()
 
-    hists.reverse()
+    mc_hists.reverse()
 
     h_stack = ROOT.THStack('%s_stack' % (save_title), '')
     h_total = anaBins.GetTH1DClone("h_total_%s" % save_title)
     INTERFACE.PrettyUpTH1(h_total, hstack.x_title, hstack.y_title,
                           BLACK)
-    for a_hist in hists:
+    for a_hist in mc_hists:
         h_stack.Add(a_hist)
         h_total.Add(a_hist)
     mc_stats = TLegend(0.7, 0.9, 0.9, 0.95, 'Integral %.2f' % h_total.Integral())
@@ -666,9 +801,113 @@ def make_mc_only_stack(mc_sample, true_selections, anaBins, hstack, save_title):
 
     h_total.Delete()
     h_stack.Delete()
-    for a_hist in hists:
+    for a_hist in mc_hists:
         a_hist.Delete()
     legend.Delete()
+    canvas.Close()
+    return
+
+
+def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title):
+    """Take samples dictionary (mc_sand_sample) and separate it by
+    selection (true_selections). The histogram is stored in
+    anaBins2D (AnaysisBins2D) with the histogram labels in h2 (ROOTH2)
+    Saved as save_title.root
+    """
+
+    mc_sample = evt_sample['MC']['Magnet']
+    sand_sample = evt_sample['MC']['Sand']
+
+    save_as = '%s_2D_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
+    canvas = ROOT.TCanvas("canvas", "", 800, 600)
+    canvas.cd()
+
+    varX = hist2D.varX
+    varY = hist2D.varY
+
+    mc_hists = list()
+    # MC loop over true_selections to create stack,
+    #    first entry is full selection
+    for index in range(len(true_selections)):
+        a_selection = true_selections[index]
+        tmp_save_name = '%s_%s' % (save_title, a_selection.name)
+        mc_hist = None
+        # the entire selection include all but sand
+        if index == 0:
+            mcTChain = mc_sample.getTChain()
+            mc_nEntries = mcTChain.Draw('%s:%s:WeightNom:FluxWeightNom' % (varX, varY), a_selection.cuts, 'goff')
+            mc_varX = mcTChain.GetV1()
+            mc_varY = mcTChain.GetV2()
+            mc_systematic_weights = mcTChain.GetV3()
+            mc_flux_weights = mcTChain.GetV4()
+            for entry_in_draw in range(mc_nEntries):
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= mc_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= mc_systematic_weights[entry_in_draw]
+                anaBins2D.Fill(mc_varX[entry_in_draw], mc_varY[entry_in_draw], weight)
+            name_fmt = 'mc_h2d_%s_%s'
+            if anaBins2D.GetDivideByBinWidth():
+                anaBins2D.DivideByBinWidth()
+            mc_hist = anaBins2D.GetTH2DClone(
+                    name_fmt % (tmp_save_name, mc_sample.CPPClass.saveTitle))
+            mc_hist.Scale(mc_sample.CPPClass.scale)
+            anaBins2D.Reset()
+
+        elif ROOT.TString(a_selection.cuts.GetName()).Contains('Sand'):
+            sandTChain = sand_sample.getTChain()
+            sand_nEntries = sandTChain.Draw('%s:%s:WeightNom:FluxWeightNom' % (varX, varY), a_selection.cuts, 'goff')
+            sand_varX = sandTChain.GetV1()
+            sand_varY = sandTChain.GetV2()
+            sand_systematic_weights = sandTChain.GetV3()
+            sand_flux_weights = sandTChain.GetV4()
+            for entry_in_draw in range(sand_nEntries):
+                weight = 1.0
+                if APPLY_FLUX_WEIGHTS:
+                    weight *= sand_flux_weights[entry_in_draw]
+                if APPLY_EVENT_WEIGHTS:
+                    weight *= sand_systematic_weights[entry_in_draw]
+                anaBins2D.Fill(sand_varX[entry_in_draw], sand_varY[entry_in_draw], weight)
+            name_fmt = 'sand_h2d_%s_%s'
+            mc_hist = anaBins2D.GetTH2DClone(
+                    name_fmt % (tmp_save_name,
+                                sand_sample.CPPClass.saveTitle))
+            mc_hist.Scale(sand_sample.CPPClass.scale)
+            anaBins2D.Reset()
+        else:
+            continue
+        # INTERFACE.PrettyUpTH2(mc_hist, hist2D.x_title, hist2D.y_title)
+        mc_hists.append(mc_hist)
+
+    h_total = anaBins2D.GetTH2DClone("h_total_%s" % save_title)
+    INTERFACE.PrettyUpTH2(h_total, hist2D.x_title, hist2D.y_title)
+    new_title = '%s MC: %s' % (mc_sample.CPPClass.plotTitle, hist2D.z_title)
+    print 'new_title =', new_title
+    h_total.SetTitle(new_title)
+
+    for a_hist in mc_hists:
+        h_total.Add(a_hist)
+    mc_stats = TLegend(0.7, 0.9, 0.9, 0.95, 'Integral %.2f' % h_total.Integral())
+    mc_stats.SetBorderSize(1)
+    mc_stats.SetFillColor(0)
+    mc_stats.SetMargin(0.1)
+    plot_title = TLegend(0.100251, 0.910683, 0.689223, 0.980736, new_title)
+    plot_title.SetBorderSize(1)
+    plot_title.SetFillColor(0)
+    plot_title.SetMargin(0.1)
+
+    canvas.cd()
+    h_total.Draw('COLZ')
+    mc_stats.Draw()
+    plot_title.Draw()
+    if SHOW_LOGZ:
+        canvas.SetLogz(1)
+    INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
+
+    h_total.Delete()
+    for a_hist in mc_hists:
+        a_hist.Delete()
     canvas.Close()
     return
 
@@ -692,11 +931,11 @@ def GetMonteCarloSamples(sampleID):
 
     chn_SANDRun3AirFHC = T2KDATAMC.SANDFHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_SANDRun3AirRHC = T2KDATAMC.SANDRHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Air = T2KDATAMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Wtr = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Air = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Wtr = T2KDATAMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3bAir = T2KDATAMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun3cAir = T2KDATAMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun4Air = T2KDATAMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun4Air = T2KDATAMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun4Wtr = T2KDATAMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun5cWtr = T2KDATAMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun6bAir = T2KDATAMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
@@ -790,11 +1029,11 @@ def GetDATAsamples(sampleID):
     """
     file_path = getenv('SYSTEMATICSROOT')
     RunSyst_New_DATA_TTree = 'nominal'
-    chn_DATARun2Air = T2KDATAMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun2Wtr = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Air = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Wtr = T2KDATAMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3bAir = T2KDATAMC.RUN3BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun3cAir = T2KDATAMC.RUN3CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun4Air = T2KDATAMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun4Air = T2KDATAMC.RUN4ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun4Wtr = T2KDATAMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun5cWtr = T2KDATAMC.RUN5CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
     chn_DATARun6bAir = T2KDATAMC.RUN6BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
@@ -928,6 +1167,25 @@ def GetNEUTAntiNuSelectionList(sampleID):
     return neut_antinu_selections
 
 
+def GetTopologySelectionList(sampleID):
+    """Make a list of true topology cuts """
+    more_cuts = TCut()
+    if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
+        more_cuts = ADDITIONAL_CUTS
+
+    if TN208_ANALYSIS:
+        more_cuts += CUTS.FVTN208
+
+    if USE_MOMENTUM_CUT:
+        more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
+
+    CUTS.FillTopologySelections('TrueTopology', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    topology_selections = list()
+    for index in range(CUTS.NMAXTOPOLOGYSELECTIONS):
+        topology_selections.append(CUTS.GetTopologySelection(index))
+    return topology_selections
+
+
 def ConfigureROOTHStack(hstack, anaBins, pot_str):
     """
     For the hstack (ROOTHStack), get options from anaBins (AnalysisBins),
@@ -939,13 +1197,38 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     hstack.plot_var += '*%f' % HEPCONSTANTS.Convert(units)
     hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
-        y_title = 'Events / %s / %s'
+        y_title = 'Events / %s / (%s)'
         y_title_tuple = (units, pot_str)
         hstack.y_title = y_title % y_title_tuple
 
 
+def ConfigureROOTH2(hist2D, anaBins2D, pot_str):
+    """
+    For the hist2D (ROOTH2), get options from anaBins2D (AnalysisBins2D)
+    """
+    unitsX, unitsY = None, None
+    if len(anaBins2D.anaBinsX.GetUnits()) > 1:
+        unitsX = anaBins2D.anaBinsX.GetUnits()
+        hist2D.varX += '*%f' % HEPCONSTANTS.Convert(unitsX)
+        hist2D.x_title += ' [%s]' % unitsX
+    if len(anaBins2D.anaBinsY.GetUnits()) > 1:
+        unitsY = anaBins2D.anaBinsY.GetUnits()
+        hist2D.varY += '*%f' % HEPCONSTANTS.Convert(unitsY)
+        hist2D.y_title += ' [%s]' % unitsY
+    if unitsX and unitsY:
+        print 'anaBins2D.GetDivideByBinWidth() =', anaBins2D.GetDivideByBinWidth()
+        if anaBins2D.GetDivideByBinWidth():
+            hist2D.z_title = 'Events / ( %s ) / ( %s ) / ( %s )' % (unitsX, unitsY, pot_str)
+        else:
+            hist2D.z_title = 'Events / bin / (%s)' % (pot_str)
+    print 'hist2D.z_title =', hist2D.z_title
+
+
 def LoadP0DBANFF():
     """Load in the necessary classes"""
+    if len(P0DBANFFROOT) <= 0:
+        print 'P0DBANFFROOT NOT exported. Please export it now'
+        sys.exit(1)
     global ENGINE
     ENGINE = ROOT.TXMLEngine()
     loadStatus = gSystem.Load("libP0DBANFF")
@@ -957,7 +1240,8 @@ def LoadP0DBANFF():
     try:
         INTERFACE = ROOT.P0DBANFFInterface()
         INTERFACE.SetBatch(True)
-        INTERFACE.GetThisStyle().SetOptStat(0000)
+        ROOT.gStyle.SetOptStat(0000)
+        INTERFACE.LoadColorBlindPalette()
         SAMPLEIDS = ROOT.SampleId()
         T2KPOT = ROOT.TotalPOT()
         T2KDATAMC = ROOT.T2KDataMC()

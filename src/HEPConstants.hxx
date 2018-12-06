@@ -340,6 +340,48 @@ public:
     Int_t kNEUTAntiNuP_NCQE; //-51 : NEUBAR,P --> NEUBAR,P
     Int_t kNEUTAntiNuN_NCQE; //-52 : NEUBAR,N --> NEUBAR,N
 
+
+    /// Enumeration of all particles
+    enum ParticleEnum {
+         kBaryons,
+         kMesons,
+         kLeptons,
+         kNeutrinos,
+         kAntiNeutrinos,
+         kPions,
+         kKaons,
+         kNuclei,          // Genie lists also the remnant nuclei in StdHep# variables
+         kPseudoParticles, // Genie *pseudo-particles", such as 'hadron blob' etc, see $GENIE/data/evgen/catalogues/pdg/genie_pdg_table.txt
+         kOthers,
+
+         kProton,
+         kAntiProton,
+         kNeutron,
+         kAntiNeutron,
+         kElectron,
+         kPositron, kAntiElectron = kPositron,
+         kMuon, kMuNeg = kMuon, kMuMinus = kMuon, kMuonNeg = kMuon, kMuonMinus = kMuon,
+         kAntiMuon, kMuPos = kAntiMuon, kMuPlus = kAntiMuon, kMuonPos = kAntiMuon, kMuonPlus = kAntiMuon,
+         kTau, kTauNeg = kTau, kTauMinus = kTau,
+         kAntiTau, kTauPos = kAntiTau, kTauPlus = kAntiTau,
+         kPi0, kPion0 = kPi0, kPiZero = kPi0, kPionZero = kPi0,
+         kPiPos, kPiPlus = kPiPos, kPionPos = kPiPos, kPionPlus = kPiPos,
+         kPiNeg, kPiMinus = kPiNeg, kPionNeg = kPiNeg, kPionMinus = kPiNeg,
+         kK0, kKaon0 = kK0, kKZero = kK0, kKaonZero = kK0,
+         kAntiK0, kAntiKaon0 = kAntiK0, kAntiKZero = kAntiK0, kAntiKaonZero = kAntiK0,
+         kK0L, kKaonZeroLong = kK0L, kK0Long = kK0L, kKaon0Long = kK0L, kKZeroLong = kK0L, kKaonZeroL = kK0L, kKaon0L = kK0L, kKZeroL = kK0L,
+         kK0S, kKaonZeroShort = kK0S, kK0Short = kK0S, kKaon0Short = kK0S, kKZeroShort = kK0S, kKaonZeroS = kK0S, kKaon0S = kK0S, kKZeroS = kK0S,
+         kKPos, kKPlus = kKPos, kKaonPos = kKPos, kKaonPlus = kKPos,
+         kKNeg, kKMinus = kKNeg, kKaonNeg = kKNeg, kKaonMinus = kKNeg,
+         kEta, kEtaZero = kEta, kEta0 = kEta,
+         kRho0, kRhoZero = kRho0,
+         kPhoton,
+         kSigmaPos, kSigmaPlus=kSigmaPos,
+         kSigmaNeg, kSigmaMinus=kSigmaNeg,
+         kSigma0, kSigmaZero=kSigma0,
+         kLast // used to give the size to AnaTrueVertex::NPrimaryParticle array and to loop over this enum
+    };
+
 private:
 
     Int_t PDGINDEX;

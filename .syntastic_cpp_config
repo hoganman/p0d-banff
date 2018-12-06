@@ -52,6 +52,7 @@
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/highland2/oaAnalysisReader/v2r12/app
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/src
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/app
+-I/physics/home/mhogan/software/p0d-banff/p0d-banff/T2KReWeight/src
 -I/home/mhogan/software/p0d-banff/oaAnalysis/v11r31/oaAnalysis/v5r29p19/src
 -I/home/mhogan/software/p0d-banff/ROOT/v5r34p09n04/Linux-x86_64/root/include
 -I/home/mhogan/software/p0d-banff/ROOT/v5r34p34n00/Linux-x86_64/root/include

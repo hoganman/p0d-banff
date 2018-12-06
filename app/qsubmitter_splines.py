@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys, getopt,os,datetime,math,glob,time,subprocess 
+import NaturalSorting
 
 #######################
 inOptions = {
@@ -27,13 +28,13 @@ inOptions = {
 
 SECONDS_BTN_QSUB = 16
 csuhpc = -1
-isMC = True
+isMC, isSand, isData = False, False, False
 queueTag = '$' 
 T2KREWEIGHT = os.getenv('T2KREWEIGHT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
-GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2017.exe' %(BASE)
+GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2018.exe' %(BASE)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
 PYTHONPATH = '%s:%s/macros'%(os.getenv('PYTHONPATH'),BASE)
@@ -44,7 +45,7 @@ nNodes = 43
 nFreeUseNodes = 19
 physicsNodes = [40,41,42,43]
 GenWeightss = []
-fileList = {} # a dictionary with a oaAnalysis file as the key and 0(unused) or 1(used) as the value
+fileList = {} # a dictionary with a flattree file as the key and 0(unused) or 1(used) as the value
 totalTimeInHours = 0
 
 class computeNode:
@@ -288,10 +289,15 @@ def CreateGenWeightsJobScript(jobNum,subFileList,outputPath,outputName):
         print 'ERROR: Wrong size of file list for job '+str(jobNum+1)
     INPUT = subFileList[0]
     runType = ''
-    if isMC:
+    if isMC and not isSand and not isData:
         runType = 'MC'
-    else:
+    elif isData and not isSand and not isMC:
         runType = 'data'
+    elif isSand and not isData and not isMC:
+        runType = 'sand'
+    else:
+        print 'Unable to determine if data, sand, or MC'
+        sys.exit(1)
     #create job
     jobFileName = 'ajob_'+str(jobNum)+'.sh'
     job = open(jobFileName,'w')
@@ -346,20 +352,21 @@ def MakeJobs(outputPath,outputName,numJobs,numFilesPerJob,priority,walltimeHours
             useHostName = useHostName[0:len(useHostName)-1]
     globalFileListIndex = 0
     global fileList
-    oaAnalysisFiles = fileList.keys()
+    flattreeFiles = fileList.keys()
+    NaturalSorting.naturalsort(flattreeFiles)
     for jobNum in range(0,numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
         fileCounter = 0
         while fileCounter < numFilesPerJob:
             if globalFileListIndex == len(fileList):
                 break
-            aoaAnalysisFile = oaAnalysisFiles[globalFileListIndex]
-            if fileList[aoaAnalysisFile] == 1:
-                print "You should not be calling an already used oaAnalysis file"
+            aflattreeFile = flattreeFiles[globalFileListIndex]
+            if fileList[aflattreeFile] == 1:
+                print "You should not be calling an already used flattree file"
                 print "   going to the next one "
             else:
-                subFileList.append(aoaAnalysisFile)
-                fileList[aoaAnalysisFile] = 1
+                subFileList.append(aflattreeFile)
+                fileList[aflattreeFile] = 1
                 fileCounter = fileCounter + 1
             globalFileListIndex = globalFileListIndex + 1
 
@@ -597,17 +604,25 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
-    global isMC
-    if run_type not in ('DATA','data','Data') and run_type not in ('MC', 'mc'):
-        print 'ERROR: Must specify if MC or data'
+    global isMC, isData, isSand
+    if run_type not in ('DATA','data','Data') and run_type not in ('MC', 'mc') and run_type not in ("SAND", 'sand', 'Sand'):
+        print 'ERROR: Must specify if MC, data, or sand'
         print helpstatement
         sys.exit()
     elif run_type in ('DATA','data','Data'):
         isMC = False
+        isSand = False
+        isData = True
     elif run_type in ('MC', 'mc', 'Mc'):
         isMC = True
+        isSand = False
+        isData = False
+    elif run_type in ('SAND', 'Sand', 'sand'):
+        isMC = False
+        isSand = False
+        isData = True
     else:
-        print 'ERROR: Must specify if MC or data'
+        print 'ERROR: Must specify if MC, data, or sand'
         print helpstatement
         sys.exit()
 

@@ -153,9 +153,8 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     TH1* htemp_1Dclone = NULL;
     if(!CheckFile(inFileName))
     {
-      std::cerr << "ERROR: Invalid input file: " << inFileName.Data()
-                << std::endl;
-      return;
+        P0DBANFFInterface::Error("P0DBANFFInterface", TString::Format("Invalid input file: %s", inFileName.Data()));
+        return;
     }
     TFile* const inputFile = TFile::Open(inFileName.Data());
     canvas = GetTCanvasFromFile(inputFile, canvasName);
@@ -165,7 +164,6 @@ void P0DBANFFInterface::PrettyUpTH1(TString inFileName, TString outputName,
     }
     else
     {
-        //std::cout << " Trying to find \"" << histName.Data() << "\" in TFile..." << std::endl;
         htemp = static_cast<TH1*>(FindObjectInFileByName(inputFile, histName));
         if(htemp)
         {
@@ -237,14 +235,14 @@ void P0DBANFFInterface::PrettyUpTH1(TH1* inHist,
 //**************************************************
 {
     if(!inHist)
-    {
-	const Int_t dimension = inHist->GetDimension();
-        std::cerr << Form("ERROR: Invalid input TH%d*", dimension) << std::endl;
         return;
-    }
+	//const Int_t dimension = inHist->GetDimension();
+    //std::cerr << Form("ERROR: Invalid input TH%d*", dimension) << std::endl;
     inHist->SetTitle("");
     inHist->GetXaxis()->SetTitleOffset(0.85);
     inHist->GetYaxis()->SetTitleOffset(0.85);
+    inHist->GetXaxis()->SetTitleColor(kcbBlack);
+    inHist->GetYaxis()->SetTitleColor(kcbBlack);
     if(!xAxisTitle.Contains("none"))
     {
         inHist->GetXaxis()->SetTitle(xAxisTitle.Data());
@@ -306,7 +304,7 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 
     if(!status)
     {
-        std::cout << "ERROR: Could NOT find file \"" << fileName.Data() << "\"" << std::endl;
+        P0DBANFFInterface::Error("P0DBANFFInterface", TString::Format("Could NOT find file \"%s\"", fileName.Data()));
         return status;
     }
     else
@@ -596,6 +594,8 @@ void P0DBANFFInterface::PrettyUpTH2(TString inFileName, TString outputName,
 
     const UInt_t dummy = 0;
     PrettyUpTH1(static_cast<TH1*>(htemp), xAxisTitle, yAxisTitle, dummy, dummy, dummy, textSizeChange);
+    htemp->GetXaxis()->SetTitleColor(kcbBlack);
+    htemp->GetYaxis()->SetTitleColor(kcbBlack);
     canvas->cd();
     htemp->Draw("COLZ");
 
@@ -622,6 +622,8 @@ void P0DBANFFInterface::PrettyUpTH2(TH2* inHist, TString xAxisTitle,
     const UInt_t dummy = 0;
     PrettyUpTH1(static_cast<TH1*>(inHist), xAxisTitle, yAxisTitle,
 	    dummy, dummy, dummy, textSizeChange);
+    inHist->GetXaxis()->SetTitleColor(kcbBlack);
+    inHist->GetYaxis()->SetTitleColor(kcbBlack);
 }
 
 //**************************************************

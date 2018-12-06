@@ -10,13 +10,23 @@ include $(T2KREWEIGHT)/make/Make.include
 
 
 #all: genWeightsFromNRooTracker_BANFF_2016 genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.exe genWeightsSKsplines_NIWG.exe
-all: genWeightsFromNRooTracker_BANFF_2017 generate_ND280_Systematics_Covariance_2017BinCorr
+all: genWeightFromPsycheRunSyst_new genWeightsFromNRooTracker_BANFF_2017 genWeightsFromNRooTracker_BANFF_2018 #genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst generate_ND280_Systematics_Covariance_2017 generate_ND280_Systematics_Covariance_2017BinCorr
+#all:  generate_ND280_Systematics_Covariance_2017
 # Please only add new apps to be compiled by make all if you have checked 
 # they still compile with following config:
 # ./configure --disable-jnubeam --disable-neut --disable-genie --disable-oaanalysis;
-# throwParmsFromJnuBeam 
+# throwParmsFromJnuBeam
+genWeightFromPsycheRunSyst_new: genWeightFromPsycheRunSyst_new.cxx
+	@echo -e "\n\n***** Compiling genWeightFromPsycheRunSyst_new.exe\n"
+	$(CXX) $(CXXFLAGS) -c genWeightFromPsycheRunSyst_new.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) genWeightFromPsycheRunSyst_new.o $(LIBRARIES) -o genWeightFromPsycheRunSyst_new.exe
 
-genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.exe: genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.cxx
+generate_ND280_Systematics_Covariance_2017BinCorr: generate_ND280_Systematics_Covariance_2017BinCorr.cxx
+	@echo -e "\n\n***** Compiling generate_ND280_Systematics_Covariance_2017BinCorr.exe\n"
+	$(CXX) $(CXXFLAGS) -c generate_ND280_Systematics_Covariance_2017BinCorr.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) generate_ND280_Systematics_Covariance_2017BinCorr.o $(LIBRARIES) -o generate_ND280_Systematics_Covariance_2017BinCorr.cxx
+
+genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.exe: genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD
 	@echo -e "\n\n***** Compiling genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.exe\n"
 	$(CXX) $(CXXFLAGS) -c genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.o $(LIBRARIES) -o genWeightsFromNRooTracker_ND280_NIWG_Validation_PDD.exe  
@@ -85,12 +95,22 @@ genWeightsFromNRooTracker_BANFF_2016: FORCE
 generate_ND280_Systematics_Covariance_2017BinCorr: FORCE
 	@echo -e "\n\n***** generate_ND280_Systematics_Covariance_2017BinCorr\n"
 	$(CXX) $(CXXFLAGS) -c generate_ND280_Systematics_Covariance_2017BinCorr.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) generate_ND280_Systematics_Covariance_2017BinCorr.o $(LIBRARIES) -o generate_ND280_Systematics_Covariance_2017BinCorr.exe  
+	$(LD) $(LDFLAGS) generate_ND280_Systematics_Covariance_2017BinCorr.o $(LIBRARIES) -o generate_ND280_Systematics_Covariance_2017BinCorr.exe
 
 genWeightsFromNRooTracker_BANFF_2017: FORCE
 	@echo -e "\n\n***** Compiling genWeightsFromNRooTracker_BANFF_2017\n"
 	$(CXX) $(CXXFLAGS) -c genWeightsFromNRooTracker_BANFF_2017.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) genWeightsFromNRooTracker_BANFF_2017.o $(LIBRARIES) -o genWeightsFromNRooTracker_BANFF_2017.exe
+
+genWeightsFromNRooTracker_BANFF_2018: FORCE
+	@echo -e "\n\n***** Compiling genWeightsFromNRooTracker_BANFF_2018\n"
+	$(CXX) $(CXXFLAGS) -c genWeightsFromNRooTracker_BANFF_2018.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) genWeightsFromNRooTracker_BANFF_2018.o $(LIBRARIES) -o genWeightsFromNRooTracker_BANFF_2018.exe
+
+genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst: FORCE
+	@echo -e "\n\n***** Compiling genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst\n"
+	$(CXX) $(CXXFLAGS) -c genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst.o $(LIBRARIES) -o genWeightsFromNRooTracker_BANFF_2018_psycheRunSyst.exe
 
 genWeightsFromNRooTracker_BANFF_2016v2: FORCE
 	@echo -e "\n\n***** Compiling genWeightsFromNRooTracker_BANFF_2016v2\n"

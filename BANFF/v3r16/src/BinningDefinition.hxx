@@ -1,89 +1,221 @@
+#ifndef BINNINGDEFINITION_HXX
+#define BINNINGDEFINITION_HXX
+
+#include "SampleId.hxx"
+#include "Parameters.hxx"
+
 #include "TAxis.h"
 
+#include <map>
+#include <algorithm>
 
-namespace BinningDefinition{
+namespace BANFF
+{
+    class TAxis2D
+    {
+    ///Store Momentum and Costheta TAxis*. You can think of this as a array of
+    ///TAxis*, of size 2
+    public:
+        ///Constructor
+        TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2);
 
-  //namespace numuCC0PiFHC{
-    int npbins_0pi1 = 14;
-    double pbins_0pi1[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
-    int npbins_0pi = 6;
-    double pbins_0pi[7] = {0, 1000, 1250, 2000, 3000, 5000, 30000};
-    //cos(theta) bins
-    //CC0pi
-    int nctbins_0pi1 = 11;
-    double ctbins_0pi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_0pi = 7;
-    double ctbins_0pi[8] = { -1, 0.6, 0.7, 0.8, 0.85,0.94, 0.96, 1};
-    //}
+        ///Destructor
+        virtual ~TAxis2D();
 
-  //namespace numuCC1PiFHC{
-    //CC1pi
-    int npbins_1pi1 = 13;
-    double pbins_1pi1[14] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 5000, 30000};
-    int npbins_1pi = 5;
-    double pbins_1pi[6] = {0, 300, 1250, 1500, 5000, 30000};
-    //CC1pi
-    int nctbins_1pi1 = 11;
-    double ctbins_1pi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_1pi = 8;
-    double ctbins_1pi[9] = {-1, 0.7, 0.85, 0.9, 0.92, 0.96, 0.98, 0.99, 1};
-    //}
-  //namespace numuCCOthFHC{
-    //CCOther
-    int npbins_npi1 = 14;
-    double pbins_npi1[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};
-    int npbins_npi = 5;
-    double pbins_npi[6] = {0, 1500, 2000, 3000, 5000, 30000};
-    //CCOther
-    int nctbins_npi1 = 11;
-    double ctbins_npi1[12] = {-1, 0.6, 0.7, 0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98, 0.99, 1};
-    int nctbins_npi = 8;
-    double ctbins_npi[9] = {-1, 0.8, 0.85, 0.9, 0.92, 0.96, 0.98, 0.99, 1};
-  //}
-  
-  //namespace anumuCC1trRHC{
-    
-    //Anti-numu QE selection in anti-neutrino beam mode.
-    Int_t npbins_anuqe1 = 10;
-    Double_t pbins_anuqe1[11] = {0., 400., 500., 600., 700., 800., 900., 1100., 1400., 2000., 10000.};
-    Int_t npbins_anuqe = 5;
-    Double_t pbins_anuqe[6] = { 0., 400., 900., 1100., 2000., 10000.};
+        ///[] operator, 0 returns FirstDim, 1 returns SecondDim, else throw
+        TAxis* operator[] (const unsigned int &d);
 
-    Int_t nctbins_anuqe1 = 13;
-    Double_t ctbins_anuqe1[14] = {-1., 0.6, 0.7, 0.8, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-    Int_t nctbins_anuqe = 8;
-    Double_t ctbins_anuqe[9] = { -1., 0.6, 0.7, 0.88, 0.95, 0.97, 0.98, 0.99, 1.00};
-    //}
-  
-  //Anti-numu nQE selection in anti-neutrino beam mode.
-  Int_t npbins_anunqe1 = 7;
-  Double_t pbins_anunqe1[8] = {0., 700., 950., 1200., 1500., 2000., 3000., 10000.};
-  Int_t npbins_anunqe = 6;
-  Double_t pbins_anunqe[7] = {0., 700., 1200., 1500., 2000., 3000., 10000.};
-  Int_t nctbins_anunqe1 = 11;
-  Double_t ctbins_anunqe1[12] = {-1., 0.75, 0.85, 0.88, 0.91, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_anunqe = 6;
-  Double_t ctbins_anunqe[7] = {-1., 0.85, 0.88, 0.93, 0.98, 0.99, 1.00};
+    private:
+        ///Usually Momentum TAxis
+        TAxis* FirstDim;
 
-  //Numu QE selection in anti-neutrino beam mode.
-  Int_t npbins_nuqe1 = 6;
-  Double_t pbins_nuqe1[7] = {0., 400., 600., 800., 1100., 2000., 10000.};
-  Int_t npbins_nuqe = 5;
-  Double_t pbins_nuqe[6] = {0., 400., 800., 1100., 2000., 10000.};
-  Int_t nctbins_nuqe1 = 11;
-  Double_t ctbins_nuqe1[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_nuqe = 8;
-  Double_t ctbins_nuqe[9] = {-1., 0.7, 0.85, 0.90, 0.93, 0.96, 0.98, 0.99, 1.00};
+        ///Usually Costheta TAxis
+        TAxis* SecondDim;
+
+        ///Size array for storing axes
+        TAxis** Array;
+
+        ///Defining the number of elements in Array
+        static const UInt_t ArraySize = 2;
+    };
 
 
-  //Numu CCnQE selection in anti-neutrino beam mode.
-  Int_t npbins_nunqe1 = 8;
-  Double_t pbins_nunqe1[9] = {0., 500., 700., 1000., 1250., 1500., 2000., 3000., 10000.};
-  Int_t npbins_nunqe = 5;
-  Double_t pbins_nunqe[6] = {0., 1000., 1500., 2000., 3000., 10000.};
-  Int_t nctbins_nunqe1 = 11;
-  Double_t ctbins_nunqe1[12] = {-1., 0.7, 0.8, 0.85, 0.90, 0.93, 0.95, 0.96, 0.97, 0.98, 0.99, 1.00};
-  Int_t nctbins_nunqe = 8;
-  Double_t ctbins_nunqe[9] = {-1., 0.8, 0.90, 0.93, 0.95, 0.96, 0.97, 0.99, 1.00};
+    class BinningDefinition
+    {
+    ///Store a mapping between SampleId::SampleEnum and p-theta binning
+    ///for bin correlations and BANFF fitting
 
-};
+    private:
+        ///Constructor
+        BinningDefinition();
+
+        ///Copy constructor
+        BinningDefinition(const BinningDefinition& binning);
+
+        ///Singleton member
+        static BinningDefinition* fBinningDefinition;
+
+    public:
+        ///Destructor
+        ~BinningDefinition();
+
+        ///Singleton Get method
+        static BANFF::BinningDefinition& Get();
+
+    public:
+        ///Return the product of Momentum x Costheta Det bins
+        int  GetNbins_Det() const;
+
+        ///Return the product of Momentum x Costheta bins
+        int  GetNbins() const;
+
+        ///Get the SampleId corresponding to sub-matrix index
+        SampleId::SampleEnum GetSampleFromIndex(const int &index) const;
+
+        ///Get the SampleId corresponding to Det sub-matrix index
+        SampleId::SampleEnum GetSampleFromIndex_Det(const int &index) const;
+
+        ///Is the SampleId set to active in BANFF.parameters
+        bool IsActiveSample(const int &sample) const;
+
+        ///Is the SampleId set to active in BANFF.parameters
+        bool IsActiveSample(const SampleId::SampleEnum &sample) const;
+
+        ///Return the product of Momentum x Costheta bins for a given SampleId
+        int  GetNbins(const SampleId::SampleEnum &sample) const;
+
+        ///Return the product of Momentum Det x Costheta Det bins for a given
+        ///SampleId
+        int  GetNbins_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Return the number of Momentum bins for a given SampleId
+        int  GetNbins_Mom(const SampleId::SampleEnum &sample) const;
+
+        ///Return the number of Momentum Det bins for a given SampleId
+        int  GetNbins_Mom_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Return the number of Costheta bins for a given SampleId
+        int  GetNbins_Cos(const SampleId::SampleEnum &sample) const;
+
+        ///Return the number of Costheta Det bins for a given SampleId
+        int  GetNbins_Cos_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Get the momentum TAxis for a given SampleId
+        TAxis* GetBinning_Mom(const SampleId::SampleEnum &sample) const;
+
+        ///Get the momentum Det TAxis for a given SampleId
+        TAxis* GetBinning_Mom_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Get the Costheta TAxis for a given SampleId
+        TAxis* GetBinning_Cos(const SampleId::SampleEnum &sample) const;
+
+        ///Get the Costheta Det TAxis for a given SampleId
+        TAxis* GetBinning_Cos_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Get the Momentum+Costheta TAxis2D* for a given SampleId
+        TAxis2D* GetBinningArray(const SampleId::SampleEnum &sample) const;
+
+        ///Return the global Det bin index for a given SampleId
+        int GetGlobalBinMatrix_Det(const SampleId::SampleEnum &sample) const;
+
+        ///Return the global bin index for a given SampleId
+        int GetGlobalBinMatrix(const SampleId::SampleEnum &sample) const;
+
+        ///Return the global Det bin index for a given SampleId, momentum,
+        ///and Costheta
+        int GetGlobalBinMatrixMomCos_Det(const SampleId::SampleEnum &sample,
+                const double &Mom, const double &Cos) const;
+
+        ///Return the global bin index for a given SampleId, momentum, and
+        ///Costheta
+        int GetGlobalBinMatrixMomCos(const SampleId::SampleEnum &sample,
+                const double &Mom, const double &Cos) const;
+
+        ///All the bins and SampleIds in the matrix
+        std::vector<std::string> GetListOfBins() const;
+
+        ///All the bins and SampleIds in the Det matrix
+        std::vector<std::string> GetListOfBins_Det() const;
+
+        ///Return a mapping between the full matrix to the reduced Det matrix
+        std::map<int,int> GetFullToReduMap();
+
+        ///For a global bin index, extract the SampleId with Momentum bin and
+        ///Costheta bin indices
+        void GetLocalBinMatrixMomCos(const int &GlobalBin,
+                SampleId::SampleEnum& Sample, int& MomBin, int& CosBin);
+
+        ///For a global Det bin index, extract the SampleId with Momentum bin
+        ///and Costheta bin indices
+        void GetLocalBinMatrixMomCos_Det(const int &GlobalBin,
+                SampleId::SampleEnum& Sample, int& MomBin, int& CosBin);
+
+        ///DEBUGGING: Print the active samples
+        void DumpActiveSamples() const;
+
+    private:
+
+        ///Keeps a record of which samples are enabled
+        std::map<SampleId::SampleEnum, bool> ActiveSample;
+
+        ///Stores the Momentum axis for each sample
+        std::map<SampleId::SampleEnum, TAxis*>   Axis_Mom;
+
+        ///Stores the Momentum Det axis for each sample
+        std::map<SampleId::SampleEnum, TAxis*>   Axis_Mom_Det;
+
+        ///Stores the Costheta axis for each sample
+        std::map<SampleId::SampleEnum, TAxis*>   Axis_Cos;
+
+        ///Stores the Costheta Det axis for each sample
+        std::map<SampleId::SampleEnum, TAxis*>   Axis_Cos_Det;
+
+        ///Stores both the Momentum and Costheta axes for each sample
+        std::map<SampleId::SampleEnum, TAxis2D*> bothAxis;
+
+        ///Stores both the Momentum Det and Costheta Det axes for each sample
+        std::map<SampleId::SampleEnum, TAxis2D*> bothAxis_Det;
+
+        ///Typedefing since it is tedious to type/read the full expression
+        typedef std::map<SampleId::SampleEnum, TAxis*> SampleEnumToTAxisMap_t;
+
+        ///A mapping between the full matrix to the reduced Det matrix
+        std::map<int, int> FullToReduMap;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run on 4 Pi, FHC samples
+        bool Do4PiFHC;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run NuE samples
+        bool DoNue;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat
+        ///override file to run ONLY NuE samples
+        bool DoOnlyNue;
+
+        ///Parameter defined in BANFFparameters/BANFF.parameters.dat or
+        ///override file to run ONLY P0D CC-Inc samples
+        bool DoOnlyP0D;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run on Multi-pi in RHC
+        bool DoMultiPiRHC;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run diagnostic check on Momentum
+        bool Do1DCheckMom;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run diagnostic check on Costheta
+        bool Do1DCheckCos;
+
+        ///Parameter defined in BANFF/parameters/BANFF.parameters.dat or
+        ///override file to run in p-theta configuration where Momentum
+        ///is evenly spaced (250 MeV/c) and a single Costheta bin (-1,1)
+        bool UseFlatNuMuBinning;
+
+    };
+}
+
+#endif

@@ -20,12 +20,15 @@ public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts();
 
-    ///Passes the mu- selection
+    ///Passes the mu- selection for P0D+TPC
     TCut muMinusSelection;
-    ///Passes the mu+ selection
+    ///Passes the mu+ selection for P0D+TPC
     TCut muPlusInRHCSelection;
-    ///
+    /// Passes the mu- selection  in anti-nu mode for P0D+TPC
     TCut muMinusBkgInRHCSelection;
+
+    TCut anyP0DSelection;
+
     ///In the reconstructed P0D fiducial volume
     TCut FV;
     ///In the true P0D fiducial volume
@@ -101,6 +104,15 @@ public:
     ///NEUT code is Anti-nu CC-DIS (not nu CC-DIS)
     TCut tNEUTAntiNuCCDIS;
 
+    ///The number of outgoing muons <= 0
+    TCut tBKGTopology;
+    ///The number of outgoing pions == 0, no other mesons and any number of baryons
+    TCut tCC0PiTopology;
+    ///The number of outgoing pions == 1, no other mesons and any number of baryons
+    TCut tCC1PiTopology;
+    ///Topology does not fit into any above category
+    TCut tCCOtherTopology;
+
     ///Is the parent interaction NC?
     /// The 3 dim coordinates of P0D FV
     TVector3 minFidVolCoords;
@@ -113,11 +125,13 @@ public:
     static const UInt_t NMAXNEUTSELECTIONS = 11;
     static const UInt_t NMAXPARTICLESELECTIONS = 10;
     static const UInt_t NMAXNEUTRINOSELECTIONS = 7;
+    static const UInt_t NMAXTOPOLOGYSELECTIONS = 7;
 
     std::vector<PlottingSelectionInfo*> ParticleSelections;
     std::vector<PlottingSelectionInfo*> NeutrinoSelections;
     std::vector<PlottingSelectionInfo*> NEUTNuSelections;
     std::vector<PlottingSelectionInfo*> NEUTAntiNuSelections;
+    std::vector<PlottingSelectionInfo*> TopologySelections;
 
     void FillParticleSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
@@ -131,11 +145,15 @@ public:
     void FillNEUTAntiNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
 
+    void FillTopologySelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "");
+
     ///These methods are PyROOT friendly
     PlottingSelectionInfo* GetParticleSelection(const UInt_t &index) const {return ParticleSelections[index];}
     PlottingSelectionInfo* GetNeutrinoSelection(const UInt_t &index) const {return NeutrinoSelections[index];}
     PlottingSelectionInfo* GetNEUTNuSelection(const UInt_t &index) const {return NEUTNuSelections[index];}
     PlottingSelectionInfo* GetNEUTAntiNuSelection(const UInt_t &index) const {return NEUTAntiNuSelections[index];}
+    PlottingSelectionInfo* GetTopologySelection(const UInt_t &index) const {return TopologySelections[index];}
 
     ///These methods are NOT PyROOT friendly (CRASHES!)
     PlottingSelectionInfo** FillAndGetParticleSelections(const TString &name, const TString &title,
@@ -144,24 +162,35 @@ public:
         FillParticleSelections(name, title, sampleID, additionalCuts);
         return &ParticleSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNeutrinoSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNeutrinoSelections(name, title, sampleID, additionalCuts);
         return &NeutrinoSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNEUTNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNEUTNuSelections(name, title, sampleID, additionalCuts);
         return &NEUTNuSelections[0];
     }
+
     PlottingSelectionInfo** FillAndGetNEUTAntiNuSelections(const TString &name, const TString &title,
             const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
     {
         FillNEUTAntiNuSelections(name, title, sampleID, additionalCuts);
         return &NEUTAntiNuSelections[0];
     }
+
+    PlottingSelectionInfo** FillAndGetTopologySelections(const TString &name, const TString &title,
+            const SampleId::SampleEnum &sampleID, const TCut &additionalCuts = "")
+    {
+        FillTopologySelections(name, title, sampleID, additionalCuts);
+        return &TopologySelections[0];
+    }
+
 
 
 protected:

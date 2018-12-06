@@ -21,6 +21,11 @@ class BANFFInterfaceBase{
 			  FitParameters* fitParms = NULL,
 			  std::string diagnostic = "");
         virtual ~BANFFInterfaceBase();
+        /// Whether to fit only the sample (i.e. no prior)
+        bool OnlySampleContrib;
+  
+        /// Whether to fit only the penalty term (i.e. recover the prior)
+        bool OnlyPenaltyContrib;
 
         ///A variable to store the total POT of all data loaded.
         double totalDataPOT;
@@ -61,7 +66,7 @@ class BANFFInterfaceBase{
 
         ///The list of lists of files.
         std::string file_list;
-
+  
         ///A map that stores a vector of (string) file paths to data files, with the run
         ///identifier parameterizing the map.
         std::map<std::string, std::vector<std::string> > dataFiles;
@@ -111,13 +116,19 @@ class BANFFInterfaceBase{
         ///Consult text input files and load the file paths and run periods
         ///into the dataFile and mcFiles vectors.
         void ParseInputFiles();
-
+        
+        /// A nicer way of doing the above
+        void ParseInputFilesViaXML();
+        
+        ///For debugging the file content
+        void DumpInputFileContent();
+        
         ///Load the data and MC events from the external software package.
         ///Data and nominal MC processing is coded at this step.
         virtual void LoadEvents(){};
 
         ///Loops through the events and computes the each event total weight given the
-        ///current values of the fit parameters.
+        ///current values of the fit parameters. 
         void ComputeEventWeights();
 
         ///Reprocess the MC to make a prediction with new FitParameters values.
@@ -128,6 +139,12 @@ class BANFFInterfaceBase{
         ///from the summary tree, including the splines generated in
         ///T2KReWeight, for this event.
         void LoadSummaryTreeInfo(BANFFEventBase* event);
+
+        ///Get the mass of a particle from the PDG code
+        double GetMassFromPDG(int PDG);
+
+        ///kinType = 0 (lepton momentum), 1 (Q2)
+        double ApplyCoulombShift(BANFFEventBase* event, double enu, double pmu, int target, int reaction, int kinType, double InitialValue = 0.0);
 
         ///Loop through the data events and samples and perform sample specific
         ///actions to handle them.  Dealing with base classes is sufficient to
@@ -153,7 +170,7 @@ class BANFFInterfaceBase{
         //Calls methods in FitParameters for actually throwing the parameters,
         //but operates as a convenience function for looping through samples
         //and saving things as needed.
-        void ThrowToys(int nToys, std::string fileName);
+        void ThrowToys(int nToys, std::string fileName, bool resetPrior=false);
 
         ///Given a vector of doubles (representing parameter values), calculate
         ///the -2*log likelihood ratio that the BANFF fit minimizes.
@@ -166,11 +183,11 @@ class BANFFInterfaceBase{
         void VaryParametersByNSigma(int nSigmaValues, double* sigmaValues, std::string fileName);
 
         ///Loops through the events and builds the reaction code breakdowns.
-        void BuildReactionCodeBreakdowns();
+        void BuildReactionCodeBreakdowns();    
 
         ///Condenses the building, saving, and resetting of the MC prediction
         ///into one method, instead of copying and pasting several lines of
-        ///code when want to do this.
+        ///code when want to do this. 
         void BuildSaveAndResetMCPrediction(std::string nameSuffix);
 };
 

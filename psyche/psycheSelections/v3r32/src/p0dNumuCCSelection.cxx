@@ -17,13 +17,14 @@ void p0dNumuCCSelection::DefineSteps(){
 
     // Cuts must be added in the right order
     // last "true" means the step sequence is broken if cut is not passed (default is "false")
-    AddStep(StepBase::kCut,    "event quality",      new EventQualityCut(),           true);
-    AddStep(StepBase::kCut,    "> 0 tracks ",        new TotalMultiplicityCut(),      true);
-    AddStep(StepBase::kAction, "find leading tracks",new FindLeadingTracksAction());
-    AddStep(StepBase::kAction, "find vertex",        new FindVertexAction());
-    AddStep(StepBase::kCut,    "quality+fiducial",   new TrackQualityFiducialCut(),   true);
-    AddStep(StepBase::kAction, "find veto track", new FindP0DVetoAction());
-    AddStep(StepBase::kCut,    "veto", new P0DSelectionVetoCut(),true);
+    AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),           true);
+    AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),      true);
+    AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction());
+    AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
+
+    AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(),   true);
+    AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
+    AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),       true);
     SetBranchAlias(0,"trunk");
 }
 
@@ -37,7 +38,7 @@ void p0dNumuCCSelection::InitializeEvent(AnaEventC& eventC){
   if (!event.EventBoxes[EventBoxId::kEventBoxTracker])
     event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
 
-  boxUtils::FillTracksWithTPC(event,             static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
+  boxUtils::FillTracksWithTPC(event, static_cast<SubDetId::SubDetEnum>(GetDetectorFV()));
   boxUtils::FillTracksWithP0D(event);
   boxUtils::FillTrajsChargedInTPC(event);
   boxUtils::FillTrajsChargedInP0D(event);

@@ -12,61 +12,121 @@ gROOT.SetBatch(kTRUE);
 #Useage is python MakeParameterPlots.py postfitFileWithAllParameters outputFileName
 inFile = TFile(sys.argv[1])
 
+# Get prefit parameters, covariance, and errors
 prefit_params = inFile.Get("prefit_params")
-prefit_cov = inFile.Get("prefit_cov")
-prefit_err = TVectorD(prefit_params.GetNrows())
+param_list    = inFile.Get('param_list')
+prefit_cov    = inFile.Get("prefit_cov")
+prefit_err    = TVectorD(prefit_params.GetNrows())
 
+# Get postfit parameters, covariance, and errors
 postfit_params = inFile.Get("postfit_params")
-postfit_cov = inFile.Get("postfit_cov")
-postfit_err = TVectorD(postfit_params.GetNrows())
+postfit_cov    = inFile.Get("postfit_cov")
+postfit_err    = TVectorD(postfit_params.GetNrows())
 
+# Set errors for prefit and postfit
 for i in xrange(0, prefit_err.GetNrows()):
-    prefit_err[i]  = math.sqrt(prefit_cov[i][i])
-    postfit_err[i] = math.sqrt(postfit_cov[i][i])
+    prefit_err[i]  = sqrt(prefit_cov[i][i])
+    postfit_err[i] = sqrt(postfit_cov[i][i])
 
-
-for i in xrange(0, param_list.GetEntries()):
-    print(str(i)+": "+str(param_list.At(i).GetString().Data()))
-    
 #We just need to make one TH1D for each, then just change the range as needed
 #to get the desired parameter subset.
 prefitHist  = TH1D(prefit_params)
 postfitHist = TH1D(postfit_params)
 
 for i in xrange(1, prefit_err.GetNrows() + 1):
-    prefitHist .SetBinError(i,prefit_err [i-1])
+    prefitHist.SetBinError(i,prefit_err[i-1])
     postfitHist.SetBinError(i,postfit_err[i-1])
 
+#Find parameter locations to eliminate some hardcoding of numbers
+#Labels with 'RAW' in name are for range positions
+#Other labels are for setting bin contents and errors
+BERPA      = -1
+CCDIS      = -1
+FEFQE      = -1
+NCOTHERRAW = -1
+BERPARAW   = -1
+FEFQERAW   = -1
+MAQERAW    = -1
+CA5RAW     = -1
+for i in xrange(0, param_list.GetEntriesFast()):
+    if param_list[i] == 'BeRPA_A':
+        BERPA    = i+1
+        BERPARAW = i
+    elif param_list[i] == 'CC_DIS':
+        CCDIS = i+1
+    elif param_list[i] == 'FEFQE' or param_list[i] == 'FSI_INEL_LO':
+        FEFQE    = i+1
+        FEFQERAW = i
+    elif param_list[i] == 'NC_other_far':
+        NCOTHERRAW = i
+    elif param_list[i] == 'MAQE':
+        MAQERAW = i
+    elif param_list[i] == 'CA5':
+        CA5RAW = i
+    else:
+        continue
+
+#Print statements for debugging
+#print 'BeRPA_A: ', BERPA, 'CC_DIS: ', CCDIS, 'FEFQE: ',  FEFQE, 'NC_other_far: ', NCOTHERRAW
+#print 'BeRPA RAW: ', BERPARAW, 'FEFQE RAW: ', FEFQERAW, 'MAQE RAW: ', MAQERAW
+
 #BeRPA_A
-prefitHist.SetBinContent(115,prefitHist.GetBinContent(115)*1.69491525424)
-postfitHist.SetBinContent(115,postfitHist.GetBinContent(115)*1.69491525424)
-prefitHist.SetBinError(115,prefitHist.GetBinError(115)*1.69491525424)
-postfitHist.SetBinError(115,postfitHist.GetBinError(115)*1.69491525424)
+prefitHist.SetBinContent(BERPA,prefitHist.GetBinContent(BERPA)*1.69491525424)
+prefitHist.SetBinError(BERPA,prefitHist.GetBinError(BERPA)*1.69491525424)
+postfitHist.SetBinContent(BERPA,postfitHist.GetBinContent(BERPA)*1.69491525424)
+postfitHist.SetBinError(BERPA,postfitHist.GetBinError(BERPA)*1.69491525424)
+
 #BeRPA_B
-prefitHist.SetBinContent(116,prefitHist.GetBinContent(116)*0.95238095238)
-postfitHist.SetBinContent(116,postfitHist.GetBinContent(116)*0.95238095238)
-prefitHist.SetBinError(116,prefitHist.GetBinError(116)*0.95238095238)
-postfitHist.SetBinError(116,postfitHist.GetBinError(116)*0.95238095238)
+prefitHist.SetBinContent(BERPA+1,prefitHist.GetBinContent(BERPA+1)*0.95238095238)
+prefitHist.SetBinError(BERPA+1,prefitHist.GetBinError(BERPA+1)*0.95238095238)
+postfitHist.SetBinContent(BERPA+1,postfitHist.GetBinContent(BERPA+1)*0.95238095238)
+postfitHist.SetBinError(BERPA+1,postfitHist.GetBinError(BERPA+1)*0.95238095238)
+
 #BeRPA_D
-prefitHist.SetBinContent(117,prefitHist.GetBinContent(117)*0.88495575221)
-postfitHist.SetBinContent(117,postfitHist.GetBinContent(117)*0.88495575221)
-prefitHist.SetBinError(117,prefitHist.GetBinError(117)*0.88495575221)
-postfitHist.SetBinError(117,postfitHist.GetBinError(117)*0.88495575221)
+prefitHist.SetBinContent(BERPA+2,prefitHist.GetBinContent(BERPA+2)*0.88495575221)
+prefitHist.SetBinError(BERPA+2,prefitHist.GetBinError(BERPA+2)*0.88495575221)
+postfitHist.SetBinContent(BERPA+2,postfitHist.GetBinContent(BERPA+2)*0.88495575221)
+postfitHist.SetBinError(BERPA+2,postfitHist.GetBinError(BERPA+2)*0.88495575221)
+
 #BeRPA_E
-prefitHist.SetBinContent(118,prefitHist.GetBinContent(118)*1.13636363636)
-postfitHist.SetBinContent(118,postfitHist.GetBinContent(118)*1.13636363636)
-prefitHist.SetBinError(118,prefitHist.GetBinError(118)*1.13636363636)
-postfitHist.SetBinError(118,postfitHist.GetBinError(118)*1.13636363636)
+prefitHist.SetBinContent(BERPA+3,prefitHist.GetBinContent(BERPA+3)*1.13636363636)
+prefitHist.SetBinError(BERPA+3,prefitHist.GetBinError(BERPA+3)*1.13636363636)
+postfitHist.SetBinContent(BERPA+3,postfitHist.GetBinContent(BERPA+3)*1.13636363636)
+postfitHist.SetBinError(BERPA+3,postfitHist.GetBinError(BERPA+3)*1.13636363636)
+
 #BeRPA_U
-prefitHist.SetBinContent(119,prefitHist.GetBinContent(119)*0.83333333333)
-postfitHist.SetBinContent(119,postfitHist.GetBinContent(119)*0.83333333333)
-prefitHist.SetBinError(119,prefitHist.GetBinError(119)*0.83333333333)
-postfitHist.SetBinError(119,postfitHist.GetBinError(119)*0.83333333333)
+prefitHist.SetBinContent(BERPA+4,prefitHist.GetBinContent(BERPA+4)*0.83333333333)
+prefitHist.SetBinError(BERPA+4,prefitHist.GetBinError(BERPA+4)*0.83333333333)
+postfitHist.SetBinContent(BERPA+4,postfitHist.GetBinContent(BERPA+4)*0.83333333333)
+postfitHist.SetBinError(BERPA+4,postfitHist.GetBinError(BERPA+4)*0.83333333333)
 
+#CCDIS
+prefitHist.SetBinContent(CCDIS,prefitHist.GetBinContent(CCDIS)+1)
+postfitHist.SetBinContent(CCDIS,postfitHist.GetBinContent(CCDIS)+1)
 
-histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux","SK ANuMode Flux","FSI","XSec"]
-paramRange = [[0,24],[25,49],[50,74],[75,99],[100,105],[106,130]]
-yRange = [[0.40,1.6],[0.40,1.6],[0.40,1.6],[0.40,1.6],[-1.0,1.2],[-0.5,2.05]]
+#FSI
+prefitHist.SetBinContent(FEFQE,prefitHist.GetBinContent(FEFQE)+1)
+postfitHist.SetBinContent(FEFQE,postfitHist.GetBinContent(FEFQE)+1)
+prefitHist.SetBinContent(FEFQE+1,prefitHist.GetBinContent(FEFQE+1)+1)
+postfitHist.SetBinContent(FEFQE+1,postfitHist.GetBinContent(FEFQE+1)+1)
+prefitHist.SetBinContent(FEFQE+2,prefitHist.GetBinContent(FEFQE+2)+1)
+postfitHist.SetBinContent(FEFQE+2,postfitHist.GetBinContent(FEFQE+2)+1)
+prefitHist.SetBinContent(FEFQE+3,prefitHist.GetBinContent(FEFQE+3)+1)
+postfitHist.SetBinContent(FEFQE+3,postfitHist.GetBinContent(FEFQE+3)+1)
+prefitHist.SetBinContent(FEFQE+4,prefitHist.GetBinContent(FEFQE+4)+1)
+postfitHist.SetBinContent(FEFQE+4,postfitHist.GetBinContent(FEFQE+4)+1)
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    prefitHist.SetBinContent(FEFQE+5,prefitHist.GetBinContent(FEFQE+5)+1)
+    postfitHist.SetBinContent(FEFQE+5,postfitHist.GetBinContent(FEFQE+5)+1)
+
+#Set histo types, ranges, and bin labels
+histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux", "SK ANuMode Flux","FSI","XSec","XSec"]
+paramRange = []
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+5],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
+else:
+    paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+4],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
+yRange = [[0.80,1.2],[0.80,1.2],[0.80,1.2],[0.80,1.2],[0,2.1],[0,2.1],[0,2.1]]
 binLabels = []
 for i in xrange(0, postfit_params.GetNrows()):
     binLabels.append("")
@@ -88,11 +148,33 @@ binLabels[80] = "SK #bar{#nu}_{#mu}, RHC"
 binLabels[91] = "SK #nu_{e}, RHC"
 binLabels[93] = "SK #bar{#nu}_{e}, RHC"
 
-for i in xrange(100,130):
+binLabels[100] = "Water Nu FHC"
+binLabels[124] = "Water AntiNu RHC"
+binLabels[148] = "Water Nu Bkg RHC"
+binLabels[172] = "Air Nu FHC"
+binLabels[196] = "Air AntiNu RHC"
+binLabels[220] = "Air Nu Bkg RHC"
+
+# binLabels[100] = "FGD 1 CC-0#pi, FHC"
+# binLabels[143] = "FGD 1 CC-1#pi, FHC"
+# binLabels[184] = "FGD 1 CC-Other, FHC"
+# binLabels[225] = "FGD 1 #bar{#nu}_{#mu} CC-1Track, RHC"
+# binLabels[266] = "FGD 1 #bar{#nu}_{#mu} CC-NTracks, RHC"
+# binLabels[302] = "FGD 1 #nu_{#mu} CC-1Track, RHC"
+# binLabels[333] = "FGD 1 #nu_{#mu} CC-NTracks, RHC"
+# binLabels[374] = "FGD 2 CC-0#pi, FHC"
+# binLabels[415] = "FGD 2 CC-1#pi, FHC"
+# binLabels[456] = "FGD 2 CC-Other, FHC"
+# binLabels[497] = "FGD 2 #bar{#nu}_{#mu} CC-1Track, RHC"
+# binLabels[538] = "FGD 2 #bar{#nu}_{#mu} CC-NTracks, RHC"
+# binLabels[575] = "FGD 2 #nu_{#mu} CC-1Track, RHC"
+# binLabels[616] = "FGD 2 #nu_{#mu} CC-NTracks, RHC"
+
+for i in xrange(FEFQERAW,NCOTHERRAW+1):
     binLabels[i] = param_list.At(i).GetString().Data()
 
-    #Set the fill types for the prefit and postfit histograms.  Will plot them as
-#points, but this will propagate to the error bars.
+#Set the fill types for the prefit and postfit histograms.
+#Will plot them as points, but this will propagate to the error bars.
 
 #Prefit is red fill, red point that isn't seen.
 prefitHist.SetFillColor(kRed)
@@ -102,14 +184,13 @@ prefitHist.SetMarkerColor(kRed)
 prefitHist.SetMarkerStyle(7)
 prefitHist.SetMarkerSize(0.5)
 
-
 #Postfit is with blue squares
 postfitHist.SetMarkerColor(4)
 postfitHist.SetMarkerStyle(21)
 postfitHist.SetMarkerSize(0.5)
 postfitHist.SetLineWidth(2)
 
-#line at 0
+#Line at 0
 line = TLine(0,0,1000,0)
 line.SetLineColor(kWhite)
 line.SetLineStyle(2)
@@ -119,11 +200,24 @@ c1.cd()
 c1.Print(sys.argv[2] + "[")
 
 for i in xrange(0, len(histoTypes)):
+    print 'i=',i
+    #CCQE parameters don't really have a prior,
+    #so it doesn't make sense to have errors on these params:
+    #MAQE, pF_C/O, 2p2h_norm_nu(bar), 2p2h_normCtoO, 2p2h_shape_C/O
+    if i == 6:
+        prefitHist.SetBinError(MAQERAW+1,0.0)
+        prefitHist.SetBinError(MAQERAW+2,0.0)
+        prefitHist.SetBinError(MAQERAW+3,0.0)
+        prefitHist.SetBinError(MAQERAW+4,0.0)
+        prefitHist.SetBinError(MAQERAW+5,0.0)
+        prefitHist.SetBinError(MAQERAW+6,0.0)
+        prefitHist.SetBinError(MAQERAW+7,0.0)
+        prefitHist.SetBinError(MAQERAW+8,0.0)
 
     stack = THStack("pStack",histoTypes[i])
     stack.Add(prefitHist,"E2P")
     stack.Add(postfitHist,"E1")
-    
+
     c1.cd()
     stack.Draw("NOSTACK")
     line.Draw("SAME")
@@ -133,16 +227,16 @@ for i in xrange(0, len(histoTypes)):
     stack.SetMinimum(yRange[i][0])
     stack.SetMaximum(yRange[i][1])
 
-    leg = TLegend(0.12+0.3,0.84-0.05,0.42+0.3,0.98-0.05)
+    leg = TLegend(0.68,0.84,0.88,0.98)
     leg.SetFillColor(0)
-    leg.AddEntry(prefitHist, "Pre fit",  "FEP")
-    leg.AddEntry(postfitHist,"Post fit",    "ELP")
+    leg.AddEntry(prefitHist, "Prefit","FEP")
+    leg.AddEntry(postfitHist,"Postfit", "ELP")
 
     leg.Draw()
 
     for j in xrange(0, prefit_params.GetNrows()):
         stack.GetXaxis().SetBinLabel(j+1,binLabels[j])
-    
+
     stack.GetXaxis().LabelsOption("v")
 
     c1.Modified()
@@ -150,9 +244,16 @@ for i in xrange(0, len(histoTypes)):
     c1.Print(sys.argv[2])
 
 
-histoTypes = ["SK FHC #nu_{#mu} Flux","FSI parameters","CCQE parameters","CC1#pi parameters"]
-paramRange = [[50,60],[100,105],[106,108],[119,121]]
-yRange = [[0.80,1.2],[-1.0,1.0],[0.7,1.4],[0.7,1.4]]
+# histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm FGD1","ObsNorm FGD2","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
+histoTypes = ["SK FHC #nu_{#mu} Flux", "ObsNorm P0D Water", "ObsNorm P0D Air", "FSI parameters","CC#0pi parameters","BeRPA parameters","CC1#pi parameters"]
+paramRange = []
+if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
+    # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+else:
+    # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+yRange = [[0.80,1.2],[0.5,1.5],[0.5,1.5],[0.0,2.1],[0.5,2.1],[0.5,2.1],[0.5,1.4]]
 
 binLabels[50] = "0, 400 MeV"
 binLabels[51] = "400, 500 Mev"
@@ -169,31 +270,39 @@ c1.cd()
 
 for i in xrange(0, len(histoTypes)):
 
+    print 'i=',i
     stack = THStack("pStack",histoTypes[i])
-    stack.Add(prefitHist,"E2P")
+    if i == 4:
+        stack.Add(prefitHist,"HIST P")
+        line = TLine(107,1,114,1)
+        line.SetLineColor(kRed)
+        line.SetLineStyle(2)
+    else:
+        stack.Add(prefitHist,"E2P")
     stack.Add(postfitHist,"E1")
     postfitHist.SetMarkerSize(0.5)
     #stack.Add(postfitHist,"E1")
-    
+
     c1.cd()
     stack.Draw("NOSTACK")
-    line.Draw("SAME")
+    if i == 2:
+        line.Draw("SAME")
 
     #Set the range to the desired parameters that want (low end to topend + 1)
     stack.GetXaxis().SetRangeUser(paramRange[i][0],paramRange[i][1] + 1)
     stack.SetMinimum(yRange[i][0])
     stack.SetMaximum(yRange[i][1])
 
-    leg = TLegend(0.12+0.3,0.84-0.05,0.5+0.3,0.98-0.05)
+    leg = TLegend(0.12,0.84,0.32,0.98)
     leg.SetFillColor(0)
-    leg.AddEntry(prefitHist, "Pre fit",  "FEP")
-    leg.AddEntry(postfitHist,"Post fit", "ELP")
+    leg.AddEntry(prefitHist, "Prefit","FEP")
+    leg.AddEntry(postfitHist,"Postfit", "ELP")
 
     leg.Draw()
 
     for j in xrange(0, prefit_params.GetNrows()):
         stack.GetXaxis().SetBinLabel(j+1,binLabels[j])
-    
+
     stack.GetXaxis().LabelsOption("v")
 
     c1.Modified()
@@ -201,9 +310,3 @@ for i in xrange(0, len(histoTypes)):
     c1.Print(sys.argv[2])
 
 c1.Print(sys.argv[2] + "]")
-
-
-
-
-
-

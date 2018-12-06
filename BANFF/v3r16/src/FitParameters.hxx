@@ -21,15 +21,17 @@ class BANFFEventBase;
 class BANFFSampleBase;
 
 //This is the only thing from SystematicVar.h that we need here:
-enum PDFcode{ PDFGaus = 0, PDFFlat, PDFBino  };
+enum PDFcode{PDFGaus = 0,
+             PDFFlat,
+             PDFBino};
 
 
-enum ParamType { FLUX = 0,
-    XSECRESP = 1, 
-    XSECNORM = 2, 
-    DET = 3,
-    OBSNORM = 4,
-	XSECFUNC = 5 };
+enum ParamType {FLUX = 0,
+                XSECRESP = 1, 
+                XSECNORM = 2, 
+                DET = 3,
+                OBSNORM = 4,
+                XSECFUNC = 5 };
 
 
 ///A base class to describe a parameter.  Holds information common to all
@@ -44,6 +46,8 @@ class FitParameter{
             xMin = -1;
             xMax = -1;
             nStep = -1;
+            nEventsAppliedTo = 0;
+
         };
 
         virtual ~FitParameter(){};
@@ -173,6 +177,11 @@ class FitParameter{
         double xMax;
         double xMin;
         int nStep;
+
+        //*********************************************************
+        //For counting the number of events affected by a parameter
+        //*********************************************************
+        int nEventsAppliedTo;
 
 };
 
@@ -663,6 +672,12 @@ class FitParameters {
         //to the bin in the saved TAxis that this parameter corresponds to.
         TVectorD* xsec_param_bin;
 
+        ///The position of the first BeRPA parameter (BeRPA_A)
+        int BeRPA_pos;
+
+        // Finds the position of the first BeRPA parameter (BeRPA_A)
+        int GetBeRPA(){ return BeRPA_pos; };
+
         //*****************************************************
         //For setting up parameters when want to do throws
         //based on the fit results.
@@ -677,6 +692,7 @@ class FitParameters {
         ///The parameters from the fit file.
         TVectorD *fit_params;
 
+        bool SetPriorFromToyFile(TFile* toyFile, int toy);
 
         //*****************************************************
         //For setting up detector parameters if they are taken from an external
@@ -780,7 +796,7 @@ class FitParameters {
         void AddXsecNormParameter(std::string nameBase, double value, TVectorD* reacCodes, int nTgtMat, int* tgtMatArray, TAxis *norm_bins, int bin, bool vary = true);
 
         ///Add a cross section normalization parameter.
-        void AddXsecNormParameter2016(std::string nameBase, double value, TVectorD* reacCodes, TVectorD* nuPDG, int nTgtMat, int* tgtMatArray, TAxis *norm_bins, int bin, bool vary = true);
+        void AddXsecNormParameter2016(std::string nameBase, double value, TVectorD* reacCodes, TVectorD* nuPDG, int nTgtMat, int* tgtMatArray, TAxis *norm_bins, int bin, bool vary = true, bool constrain = true);
 
         ///Load in the file with the specified file name and add observable
         //normalization
@@ -885,6 +901,8 @@ class FitParameters {
         ///Return the type of parameter this parameter is
         ParamType GetParamType(int i) { return fitParameters[i]->paramType; };
 
+        int GetNEventsAppliedTo(int i) { return fitParameters[i]->nEventsAppliedTo; };
+
         //TODO Move to parameter derived class where this means something.
         //XsecSysts GetXsecID(int i) { return fitParameters[i]->xsecID; };
 
@@ -954,10 +972,12 @@ class FitParameters {
 
         void SetFitCovarianceMatrixElement(int i, int j, float value) { (*covarianceFit)(i,j) = value; };
         void PrintCurrentValues();
+        void PrintPriorValues();
 
         void ResetValues();
         void DecomposeParameters();
         void UnDecomposeParameters(bool fitted=true, bool skipCovariance=false);
+        void UnDecomposeLoadedParameters(bool fitted=true, bool skipCovariance=false, bool replaceOriginal=true);
 
         void WriteResults(int iteration, bool names, bool UD=true);
         void PrintAllParameterInfo();

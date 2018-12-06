@@ -21,6 +21,21 @@ void AnalysisBins::Init()
 }
 
 //**************************************************
+AnalysisBins::AnalysisBins(const AnalysisBins& inputCopy)
+//**************************************************
+{
+    Init();
+    binningName = TString::Format("%s_copy", inputCopy.GetBinningName().Data());
+    nBins = inputCopy.GetNbins();
+    units = inputCopy.GetUnits();
+    showOverflow = inputCopy.GetShowOverflow();
+    divideByBinWidth = inputCopy.GetDivideByBinWidth();
+    isUniform = inputCopy.GetIsUniform();
+    binEdges = BinEdges(inputCopy.GetBinEdgesVect());
+    hist = new TH1D(binningName.Data(), "", nBins, GetBinEdges());
+}
+
+//**************************************************
 AnalysisBins::AnalysisBins(TString name, Double_t* edges, Int_t nEntries, Bool_t setShowOverflow)
 //**************************************************
 {

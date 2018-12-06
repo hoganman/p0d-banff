@@ -34,8 +34,8 @@
         </NeutrinoEnergy>
         <CosTheta>
             <comment> CosTheta: Bin btn 0 and 0.6, uniform binning after 0.6 </comment>
-            <binEdges attr="0.0,0.6,0.62,0.64,0.66,0.68,0.7,0.72,0.74,0.76,0.78,0.8,0.82,0.84,0.86,0.88,0.9,0.92,0.94,0.96,0.98,1.0" />
-            <nBinEdges attr="22" />
+            <binEdges attr="0.5,0.52,0.54,0.56,0.58,0.6,0.62,0.64,0.66,0.68,0.7,0.72,0.74,0.76,0.78,0.8,0.82,0.84,0.86,0.88,0.9,0.92,0.94,0.96,0.98,1.0" />
+            <nBinEdges attr="26" />
             <units attr="cos(#theta)"/>
         </CosTheta>
         <Theta>
@@ -68,14 +68,14 @@
         </TN328CosTheta>
         <P0DFitFHCMomentum>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0.,0.450.,0.700.,1.100,1.600,2.200,3.000,4.000,5.000" />
-            <nBinEdges attr="9" />
+            <binEdges attr="0.,0.450.,0.700.,1.100,1.600,2.200,3.000,4.000,5.000, 30.000" />
+            <nBinEdges attr="10" />
             <uniformWidth attr="0"/>
             <units attr="GeV/c"/>
         </P0DFitFHCMomentum>
         <P0DFitFHCCosTheta>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0.0,+0.8,+0.90,+0.955,+0.985,1" />
+            <binEdges attr="-1.0,+0.5,+0.82,+0.94,+0.986,+1.0" />
             <nBinEdges attr="6" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>

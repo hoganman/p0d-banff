@@ -1,3 +1,0 @@
-test_data_file.txt test_mc_file.txt test
-test2_data_file.txt test2_mc_file.txt test2
-test3_data_file.txt test3_mc_file.txt test3
