@@ -8,7 +8,7 @@ into run periods for loading.
 
 Doesnt fit
 < BANFF.SavePrefitAndExit = 0 >
-< BANFF.SavePrefitParamsAndExit = 0 >
+< BANFF.SavePrefitParamsAndExit = 1 >
 
 Do a likelihood scan of the likelihood as a function of the xsec parameters
 < BANFF.DoLikelihoodScan = 0 >
@@ -24,8 +24,8 @@ Wether to apply nue selections
 If nue's are the only thing you care about...
 < BANFF.DoOnlyNueSelections = 0 >
 
-If P0D FHC the only thing you care about...
-< BANFF.DoOnlyP0DFHCSelections = 1 >
+If P0D CC-Inc the only thing you care about...
+< BANFF.DoOnlyP0DSelections = 1 >
 
 For doing one dimensional fits (do not put both in the same time other BANFF will insult you)
 < BANFF.Do1DCheckMom = 0 >
@@ -42,7 +42,7 @@ and their covariance.
 
 The Observable Normalization parameters input file, which contains information
 about those parameters and their covariance.
-< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/Obsnorm_P0DFHC_Runs2_thru_4.root >
+< BANFF.ObsNormInputFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/Obsnorm_P0DFHCRHC_CCInc_Runs2_thru_7.root >
 
 Whether to apply an additional scaling factor to the MC POT.  Would typically
 only use this if wanted to scale MC to a desired POT to check fit performance.
@@ -143,7 +143,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = Asimov_p0d_run2_thru_4_LoadDetParamsButNotFit_2018splines_siproton_sipion_off_xsec2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
+< BANFF.RunFit.OutputFile = Asimov_p0d_run2_thru_7_LoadDetParamsButNotFit_2018splines_splinesCapped_siproton_sipion_off_xsec2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >

@@ -120,7 +120,7 @@ if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
     postfitHist.SetBinContent(FEFQE+5,postfitHist.GetBinContent(FEFQE+5)+1)
 
 #Set histo types, ranges, and bin labels
-histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux","SK ANuMode Flux","FSI","XSec","XSec"]
+histoTypes = ["ND280 NuMode Flux", "ND280 ANuMode Flux", "SK NuMode Flux", "SK ANuMode Flux","FSI","XSec","XSec"]
 paramRange = []
 if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
     paramRange = [[0,24],[25,49],[50,74],[75,99],[FEFQERAW,FEFQERAW+5],[MAQERAW,NCOTHERRAW],[MAQERAW,NCOTHERRAW]]
@@ -148,8 +148,12 @@ binLabels[80] = "SK #bar{#nu}_{#mu}, RHC"
 binLabels[91] = "SK #nu_{e}, RHC"
 binLabels[93] = "SK #bar{#nu}_{e}, RHC"
 
-binLabels[100] = "P0D Water-In"
-binLabels[124] = "P0D Water-Out"
+binLabels[100] = "Water Nu FHC"
+binLabels[124] = "Water AntiNu RHC"
+binLabels[148] = "Water Nu Bkg RHC"
+binLabels[172] = "Air Nu FHC"
+binLabels[196] = "Air AntiNu RHC"
+binLabels[220] = "Air Nu Bkg RHC"
 
 # binLabels[100] = "FGD 1 CC-0#pi, FHC"
 # binLabels[143] = "FGD 1 CC-1#pi, FHC"
@@ -196,6 +200,7 @@ c1.cd()
 c1.Print(sys.argv[2] + "[")
 
 for i in xrange(0, len(histoTypes)):
+    print 'i=',i
     #CCQE parameters don't really have a prior,
     #so it doesn't make sense to have errors on these params:
     #MAQE, pF_C/O, 2p2h_norm_nu(bar), 2p2h_normCtoO, 2p2h_shape_C/O
@@ -212,7 +217,7 @@ for i in xrange(0, len(histoTypes)):
     stack = THStack("pStack",histoTypes[i])
     stack.Add(prefitHist,"E2P")
     stack.Add(postfitHist,"E1")
-    
+
     c1.cd()
     stack.Draw("NOSTACK")
     line.Draw("SAME")
@@ -231,7 +236,7 @@ for i in xrange(0, len(histoTypes)):
 
     for j in xrange(0, prefit_params.GetNrows()):
         stack.GetXaxis().SetBinLabel(j+1,binLabels[j])
-    
+
     stack.GetXaxis().LabelsOption("v")
 
     c1.Modified()
@@ -240,14 +245,14 @@ for i in xrange(0, len(histoTypes)):
 
 
 # histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm FGD1","ObsNorm FGD2","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
-histoTypes = ["SK FHC #nu_{#mu} Flux","ObsNorm P0D Water-In","ObsNorm P0D Water-Out","FSI parameters","CC0#pi parameters","BeRPA parameters","CC1#pi parameters"]
+histoTypes = ["SK FHC #nu_{#mu} Flux", "ObsNorm P0D Water", "ObsNorm P0D Air", "FSI parameters","CC#0pi parameters","BeRPA parameters","CC1#pi parameters"]
 paramRange = []
 if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
     # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
-    paramRange = [[50,60],[100,100+23],[100+24,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 else:
     # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
-    paramRange = [[50,60],[100,100+23],[100+24,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 yRange = [[0.80,1.2],[0.5,1.5],[0.5,1.5],[0.0,2.1],[0.5,2.1],[0.5,2.1],[0.5,1.4]]
 
 binLabels[50] = "0, 400 MeV"
@@ -265,6 +270,7 @@ c1.cd()
 
 for i in xrange(0, len(histoTypes)):
 
+    print 'i=',i
     stack = THStack("pStack",histoTypes[i])
     if i == 4:
         stack.Add(prefitHist,"HIST P")
@@ -276,7 +282,7 @@ for i in xrange(0, len(histoTypes)):
     stack.Add(postfitHist,"E1")
     postfitHist.SetMarkerSize(0.5)
     #stack.Add(postfitHist,"E1")
-    
+
     c1.cd()
     stack.Draw("NOSTACK")
     if i == 2:
@@ -291,12 +297,12 @@ for i in xrange(0, len(histoTypes)):
     leg.SetFillColor(0)
     leg.AddEntry(prefitHist, "Prefit","FEP")
     leg.AddEntry(postfitHist,"Postfit", "ELP")
-    
+
     leg.Draw()
 
     for j in xrange(0, prefit_params.GetNrows()):
         stack.GetXaxis().SetBinLabel(j+1,binLabels[j])
-    
+
     stack.GetXaxis().LabelsOption("v")
 
     c1.Modified()
@@ -304,4 +310,3 @@ for i in xrange(0, len(histoTypes)):
     c1.Print(sys.argv[2])
 
 c1.Print(sys.argv[2] + "]")
-
