@@ -10,7 +10,8 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
 QUEUE = '\"physics.q|short.q\"'
-HOSTS = '\"node40|node44|node27|node29\"'
+# HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node30|node29\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
 # EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 # HOSTS = '\"'
 # for x in range(20) + range(27, 31) + range(40, 46):
@@ -22,7 +23,7 @@ HOSTS = '\"node40|node44|node27|node29\"'
 MEM = '1024'
 MCNJOBS = '100'
 DATANJOBS = '10'
-MCMIN = '300'
+MCMIN = str(int(60*8))
 DATAMIN = '120'
 FLATTREEBASE = os.getenv('FLATTREEROOT')
 SPLINEBASE = os.getenv('SPLINEROOT')
@@ -46,7 +47,7 @@ def submit_spline_jobs():
     submit_spline_mc()
 
 
-def make_qsub_spline_mc(run_name, production):
+def make_qsub_spline_mc(run_name, production, data_type):
     """make spline command for mc files"""
     flattree_dir = Directory('%s/%s/%s' % (FLATTREEBASE,
                                            production, run_name.low()))
@@ -61,7 +62,7 @@ def make_qsub_spline_mc(run_name, production):
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (SPLINEBASE,
                                                production, run_name.low()))
-    run_type = '-r MC'
+    run_type = '-r %s' % (data_type)
     if not output_path_name.exists():
         print 'WARNING: directory'
         print '\"%s\"' % (output_path_name.get())
@@ -122,20 +123,20 @@ def make_qsub_spline_data(run_name, production):
 
 def submit_spline_mc():
     """submits MC spline jobs"""
-    run2w_sp_mc = make_qsub_spline_mc(RN.RUN2W, NEUT_6B)
-    run2a_sp_mc = make_qsub_spline_mc(RN.RUN2A, NEUT_6B)
-    run3b_sp_mc = make_qsub_spline_mc(RN.RUN3B, NEUT_6B)
-    run3c_sp_mc = make_qsub_spline_mc(RN.RUN3C, NEUT_6B)
-    run4w_sp_mc = make_qsub_spline_mc(RN.RUN4W, NEUT_6B)
-    run4a_sp_mc = make_qsub_spline_mc(RN.RUN4A, NEUT_6B)
-    run5c_sp_mc = make_qsub_spline_mc(RN.RUN5C, NEUT_6B)
-    run6b_sp_mc = make_qsub_spline_mc(RN.RUN6B, NEUT_6B)
-    run6c_sp_mc = make_qsub_spline_mc(RN.RUN6C, NEUT_6B)
-    run6d_sp_mc = make_qsub_spline_mc(RN.RUN6D, NEUT_6B)
-    run6e_sp_mc = make_qsub_spline_mc(RN.RUN6E, NEUT_6B)
-    run7b_sp_mc = make_qsub_spline_mc(RN.RUN7B, NEUT_6L)
-    sand_fhc_sp_mc = make_qsub_spline_mc(RN.SANDFHC, SAND)
-    sand_rhc_sp_mc = make_qsub_spline_mc(RN.SANDRHC, SAND)
+    run2w_sp_mc = make_qsub_spline_mc(RN.RUN2W, NEUT_6B, DATATYPES.MC)
+    run2a_sp_mc = make_qsub_spline_mc(RN.RUN2A, NEUT_6B, DATATYPES.MC)
+    run3b_sp_mc = make_qsub_spline_mc(RN.RUN3B, NEUT_6B, DATATYPES.MC)
+    run3c_sp_mc = make_qsub_spline_mc(RN.RUN3C, NEUT_6B, DATATYPES.MC)
+    run4w_sp_mc = make_qsub_spline_mc(RN.RUN4W, NEUT_6B, DATATYPES.MC)
+    run4a_sp_mc = make_qsub_spline_mc(RN.RUN4A, NEUT_6B, DATATYPES.MC)
+    run5c_sp_mc = make_qsub_spline_mc(RN.RUN5C, NEUT_6B, DATATYPES.MC)
+    run6b_sp_mc = make_qsub_spline_mc(RN.RUN6B, NEUT_6B, DATATYPES.MC)
+    run6c_sp_mc = make_qsub_spline_mc(RN.RUN6C, NEUT_6B, DATATYPES.MC)
+    run6d_sp_mc = make_qsub_spline_mc(RN.RUN6D, NEUT_6B, DATATYPES.MC)
+    run6e_sp_mc = make_qsub_spline_mc(RN.RUN6E, NEUT_6B, DATATYPES.MC)
+    run7b_sp_mc = make_qsub_spline_mc(RN.RUN7B, NEUT_6L, DATATYPES.MC)
+    sand_fhc_sp_mc = make_qsub_spline_mc(RN.SANDFHC, SAND, DATATYPES.SAND)
+    sand_rhc_sp_mc = make_qsub_spline_mc(RN.SANDRHC, SAND, DATATYPES.SAND)
 
     run2w_sp_mc.run(not ShellCommand.IN_BKG)
     run2a_sp_mc.run(not ShellCommand.IN_BKG)
@@ -180,6 +181,12 @@ def submit_spline_data():
     run6d_sp_data.run(not ShellCommand.IN_BKG)
     run6e_sp_data.run(not ShellCommand.IN_BKG)
     run7b_sp_data.run(not ShellCommand.IN_BKG)
+
+
+class DATATYPES(object):
+    """list of data types for generating splines"""
+    SAND = 'sand'
+    MC = 'MC'
 
 
 if __name__ == "__main__":
