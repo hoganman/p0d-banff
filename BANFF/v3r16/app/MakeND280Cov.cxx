@@ -30,6 +30,7 @@
 bool ApplyNIWG = false;
 bool Apply1p1h = false;
 const int nThrows = 2000;
+const Double_t MAX_WEIGHT = 1e4;
 
 bool IsFiniteWeight(const Double_t& weight);
 bool IsValidWeight(const Double_t& weight);
@@ -671,7 +672,7 @@ void MakeCovariance(const char* MCFilesListStr, const char* NIWGFilesListStr,
         matrix.Write("Covariance_Matrix");
         std::string CurSampleStr = "";
         for(int iBin = 1; iBin < nBinsRedu+1; ++iBin){
-            std::string SampleStr = ConvertSample(bd.GetSampleFromIndex_Det(iBin));
+            std::string SampleStr = SampleId::ConvertSample(bd.GetSampleFromIndex_Det(iBin));
             if(SampleStr != CurSampleStr){
                 cov        ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
                 corr       ->GetXaxis()->SetBinLabel(iBin,SampleStr.c_str());
@@ -893,7 +894,7 @@ inline bool IsFiniteWeight(const Double_t& weight)
 
 inline bool IsValidWeight(const Double_t& weight)
 {
-    return IsFiniteWeight(weight) && !(TMath::AreEqualAbs(weight, -999, 1.0) || weight > 1000);
+    return IsFiniteWeight(weight) && !(TMath::AreEqualAbs(weight, -999, 1.0) || weight > MAX_WEIGHT);
 }
 
 int main(int argn, char** arg){
