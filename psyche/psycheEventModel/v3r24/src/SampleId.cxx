@@ -81,17 +81,37 @@ std::string SampleId::ConvertSample(const SampleEnum& sample){
     else if (sample == kFGD2NuEBkgInAntiNuModeCC0Pi)      ssample = "FGD2 NuE Bkg In Anti NuMode CC0Pi";
     else if (sample == kFGD2NuEBkgInAntiNuModeCCOther)    ssample = "FGD2 NuE Bkg In Anti NuMode CCOther";
 
-    else if (sample == kP0DWaterNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive, P0D Water-In";
-    else if (sample == kP0DWaterNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D Water-In";
-    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive, P0D Water-In";
-    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive, P0D Water-In";
+    else if (sample == kP0DNuMuCC)                            ssample = "P0D NuMu CC Inclusive";
 
-    else if (sample == kP0DAirNuMuCC)                        ssample = "P0D+TPC1 NuMu CC Inclusive, P0D Water-Out";
-    else if (sample == kP0DAirNuMuBarBkgCC)                  ssample = "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D Water-Out";
-    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)         ssample = "P0D+TPC1 NuMu Bkg in Anti NuMode CC Inclusive, P0D Water-Out";
-    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)         ssample = "P0D+TPC1 NuMubar in Anti NuMode CC Inclusive, P0D Water-Out";
+    else if (sample == kP0DWaterNuMuCC)                       ssample = "P0D Water NuMu CC Inclusive";
+    else if (sample == kP0DWaterNuMuCC1Track)                 ssample = "P0D Water NuMu CC1Track";
+    else if (sample == kP0DWaterNuMuCCNTracks)                ssample = "P0D Water NuMu CCNTracks";
 
-    else                                                  ssample = "Unassigned";
+    else if (sample == kP0DWaterNuMuBarBkgCC)                 ssample = "P0D Water NuMubar Bkg CC Inclusive";
+
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)        ssample = "P0D Water NuMu Bkg in Anti NuMode CC Inclusive";
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC1Track)  ssample = "P0D Water NuMu Bkg in Anti NuMode CC1Track" ;
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) ssample = "P0D Water NuMu Bkg in Anti NuMode CCNTracks";
+
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)        ssample = "P0D Water NuMubar in Anti NuMode CC Inclusive";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC1Track)  ssample = "P0D Water NuMubar in Anti NuMode CC1Track" ;
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCCNTracks) ssample = "P0D Water NuMubar in Anti NuMode CCNTracks";
+
+    else if (sample == kP0DAirNuMuCC)                         ssample = "P0D Air NuMu CC Inclusive";
+    else if (sample == kP0DAirNuMuCC1Track)                   ssample = "P0D Air NuMu CC CC1Track" ;
+    else if (sample == kP0DAirNuMuCCNTracks)                  ssample = "P0D Air NuMu CC CCNTracks";
+
+    else if (sample == kP0DAirNuMuBarBkgCC)                   ssample = "P0D Air NuMubar Bkg CC Inclusive";
+
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)          ssample = "P0D Air NuMu Bkg in Anti NuMode CC Inclusive";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC1Track)    ssample = "P0D Air NuMu Bkg in Anti NuMode CC CC1Track" ;
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCCNTracks)   ssample = "P0D Air NuMu Bkg in Anti NuMode CC CCNTracks";
+
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)          ssample = "P0D Air NuMubar in Anti NuMode CC Inclusive";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC1Track)    ssample = "P0D Air NuMubar in Anti NuMode CC CC1Track" ;
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCCNTracks)   ssample = "P0D Air NuMubar in Anti NuMode CC CCNTracks";
+
+    else                                                      ssample = "Unassigned";
 
     return ssample;
 }
@@ -171,15 +191,33 @@ std::string SampleId::ConvertSampleToSelection(const SampleEnum& sample){
     else if (sample == kFGD1Gamma)                        ssample = "kTrackerGamma";
     else if (sample == kFGD2Gamma)                        ssample = "kTrackerGammaFGD2";
 
-    else if (sample == kP0DWaterNuMuCC)                        ssample = "kNuMuCCP0DWater";
-    else if (sample == kP0DWaterNuMuBarBkgCC)                  ssample = "kNuMubarBkgCCP0DWater";
-    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)         ssample = "kNuMuBkgInAntiNuModeCCP0DWater";
-    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)         ssample = "kNuMubarInAntiNuModeCCP0DWater";
+    else if (sample == kP0DWaterNuMuCC)                       ssample = "kNuMuCCP0DWater";
+    else if (sample == kP0DWaterNuMuCC1Track)                 ssample = "kNuMuCCMultiTrackP0DWater";
+    else if (sample == kP0DWaterNuMuCCNTracks)                ssample = "kNuMuCCMultiTrackP0DWater";
 
-    else if (sample == kP0DAirNuMuCC)                        ssample = "kNuMuCCP0DAir";
-    else if (sample == kP0DAirNuMuBarBkgCC)                  ssample = "kNuMubarBkgCCP0DAir";
-    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)         ssample = "kNuMuBkgInAntiNuModeCCP0DAir";
-    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)         ssample = "kNuMubarInAntiNuModeCCP0DAir";
+    else if (sample == kP0DWaterNuMuBarBkgCC)                 ssample = "kNuMubarBkgCCP0DWater";
+
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)        ssample = "kNuMuBkgInAntiNuModeCCP0DWater";
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC1Track)  ssample = "kNuMuBkgInAntiNuModeCCMultiTrackP0DWater";
+    else if (sample == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) ssample = "kNuMuBkgInAntiNuModeCCMultiTrackP0DWater";
+
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)        ssample = "kNuMubarInAntiNuModeCCP0DWater";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC1Track)  ssample = "kNuMubarInAntiNuModeCCMultiTrackP0DWater";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCCNTracks) ssample = "kNuMubarInAntiNuModeCCMultiTrackP0DWater";
+
+    else if (sample == kP0DAirNuMuCC)                         ssample = "kNuMuCCP0DAir";
+    else if (sample == kP0DAirNuMuCC1Track)                   ssample = "kNuMuCCP0DMultiTrackAir";
+    else if (sample == kP0DAirNuMuCCNTracks)                  ssample = "kNuMuCCP0DMultiTrackAir";
+
+    else if (sample == kP0DAirNuMuBarBkgCC)                   ssample = "kNuMubarBkgCCP0DAir";
+
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)          ssample = "kNuMuBkgInAntiNuModeCCP0DAir";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC1Track)    ssample = "kNuMuBkgInAntiNuModeCCMultiTrackP0DAir";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCCNTracks)   ssample = "kNuMuBkgInAntiNuModeCCMultiTrackP0DAir";
+
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)          ssample = "kNuMubarInAntiNuModeCCP0DAir";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC1Track)    ssample = "kNuMubarInAntiNuModeCCMultiTrackP0DAir";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCCNTracks)   ssample = "kNuMubarInAntiNuModeCCMultiTrackP0DAir";
 
     else                                                  ssample = "Unassigned";
 
@@ -279,15 +317,33 @@ SampleId::SampleEnum SampleId::ConvertSample(const std::string& sample)
     else if( strcmp("kFGD1GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD1GammaInAntiNuMode;
     else if( strcmp("kFGD2GammaInAntiNuMode",sample.c_str()) == 0) enum_sample = kFGD2GammaInAntiNuMode;
 
-    else if( strcmp("kP0DWaterNuMuCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuCC;
-    else if( strcmp("kP0DWaterNuMuBarBkgCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBarBkgCC;
-    else if( strcmp("kP0DWaterNuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBkgInAntiNuModeCC;
-    else if( strcmp("kP0DWaterNuMuBarInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBarInAntiNuModeCC;
+    else if( strcmp("kP0DWaterNuMuCC",sample.c_str()) == 0)                       enum_sample = kP0DWaterNuMuCC;
+    else if( strcmp("kP0DWaterNuMuCC1Track",sample.c_str()) == 0)                 enum_sample = kP0DWaterNuMuCC1Track;
+    else if( strcmp("kP0DWaterNuMuCCNTracks",sample.c_str()) == 0)                enum_sample = kP0DWaterNuMuCCNTracks;
 
-    else if( strcmp("kP0DAirNuMuCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuCC;
-    else if( strcmp("kP0DAirNuMuBarBkgCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBarBkgCC;
-    else if( strcmp("kP0DAirNuMuBkgInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBkgInAntiNuModeCC;
-    else if( strcmp("kP0DAirNuMuBarInAntiNuModeCC",sample.c_str()) == 0) enum_sample = kP0DAirNuMuBarInAntiNuModeCC;
+    else if( strcmp("kP0DWaterNuMuBarBkgCC",sample.c_str()) == 0)                 enum_sample = kP0DWaterNuMuBarBkgCC;
+
+    else if( strcmp("kP0DWaterNuMuBkgInAntiNuModeCC",sample.c_str()) == 0)        enum_sample = kP0DWaterNuMuBkgInAntiNuModeCC;
+    else if( strcmp("kP0DWaterNuMuBkgInAntiNuModeCC1Track",sample.c_str()) == 0)  enum_sample = kP0DWaterNuMuBkgInAntiNuModeCC1Track;
+    else if( strcmp("kP0DWaterNuMuBkgInAntiNuModeCCNTracks",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBkgInAntiNuModeCCNTracks;
+
+    else if( strcmp("kP0DWaterNuMuBarInAntiNuModeCC",sample.c_str()) == 0)        enum_sample = kP0DWaterNuMuBarInAntiNuModeCC;
+    else if( strcmp("kP0DWaterNuMuBarInAntiNuModeCC1Track",sample.c_str()) == 0)  enum_sample = kP0DWaterNuMuBarInAntiNuModeCC1Track;
+    else if( strcmp("kP0DWaterNuMuBarInAntiNuModeCCNTracks",sample.c_str()) == 0) enum_sample = kP0DWaterNuMuBarInAntiNuModeCCNTracks;
+
+    else if( strcmp("kP0DAirNuMuCC",sample.c_str()) == 0)                         enum_sample = kP0DAirNuMuCC;
+    else if( strcmp("kP0DAirNuMuCC1Track",sample.c_str()) == 0)                   enum_sample = kP0DAirNuMuCC1Track;
+    else if( strcmp("kP0DAirNuMuCCNTracks",sample.c_str()) == 0)                  enum_sample = kP0DAirNuMuCCNTracks;
+
+    else if( strcmp("kP0DAirNuMuBarBkgCC",sample.c_str()) == 0)                   enum_sample = kP0DAirNuMuBarBkgCC;
+
+    else if( strcmp("kP0DAirNuMuBkgInAntiNuModeCC",sample.c_str()) == 0)          enum_sample = kP0DAirNuMuBkgInAntiNuModeCC;
+    else if( strcmp("kP0DAirNuMuBkgInAntiNuModeCC1Track",sample.c_str()) == 0)    enum_sample = kP0DAirNuMuBkgInAntiNuModeCC1Track;
+    else if( strcmp("kP0DAirNuMuBkgInAntiNuModeCCNTracks",sample.c_str()) == 0)   enum_sample = kP0DAirNuMuBkgInAntiNuModeCCNTracks;
+
+    else if( strcmp("kP0DAirNuMuBarInAntiNuModeCC",sample.c_str()) == 0)          enum_sample = kP0DAirNuMuBarInAntiNuModeCC;
+    else if( strcmp("kP0DAirNuMuBarInAntiNuModeCC1Track",sample.c_str()) == 0)    enum_sample = kP0DAirNuMuBarInAntiNuModeCC1Track;
+    else if( strcmp("kP0DAirNuMuBarInAntiNuModeCCNTracks",sample.c_str()) == 0)   enum_sample = kP0DAirNuMuBarInAntiNuModeCCNTracks;
 
     else enum_sample = kUnassigned;
     return enum_sample;

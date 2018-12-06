@@ -124,17 +124,33 @@ namespace SampleId {
     // P0D, water mode irrelevant
     kP0DNuMuCC,
 
-    // P0D, water in
     kP0DWaterNuMuCC,
-    kP0DWaterNuMuBarBkgCC,
-    kP0DWaterNuMuBarInAntiNuModeCC,
-    kP0DWaterNuMuBkgInAntiNuModeCC,
+    kP0DWaterNuMuCC1Track,
+    kP0DWaterNuMuCCNTracks,
 
-    // P0D, water-out
+    kP0DWaterNuMuBarBkgCC, //DO NOT USE
+
+    kP0DWaterNuMuBarInAntiNuModeCC,
+    kP0DWaterNuMuBarInAntiNuModeCC1Track,
+    kP0DWaterNuMuBarInAntiNuModeCCNTracks,
+
+    kP0DWaterNuMuBkgInAntiNuModeCC,
+    kP0DWaterNuMuBkgInAntiNuModeCC1Track,
+    kP0DWaterNuMuBkgInAntiNuModeCCNTracks,
+
     kP0DAirNuMuCC,
-    kP0DAirNuMuBarBkgCC,
+    kP0DAirNuMuCC1Track,
+    kP0DAirNuMuCCNTracks,
+
+    kP0DAirNuMuBarBkgCC, //DO NOT USE
+
     kP0DAirNuMuBarInAntiNuModeCC,
+    kP0DAirNuMuBarInAntiNuModeCC1Track,
+    kP0DAirNuMuBarInAntiNuModeCCNTracks,
+
     kP0DAirNuMuBkgInAntiNuModeCC,
+    kP0DAirNuMuBkgInAntiNuModeCC1Track,
+    kP0DAirNuMuBkgInAntiNuModeCCNTracks,
 
     kNSamples
   };
