@@ -57,7 +57,7 @@ int main(int argc, char** argv){
     bool DoOnlyNue    = (bool)ND::params().GetParameterI("BANFF.DoOnlyNueSelections");
     bool DoMultiPiRHC = (bool)ND::params().GetParameterI("BANFF.DoMultiPiRHC");
     bool Do4PiFHC     = (bool)ND::params().GetParameterI("BANFF.Do4PiFHC");
-    bool DoOnlyP0DFHCSelections = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DFHCSelections");
+    bool DoOnlyP0DSelections = (bool)ND::params().GetParameterI("BANFF.DoOnlyP0DSelections");
 
     //Define whether to throw MC statistical errors and/or statistical errors
     bool throwMCStat  = ND::params().GetParameterI("BANFF.RunFit.ThrowMCStat");
@@ -73,7 +73,7 @@ int main(int argc, char** argv){
     int nSample = 6;
 
     //FHC NuMu selections
-    if(!Do4PiFHC && !DoOnlyNue && !DoOnlyP0DFHCSelections) //FHC Multi Pi selections
+    if(!Do4PiFHC && !DoOnlyNue && !DoOnlyP0DSelections) //FHC Multi Pi selections
     {
         std::cout << "---------------------------------" << std::endl;
         std::cout << "Applying FHC CCMultiPi selections" << std::endl;
@@ -106,7 +106,7 @@ int main(int argc, char** argv){
                                                                       observables, throwMCStat, throwStat);
     }
     //FHC 4pi selections
-    else if(!DoOnlyNue && !DoOnlyP0DFHCSelections)
+    else if(!DoOnlyNue && !DoOnlyP0DSelections)
     {
         std::cout << "-----------------------------" << std::endl;
         std::cout << "Applying FHC CC4Pi selections" << std::endl;
@@ -200,7 +200,7 @@ int main(int argc, char** argv){
     }
 
     // RHC NuMu selections
-    if(!DoOnlyNue && !DoOnlyP0DFHCSelections)
+    if(!DoOnlyNue && !DoOnlyP0DSelections)
     {
         if(DoMultiPiRHC)
         { //RHC MultiPi Selections
@@ -297,10 +297,10 @@ int main(int argc, char** argv){
                                                                                            observables, throwMCStat, throwStat);
         }
     }
-    else if(DoOnlyP0DFHCSelections)
+    else if(DoOnlyP0DSelections)
     {
         std::cout << "-------------------------------------" << std::endl;
-        std::cout << "Applying P0D FHC selection" << std::endl;
+        std::cout << "Applying P0D selection" << std::endl;
         std::cout << "-------------------------------------" << std::endl;
         // Some idiot proof check...
         if(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerAntiNumuCCMultiPi")             == 1 ||
@@ -315,10 +315,18 @@ int main(int argc, char** argv){
             std::cout << "Other samples loaded that are NOT P0D only!" << std::endl;
             throw;
         }
-        nSample = 2;
+        nSample = 6;
         SampleMap[SampleId::kP0DWaterNuMuCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC, 2,
                                                                      observables, throwMCStat, throwStat);
         SampleMap[SampleId::kP0DAirNuMuCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuCC  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBkgInAntiNuModeCC, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBkgInAntiNuModeCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBkgInAntiNuModeCC  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBarInAntiNuModeCC, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBarInAntiNuModeCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBarInAntiNuModeCC  , 2,
                                                                      observables, throwMCStat, throwStat);
     }
     else{ // ONLY NUE SELECTIONS
@@ -397,9 +405,9 @@ int main(int argc, char** argv){
     if(Do4PiFHC) { outputName = "CC4PiFHC_" + outputName; }
     if(DoNue)    { outputName = "NuE_" + outputName;      }
 
-    if(DoOnlyP0DFHCSelections)
+    if(DoOnlyP0DSelections)
     {
-        outputName = "P0DFHCOnly_Fit_" + outputName;
+        outputName = "P0DOnly_Fit_" + outputName;
     }
     if(!DoOnlyNue){
         if(DoMultiPiRHC) { outputName = "MultiPiRHC_"+outputName;    }
