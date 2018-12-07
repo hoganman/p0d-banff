@@ -11,7 +11,8 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
 QUEUE = '\"physics.q|short.q\"'
-HOSTS = '\"node40|node44|node27|node29\"'
+# HOSTS = '\"node40|node44|node27|node29\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
 # EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 # HOSTS = '\"'
 # for x in range(20) + range(27, 31) + range(40, 46):
@@ -31,6 +32,7 @@ NEUT_6L = 'mcp6_Spin_L/neut'
 SAND = 'mcp6_Spin_B/sand'
 DATA_6M = 'rdp6_Spin_M'
 DATA_6N = 'rdp6_Spin_N'
+DATA_6P = 'rdp6_Spin_P'
 
 QSUBFLAT = 'python qsubmitter.py'
 
@@ -141,6 +143,8 @@ def submit_ft_mc():
     run6d_ft_mc = make_qsub_flattree_mc(RN.RUN6D, NEUT_6B)
     run6e_ft_mc = make_qsub_flattree_mc(RN.RUN6E, NEUT_6B)
     run7b_ft_mc = make_qsub_flattree_mc(RN.RUN7B, NEUT_6L)
+    run8w_ft_mc = make_qsub_flattree_mc(RN.RUN8W, NEUT_6L)
+    run8a_ft_mc = make_qsub_flattree_mc(RN.RUN8A, NEUT_6L)
     sand_fhc_ft_mc = make_qsub_flattree_mc(RN.SANDFHC, SAND)
     sand_rhc_ft_mc = make_qsub_flattree_mc(RN.SANDRHC, SAND)
 
@@ -156,6 +160,8 @@ def submit_ft_mc():
     run6d_ft_mc.run(not ShellCommand.IN_BKG)
     run6e_ft_mc.run(not ShellCommand.IN_BKG)
     run7b_ft_mc.run(not ShellCommand.IN_BKG)
+    run8w_ft_mc.run(not ShellCommand.IN_BKG)
+    run8a_ft_mc.run(not ShellCommand.IN_BKG)
     sand_fhc_ft_mc.run(not ShellCommand.IN_BKG)
     sand_rhc_ft_mc.run(not ShellCommand.IN_BKG)
 
@@ -174,6 +180,8 @@ def submit_ft_data():
     run6d_ft_data = make_qsub_flattree_data(RN.RUN6DDATA, DATA_6M)
     run6e_ft_data = make_qsub_flattree_data(RN.RUN6EDATA, DATA_6M)
     run7b_ft_data = make_qsub_flattree_data(RN.RUN7BDATA, DATA_6N)
+    run8w_ft_data = make_qsub_flattree_data(RN.RUN8WDATA, DATA_6P)
+    run8a_ft_data = make_qsub_flattree_data(RN.RUN8ADATA, DATA_6P)
 
     run2w_ft_data.run(ShellCommand.IN_BKG)
     run2a_ft_data.run(ShellCommand.IN_BKG)
@@ -187,6 +195,8 @@ def submit_ft_data():
     run6d_ft_data.run(ShellCommand.IN_BKG)
     run6e_ft_data.run(ShellCommand.IN_BKG)
     run7b_ft_data.run(ShellCommand.IN_BKG)
+    run8w_ft_data.run(ShellCommand.IN_BKG)
+    run8a_ft_data.run(ShellCommand.IN_BKG)
 
 
 if __name__ == "__main__":
