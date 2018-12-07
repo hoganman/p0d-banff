@@ -13,6 +13,7 @@ import datetime
 import optparse
 import requests
 import time
+import random
 import signal
 import sys
 
@@ -164,7 +165,10 @@ and last recorded usage')
     if options.quit:
         return 0
     while load >= load_max:
-        sleeptime = options.sleep * load
+        rand = random
+        seed = int(time.time()*1e6)
+        rand.seed(seed)
+        sleeptime = options.sleep * load * rand.uniform(1.1, 1.2)
         print 'The load is too high, waiting for', sleeptime, 'seconds'
         # if the load is high, high sleep time, also inserts randomness
         time.sleep(sleeptime)
