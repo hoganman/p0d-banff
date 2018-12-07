@@ -61,7 +61,6 @@
 #include "numuCCMultiPiSelection.hxx"
 #include "numuCC4piMultiPiSelection.hxx"
 
-
 // Numu FGD2
 #include "numuCCFGD2Selection.hxx"
 #include "numuCC4piFGD2Selection.hxx"
@@ -108,21 +107,33 @@
 
 // numu CC Inc P0D -> TPC1, P0D water-in
 #include "p0dWaterNumuCCSelection.hxx"
+#include "p0dWaterNumuCCMultiTrackSelection.hxx"
+
 // numubar bkg CC Inc P0D -> TPC1, P0D water-in
 #include "p0dWaterNumubarBkgCCSelection.hxx"
+
 // numubar in RHC CC Inc P0D -> TPC1, P0D water-in
 #include "p0dWaterNumubarInAntiNuModeCCSelection.hxx"
+#include "p0dWaterNumubarInAntiNuModeCCMultiTrackSelection.hxx"
+
 //numu bkg in RHC CC Inc  P0D -> TPC1, P0D water-in
 #include "p0dWaterNumuBkgInAntiNuModeCCSelection.hxx"
+#include "p0dWaterNumuBkgInAntiNuModeCCMultiTrackSelection.hxx"
 
 // numu CC Inc P0D -> TPC1, P0D water-out
 #include "p0dAirNumuCCSelection.hxx"
+#include "p0dAirNumuCCMultiTrackSelection.hxx"
+
 // numubar bkg CC Inc P0D -> TPC1, P0D water-out
 #include "p0dAirNumubarBkgCCSelection.hxx"
+
 // numubar in RHC CC Inc P0D -> TPC1, P0D water-out
 #include "p0dAirNumubarInAntiNuModeCCSelection.hxx"
+#include "p0dAirNumubarInAntiNuModeCCMultiTrackSelection.hxx"
+
 //numu bkg in RHC CC Inc  P0D -> TPC1, P0D water-out
 #include "p0dAirNumuBkgInAntiNuModeCCSelection.hxx"
+#include "p0dAirNumuBkgInAntiNuModeCCMultiTrackSelection.hxx"
 
 
 //******************************************************************
@@ -282,28 +293,62 @@ void AnalysisManager::DefineSelections(){
   sel().AddSelection("kTrackerGammaFGD2",     "GammaBkg selection in FGD2",            new gammaFGD2Selection    ());
 
   // P0D+TPC1 numu CCInc, P0D water-in mode
-  sel().AddSelection("kNuMuCCP0DWater"   ,     "P0D+TPC1 NuMu CC Inclusive, P0D-Water" , new p0dWaterNumuCCSelection());
+  sel().AddSelection("kNuMuCCP0DWater",
+                     "NuMu CCInc, P0D Water",
+                     new p0dWaterNumuCCSelection());
+  sel().AddSelection("kNuMuCCMultiTrackP0DWater",
+                     "NuMu CCMultiTrack, P0D Water",
+                     new p0dWaterNumuCCMultiTrackSelection());
 
   // P0D+TPC1 numubar Bkg CCInc, P0D water-in mode
-  sel().AddSelection("kNuMubarBkgCCP0DWater",     "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D-Water" , new p0dWaterNumubarBkgCCSelection());
+  sel().AddSelection("kNuMubarBkgCCP0DWater",
+                     "NuMubar Bkg CCInc, P0D Water",
+                     new p0dWaterNumubarBkgCCSelection());
 
   // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-in mode
-  sel().AddSelection("kNuMuBkgInAntiNuModeCCP0DWater", "P0D+TPC1 NuMu Bkg in AntiNuMode CC Inclusive, P0D-Water" , new p0dWaterNumuBkgInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMuBkgInAntiNuModeCCP0DWater",
+                     "NuMu Bkg in AntiNu CCInc, P0D Water" ,
+                     new p0dWaterNumuBkgInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMuBkgInAntiNuModeCCMultiTrackP0DWater",
+                     "NuMu Bkg in AntiNu CCMultiTrack, P0D Water" ,
+                     new p0dWaterNumuBkgInAntiNuModeCCMultiTrackSelection());
 
   // P0D+TPC1 numubar in RHC CCInc, P0D water-in mode
-  sel().AddSelection("kNuMubarInAntiNuModeCCP0DWater", "P0D+TPC1 NuMubar in AntiNuMode CC Inclusive, P0D-Water" , new p0dWaterNumubarInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMubarInAntiNuModeCCP0DWater",
+                     "NuMubar in AntiNu CCInc, P0D Water" ,
+                     new p0dWaterNumubarInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMubarInAntiNuModeCCMultiTrackP0DWater",
+                     "NuMubar in AntiNu CCMultiTrack, P0D Water" ,
+                     new p0dWaterNumubarInAntiNuModeCCMultiTrackSelection());
 
   // P0D+TPC1 numu CCInc, P0D water-out mode
-  sel().AddSelection("kNuMuCCP0DAir"   ,     "P0D+TPC1 NuMu CC Inclusive, P0D-Air" , new p0dAirNumuCCSelection());
+  sel().AddSelection("kNuMuCCP0DAir",
+                     "NuMu CCInc, P0D Air",
+                     new p0dAirNumuCCSelection());
+  sel().AddSelection("kNuMuCCMultiTrackP0DAir",
+                     "NuMu CCMultiTrack, P0D Air",
+                     new p0dAirNumuCCMultiTrackSelection());
 
   // P0D+TPC1 numubar Bkg CCInc, P0D water-out mode
-  sel().AddSelection("kNuMubarBkgCCP0DAir",     "P0D+TPC1 NuMubar Bkg CC Inclusive, P0D-Air" , new p0dAirNumubarBkgCCSelection());
+  sel().AddSelection("kNuMubarBkgCCP0DAir",
+                     "NuMubar Bkg CCInc, P0D Air",
+                     new p0dAirNumubarBkgCCSelection());
 
   // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-out mode
-  sel().AddSelection("kNuMuBkgInAntiNuModeCCP0DAir", "P0D+TPC1 NuMu Bkg in AntiNuMode CC Inclusive, P0D-Air" , new p0dAirNumuBkgInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMuBkgInAntiNuModeCCP0DAir",
+                     "NuMu Bkg in AntiNu CCInc, P0D Air" ,
+                     new p0dAirNumuBkgInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMuBkgInAntiNuModeCCMultiTrackP0DAir",
+                     "NuMu Bkg in AntiNu CCMultiTrack, P0D Air" ,
+                     new p0dAirNumuBkgInAntiNuModeCCMultiTrackSelection());
 
   // P0D+TPC1 numubar in RHC CCInc, P0D water-out mode
-  sel().AddSelection("kNuMubarInAntiNuModeCCP0DAir", "P0D+TPC1 NuMubar in AntiNuMode CC Inclusive, P0D-Air" , new p0dAirNumubarInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMubarInAntiNuModeCCP0DAir",
+                     "NuMubar in AntiNu CCInc, P0D Air" ,
+                     new p0dAirNumubarInAntiNuModeCCSelection());
+  sel().AddSelection("kNuMubarInAntiNuModeCCMultiTrackP0DAir",
+                     "NuMubar in AntiNu CCMultiTrack, P0D Air" ,
+                     new p0dAirNumubarInAntiNuModeCCMultiTrackSelection());
 
 
   // Set which run range the selections are valid for using the parameters file
@@ -352,29 +397,48 @@ void AnalysisManager::DefineSelections(){
   sel().SetValidRunPeriods("kTrackerAntiNuECCFGD2", ND::params().GetParameterS("psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods"));
   sel().SetValidRunPeriods("kTrackerGammaFGD2",     ND::params().GetParameterS("psycheSteering.Selections.TrackerGamma.ValidRunPeriods"));
 
+
   // P0D+TPC1 numu CCInc, P0D water-in mode
-  sel().SetValidRunPeriods("kNuMuCCP0DWater"   , ND::params().GetParameterS("psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuCCP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuCCMultiTrackP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuCCMultiTrackP0DWater.ValidRunPeriods"));
 
   // P0D+TPC1 numubar Bkg CCInc, P0D water-in mode
   sel().SetValidRunPeriods("kNuMubarBkgCCP0DWater", ND::params().GetParameterS("psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods"));
 
   // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-in mode
-  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCP0DWater", ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCMultiTrackP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DWater.ValidRunPeriods"));
 
   // P0D+TPC1 numubar in RHC CCInc, P0D water-in mode
-  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCP0DWater", ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCP0DWater.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCMultiTrackP0DWater",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DWater.ValidRunPeriods"));
 
   // P0D+TPC1 numu CCInc, P0D water-out mode
-  sel().SetValidRunPeriods("kNuMuCCP0DAir"   , ND::params().GetParameterS("psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuCCP0DAir"   ,
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuCCMultiTrackP0DAir"   ,
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuCCMultiTrackP0DAir.ValidRunPeriods"));
 
   // P0D+TPC1 numubar Bkg CCInc, P0D water-out mode
   sel().SetValidRunPeriods("kNuMubarBkgCCP0DAir", ND::params().GetParameterS("psycheSteering.Selections.NuMubarBkgCCP0DAir.ValidRunPeriods"));
 
   // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-out mode
-  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCP0DAir", ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCP0DAir",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMuBkgInAntiNuModeCCMultiTrackP0DAir",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods"));
 
   // P0D+TPC1 numubar in RHC CCInc, P0D water-out mode
-  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCP0DAir", ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCP0DAir",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods"));
+  sel().SetValidRunPeriods("kNuMubarInAntiNuModeCCMultiTrackP0DAir",
+          ND::params().GetParameterS("psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods"));
 
 
   // Numu FGD1
@@ -466,37 +530,49 @@ void AnalysisManager::DefineSelections(){
     sel().DisableSelection("kTrackerGammaFGD2");
 
 
-  // P0D+TPC1 numu CCInc, P0D water-in mode
+  // Numu CCInc, P0D water-in mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DWater"))
     sel().DisableSelection("kNuMuCCP0DWater");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCMultiTrackP0DWater"))
+    sel().DisableSelection("kNuMuCCMultiTrackP0DWater");
 
-  // P0D+TPC1 numubar Bkg CCInc, P0D water-in mode
+  // Numubar Bkg CCInc, P0D water-in mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarBkgCCP0DWater"))
     sel().DisableSelection("kNuMubarBkgCCP0DWater");
 
-  // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-in mode
+  // Numu Bkg in RHC CCInc, P0D water-in mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater"))
     sel().DisableSelection("kNuMuBkgInAntiNuModeCCP0DWater");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DWater"))
+    sel().DisableSelection("kNuMuBkgInAntiNuModeCCMultiTrackP0DWater");
 
-  // P0D+TPC1 numubar in RHC CCInc, P0D water-in mode
+  // Numubar CC in RHC, P0D water-in mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater"))
     sel().DisableSelection("kNuMubarInAntiNuModeCCP0DWater");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DWater"))
+    sel().DisableSelection("kNuMubarInAntiNuModeCCMultiTrackP0DWater");
 
-  // P0D+TPC1 numu CCInc, P0D water-out mode
+  // Numu CC, P0D water-out mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DAir"))
     sel().DisableSelection("kNuMuCCP0DAir");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCMultiTrackP0DAir"))
+    sel().DisableSelection("kNuMuCCMultiTrackP0DAir");
 
-  // P0D+TPC1 numubar Bkg CCInc, P0D water-out mode
+  // Numubar CC Bkg, P0D water-out mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarBkgCCP0DAir"))
     sel().DisableSelection("kNuMubarBkgCCP0DAir");
 
-  // P0D+TPC1 numu Bkg in RHC CCInc, P0D water-out mode
+  // Numu CC Bkg in RHC, P0D water-out mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir"))
     sel().DisableSelection("kNuMuBkgInAntiNuModeCCP0DAir");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DAir"))
+    sel().DisableSelection("kNuMuBkgInAntiNuModeCCMultiTrackP0DAir");
 
-  // P0D+TPC1 numubar in RHC CCInc, P0D water-out mode
+  // Numubar CC in RHC, P0D water-out mode
   if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir"))
     sel().DisableSelection("kNuMubarInAntiNuModeCCP0DAir");
+  if(!ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DAir"))
+    sel().DisableSelection("kNuMubarInAntiNuModeCCMultiTrackP0DAir");
 
 }
 
