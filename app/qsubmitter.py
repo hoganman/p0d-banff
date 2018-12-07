@@ -33,7 +33,7 @@ inOptions = {
 #       h_vmem    The same as h_data (if both are set the minimum is used).
 
 SECONDS_BTN_RUN = 10
-SECONDS_BTN_QSUB = 0
+SECONDS_BTN_QSUB = 16
 csuhpc = -1
 queueTag = '$'
 HIGHLANDIOROOT = os.getenv('HIGHLANDIOROOT')
