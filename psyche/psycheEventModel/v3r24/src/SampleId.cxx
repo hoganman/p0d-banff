@@ -354,14 +354,26 @@ SampleId::SampleEnum SampleId::ConvertSample(const std::string& sample)
 bool SampleId::IsP0DSelection(const SampleEnum& sample)
 //*********************************************************
 {
-    if(sample == kP0DAirNuMuCC || sample == kP0DWaterNuMuCC)
-        return true;
-    else if(sample == kP0DAirNuMuBarBkgCC || sample == kP0DWaterNuMuBarBkgCC)
-        return true;
-    else if(sample == kP0DAirNuMuBarInAntiNuModeCC || sample == kP0DWaterNuMuBarInAntiNuModeCC)
-        return true;
-    else if(sample == kP0DAirNuMuBkgInAntiNuModeCC || sample == kP0DWaterNuMuBkgInAntiNuModeCC)
-        return true;
-    else
-        return false;
+    if(sample == kP0DNuMuCC) return true;
+    else if(sample == kP0DWaterNuMuCC) return true;
+    else if(sample == kP0DWaterNuMuCC1Track) return true;
+    else if(sample == kP0DWaterNuMuCCNTracks) return true;
+    else if(sample == kP0DWaterNuMuBarBkgCC) return true; //DO NOT USE
+    else if(sample == kP0DWaterNuMuBarInAntiNuModeCC) return true;
+    else if(sample == kP0DWaterNuMuBarInAntiNuModeCC1Track) return true;
+    else if(sample == kP0DWaterNuMuBarInAntiNuModeCCNTracks) return true;
+    else if(sample == kP0DWaterNuMuBkgInAntiNuModeCC) return true;
+    else if(sample == kP0DWaterNuMuBkgInAntiNuModeCC1Track) return true;
+    else if(sample == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) return true;
+    else if(sample == kP0DAirNuMuCC) return true;
+    else if(sample == kP0DAirNuMuCC1Track) return true;
+    else if(sample == kP0DAirNuMuCCNTracks) return true;
+    else if(sample == kP0DAirNuMuBarBkgCC) return true; //DO NOT USE
+    else if(sample == kP0DAirNuMuBarInAntiNuModeCC) return true;
+    else if(sample == kP0DAirNuMuBarInAntiNuModeCC1Track) return true;
+    else if(sample == kP0DAirNuMuBarInAntiNuModeCCNTracks) return true;
+    else if(sample == kP0DAirNuMuBkgInAntiNuModeCC) return true;
+    else if(sample == kP0DAirNuMuBkgInAntiNuModeCC1Track) return true;
+    else if(sample == kP0DAirNuMuBkgInAntiNuModeCCNTracks) return true;
+    else return false;
 }
