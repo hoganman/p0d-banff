@@ -37,7 +37,7 @@ namespace Reset
 
 int main(int argc, char **argv){
 
-    const std::string programName = argv[0];
+    const std::string programName(argv[0]);
 
     const Int_t nWeights = 23;
     const Int_t debug = 0;
@@ -55,10 +55,10 @@ int main(int argc, char **argv){
     std::string outputFileName = Reset::kString;
     std::string parameterFileOveride = Reset::kString;
     std::string correlationFile = Reset::kString;
-    Long64_t nmax = 100000000;
+    Long64_t nmax = TChain::kBigNumber;
     Int_t nToys = 0;
     Bool_t preload = kFALSE;
-    Bool_t isData = false;
+    Bool_t isData = kFALSE;
     TGeoManager* geoManager = NULL;
 
     for (;;)
@@ -611,8 +611,7 @@ if(debug) std::cout << "passednom = " << passednom << std::endl;
 if(debug) std::cout << "passednom = " << passednom << std::endl;
                 FillTree = true;
                 //AnaVertexB** Vertices = event->Vertices;
-                const Int_t &nParticles = event->nParticles;
-if(debug) std::cout << "There are " << nParticles  << " particles in this event" <<std::endl;
+if(debug) std::cout << "There are " << event->nParticles << " particles in this event" <<std::endl;
                 AnaEventInfoB* eventInfo = static_cast<AnaEventInfoB*>(&event->EventInfo);
                 Run         = eventInfo->Run;
                 SubRun      = eventInfo->SubRun;
@@ -621,10 +620,11 @@ if(debug) std::cout << "There are " << nParticles  << " particles in this event"
                 AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
                 if(!summary)
                     continue;
-if(debug) DEBUG(summary->EventSample)
-                RooVertexIndex = summary->RooVertexIndex[summary->EventSample];
-                npassed[summary->EventSample]++;
-                AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
+                SelectionNom = summary->EventSample;
+if(debug) DEBUG(SelectionNom)
+                RooVertexIndex = summary->RooVertexIndex[SelectionNom];
+                npassed[SelectionNom]++;
+                AnaParticleMomB* lepCandPartMomB = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[SelectionNom]);
                 AnaTrueVertexB* trVtx = NULL;
                 AnaTrueParticleB *trueParticle = NULL;
                 //fill MC info
@@ -632,7 +632,7 @@ if(debug) DEBUG(summary->EventSample)
                 {
                     FluxWeightNom   = fluxWeightSyst.Correction;
                     WeightNom       = totalweight.Correction;
-                    trueParticle = lepCand->GetTrueParticle();
+                    trueParticle = lepCandPartMomB->GetTrueParticle();
                     if(trueParticle)
                     {
 if(debug) DEBUG(trueParticle->PDG)
@@ -647,7 +647,7 @@ if(debug) DEBUG(trueParticle->PDG)
                         tLeptonCosTheta = trueParticle->Direction[2];
                         tLeptonPhi = std::atan2(trueParticle->Direction[1], trueParticle->Direction[0]);
                     }
-                    trVtx = summary->TrueVertex[summary->EventSample];
+                    trVtx = summary->TrueVertex[SelectionNom];
                     if(trVtx)
                     {
                         tVtxX = trVtx->Position[0];
@@ -673,26 +673,21 @@ if(debug) DEBUG(trueParticle->PDG)
                             tW2  = M_N * M_N + 2.0 * M_N * tNu - tQ2;
                         }
 
-                        if(geoManager && (SampleId::IsP0DSelection(summary->EventSample)))
-                        {
-                            const TLorentzVector &start = trVtx->Position;
-                            const Int_t tmp = IsWaterP0Dule(geoManager,start);
-                            tOnWaterTarget = (tmp % 10);
-                        }
+                        if(geoManager && (SampleId::IsP0DSelection(static_cast<SampleId::SampleEnum>(SelectionNom))))
+                            tOnWaterTarget = IsPositionInWaterVolume(geoManager, trVtx->Position);
                     }
                 }
 
-                Float_t* recoVtx = summary->VertexPosition[summary->EventSample];
-                Float_t* lepStart = lepCand->PositionStart;
+                Float_t* recoVtx = summary->VertexPosition[SelectionNom];
+                Float_t* lepStart = lepCandPartMomB->PositionStart;
                 vtxX = recoVtx[0];
                 vtxY = recoVtx[1];
                 vtxZ = recoVtx[2];
-                SelectionNom    = summary->EventSample;
                 LeptonPositionX = lepStart[0];
                 LeptonPositionY = lepStart[1];
                 LeptonPositionZ = lepStart[2];
-                LeptonMomNom    = lepCand->Momentum;
-                LeptonCosNom    = lepCand->DirectionStart[2];
+                LeptonMomNom    = lepCandPartMomB->Momentum;
+                LeptonCosNom    = lepCandPartMomB->DirectionStart[2];
 
                 // Get all tracks
                 EventBoxB* EventBox = event->EventBoxes[EventBoxId::kEventBoxTracker];
@@ -700,21 +695,21 @@ if(debug) DEBUG(trueParticle->PDG)
 
                 inFGD1 = 0;
                 inFGD2 = 0;
-                if(static_cast<AnaTrackB*>(lepCand)->FGDSegments)
+                AnaTrackB* lepCandTrackB = static_cast<AnaTrackB*>(lepCandTrackB);
+                if(lepCandTrackB->FGDSegments)
                 {
-                    if(static_cast<AnaTrackB*>(lepCand)->FGDSegments[0])
+                    if(lepCandTrackB->FGDSegments[0])
                         inFGD1 = 1;
-                    if(static_cast<AnaTrackB*>(lepCand)->FGDSegments[1])
+                    if(lepCandTrackB->FGDSegments[1])
                         inFGD2 = 1;
                 }
-                if(static_cast<AnaTrackB*>(lepCand)->TPCSegments)
+                if(lepCandTrackB->TPCSegments)
                 {
-                    AnaTPCParticleB* tpc1_Track = static_cast<AnaTrackB*>(lepCand)->TPCSegments[0];
+                    AnaTPCParticleB* tpc1_Track = lepCandTrackB->TPCSegments[0];
                     LeptonTPC1MomNom = tpc1_Track->Momentum;
                 }
 
-
-            }
+            } //end of passed nominal selection
 
             /// 2. ====================================================================
             /// Loop over toy experiments
@@ -779,7 +774,7 @@ if(debug) DEBUG(trueParticle->PDG)
                 {
                     FillTree = true;
                     AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event->Summary);
-                    if(summary && summary->EventSample)
+                    if(summary && summary->EventSample != SampleId::kUnassigned)
                     {
                         LeptonMomToy [iToy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->Momentum;
                         LeptonCosToy [iToy] = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample])->DirectionStart[2];
@@ -879,7 +874,7 @@ if(debug) DEBUG(trueParticle->PDG)
     //  ProfilerStop();
     for (UInt_t i = 0; i < SampleId::kNSamples; ++i)
     {
-        std::cout << "# events passing selection, Selection "<< SampleId::ConvertSample((SampleId::SampleEnum)i) << ": " << npassed[i] << std::endl;
+        printf("# events passing selection, Selection %s: %d\n",SampleId::ConvertSample(static_cast<SampleId::SampleEnum>(i)).c_str(), npassed[i]);
     }
 }
 
