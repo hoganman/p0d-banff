@@ -122,9 +122,9 @@ List valid runs using a comma separated string
  < psycheSteering.Selections.TrackerGamma.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
 
  [MH] Numu mode, P0D Water
- < psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods           = 0,1,5,7,16,17 >
- < psycheSteering.Selections.NuMuCCMultiTrackP0DWater.ValidRunPeriods = 0,1,5,7,16,17 >
- < psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods     = 0,1,5,7,16,17 >
+ < psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods           = 0,1,4,5,7,16,17 >
+ < psycheSteering.Selections.NuMuCCMultiTrackP0DWater.ValidRunPeriods = 0,1,4,5,7,16,17 >
+ < psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods     = 0,1,4,5,7,16,17 >
 
  [MH] Numu mode, P0D Air
  < psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods           = 2,3,4,6,13,14,18 >
@@ -138,10 +138,10 @@ List valid runs using a comma separated string
  < psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DWater.ValidRunPeriods = 8,15 >
 
  [MH] Anti-Numu mode, P0D Air
- < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods           = 9,10,11,12 >
- < psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 9,10,11,12 >
- < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods           = 9,10,11,12 >
- < psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 9,10,11,12 >
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods           = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods           = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 8,9,10,11,12 >
 
 
 By default EventSummary class is created and filled when the selection is passed. But this might be necessary also for events not passing the selection
