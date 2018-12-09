@@ -179,16 +179,16 @@ bool FillSummaryAction_p0dAirNumubarInAntiNuModeCCMultiTrack::Apply(AnaEventC& e
 
     if(!box.MainTrack) return true;
 
-    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ] = box.HMNtrack;
-    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] = box.HMNtrack;
+    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ] = box.HMPtrack;
+    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] = box.HMPtrack;
 
     for(int i = 0; i < 4; ++i){
-        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ][i] = box.HMNtrack->PositionStart[i];
-        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks][i] = box.HMNtrack->PositionStart[i];
+        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ][i] = box.HMPtrack->PositionStart[i];
+        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks][i] = box.HMPtrack->PositionStart[i];
     }
-    if(box.HMNtrack->GetTrueParticle()){
-        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ] = box.HMNtrack->GetTrueParticle()->TrueVertex;
-        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] = box.HMNtrack->GetTrueParticle()->TrueVertex;
+    if(box.HMPtrack->GetTrueParticle()){
+        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ] = box.HMPtrack->GetTrueParticle()->TrueVertex;
+        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] = box.HMPtrack->GetTrueParticle()->TrueVertex;
     }
     return true;
 }

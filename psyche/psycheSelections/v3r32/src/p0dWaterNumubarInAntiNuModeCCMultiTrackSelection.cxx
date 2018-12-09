@@ -179,16 +179,16 @@ bool FillSummaryAction_p0dWaterNumubarInAntiNuModeCCMultiTrack::Apply(AnaEventC&
 
     if(!box.MainTrack) return true;
 
-    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ] = box.HMNtrack;
-    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = box.HMNtrack;
+    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ] = box.HMPtrack;
+    static_cast<AnaEventSummaryB*>(event.Summary)->LeptonCandidate[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = box.HMPtrack;
 
     for(int i = 0; i < 4; ++i){
-        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ][i] = box.HMNtrack->PositionStart[i];
-        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks][i] = box.HMNtrack->PositionStart[i];
+        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ][i] = box.HMPtrack->PositionStart[i];
+        static_cast<AnaEventSummaryB*>(event.Summary)->VertexPosition[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks][i] = box.HMPtrack->PositionStart[i];
     }
-    if(box.HMNtrack->GetTrueParticle()){
-        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ] = box.HMNtrack->GetTrueParticle()->TrueVertex;
-        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = box.HMNtrack->GetTrueParticle()->TrueVertex;
+    if(box.HMPtrack->GetTrueParticle()){
+        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ] = box.HMPtrack->GetTrueParticle()->TrueVertex;
+        static_cast<AnaEventSummaryB*>(event.Summary)->TrueVertex[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = box.HMPtrack->GetTrueParticle()->TrueVertex;
     }
     return true;
 }
