@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<main>
+    <RunSyst_New_Options>
+        <PLOTDATA>
+            <comment> "Show data points" </comment>
+            <type attr="bool"/>
+            <value attr="0"/>
+        </PLOTDATA>
+        <DRAW_ENU>
+            <value attr="0"/>
+        </DRAW_ENU>
+        <DRAW_PMU>
+            <value attr="0"/>
+        </DRAW_PMU>
+        <DRAW_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_COSTHETAMU>
+
+                <DRAW_THETAMU>
+                    <value attr="0"/>
+                </DRAW_THETAMU>
+
+                        <DRAW_PMU_TN328>
+                            <value attr="0"/>
+                        </DRAW_PMU_TN328>
+
+        DRAW_COSTHETAMU_TN328 = 0
+        DRAW_P0DX = 0
+        DRAW_P0DY = 0
+        DRAW_P0DZ = 0
+
+# Display the ratio of Data/MC below histogram
+# only available for 1D
+SHOW_RATIO_PLOT_BELOW = 0
+
+# toggle these to draw particular variables
+# 2D histograms
+DRAW_P0DFITFHC_PMU_COSTHETAMU = 1
+DRAW_P0DCOVFHC_PMU_COSTHETAMU = 1
+
+# option only for 2D
+SHOW_LOGZ = 1
+
+# Apply event + flux weight
+APPLY_FLUX_WEIGHTS = 1
+APPLY_EVENT_WEIGHTS = 1
+
+PLOTLEPTONCANDIDATETRUEPDG = 0
+PLOTNEUTNUREACTIONCODES = 0
+PLOTNEUTANTINUREACTIONCODES = 0
+PLOTTOPOLOGY = 0
+
+# use the TN-208 runs
+TN208_ANALYSIS = 0
+
+# cut the measured momentum
+USE_MOMENTUM_CUT = 0
+MOMENTUM_CUT_VALUE = '5000.'
+
+# if the user wants to apply an addition set of cuts
+ADDITIONAL_CUTS = None
+
+# *********************** #
+# Which Selections to Run #
+# *********************** #
+# Water numu CCInc or CC-1Track or CC-NTracks
+RUNP0DWATERNUMUCCSELECTION = 0
+RUNP0DWATERNUMUCC1TRACKSELECTION = 0
+RUNP0DWATERNUMUCCNTRACKSSELECTION = 0
+
+# Water numubar in RHC  CCInc or CC-1Track or CC-NTracks
+RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
+RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION = 0
+RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION = 0
+
+# Water numu BKG in RHC  CCInc or CC-1Track or CC-NTracks
+RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
+RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION = 0
+RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION = 0
+
+# Air numu CCInc or CC-1Track or CC-NTracks
+RUNP0DAIRNUMUCCSELECTION = 0
+RUNP0DAIRNUMUCC1TRACKSELECTION = 0
+RUNP0DAIRNUMUCCNTRACKSSELECTION = 0
+
+# Air numubar in RHC  CCInc or CC-1Track or CC-NTracks
+RUNP0DAIRNUMUBARINANTINUMODECCSELECTION = 0
+RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION = 0
+RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION = 0
+
+# Air numu BKG in RHC  CCInc or CC-1Track or CC-NTracks
+RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION = 0
+RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION = 0
+RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION = 0
+
+# This sets the SampleId throughout the macro
+SELECTIONSAVENAME = str()
+SELECTIONSAVENAMEDICT = dict()
+SELECTIONLABELSDICT = dict()
+
+
+
+    </RunSyst_New_Options>
+</main>
