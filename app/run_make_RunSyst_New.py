@@ -9,9 +9,9 @@ from ShellCommand import ShellCommand
 import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-QUEUE = '\"physics.q|short.q\"'
-HOSTS = '\"node42|node27\"'
-EXCLUDEHOSTS = [6, 7, 10, 19]
+QUEUE = '\"physics.q\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
+# EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
 # for x in range(1, 20) + range(27, 31) + range(40, 46):
 #     if x in EXCLUDEHOSTS:
@@ -31,6 +31,7 @@ NEUT_6B = 'mcp6_Spin_B/neut'
 NEUT_6L = 'mcp6_Spin_L/neut'
 DATA_6M = 'rdp6_Spin_M'
 DATA_6N = 'rdp6_Spin_N'
+DATA_6P = 'rdp6_Spin_P'
 QSUBRUNSYSTNEW = 'python qsubmitter_RunSyst_New.py'
 
 
@@ -93,23 +94,27 @@ def submit_runsyst_new_mc():
     run6d_mc = make_qsub(RN.RUN6D, NEUT_6B, DATATYPES.MC)
     run6e_mc = make_qsub(RN.RUN6E, NEUT_6B, DATATYPES.MC)
     run7b_mc = make_qsub(RN.RUN7B, NEUT_6L, DATATYPES.MC)
+    run8w_mc = make_qsub(RN.RUN8W, NEUT_6L, DATATYPES.MC)
+    run8a_mc = make_qsub(RN.RUN8A, NEUT_6L, DATATYPES.MC)
     sand_fhc_mc = make_qsub(RN.SANDFHC, SAND, DATATYPES.MC)
     sand_rhc_mc = make_qsub(RN.SANDRHC, SAND, DATATYPES.MC)
 
     run2w_mc.run(ShellCommand.IN_BKG)
-    run2a_mc.run(ShellCommand.IN_BKG)
-    run3b_mc.run(ShellCommand.IN_BKG)
-    run3c_mc.run(ShellCommand.IN_BKG)
-    run4w_mc.run(ShellCommand.IN_BKG)
-    run4a_mc.run(ShellCommand.IN_BKG)
-    run5c_mc.run(ShellCommand.IN_BKG)
-    run6b_mc.run(ShellCommand.IN_BKG)
-    run6c_mc.run(ShellCommand.IN_BKG)
-    run6d_mc.run(ShellCommand.IN_BKG)
-    run6e_mc.run(ShellCommand.IN_BKG)
-    run7b_mc.run(ShellCommand.IN_BKG)
-    sand_fhc_mc.run(ShellCommand.IN_BKG)
-    sand_rhc_mc.run(ShellCommand.IN_BKG)
+    run2a_mc.run(not ShellCommand.IN_BKG)
+    run3b_mc.run(not ShellCommand.IN_BKG)
+    run3c_mc.run(not ShellCommand.IN_BKG)
+    run4w_mc.run(not ShellCommand.IN_BKG)
+    run4a_mc.run(not ShellCommand.IN_BKG)
+    run5c_mc.run(not ShellCommand.IN_BKG)
+    run6b_mc.run(not ShellCommand.IN_BKG)
+    run6c_mc.run(not ShellCommand.IN_BKG)
+    run6d_mc.run(not ShellCommand.IN_BKG)
+    run6e_mc.run(not ShellCommand.IN_BKG)
+    run7b_mc.run(not ShellCommand.IN_BKG)
+    run8w_mc.run(not ShellCommand.IN_BKG)
+    run8a_mc.run(not ShellCommand.IN_BKG)
+    sand_fhc_mc.run(not ShellCommand.IN_BKG)
+    sand_rhc_mc.run(not ShellCommand.IN_BKG)
 
 
 def submit_runsyst_new_data():
@@ -127,19 +132,23 @@ def submit_runsyst_new_data():
     run6d_data = make_qsub(RN.RUN6DDATA, DATA_6M, DATATYPES.DATA)
     run6e_data = make_qsub(RN.RUN6EDATA, DATA_6M, DATATYPES.DATA)
     run7b_data = make_qsub(RN.RUN7BDATA, DATA_6N, DATATYPES.DATA)
+    run8w_data = make_qsub(RN.RUN8WDATA, DATA_6P, DATATYPES.DATA)
+    run8a_data = make_qsub(RN.RUN8ADATA, DATA_6P, DATATYPES.DATA)
 
     run2w_data.run(ShellCommand.IN_BKG)
-    run2a_data.run(ShellCommand.IN_BKG)
-    run3b_data.run(ShellCommand.IN_BKG)
-    run3c_data.run(ShellCommand.IN_BKG)
-    run4w_data.run(ShellCommand.IN_BKG)
-    run4a_data.run(ShellCommand.IN_BKG)
-    run5c_data.run(ShellCommand.IN_BKG)
-    run6b_data.run(ShellCommand.IN_BKG)
-    run6c_data.run(ShellCommand.IN_BKG)
-    run6d_data.run(ShellCommand.IN_BKG)
-    run6e_data.run(ShellCommand.IN_BKG)
-    run7b_data.run(ShellCommand.IN_BKG)
+    run2a_data.run(not ShellCommand.IN_BKG)
+    run3b_data.run(not ShellCommand.IN_BKG)
+    run3c_data.run(not ShellCommand.IN_BKG)
+    run4w_data.run(not ShellCommand.IN_BKG)
+    run4a_data.run(not ShellCommand.IN_BKG)
+    run5c_data.run(not ShellCommand.IN_BKG)
+    run6b_data.run(not ShellCommand.IN_BKG)
+    run6c_data.run(not ShellCommand.IN_BKG)
+    run6d_data.run(not ShellCommand.IN_BKG)
+    run6e_data.run(not ShellCommand.IN_BKG)
+    run7b_data.run(not ShellCommand.IN_BKG)
+    run8w_data.run(not ShellCommand.IN_BKG)
+    run8a_data.run(not ShellCommand.IN_BKG)
 
 
 class DATATYPES(object):
