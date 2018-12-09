@@ -168,7 +168,7 @@ and last recorded usage')
         rand = random
         seed = int(time.time()*1e6)
         rand.seed(seed)
-        sleeptime = options.sleep * load * rand.uniform(1.1, 1.2)
+        sleeptime = options.sleep * load * rand.uniform(1.5, 2.0)
         print 'The load is too high, waiting for', sleeptime, 'seconds'
         # if the load is high, high sleep time, also inserts randomness
         time.sleep(sleeptime)
