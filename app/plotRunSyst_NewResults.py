@@ -14,95 +14,28 @@ import sys
 
 P0DBANFFROOT = getenv('P0DBANFFROOT')
 
-# Show data points in the plot
-PLOTDATA = 0
-
-# toggle these to draw particular variables
-# 1D histograms
-DRAW_ENU = 0
-DRAW_PMU = 0
-DRAW_COSTHETAMU = 0
-DRAW_THETAMU = 0
-DRAW_PMU_TN328 = 0
-DRAW_COSTHETAMU_TN328 = 0
-DRAW_P0DX = 0
-DRAW_P0DY = 0
-DRAW_P0DZ = 0
-
-# Display the ratio of Data/MC below histogram
-# only available for 1D
-SHOW_RATIO_PLOT_BELOW = 0
-
-# toggle these to draw particular variables
-# 2D histograms
-DRAW_P0DFITFHC_PMU_COSTHETAMU = 1
-DRAW_P0DCOVFHC_PMU_COSTHETAMU = 1
-
-# option only for 2D
-SHOW_LOGZ = 1
-
-# Apply event + flux weight
-APPLY_FLUX_WEIGHTS = 1
-APPLY_EVENT_WEIGHTS = 1
-
-PLOTLEPTONCANDIDATETRUEPDG = 0
-PLOTNEUTNUREACTIONCODES = 0
-PLOTNEUTANTINUREACTIONCODES = 0
-PLOTTOPOLOGY = 0
-
-# use the TN-208 runs
-TN208_ANALYSIS = 0
-
-# cut the measured momentum
-USE_MOMENTUM_CUT = 0
-MOMENTUM_CUT_VALUE = '5000.'
-
-# if the user wants to apply an addition set of cuts
-ADDITIONAL_CUTS = None
-
-# *********************** #
-# Which Selections to Run #
-# *********************** #
-# Water numu CCInc or CC-1Track or CC-NTracks
-RUNP0DWATERNUMUCCSELECTION = 0
-RUNP0DWATERNUMUCC1TRACKSELECTION = 0
-RUNP0DWATERNUMUCCNTRACKSSELECTION = 0
-
-# Water numubar in RHC  CCInc or CC-1Track or CC-NTracks
-RUNP0DWATERNUMUBARINANTINUMODECCSELECTION = 0
-RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION = 0
-RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION = 0
-
-# Water numu BKG in RHC  CCInc or CC-1Track or CC-NTracks
-RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION = 0
-RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION = 0
-RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION = 0
-
-# Air numu CCInc or CC-1Track or CC-NTracks
-RUNP0DAIRNUMUCCSELECTION = 0
-RUNP0DAIRNUMUCC1TRACKSELECTION = 0
-RUNP0DAIRNUMUCCNTRACKSSELECTION = 0
-
-# Air numubar in RHC  CCInc or CC-1Track or CC-NTracks
-RUNP0DAIRNUMUBARINANTINUMODECCSELECTION = 0
-RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION = 0
-RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION = 0
-
-# Air numu BKG in RHC  CCInc or CC-1Track or CC-NTracks
-RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION = 0
-RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION = 0
-RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION = 0
-
 # This sets the SampleId throughout the macro
 SELECTIONSAVENAME = str()
 SELECTIONSAVENAMEDICT = dict()
 SELECTIONLABELSDICT = dict()
+
+ADDITIONAL_CUTS = None
+MOMENTUM_CUT_VALUE = '0'
+USE_MOMENTUM_CUT = False
+TN208_ANALYSIS = False
+PLOTLEPTONCANDIDATETRUEPDG = False
+PLOTNEUTNUREACTIONCODES = False
+PLOTNEUTANTINUREACTIONCODES = False
+PLOTTOPOLOGY = False
+SHOW_LOGZ = False
+PLOTDATA = False
 
 # P0DBANFFInterface class to make plots pretty
 STACK_COLORS = None
 BLACK = int(1)
 
 # Classes from P0DBANFF library
+CONFIGURATION = None
 ENGINE = None
 INTERFACE = None
 SAMPLEIDS = None
@@ -115,11 +48,14 @@ CUTS = None
 
 def main(argv):
     """main"""
-    helpstatement = "plotRunSyst_NewResults.py (no args). Please read the code to understand how to plot"
-    if len(argv) > 0:
+    helpstatement = "plotRunSyst_NewResults.py config_file.xml"
+    if len(argv) > 1:
         print helpstatement
     LoadP0DBANFF()
     LoadSampleIDs()
+    configFile = argv[0]
+    XML.SetFile(configFile)
+    LoadGlobalConfigurations(XML)
 
     binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
     cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
@@ -147,25 +83,8 @@ def main(argv):
 
     for current_sampleID in SELECTIONLABELSDICT.keys():
         global SELECTIONSAVENAME
-        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuCC() and \
-                not RUNP0DWATERNUMUCCSELECTION:
+        if not RunWithCurrentSample(XML, current_sampleID):
             continue
-        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() \
-                and not RUNP0DWATERNUMUBARINANTINUMODECCSELECTION:
-            continue
-        if current_sampleID == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC() \
-                and not RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION:
-            continue
-        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuCC() and \
-                not RUNP0DAIRNUMUCCSELECTION:
-            continue
-        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC() and \
-                not RUNP0DAIRNUMUBARINANTINUMODECCSELECTION:
-            continue
-        if current_sampleID == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC() and \
-                not RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION:
-            continue
-
         INTERFACE.Announce(INTERFACE, '-----------------------------------')
         INTERFACE.Announce(INTERFACE, '--- You can ignore these errors ---')
         INTERFACE.Announce(INTERFACE, '-----------------------------------')
@@ -236,7 +155,7 @@ def main(argv):
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
-            if DRAW_P0DFITFHC_PMU_COSTHETAMU:
+            if CONFIGURATION.GetAttribBool('DRAW_P0DFITFHC_PMU_COSTHETAMU'):
                 hist2D_pmu_costhetamu = ROOTH2()
                 hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
                 hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
@@ -246,7 +165,7 @@ def main(argv):
                 make_mc_only_H2D(smpls, all_selection_sets[0], P0DFitFHC_pMu_cosThetaMu_AnaBins2D,
                                  hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_MC_only')
                 del hist2D_pmu_costhetamu
-            if DRAW_P0DCOVFHC_PMU_COSTHETAMU:
+            if CONFIGURATION.GetAttribBool('DRAW_P0DCOVFHC_PMU_COSTHETAMU'):
                 hist2D_pmu_costhetamu = ROOTH2()
                 hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
                 hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
@@ -277,7 +196,7 @@ def main(argv):
                         continue
 
                 # neutrino energy
-                if DRAW_ENU:
+                if CONFIGURATION.GetAttribBool('DRAW_ENU'):
                     histstack_Enu = ROOTHStack()
                     histstack_Enu.plot_var = 'TrueEnuNom'
                     histstack_Enu.x_title = 'True Neutrino Energy'
@@ -287,7 +206,7 @@ def main(argv):
                                        histstack_Enu, 'trueE_nu')
 
                 # TN-328 Momentum
-                if DRAW_PMU_TN328:
+                if CONFIGURATION.GetAttribBool('DRAW_PMU_TN328'):
                     histstack_pMu_TN328 = ROOTHStack()
                     histstack_pMu_TN328.plot_var = 'LeptonMomNom'
                     histstack_pMu_TN328.x_title = 'Lepton Candidate Momentum'
@@ -305,7 +224,7 @@ def main(argv):
                                            histstack_pMu_TN328)
 
                 # lepton candidate momentum
-                if DRAW_PMU:
+                if CONFIGURATION.GetAttribBool('DRAW_PMU'):
                     histstack_pMu = ROOTHStack()
                     histstack_pMu.plot_var = 'LeptonMomNom'
                     histstack_pMu.x_title = 'Lepton Candidate Momentum'
@@ -319,7 +238,7 @@ def main(argv):
                                            histstack_pMu, 'recoP_mu')
 
                 # TN-328 cos(theta)
-                if DRAW_COSTHETAMU_TN328:
+                if CONFIGURATION.GetAttribBool('DRAW_COSTHETAMU_TN328'):
                     histstack_cosThetaMu_TN328 = ROOTHStack()
                     histstack_cosThetaMu_TN328.plot_var = 'LeptonCosNom'
                     histstack_cosThetaMu_TN328.x_title = 'Lepton Candidate Angle'
@@ -338,7 +257,7 @@ def main(argv):
                                            'recocosq_mu_TN328')
 
                 # lepton candidate cos(theta)
-                if DRAW_COSTHETAMU:
+                if CONFIGURATION.GetAttribBool('DRAW_COSTHETAMU'):
                     histstack_cosThetaMu = ROOTHStack()
                     histstack_cosThetaMu.plot_var = 'LeptonCosNom'
                     histstack_cosThetaMu.x_title = 'Lepton Candidate Track Angle'
@@ -355,7 +274,7 @@ def main(argv):
                                            'recocosq_mu')
 
                 # lepton candidate thetaMu
-                if DRAW_THETAMU:
+                if CONFIGURATION.GetAttribBool('DRAW_THETAMU'):
                     histstack_thetaMu = ROOTHStack()
                     histstack_thetaMu.plot_var = \
                         'TMath::ACos(LeptonCosNom)*TMath::RadToDeg()'
@@ -370,7 +289,7 @@ def main(argv):
                                            histstack_thetaMu, 'recothetaMu_mu')
 
                 # lepton p0d position Z
-                if DRAW_P0DZ:
+                if CONFIGURATION.GetAttribBool('DRAW_P0DZ'):
                     histstack_p0dZ = ROOTHStack()
                     histstack_p0dZ.plot_var = 'vtxZ'
                     histstack_p0dZ.x_title = 'Vertex Z'
@@ -384,7 +303,7 @@ def main(argv):
                                            histstack_p0dZ, 'recoZ_mu')
 
                 # lepton p0d position X
-                if DRAW_P0DX:
+                if CONFIGURATION.GetAttribBool('DRAW_P0DX'):
                     histstack_p0dX = ROOTHStack()
                     histstack_p0dX.plot_var = 'vtxX'
                     histstack_p0dX.x_title = 'Vertex X'
@@ -398,7 +317,7 @@ def main(argv):
                                            histstack_p0dX, 'recoX_mu')
 
                 # lepton p0d position Y
-                if DRAW_P0DY:
+                if CONFIGURATION.GetAttribBool('DRAW_P0DY'):
                     histstack_p0dY = ROOTHStack()
                     histstack_p0dY.plot_var = 'vtxY'
                     histstack_p0dY.x_title = 'Vertex Y'
@@ -1286,25 +1205,162 @@ def LoadP0DBANFF():
 def LoadSampleIDs():
     """Using the SampleIds class, load the samples set at the top of file"""
     global SELECTIONLABELSDICT, SELECTIONSAVENAMEDICT
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCC()] = '#nu_{#mu} in FHC,'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCC()] = '#nu_{#mu} in FHC,'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCC()] = '#nu_{#mu} CCInc in FHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
+
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
+
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg CCInc in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} Bkg CC1Tracks in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} Bkg CCNTracks in RHC'
+
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCC()] = '#nu_{#mu} CCInc in FHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
+
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
+
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} CCInc Bkg in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} CC1Track Bkg in RHC'
+    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} CCNTracks Bkg in RHC'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCC()] = 'numuCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCC1Track()] = 'numuCC1TrackWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCCNTracks()] = 'numuCCNTracksWaterIn'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterIn'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterIn'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterIn'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCC()] = 'numuCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCC1Track()] = 'numuCC1TrackWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCCNTracks()] = 'numuCCNTracksWaterOut'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterOut'
+
     SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterOut'
+    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterOut'
 
 
-def CheckIfRunWithCurrentSample(sampleId):
+def RunWithCurrentSample(xmlTools, sampleId):
     """
     For all the various samples, check if the sampleId (int)
     will be plotted
     """
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCCNTRACKSSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCCNTRACKSSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION')
+
+    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks():
+        return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION')
+
+    return False
+
+
+def LoadGlobalConfigurations(xmlTools):
+    """Load the global settings from the XML configuration file"""
+
+    global CONFIGURATION
+    # this is a special mode of the AttributeMap class where all the values
+    # from the configuration files have been extracted
+    CONFIGURATION = xmlTools.GetAllNodeValues()
+    additional_cuts = CONFIGURATION.GetAttrib('ADDITIONAL_CUTS')
+    if additional_cuts.Length() >= 1:
+        global ADDITIONAL_CUTS
+        ADDITIONAL_CUTS = TCut(additional_cuts.GetAttrib().Data())
+
+    global USE_MOMENTUM_CUT
+    USE_MOMENTUM_CUT = CONFIGURATION.GetAttribBool('USE_MOMENTUM_CUT')
+
+    if USE_MOMENTUM_CUT:
+        global MOMENTUM_CUT_VALUE
+        MOMENTUM_CUT_VALUE = CONFIGURATION.GetAttrib('MOMENTUM_CUT_VALUE')
+
+    global TN208_ANALYSIS
+    TN208_ANALYSIS = CONFIGURATION.GetAttribBool('TN208_ANALYSIS')
+
+    global PLOTLEPTONCANDIDATETRUEPDG, PLOTNEUTNUREACTIONCODES
+    PLOTLEPTONCANDIDATETRUEPDG = CONFIGURATION.GetAttribBool('PLOTLEPTONCANDIDATETRUEPDG')
+    PLOTNEUTNUREACTIONCODES = CONFIGURATION.GetAttribBool('PLOTNEUTNUREACTIONCODES')
+
+    global PLOTNEUTANTINUREACTIONCODES, PLOTTOPOLOGY
+    PLOTNEUTANTINUREACTIONCODES = CONFIGURATION.GetAttribBool('PLOTNEUTANTINUREACTIONCODES')
+    PLOTTOPOLOGY = ('PLOTTOPOLOGY')
+
+    global SHOW_LOGZ
+    SHOW_LOGZ = CONFIGURATION.GetAttribBool('SHOW_LOGZ')
+
+    global APPLY_FLUX_WEIGHTS
+    APPLY_FLUX_WEIGHTS = CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS')
+
+    global APPLY_EVENT_WEIGHTS
+    APPLY_EVENT_WEIGHTS = CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS')
+
+    global PLOTDATA
+    PLOTDATA = CONFIGURATION.GetAttribBool('PLOTDATA')
+
+    global SHOW_RATIO_PLOT_BELOW
+    SHOW_RATIO_PLOT_BELOW = CONFIGURATION.GetAttribBool('SHOW_RATIO_PLOT_BELOW')
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
