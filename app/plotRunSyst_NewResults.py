@@ -887,6 +887,8 @@ def GetMonteCarloSamples(sampleID):
     chn_NEUTRun6dAir = T2KDATAMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun6eAir = T2KDATAMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path)
     chn_NEUTRun7bWtr = T2KDATAMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    # chn_NEUTRun8Wtr = T2KDATAMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    # chn_NEUTRun8Air = T2KDATAMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
 
     # FHC, P0D water-in
     chn_FHC_Wtr = chn_NEUTRun4Wtr
@@ -896,6 +898,7 @@ def GetMonteCarloSamples(sampleID):
     FHC_Wtr.CPPClass.is_FHC = True
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_NEUTRun2Wtr)
+        # chn_FHC_Wtr.Add(chn_NEUTRun8Wtr)
         FHC_Wtr.CPPClass.scale = T2KPOT.GetPOTFHCWaterData()/T2KPOT.GetPOTFHCWaterMC()
         FHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTFHCWaterData()
         FHC_Wtr_Snd.CPPClass.scale = T2KPOT.GetPOTFHCWaterData()/T2KPOT.GetPOTFHCAirSandMC()
