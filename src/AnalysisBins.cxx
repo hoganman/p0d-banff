@@ -134,17 +134,15 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
         const Int_t vect_index = bin-1;
         binEdges[vect_index] = hist->GetXaxis()->GetBinLowEdge(bin);
     }
-    XMLTools::AttributeMap attribs = xml->GetAllChildAttributesFromNode(name);
-    if (attribs["isUniform"].Atoi() == 1)
+    AttributeMap attribs = xml->GetAllChildAttributesFromNode(name);
+    if (attribs.GetAttribBool("isUniform"))
         isUniform = kTRUE;
     if (attribs["units"].Length() > 0)
         units = attribs["units"];
-    if (attribs["lastBinOverflow"].Atoi() == 1)
+    if (attribs.GetAttribBool("lastBinOverflow"))
         showOverflow = kTRUE;
-    if (attribs["divideByBinWidth"].Atoi() == 1)
-    {
+    if (attribs.GetAttribBool("divideByBinWidth"))
         divideByBinWidth = kTRUE;
-    }
     if(new_xml_inst)
     {
         std::cout << "Cleaning new XMLTools instance" << std::endl;
