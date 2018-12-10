@@ -78,17 +78,17 @@ AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
             TString this_attrValue = fxml->GetAttrValue(attr);
 //std::cout << "child_name = " << child_name.Data() << std::endl;
 //std::cout << "attrValue = " << this_attrValue.Data() << std::endl;
-            attribMap.AddAttribute(child_name, this_attrValue);
+            attribMap.AddAttribute(child_name.Data(), this_attrValue.Data());
             attr = fxml->GetNextAttr(attr);
         }
         child = fxml->GetNext(child);
     }
-    //printf("Got map for %s\n", name.Data());
-    //printf("Size of map: %ld\n", attribMap.size());
-    //for(XMLTools::AttributeMap::const_iterator it = attribMap.begin(); it != attribMap.end(); ++it)
-    //{
-    //    printf("%s: %s\n", it->first.Data(), it->second.Data());
-    //}
+    printf("Got map for %s\n", name.Data());
+    printf("Size of map: %i\n", attribMap.size());
+    for(AttributeMap::map_t::const_iterator it = attribMap.GetFirstAttribute(); it != attribMap.GetEndIterator(); it = attribMap.GetNextAttribute())
+    {
+        printf("%s: %s\n", it->first.Data(), it->second.Data());
+    }
     return attribMap;
 }
 
@@ -146,8 +146,11 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
 {
 
     AttributeMap attribs = GetAllChildAttributesFromNode(binningName);
+    printf("found %i entries for %s\n", attribs.GetSize(), binningName.Data());
     TString raw_nBinEdges = attribs["nBinEdges"];
+    printf("raw_nBinEdges = %s\n", raw_nBinEdges.Data());
     TString raw_binEdges = attribs["binEdges"];
+    printf("raw_binEdges = %s\n", raw_binEdges.Data());
     if(raw_nBinEdges.Length() == 0 || raw_binEdges.Length() == 0)
     {
         std::cout << "Unable to get " << binningName.Data() << std::endl;
@@ -158,7 +161,7 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
     std::vector<TString> binEdges_vect = P0DBANFFInterface::SplitString(raw_binEdges, ',');
     if(static_cast<Int_t>(binEdges_vect.size()) != nBinEdges)
     {
-        P0DBANFFInterface::Error(this, TString::Format("In %s. The number of stated bin entries for these bins does NOT match the number of found entries.", binningName.Data()));
+        P0DBANFFInterface::Error(this, TString::Format("In %s. The number of stated bin entries (%d) for these bins does NOT match the number of found entries (%ld).", binningName.Data(), nBinEdges, binEdges_vect.size()));
         return NULL;
     }
     std::vector<Double_t> binEdges(nBinEdges);

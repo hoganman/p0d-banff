@@ -137,7 +137,7 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
     AttributeMap attribs = xml->GetAllChildAttributesFromNode(name);
     if (attribs.GetAttribBool("isUniform"))
         isUniform = kTRUE;
-    if (attribs["units"].Length() > 0)
+    if (attribs.GetAttrib("units").Length() > 0)
         units = attribs["units"];
     if (attribs.GetAttribBool("lastBinOverflow"))
         showOverflow = kTRUE;

@@ -48,15 +48,14 @@ CUTS = None
 
 def main(argv):
     """main"""
-    helpstatement = "plotRunSyst_NewResults.py config_file.xml"
-    if len(argv) == 0:
+    helpstatement = "Usage: plotRunSyst_NewResults.py config_file.xml"
+    if len(argv) == 0 or len(argv) > 1:
         print helpstatement
         return
     LoadP0DBANFF()
     LoadSampleIDs()
     configFile = argv[0]
-    XML.SetFile(configFile)
-    LoadGlobalConfigurations(XML)
+    LoadGlobalConfigurations(configFile)
 
     binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
     cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
@@ -1320,10 +1319,12 @@ def RunWithCurrentSample(xmlTools, sampleId):
     return False
 
 
-def LoadGlobalConfigurations(xmlTools):
+def LoadGlobalConfigurations(configFile):
     """Load the global settings from the XML configuration file"""
 
     global CONFIGURATION
+    xmlTools = ROOT.XMLTools()
+    xmlTools.SetFile(configFile)
     # this is a special mode of the AttributeMap class where all the values
     # from the configuration files have been extracted
     CONFIGURATION = xmlTools.GetAllNodeValues()
