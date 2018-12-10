@@ -49,7 +49,7 @@ CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
 LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
 
-ALLCLASSES_CXX :=  src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/AttributeMap.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/P0DBANFFInterface.cxx src/BenchmarkProcess.cxx src/POTHeader.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
+ALLCLASSES_CXX :=  src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/P0DBANFFInterface.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
 ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
 
 # dict.o Object

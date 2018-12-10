@@ -49,8 +49,9 @@ CUTS = None
 def main(argv):
     """main"""
     helpstatement = "plotRunSyst_NewResults.py config_file.xml"
-    if len(argv) > 1:
+    if len(argv) == 0:
         print helpstatement
+        return
     LoadP0DBANFF()
     LoadSampleIDs()
     configFile = argv[0]
