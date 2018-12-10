@@ -34,7 +34,9 @@ public:
     Double_t GetPOTRun6cAirMC() const{ return _POTRun6cAirMC;}
     Double_t GetPOTRun6dAirMC() const{ return _POTRun6dAirMC;}
     Double_t GetPOTRun6eAirMC() const{ return _POTRun6eAirMC;}
-    Double_t GetPOTRun7WaterMC() const{ return _POTRun7bWaterMC;}
+    Double_t GetPOTRun7bWaterMC() const{ return _POTRun7bWaterMC;}
+    Double_t GetPOTRun8WaterMC() const{ return _POTRun8WaterMC;}
+    Double_t GetPOTRun8AirMC() const{ return _POTRun8AirMC;}
 
     Double_t GetPOTFHCWaterMC() const{ return _POTFHCWaterMC; }
     Double_t GetPOTFHCAirMC() const{ return _POTFHCAirMC; }
@@ -57,6 +59,8 @@ public:
     Double_t GetPOTRun6dAirData() const{ return _POTRun6dAirData;}
     Double_t GetPOTRun6eAirData() const{ return _POTRun6eAirData;}
     Double_t GetPOTRun7bWaterData() const{ return _POTRun7bWaterData;}
+    Double_t GetPOTRun8WaterData() const{ return _POTRun8WaterData;}
+    Double_t GetPOTRun8AirData() const{ return _POTRun8AirData;}
 
     Double_t GetPOTFHCWaterData() const{ return _POTFHCWaterData; }
     Double_t GetPOTFHCAirData() const{ return _POTFHCAirData; }
@@ -86,6 +90,8 @@ private:
     Double_t _POTRun6dAirMC;
     Double_t _POTRun6eAirMC;
     Double_t _POTRun7bWaterMC;
+    Double_t _POTRun8WaterMC;
+    Double_t _POTRun8AirMC;
 
     Double_t _POTFHCWaterMC;
     Double_t _POTFHCAirMC;
@@ -108,6 +114,8 @@ private:
     Double_t _POTRun6dAirData;
     Double_t _POTRun6eAirData;
     Double_t _POTRun7bWaterData;
+    Double_t _POTRun8WaterData;
+    Double_t _POTRun8AirData;
 
     Double_t _POTFHCWaterData;
     Double_t _POTFHCWaterDataWithRun1;
