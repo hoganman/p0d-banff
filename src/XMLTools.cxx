@@ -1,9 +1,10 @@
 #define XMLTOOLS_CXX
 
 #include "XMLTools.hxx"
+ClassImp(XMLTools)
 #include "P0DBANFFInterface.hxx"
 #include <iostream>
-ClassImp(XMLTools)
+#include <cstdlib>
 
 //**************************************************
 XMLTools::XMLTools()
@@ -61,10 +62,10 @@ void XMLTools::SetXMLDocAndRootNode()
 
 
 //**************************************************
-XMLTools::AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
+AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
 //**************************************************
 {
-    XMLTools::AttributeMap attribMap;
+    AttributeMap attribMap;
     XMLNodePointer_t node = GetXMLNode(name);
     XMLNodePointer_t child = fxml->GetChild(node);
     while(child != 0)
@@ -77,11 +78,17 @@ XMLTools::AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
             TString this_attrValue = fxml->GetAttrValue(attr);
 //std::cout << "child_name = " << child_name.Data() << std::endl;
 //std::cout << "attrValue = " << this_attrValue.Data() << std::endl;
-            attribMap[child_name] = this_attrValue;
+            attribMap.AddAttribute(child_name, this_attrValue);
             attr = fxml->GetNextAttr(attr);
         }
         child = fxml->GetNext(child);
     }
+    //printf("Got map for %s\n", name.Data());
+    //printf("Size of map: %ld\n", attribMap.size());
+    //for(XMLTools::AttributeMap::const_iterator it = attribMap.begin(); it != attribMap.end(); ++it)
+    //{
+    //    printf("%s: %s\n", it->first.Data(), it->second.Data());
+    //}
     return attribMap;
 }
 
@@ -164,14 +171,13 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
 }
 
 //**************************************************
-std::map<TString, XMLTools::AttributeMap> XMLTools::GetAllNodes()
+void XMLTools::GetAllNodes()
 //**************************************************
 {
-    std::map<TString, AttributeMap> attribs;
     if(!fRootNode || !fDoc)
     {
         std::cout << "No fRootNode or no fDoc" << std::endl;
-        return attribs;
+        return;
     }
     XMLNodePointer_t node = fxml->GetChild(fRootNode);
     XMLNodePointer_t child = fxml->GetChild(node);
@@ -180,7 +186,7 @@ std::map<TString, XMLTools::AttributeMap> XMLTools::GetAllNodes()
     {
         TString nodeName = fxml->GetNodeName(child);
         AttributeMap a_attrib = GetAllChildAttributesFromNode(nodeName);
-        attribs[nodeName] = a_attrib;
+        fAllNodes[nodeName] = a_attrib;
         child = fxml->GetNext(child);
     }
 
@@ -191,12 +197,30 @@ std::map<TString, XMLTools::AttributeMap> XMLTools::GetAllNodes()
         std::cout << it0->first << std::endl;
         AttributeMap tmp = it0->second;
         std::cout << tmp.size() << std::endl;
-        for(AttributeMap::iterator it = tmp.begin(); it!=tmp.end(); ++it)
+        for(AttributeMap::const_iterator it = tmp.begin(); it!=tmp.end(); ++it)
         {
             std::cout << it->first << std::endl;
             std::cout << it->second << std::endl;
         }
     }
     */
-    return attribs;
+}
+
+//**************************************************
+AttributeMap XMLTools::GetAllNodeValues()
+//**************************************************
+{
+    if(fAllNodes.size() == 0)
+        GetAllNodes();
+    AttributeMap nodeValues;
+    std::map<TString, AttributeMap>::const_iterator it;
+    for(it = fAllNodes.begin(); it != fAllNodes.end(); ++it)
+    {
+        if( it->second.GetAttrib("value").Length() == 0)
+            continue;
+        //printf("it->first = %s\n", it->first.Data());
+        //printf("it->second[\"value\"] = %s\n", it->second["value"].Data());
+        nodeValues.AddAttribute(it->first.Data(), it->second["value"]);
+    }
+    return nodeValues;
 }

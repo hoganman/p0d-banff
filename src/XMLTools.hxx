@@ -5,17 +5,10 @@
 #include "TXMLEngine.h"
 #include "TH1D.h"
 #include "TString.h"
+#include "AttributeMap.hxx"
 #include <vector>
-#include <map>
-#ifdef __CINT__
-#pragma link C++ nestedclasses;
-#pragma link C++ nestedtypedefs;
-#pragma link C++ class std::map<TString,TString>+;
-#pragma link C++ class std::map<TString,TString>::*;
-#pragma link C++ operators std::map<TString,TString>::iterator;
-#pragma link C++ operators std::map<TString,TString>::const_iterator;
-#pragma link C++ operators std::map<TString,TString>::reverse_iterator;
-#endif
+//#include <map>
+
 
 class XMLTools : public TObject {
 
@@ -41,15 +34,17 @@ public:
     ///Recursively searches for a node with "name"
     XMLNodePointer_t GetXMLNode(TString name);
 
-    ///A useful container for all contents in a XML file
-    typedef std::map<TString, TString> AttributeMap;
-
     ///Get all the attributes for the input node name
     ///Key: attribute name
     ///Value: attribute value
-    XMLTools::AttributeMap GetAllChildAttributesFromNode(TString name);
+    AttributeMap GetAllChildAttributesFromNode(TString name);
 
-    std::map<TString, XMLTools::AttributeMap> GetAllNodes();
+    TString GetChildAttributeValueFromNode(TString name)
+    { return GetAllChildAttributesFromNode(name).GetAttrib("value"); }
+
+    //this is a special mode of the AttributeMap class where all the values
+    //from the configuration files have been extracted
+    AttributeMap GetAllNodeValues();
 
     ///Get from a child node the attribute with name "attrName"
     TString GetChildAttributeFromNode(TString motherNodeName, TString attrName);
@@ -67,11 +62,16 @@ protected:
     XMLNodePointer_t fRootNode; //!
     TXMLEngine* fxml; //!
 
+    void GetAllNodes();
+    std::map<TString, AttributeMap> fAllNodes;
+
     ///Once a file has been set, fill the required pointers
     void SetXMLDocAndRootNode();
 
     ///Recursively search for a node
     XMLNodePointer_t GetXMLNode(TString name, XMLNodePointer_t node);
+
+public:
     ClassDef(XMLTools, 1)
 
 };

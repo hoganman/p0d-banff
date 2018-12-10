@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<main>
+    <RunSyst_New_Options>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="            Show data points"             />
+        <comment attr="#***************************************#"/>
+        <PLOTDATA>
+            <value attr="0"/>
+        </PLOTDATA>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="1D histograms" />
+        <comment attr="#***************************************#"/>
+
+        <DRAW_ENU>
+            <value attr="0"/>
+        </DRAW_ENU>
+        <DRAW_PMU>
+            <value attr="0"/>
+        </DRAW_PMU>
+        <DRAW_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_COSTHETAMU>
+        <DRAW_THETAMU>
+            <value attr="0"/>
+        </DRAW_THETAMU>
+        <DRAW_PMU_TN328>
+            <value attr="0"/>
+        </DRAW_PMU_TN328>
+        <DRAW_COSTHETAMU_TN328>
+            <value attr="0"/>
+        </DRAW_COSTHETAMU_TN328>
+        <DRAW_P0DX>
+            <value attr="0"/>
+        </DRAW_P0DX>
+        <DRAW_P0DY>
+            <value attr="0"/>
+        </DRAW_P0DY>
+        <DRAW_P0DZ>
+            <value attr="0"/>
+        </DRAW_P0DZ>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Display the ratio of Data/MC below histogram"/>
+        <comment attr="only available for 1D"/>
+        <comment attr="#***************************************#"/>
+        <SHOW_RATIO_PLOT_BELOW>
+            <value attr="0"/>
+        </SHOW_RATIO_PLOT_BELOW>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="2D histograms"/>
+        <comment attr="#***************************************#"/>
+        <DRAW_P0DFITFHC_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DFITFHC_PMU_COSTHETAMU>
+        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="          Option only for 2D"             />
+        <comment attr="#***************************************#"/>
+        <SHOW_LOGZ>
+            <value attr="1"/>
+        </SHOW_LOGZ>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Apply event + flux weight"         />
+        <comment attr="#***************************************#"/>
+        <APPLY_FLUX_WEIGHTS>
+            <value attr="1"/>
+        </APPLY_FLUX_WEIGHTS>
+        <APPLY_EVENT_WEIGHTS>
+            <value attr="1"/>
+        </APPLY_EVENT_WEIGHTS>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Draw particular categories"        />
+        <comment attr="#***************************************#"/>
+        <PLOTLEPTONCANDIDATETRUEPDG>
+            <value attr="0"/>
+        </PLOTLEPTONCANDIDATETRUEPDG>
+        <PLOTNEUTNUREACTIONCODES>
+            <value attr="0"/>
+        </PLOTNEUTNUREACTIONCODES>
+        <PLOTNEUTANTINUREACTIONCODES>
+            <value attr="0"/>
+        </PLOTNEUTANTINUREACTIONCODES>
+        <PLOTTOPOLOGY>
+            <value attr="0"/>
+        </PLOTTOPOLOGY>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="        Use the TN-208 runs"              />
+        <comment attr="#***************************************#"/>
+        <TN208_ANALYSIS>
+            <value attr="0"/>
+        </TN208_ANALYSIS>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="        Cut the measured momentum"        />
+        <comment attr="#***************************************#"/>
+        <USE_MOMENTUM_CUT>
+            <value attr="0"/>
+        </USE_MOMENTUM_CUT>
+        <MOMENTUM_CUT_VALUE>
+            <type attr="Double"/>
+            <value attr="'5000.'"/>
+        </MOMENTUM_CUT_VALUE>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="   If the user wants to apply an addition"/>
+        <comment attr="   set of cuts"                           />
+        <comment attr="#***************************************#"/>
+        <ADDITIONAL_CUTS>
+            <type attr="String"/>
+            <value attr="None"/>
+        </ADDITIONAL_CUTS>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="         Which Selections to Run"         />
+        <comment attr="#***************************************#"/>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DWATERNUMUCCSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUCCSELECTION>
+        <RUNP0DWATERNUMUCC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUCC1TRACKSELECTION>
+        <RUNP0DWATERNUMUCCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUCCNTRACKSSELECTION>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Water numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DWATERNUMUBARINANTINUMODECCSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBARINANTINUMODECCSELECTION>
+        <RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION>
+        <RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Water numu BKG in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION>
+        <RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION>
+        <RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Air numu CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DAIRNUMUCCSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUCCSELECTION>
+        <RUNP0DAIRNUMUCC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUCC1TRACKSELECTION>
+        <RUNP0DAIRNUMUCCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUCCNTRACKSSELECTION>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Air numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DAIRNUMUBARINANTINUMODECCSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBARINANTINUMODECCSELECTION>
+        <RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION>
+        <RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Air numu BKG in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION>
+        <RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION>
+        <RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+            <value attr="0"/>
+        </RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+
+    </RunSyst_New_Options>
+</main>
