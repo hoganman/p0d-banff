@@ -115,9 +115,10 @@ CUTS = None
 
 def main(argv):
     """main"""
-    helpstatement = "plotRunSyst_NewResults.py (no args). Please read the code to understand how to plot"
-    if len(argv) > 0:
+    helpstatement = "plotRunSyst_NewResults.py config_file.xml"
+    if len(argv) == 0:
         print helpstatement
+	return
     LoadP0DBANFF()
     LoadSampleIDs()
 
