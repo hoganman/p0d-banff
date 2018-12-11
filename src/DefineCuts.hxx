@@ -21,11 +21,11 @@ public:
     virtual ~DefineCuts();
 
     ///Passes the mu- selection for P0D+TPC
-    TCut muMinusSelection;
+    TCut muMinusCCSelection;
     ///Passes the mu+ selection for P0D+TPC
-    TCut muPlusInRHCSelection;
+    TCut muPlusInRHCCCSelection;
     /// Passes the mu- selection  in anti-nu mode for P0D+TPC
-    TCut muMinusBkgInRHCSelection;
+    TCut muMinusBkgInRHCCCSelection;
 
     TCut anyP0DSelection;
 

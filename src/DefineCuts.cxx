@@ -10,13 +10,13 @@ ClassImp(DefineCuts)
 DefineCuts::~DefineCuts()
 //**************************************************
 {
-    std::vector<PlottingSelectionInfo*>::const_iterator it;
-    for(it = ParticleSelections.begin(); it != ParticleSelections.end(); ++it)
-        if(*it) delete *it;
-    for(it = NeutrinoSelections.begin(); it != NeutrinoSelections.end(); ++it)
-        if(*it) delete *it;
-    for(it = NEUTNuSelections.begin(); it != NEUTNuSelections.end(); ++it)
-        if(*it) delete *it;
+    //std::vector<PlottingSelectionInfo*>::const_iterator it;
+    //for(it = ParticleSelections.begin(); it != ParticleSelections.end(); ++it)
+    //    if(*it) delete *it;
+    //for(it = NeutrinoSelections.begin(); it != NeutrinoSelections.end(); ++it)
+    //    if(*it) delete *it;
+    //for(it = NEUTNuSelections.begin(); it != NEUTNuSelections.end(); ++it)
+    //    if(*it) delete *it;
 }
 
 //**************************************************
@@ -35,19 +35,19 @@ void DefineCuts::SetCuts()
     minSandCoords.SetXYZ(-10000., -10000., -280.e+3);  // in mm
     maxSandCoords.SetXYZ(+10000., +10000., -3500.);  // in mm
 
-    muMinusSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
                 samples.GetP0DWaterNuMuCC(), samples.GetP0DAirNuMuCC()));
-    muMinusSelection.SetName("#mu^{-} Selection Cut");
+    muMinusCCSelection.SetName("#mu^{-} Selection Cut");
 
-    muPlusInRHCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muPlusInRHCCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
                 samples.GetP0DWaterNuMuBarInAntiNuModeCC(), samples.GetP0DAirNuMuBarInAntiNuModeCC()));
-    muPlusInRHCSelection.SetName("#mu^{+} in RHC Selection Cut");
+    muPlusInRHCCCSelection.SetName("#mu^{+} in RHC Selection Cut");
 
-    muMinusBkgInRHCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusBkgInRHCCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()));
-    muMinusBkgInRHCSelection.SetName("#mu^{-} Bkg in RHC Selection Cut");
+    muMinusBkgInRHCCCSelection.SetName("#mu^{-} Bkg in RHC Selection Cut");
 
-    anyP0DSelection = muMinusSelection || muMinusBkgInRHCSelection || muPlusInRHCSelection;
+    anyP0DSelection = muMinusCCSelection || muMinusBkgInRHCCCSelection || muPlusInRHCCCSelection;
     anyP0DSelection.SetName("Any P0D+TPC selection cut");
 
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",
@@ -179,9 +179,9 @@ void DefineCuts::SetCuts()
     tNEUTAntiNuCCDIS = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTAntiNu_CCDIS));
     tNEUTAntiNuCCDIS.SetName("True NEUT Anti-nu CC-DIS");
 
-    TCut tAntiNuBkgTopologyInNuMode = (muMinusSelection || muMinusBkgInRHCSelection)
+    TCut tAntiNuBkgTopologyInNuMode = (muMinusCCSelection || muMinusBkgInRHCCCSelection)
                                       && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kMuon));
-    TCut tNuBkgTopologyInAntiNuMode = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kAntiMuon));
+    TCut tNuBkgTopologyInAntiNuMode = muPlusInRHCCCSelection && TCut(TString::Format("NPrimaryParticles[%d]<=0", pdg.kAntiMuon));
     tBKGTopology = (tNuBkgTopologyInAntiNuMode || tAntiNuBkgTopologyInNuMode) && tFV;
     tBKGTopology.SetName("True BKG Topology");
 
@@ -189,8 +189,8 @@ void DefineCuts::SetCuts()
     tCC0PiTopology = anyP0DSelection && tZeroMesonTopology && tFV;
     tCC0PiTopology.SetName("True CC-0#pi Topology");
 
-    TCut tCC1PiInNuModeTopology = (muMinusSelection || muMinusBkgInRHCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiPos));
-    TCut tCC1PiInAntiNuModeTopology = muPlusInRHCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiNeg));
+    TCut tCC1PiInNuModeTopology = (muMinusCCSelection || muMinusBkgInRHCCCSelection) && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiPos));
+    TCut tCC1PiInAntiNuModeTopology = muPlusInRHCCCSelection && TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kPiNeg));
     TCut tOneMesonTopology = TCut(TString::Format("NPrimaryParticles[%d]==1", pdg.kMesons));
     tCC1PiTopology = (tCC1PiInNuModeTopology || tCC1PiInAntiNuModeTopology) && tOneMesonTopology && tFV;
     tCC1PiTopology.SetName("True CC-1#pi Topology");
@@ -232,11 +232,11 @@ void DefineCuts::FillParticleSelections(const TString &name,
     ParticleSelections.clear();
     const SampleId sampleIDs;
     if(sampleIDs.IsP0DNuMuSample(sampleID))
-        all_nom_sel_cut = muMinusSelection;
+        all_nom_sel_cut = muMinusCCSelection;
     else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muMinusBkgInRHCSelection;
+        all_nom_sel_cut = muMinusBkgInRHCCCSelection;
     else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muPlusInRHCSelection;
+        all_nom_sel_cut = muPlusInRHCCCSelection;
     else
     {
         P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
@@ -331,11 +331,11 @@ void DefineCuts::FillNeutrinoSelections(const TString &name,
     NeutrinoSelections.clear();
     const SampleId sampleIDs;
     if(sampleIDs.IsP0DNuMuSample(sampleID))
-        all_nom_sel_cut = muMinusSelection;
+        all_nom_sel_cut = muMinusCCSelection;
     else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muMinusBkgInRHCSelection;
+        all_nom_sel_cut = muMinusBkgInRHCCCSelection;
     else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muPlusInRHCSelection;
+        all_nom_sel_cut = muPlusInRHCCCSelection;
     else
     {
         P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
@@ -418,11 +418,11 @@ void DefineCuts::FillNEUTNuSelections(const TString &name, const TString &title,
     NEUTNuSelections.clear();
     const SampleId sampleIDs;
     if(sampleIDs.IsP0DNuMuSample(sampleID))
-        all_nom_sel_cut = muMinusSelection;
+        all_nom_sel_cut = muMinusCCSelection;
     else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muMinusBkgInRHCSelection;
+        all_nom_sel_cut = muMinusBkgInRHCCCSelection;
     else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muPlusInRHCSelection;
+        all_nom_sel_cut = muPlusInRHCCCSelection;
     else
     {
         P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
@@ -511,11 +511,11 @@ void DefineCuts::FillNEUTAntiNuSelections(const TString &name, const TString &ti
     NEUTAntiNuSelections.clear();
     const SampleId sampleIDs;
     if(sampleIDs.IsP0DNuMuSample(sampleID))
-        all_nom_sel_cut = muMinusSelection;
+        all_nom_sel_cut = muMinusCCSelection;
     else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muMinusBkgInRHCSelection;
+        all_nom_sel_cut = muMinusBkgInRHCCCSelection;
     else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muPlusInRHCSelection;
+        all_nom_sel_cut = muPlusInRHCCCSelection;
     else
     {
         P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
@@ -601,12 +601,32 @@ void DefineCuts::FillTopologySelections(const TString &name, const TString &titl
     }
     TopologySelections.clear();
     const SampleId sampleIDs;
+
+    sampleID == sampleIDs.GetP0DWaterNuMuCCEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuCCNTracksEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBarInAntiNuModeCCEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBarInAntiNuModeCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBarInAntiNuModeCCNTracksEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBkgInAntiNuModeCCEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBkgInAntiNuModeCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DWaterNuMuBkgInAntiNuModeCCNTracksEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuCCEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuCCNTracksEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBarInAntiNuModeCCEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBarInAntiNuModeCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBarInAntiNuModeCCNTracksEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBkgInAntiNuModeCCEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBkgInAntiNuModeCC1TrackEnum();
+    sampleID == sampleIDs.GetP0DAirNuMuBkgInAntiNuModeCCNTracksEnum();
+
     if(sampleIDs.IsP0DNuMuSample(sampleID))
-        all_nom_sel_cut = muMinusSelection;
+        all_nom_sel_cut = muMinusCCSelection;
     else if(sampleIDs.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muMinusBkgInRHCSelection;
+        all_nom_sel_cut = muMinusBkgInRHCCCSelection;
     else if(sampleIDs.IsP0DNuMuBarInAntiNuModeSample(sampleID))
-        all_nom_sel_cut = muPlusInRHCSelection;
+        all_nom_sel_cut = muPlusInRHCCCSelection;
     else
     {
         P0DBANFFInterface::Error(this, TString::Format("Unable to determine sample using SampleId = %d", sampleID));
