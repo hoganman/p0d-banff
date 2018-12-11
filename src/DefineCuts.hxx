@@ -20,12 +20,26 @@ public:
     DefineCuts(){SetCuts();}
     virtual ~DefineCuts();
 
-    ///Passes the mu- selection for P0D+TPC
+    ///Passes the mu- CC-Inc selection for P0D+TPC
     TCut muMinusCCSelection;
-    ///Passes the mu+ selection for P0D+TPC
+    ///Passes the mu+ in anti-nu mode CC-Inc selection for P0D+TPC
     TCut muPlusInRHCCCSelection;
-    /// Passes the mu- selection  in anti-nu mode for P0D+TPC
+    /// Passes the mu- in anti-nu mode CC-Inc selection for P0D+TPC
     TCut muMinusBkgInRHCCCSelection;
+
+    ///Passes the mu- CC1Track selection for P0D+TPC
+    TCut muMinusCC1TrackSelection;
+    ///Passes the mu+ in anti-nu mode CC1Track selection for P0D+TPC
+    TCut muPlusInRHCCC1TrackSelection;
+    /// Passes the mu- in anti-nu mode CC1Track selection for P0D+TPC
+    TCut muMinusBkgInRHCCC1TrackSelection;
+
+    ///Passes the mu- CCNTracks selection for P0D+TPC
+    TCut muMinusCCNTracksSelection;
+    ///Passes the mu+ in anti-nu mode CCNTracks selection for P0D+TPC
+    TCut muPlusInRHCCCNTracksSelection;
+    /// Passes the mu- in anti-nu mode CCNTracks selection for P0D+TPC
+    TCut muMinusBkgInRHCCCNTracksSelection;
 
     TCut anyP0DSelection;
 
@@ -191,6 +205,7 @@ public:
         return &TopologySelections[0];
     }
 
+    TCut GetNominalSelectionCut(const SampleId::SampleEnum &sampleID) const;
 
 
 protected:
