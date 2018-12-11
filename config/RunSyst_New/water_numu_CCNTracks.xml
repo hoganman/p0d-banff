@@ -62,9 +62,9 @@
         <comment attr="#***************************************#"/>
         <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>
         <comment attr="#***************************************#"/>
-        <RUNP0DWATERNUMUCC1TRACKSELECTION>
+        <RUNP0DWATERNUMUCCNTRACKSSELECTION>
             <value attr="1"/>
-        </RUNP0DWATERNUMUCC1TRACKSELECTION>
+        </RUNP0DWATERNUMUCCNTRACKSSELECTION>
 
     </RunSyst_New_Options>
 </main>
