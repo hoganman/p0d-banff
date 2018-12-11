@@ -36,6 +36,8 @@ public:
 
     typedef std::map<TString, TString> map_t;
 
+    typedef std::pair<TString, TString> pair_t;
+
     map_t fMap;
 
     map_t::const_iterator GetFirstAttribute() {fMapCIter = fMap.begin(); return fMapCIter;}

@@ -7,7 +7,7 @@ ClassImp(AttributeMap)
 
 TString AttributeMap::GetAttrib(const TString attribKey) const
 {
-    std::map<TString, TString>::const_iterator it = fMap.find(attribKey);
+    map_t::const_iterator it = fMap.find(attribKey);
     if(it != fMap.end())
         return it->second;
     return TString("");
@@ -30,12 +30,12 @@ Double_t AttributeMap::GetAttribDouble(const TString attribKey) const
 
 void AttributeMap::AddAttribute(const TString attribKey, const TString attribValue)
 {
-    std::map<TString, TString>::const_iterator it = fMap.find(attribKey);
+    map_t::const_iterator it = fMap.find(attribKey);
     if(it != fMap.end())
     {
         const TString warnMsg = TString::Format("Attribute key %s with value %s is being overritten with %s", it->first.Data(), it->second.Data(), attribValue.Data());
         P0DBANFFInterface::Warning(this, warnMsg);
     }
     //printf("%s : %s\n", attribKey.Data(), attribValue.Data());
-    fMap[attribKey.Data()] = attribValue.Data();
+    fMap.insert(pair_t(attribKey.Data(), attribValue.Data()));
 }
