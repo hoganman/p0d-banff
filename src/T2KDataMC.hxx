@@ -25,6 +25,8 @@ public:
     RunName RUN6D;
     RunName RUN6E;
     RunName RUN7B;
+    RunName RUN8W;
+    RunName RUN8A;
     RunName SANDFHC;
     RunName SANDRHC;
     RunName RUN2WDATA;
@@ -39,11 +41,14 @@ public:
     RunName RUN6DDATA;
     RunName RUN6EDATA;
     RunName RUN7BDATA;
+    RunName RUN8WDATA;
+    RunName RUN8ADATA;
 
     TString NEUT6B;
     TString NEUT6L;
     TString DATA6M;
     TString DATA6N;
+    TString DATA6P;
     TString SAND6B;
 
 protected:
