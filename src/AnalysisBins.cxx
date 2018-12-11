@@ -138,7 +138,7 @@ AnalysisBins::AnalysisBins(TString name, TString configFile, XMLTools* xml)
     if (attribs.GetAttribBool("isUniform"))
         isUniform = kTRUE;
     if (attribs.GetAttrib("units").Length() > 0)
-        units = attribs["units"];
+        units = attribs.GetAttrib("units");
     if (attribs.GetAttribBool("lastBinOverflow"))
         showOverflow = kTRUE;
     if (attribs.GetAttribBool("divideByBinWidth"))

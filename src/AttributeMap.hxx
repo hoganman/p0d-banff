@@ -32,12 +32,6 @@ public:
 
     void AddAttribute(const TString attribKey, const TString attribValue);
 
-    const char* operator[](const TString attribKey) const {return GetAttrib(attribKey).Data();}
-
-    const char* at(const TString attribKey) const {return GetAttrib(attribKey).Data();}
-
-    UInt_t size() const { return fMap.size(); }
-
     UInt_t GetSize() const { return fMap.size(); }
 
     typedef std::map<TString, TString> map_t;

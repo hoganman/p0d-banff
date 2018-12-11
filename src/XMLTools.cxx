@@ -83,12 +83,12 @@ AttributeMap XMLTools::GetAllChildAttributesFromNode(TString name)
         }
         child = fxml->GetNext(child);
     }
-    printf("Got map for %s\n", name.Data());
-    printf("Size of map: %i\n", attribMap.size());
-    for(AttributeMap::map_t::const_iterator it = attribMap.GetFirstAttribute(); it != attribMap.GetEndIterator(); it = attribMap.GetNextAttribute())
-    {
-        printf("%s: %s\n", it->first.Data(), it->second.Data());
-    }
+//printf("Got map for %s\n", name.Data());
+//printf("Size of map: %i\n", attribMap.size());
+//for(AttributeMap::map_t::const_iterator it = attribMap.GetFirstAttribute(); it != attribMap.GetEndIterator(); it = attribMap.GetNextAttribute())
+//{
+//    printf("%s: %s\n", it->first.Data(), it->second.Data());
+//}
     return attribMap;
 }
 
@@ -137,7 +137,7 @@ XMLNodePointer_t XMLTools::GetXMLNode(TString name, XMLNodePointer_t node)
 TString XMLTools::GetChildAttributeFromNode(TString motherNodeName, TString attrName)
 //**************************************************
 {
-    return GetAllChildAttributesFromNode(motherNodeName)[attrName];
+    return GetAllChildAttributesFromNode(motherNodeName).GetAttrib(attrName);
 }
 
 //**************************************************
@@ -146,11 +146,11 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
 {
 
     AttributeMap attribs = GetAllChildAttributesFromNode(binningName);
-    printf("found %i entries for %s\n", attribs.GetSize(), binningName.Data());
-    TString raw_nBinEdges = attribs["nBinEdges"];
-    printf("raw_nBinEdges = %s\n", raw_nBinEdges.Data());
-    TString raw_binEdges = attribs["binEdges"];
-    printf("raw_binEdges = %s\n", raw_binEdges.Data());
+//printf("found %i entries for %s\n", attribs.GetSize(), binningName.Data());
+    TString raw_nBinEdges = attribs.GetAttrib("nBinEdges");
+//printf("raw_nBinEdges = %s\n", raw_nBinEdges.Data());
+    TString raw_binEdges = attribs.GetAttrib("binEdges");
+//printf("raw_binEdges = %s\n", raw_binEdges.Data());
     if(raw_nBinEdges.Length() == 0 || raw_binEdges.Length() == 0)
     {
         std::cout << "Unable to get " << binningName.Data() << std::endl;
@@ -222,8 +222,7 @@ AttributeMap XMLTools::GetAllNodeValues()
         if( it->second.GetAttrib("value").Length() == 0)
             continue;
         //printf("it->first = %s\n", it->first.Data());
-        //printf("it->second[\"value\"] = %s\n", it->second["value"].Data());
-        nodeValues.AddAttribute(it->first.Data(), it->second["value"]);
+        nodeValues.AddAttribute(it->first.Data(), it->second.GetAttrib("value"));
     }
     return nodeValues;
 }
