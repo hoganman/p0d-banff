@@ -6,21 +6,12 @@ ClassImp(SampleId)
 Bool_t SampleId::IsP0DNuMuSample(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
-    if(testEnum == kP0DWaterNuMuCC) return kTRUE;
-    if(testEnum == kP0DWaterNuMuCC1Track) return kTRUE;
-    if(testEnum == kP0DWaterNuMuCCNTracks) return kTRUE;
-    else if(testEnum == kP0DAirNuMuCC) return kTRUE;
-    else if(testEnum == kP0DAirNuMuCC1Track) return kTRUE;
-    else if(testEnum == kP0DAirNuMuCCNTracks) return kTRUE;
-    else return kFALSE;
-}
-
-//**************************************************
-Bool_t SampleId::IsP0DNuMuBkgSample(const SampleId::SampleEnum &testEnum) const
-//**************************************************
-{
-    if(testEnum == kP0DWaterNuMuBarBkgCC) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBarBkgCC) return kTRUE;
+    if     (testEnum == kP0DWaterNuMuCC)        return kTRUE;
+    else if(testEnum == kP0DWaterNuMuCC1Track)  return kTRUE;
+    else if(testEnum == kP0DWaterNuMuCCNTracks) return kTRUE;
+    else if(testEnum == kP0DAirNuMuCC)          return kTRUE;
+    else if(testEnum == kP0DAirNuMuCC1Track)    return kTRUE;
+    else if(testEnum == kP0DAirNuMuCCNTracks)   return kTRUE;
     else return kFALSE;
 }
 
@@ -28,12 +19,12 @@ Bool_t SampleId::IsP0DNuMuBkgSample(const SampleId::SampleEnum &testEnum) const
 Bool_t SampleId::IsP0DNuMuBkgInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
-    if(testEnum == kP0DWaterNuMuBkgInAntiNuModeCC) return kTRUE;
-    if(testEnum == kP0DWaterNuMuBkgInAntiNuModeCC1Track) return kTRUE;
-    if(testEnum == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCC) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCC1Track) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCCNTracks) return kTRUE;
+    if     (testEnum == kP0DWaterNuMuBkgInAntiNuModeCC)        return kTRUE;
+    else if(testEnum == kP0DWaterNuMuBkgInAntiNuModeCC1Track)  return kTRUE;
+    else if(testEnum == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) return kTRUE;
+    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCC)          return kTRUE;
+    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCC1Track)    return kTRUE;
+    else if(testEnum == kP0DAirNuMuBkgInAntiNuModeCCNTracks)   return kTRUE;
     else return kFALSE;
 }
 
@@ -41,12 +32,12 @@ Bool_t SampleId::IsP0DNuMuBkgInAntiNuModeSample(const SampleId::SampleEnum &test
 Bool_t SampleId::IsP0DNuMuBarInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
-    if(testEnum == kP0DWaterNuMuBarInAntiNuModeCC) return kTRUE;
-    if(testEnum == kP0DWaterNuMuBarInAntiNuModeCC1Track) return kTRUE;
-    if(testEnum == kP0DWaterNuMuBarInAntiNuModeCCNTracks) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC1Track) return kTRUE;
-    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCCNTracks) return kTRUE;
+    if     (testEnum == kP0DWaterNuMuBarInAntiNuModeCC)        return kTRUE;
+    else if(testEnum == kP0DWaterNuMuBarInAntiNuModeCC1Track)  return kTRUE;
+    else if(testEnum == kP0DWaterNuMuBarInAntiNuModeCCNTracks) return kTRUE;
+    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC)          return kTRUE;
+    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC1Track)    return kTRUE;
+    else if(testEnum == kP0DAirNuMuBarInAntiNuModeCCNTracks)   return kTRUE;
     else return kFALSE;
 }
 
@@ -54,9 +45,9 @@ Bool_t SampleId::IsP0DNuMuBarInAntiNuModeSample(const SampleId::SampleEnum &test
 Bool_t SampleId::IsP0DWaterSample(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
-    if(testEnum == kP0DWaterNuMuCC) return kTRUE;
-    if(testEnum == kP0DWaterNuMuCC1Track) return kTRUE;
-    if(testEnum == kP0DWaterNuMuCCNTracks) return kTRUE;
+    if     (testEnum == kP0DWaterNuMuCC) return kTRUE;
+    else if(testEnum == kP0DWaterNuMuCC1Track) return kTRUE;
+    else if(testEnum == kP0DWaterNuMuCCNTracks) return kTRUE;
     else if(testEnum == kP0DWaterNuMuBarBkgCC) return kTRUE;
     else if(testEnum == kP0DWaterNuMuBarInAntiNuModeCC) return kTRUE;
     else if(testEnum == kP0DWaterNuMuBarInAntiNuModeCC1Track) return kTRUE;
@@ -71,8 +62,8 @@ Bool_t SampleId::IsP0DAirSample(const SampleId::SampleEnum &testEnum) const
 //**************************************************
 {
     if(testEnum == kP0DAirNuMuCC) return kTRUE;
-    if(testEnum == kP0DAirNuMuCC1Track) return kTRUE;
-    if(testEnum == kP0DAirNuMuCCNTracks) return kTRUE;
+    else if(testEnum == kP0DAirNuMuCC1Track) return kTRUE;
+    else if(testEnum == kP0DAirNuMuCCNTracks) return kTRUE;
     else if(testEnum == kP0DAirNuMuBarBkgCC) return kTRUE;
     else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC) return kTRUE;
     else if(testEnum == kP0DAirNuMuBarInAntiNuModeCC1Track) return kTRUE;

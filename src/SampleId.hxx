@@ -119,6 +119,9 @@ public:
         // FGD2
         kFGD2GammaInAntiNuMode,
 
+        // P0D, water mode irrelevant
+        kP0DNuMuCC,
+
         kP0DWaterNuMuCC,
         kP0DWaterNuMuCC1Track,
         kP0DWaterNuMuCCNTracks,
@@ -197,12 +200,11 @@ public:
     Int_t GetP0DAirNuMuBkgInAntiNuModeCCNTracks() const {return GetP0DAirNuMuBkgInAntiNuModeCCNTracksEnum();}
 
     Bool_t IsP0DNuMuSample(const SampleId::SampleEnum &testEnum) const;
-    Bool_t IsP0DNuMuBkgSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DNuMuBkgInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DNuMuBarInAntiNuModeSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DWaterSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DAirSample(const SampleId::SampleEnum &testEnum) const;
-    inline Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum)||IsP0DNuMuBkgSample(testEnum);}
+    inline Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum);}
     inline Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuBkgInAntiNuModeSample(testEnum)||IsP0DNuMuBarInAntiNuModeSample(testEnum);}
 
     const char* GetLabelName(const SampleId::SampleEnum &testEnum) const;
