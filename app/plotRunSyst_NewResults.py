@@ -36,14 +36,7 @@ BLACK = int(1)
 
 # Classes from P0DBANFF library
 CONFIGURATION = None
-ENGINE = None
 INTERFACE = None
-SAMPLEIDS = None
-T2KPOT = None
-T2KDATAMC = None
-XML = None
-HEPCONSTANTS = None
-CUTS = None
 
 
 def main(argv):
@@ -58,32 +51,35 @@ def main(argv):
     LoadGlobalConfigurations(configFile)
 
     binningLocation = '%s/config/Binning.xml' % P0DBANFFROOT
-    cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, XML)
-    Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, XML)
-    pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, XML)
-    pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, XML)
-    cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, XML)
-    thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, XML)
-    p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, XML)
-    p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, XML)
-    p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, XML)
+    xmlTools = ROOT.XMLTools()
+    cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, xmlTools)
+    Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, xmlTools)
+    pMu_TN328_AnaBins = ROOT.AnalysisBins('TN328Momentum', binningLocation, xmlTools)
+    pMu_AnaBins = ROOT.AnalysisBins('Momentum', binningLocation, xmlTools)
+    cosThetaMu_TN328_AnaBins = ROOT.AnalysisBins('TN328CosTheta', binningLocation, xmlTools)
+    thetaMu_AnaBins = ROOT.AnalysisBins('Theta', binningLocation, xmlTools)
+    p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, xmlTools)
+    p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, xmlTools)
+    p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, xmlTools)
 
-    P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, XML)
-    P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, XML)
-    P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, XML)
-    P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, XML)
+    P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, xmlTools)
+    P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, xmlTools)
     P0DFitFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFitFHC_pMu_AnaBins,
                                                              P0DFitFHC_cosThetaMu_AnaBins)
-    P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins,
-                                                             P0DCovFHC_cosThetaMu_AnaBins)
+    # P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, xmlTools)
+    # P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, xmlTools)
+    # P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins,
+    #                                                          P0DCovFHC_cosThetaMu_AnaBins)
 
     evts_p_bin = 'Events / bin'
     mc_data_sample_dict_MC_key = 'MC'
     mc_data_sample_dict_DATA_key = 'DATA'
 
+    sampleIds = ROOT.SampleId()
+
     for current_sampleID in SELECTIONLABELSDICT.keys():
         global SELECTIONSAVENAME
-        if not RunWithCurrentSample(XML, current_sampleID):
+        if not RunWithCurrentSample(current_sampleID):
             continue
         INTERFACE.Announce(INTERFACE, '-----------------------------------')
         INTERFACE.Announce(INTERFACE, '--- You can ignore these errors ---')
@@ -95,20 +91,23 @@ def main(argv):
 
         mc_data_sample_dict = dict()
         for sample_name in mc_samples_dict.keys():
-            if TN208_ANALYSIS and \
-                    ('Air' in sample_name or 'Water-Out' in sample_name):
-                continue
-            if TN208_ANALYSIS and current_sampleID \
-                    == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC() and \
-                    'FHC' in sample_name:
-                continue
-            if TN208_ANALYSIS and \
-                    current_sampleID == SAMPLEIDS.GetP0DWaterNuMuCC() and \
-                    'RHC' in sample_name:
-                continue
-            if TN208_ANALYSIS and current_sampleID \
-                    == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC():
-                continue
+            if TN208_ANALYSIS:
+                # Must be CC-Inc
+                if not (current_sampleID == sampleIds.GetP0DWaterNuMuCC() or
+                        current_sampleID == sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC()):
+                    continue
+                # Catch if running with water-out mode
+                if 'Air' in sample_name or 'Water-Out' in sample_name:
+                    continue
+                # Must be numubar in RHC
+                if (current_sampleID == sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC() and
+                        'FHC' in sample_name):
+                    continue
+                # Must be numu in FHC
+                if (current_sampleID == sampleIds.GetP0DWaterNuMuCC() and
+                        'RHC' in sample_name):
+                    continue
+
             # These store the Chains for numu_FHC numu_RHC, numubar_FHC, and numubar_RHC
             mc_data_sample_dict[sample_name] = \
                 {
@@ -131,21 +130,21 @@ def main(argv):
         for smpls in mc_data_sample_dict.values():
             mc_sample = smpls[mc_data_sample_dict_MC_key]['Magnet']
             # avoid making empty plots
-            if SAMPLEIDS.IsP0DFHCSample(current_sampleID) and \
+            if sampleIds.IsP0DFHCSample(current_sampleID) and \
                     not mc_sample.CPPClass.is_FHC:
                 continue
-            if SAMPLEIDS.IsP0DRHCSample(current_sampleID) and \
+            if sampleIds.IsP0DRHCSample(current_sampleID) and \
                     mc_sample.CPPClass.is_FHC:
                 continue
-            if SAMPLEIDS.IsP0DWaterSample(current_sampleID) and \
+            if sampleIds.IsP0DWaterSample(current_sampleID) and \
                     ('Air' in mc_sample.CPPClass.plotTitle or
                         'Water-Out' in mc_sample.CPPClass.plotTitle):
                 continue
-            if SAMPLEIDS.IsP0DAirSample(current_sampleID) and not \
+            if sampleIds.IsP0DAirSample(current_sampleID) and not \
                     ('Air' in mc_sample.CPPClass.plotTitle or
                         'Water-Out' in mc_sample.CPPClass.plotTitle):
                 continue
-            print mc_sample.CPPClass.plotTitle
+            print 'mc_sample.CPPClass.plotTitle =', mc_sample.CPPClass.plotTitle
             data_pot_exponent = INTERFACE.\
                 GetExponentBase10(mc_sample.CPPClass.data_pot)
             data_pot_mantissa = INTERFACE.\
@@ -165,35 +164,37 @@ def main(argv):
                 make_mc_only_H2D(smpls, all_selection_sets[0], P0DFitFHC_pMu_cosThetaMu_AnaBins2D,
                                  hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_MC_only')
                 del hist2D_pmu_costhetamu
-            if CONFIGURATION.GetAttribBool('DRAW_P0DCOVFHC_PMU_COSTHETAMU'):
-                hist2D_pmu_costhetamu = ROOTH2()
-                hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
-                hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
-                hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
-                hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
-                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCovFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
-                make_mc_only_H2D(smpls, all_selection_sets[0], P0DCovFHC_pMu_cosThetaMu_AnaBins2D,
-                                 hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
+            # if CONFIGURATION.GetAttribBool('DRAW_P0DCOVFHC_PMU_COSTHETAMU'):
+            #     hist2D_pmu_costhetamu = ROOTH2()
+            #     hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
+            #     hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
+            #     hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
+            #     hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
+            #     ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCovFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
+            #     make_mc_only_H2D(smpls, all_selection_sets[0], P0DCovFHC_pMu_cosThetaMu_AnaBins2D,
+            #                      hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
 
             for a_selection_set in all_selection_sets:
                 selection_name = ROOT.TString(a_selection_set[0].name)
+                print 'selection_name =', selection_name
                 if selection_name.Contains('LeptonCandidateTruePDG'):
                     if not PLOTLEPTONCANDIDATETRUEPDG:
                         continue
                 if selection_name.Contains('NEUTNuReactionCodes'):
                     if not PLOTNEUTNUREACTIONCODES:
                         continue
-                    if not (SAMPLEIDS.IsP0DNuMuSample(current_sampleID)
-                            or SAMPLEIDS.IsP0DNuMuBkgInAntiNuModeSample(current_sampleID)):
+                    if not (sampleIds.IsP0DNuMuSample(current_sampleID)
+                            or sampleIds.IsP0DNuMuBkgInAntiNuModeSample(current_sampleID)):
                         continue
                 if selection_name.Contains('NEUTAntiNuReactionCodes'):
                     if not PLOTNEUTANTINUREACTIONCODES:
                         continue
-                    if not SAMPLEIDS.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
+                    if not sampleIds.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
                         continue
                 if selection_name.Contains('Topology'):
                     if not PLOTTOPOLOGY:
                         continue
+                print 'Plotting', selection_name
 
                 # neutrino energy
                 if CONFIGURATION.GetAttribBool('DRAW_ENU'):
@@ -221,7 +222,8 @@ def main(argv):
                     else:
                         make_mc_only_stack(smpls, a_selection_set,
                                            pMu_TN328_AnaBins,
-                                           histstack_pMu_TN328)
+                                           histstack_pMu_TN328,
+                                           'recoP_mu_TN328')
 
                 # lepton candidate momentum
                 if CONFIGURATION.GetAttribBool('DRAW_PMU'):
@@ -365,6 +367,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     Saved as "save_title".root  and .png (str)
     """
 
+    coordinates = ROOT.CanvasCoordinates()
     mc_sample = evt_sample['MC']['Magnet']
     sand_sample = evt_sample['MC']['Sand']
     data_sample = evt_sample['DATA']
@@ -376,9 +379,10 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         save_as += '_fluxtuned'
     if APPLY_EVENT_WEIGHTS:
         save_as += '_systematicweighted'
+    coordinates = ROOT.CanvasCoordinates()
     canvas = ROOT.TCanvas("canvas", "", 800, 600)
-    legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
-                     COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
+    legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
+                     coordinates.Legend_RHS_X2, coordinates.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
     legend.SetFillStyle(0)
     legend.SetLineColor(0)
@@ -414,8 +418,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     anaBins.Reset()
     anaBins.Sumw2(False)
     data_integral = data_hist.Integral(1, data_hist.GetNbinsX())
-    data_stats = TLegend(COORDS.PaveStats_Data_X1, COORDS.PaveStats_Data_Y1,
-                         COORDS.PaveStats_Data_X2, COORDS.PaveStats_Data_Y2,
+    data_stats = TLegend(coordinates.PaveStats_Data_X1, coordinates.PaveStats_Data_Y1,
+                         coordinates.PaveStats_Data_X2, coordinates.PaveStats_Data_Y2,
                          'Integral %d' % data_integral)
     data_stats.SetBorderSize(1)
     data_stats.SetFillColor(0)
@@ -489,8 +493,8 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_total.Add(a_hist)
 
     mc_integral = h_total.Integral(1, h_total.GetNbinsX())
-    mc_stats = TLegend(COORDS.PaveStats_MC_X1, COORDS.PaveStats_MC_Y1,
-                       COORDS.PaveStats_MC_X2, COORDS.PaveStats_MC_Y2,
+    mc_stats = TLegend(coordinates.PaveStats_MC_X1, coordinates.PaveStats_MC_Y1,
+                       coordinates.PaveStats_MC_X2, coordinates.PaveStats_MC_Y2,
                        'Integral %.2f' % mc_integral)
     mc_stats.SetBorderSize(1)
     mc_stats.SetFillColor(0)
@@ -622,13 +626,15 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     Saved as save_title.root
     """
 
+    coordinates = ROOT.CanvasCoordinates()
     mc_sample = evt_sample['MC']['Magnet']
     sand_sample = evt_sample['MC']['Sand']
 
-    save_as = '%s_%s_%s' % (SELECTIONSAVENAME, save_title, mc_sample.CPPClass.saveTitle)
+    save_as = '%s_%s_MC_only_%s_%s' % (SELECTIONSAVENAME, save_title, true_selections[0].name, mc_sample.CPPClass.saveTitle)
+    print 'save_as =', save_as
     canvas = ROOT.TCanvas("canvas", "", 800, 600)
-    legend = TLegend(COORDS.Legend_RHS_X1, COORDS.Legend_RHS_Y1,
-                     COORDS.Legend_RHS_X2, COORDS.Legend_RHS_Y2,
+    legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
+                     coordinates.Legend_RHS_X2, coordinates.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
     legend.SetFillStyle(0)
     legend.SetLineColor(0)
@@ -640,6 +646,8 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     mc_hists = list()
     # MC loop over true_selections to create stack,
     #    first entry is full selection
+
+    print 'selection.cuts =', true_selections[0].cuts.GetTitle()
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
@@ -870,25 +878,27 @@ def GetMonteCarloSamples(sampleID):
     }
 
     """
+    t2kPOT = ROOT.TotalPOT()
     RunSyst_New_TTree = 'all'
     file_path = getenv('SYSTEMATICSROOT')
 
-    chn_SANDRun3AirFHC = T2KDATAMC.SANDFHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_SANDRun3AirRHC = T2KDATAMC.SANDRHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Air = T2KDATAMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun2Wtr = T2KDATAMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun3bAir = T2KDATAMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun3cAir = T2KDATAMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun4Air = T2KDATAMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun4Wtr = T2KDATAMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun5cWtr = T2KDATAMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun6bAir = T2KDATAMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun6cAir = T2KDATAMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun6dAir = T2KDATAMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun6eAir = T2KDATAMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    chn_NEUTRun7bWtr = T2KDATAMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    # chn_NEUTRun8Wtr = T2KDATAMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
-    # chn_NEUTRun8Air = T2KDATAMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    t2kDataMC = ROOT.T2KDataMC()
+    chn_SANDRun3AirFHC = t2kDataMC.SANDFHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_SANDRun3AirRHC = t2kDataMC.SANDRHC.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Air = t2kDataMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun2Wtr = t2kDataMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun3bAir = t2kDataMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun3cAir = t2kDataMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun4Air = t2kDataMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun4Wtr = t2kDataMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun5cWtr = t2kDataMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun6cAir = t2kDataMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun6dAir = t2kDataMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun7bWtr = t2kDataMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun8Wtr = t2kDataMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path)
+    chn_NEUTRun8Air = t2kDataMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path)
 
     # FHC, P0D water-in
     chn_FHC_Wtr = chn_NEUTRun4Wtr
@@ -898,14 +908,14 @@ def GetMonteCarloSamples(sampleID):
     FHC_Wtr.CPPClass.is_FHC = True
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_NEUTRun2Wtr)
-        # chn_FHC_Wtr.Add(chn_NEUTRun8Wtr)
-        FHC_Wtr.CPPClass.scale = T2KPOT.GetPOTFHCWaterData()/T2KPOT.GetPOTFHCWaterMC()
-        FHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTFHCWaterData()
-        FHC_Wtr_Snd.CPPClass.scale = T2KPOT.GetPOTFHCWaterData()/T2KPOT.GetPOTFHCAirSandMC()
+        chn_FHC_Wtr.Add(chn_NEUTRun8Wtr)
+        FHC_Wtr.CPPClass.scale = t2kPOT.GetPOTFHCWaterData()/t2kPOT.GetPOTFHCWaterMC()
+        FHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTFHCWaterData()
+        FHC_Wtr_Snd.CPPClass.scale = t2kPOT.GetPOTFHCWaterData()/t2kPOT.GetPOTFHCAirSandMC()
     else:
-        FHC_Wtr.CPPClass.scale = T2KPOT.GetPOTRun4WaterData()/T2KPOT.GetPOTRun4WaterMC()
-        FHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRun4WaterData()
-        FHC_Wtr_Snd.CPPClass.scale = T2KPOT.GetPOTRun4WaterData()/T2KPOT.GetPOTFHCAirSandMC()
+        FHC_Wtr.CPPClass.scale = t2kPOT.GetPOTRun4WaterData()/t2kPOT.GetPOTRun4WaterMC()
+        FHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRun4WaterData()
+        FHC_Wtr_Snd.CPPClass.scale = t2kPOT.GetPOTRun4WaterData()/t2kPOT.GetPOTFHCAirSandMC()
 
     # FHC, P0D water-out
     if not TN208_ANALYSIS:
@@ -914,12 +924,13 @@ def GetMonteCarloSamples(sampleID):
         FHC_Air_Snd = sample(chn_SANDRun3AirFHC, SELECTIONLABELSDICT[sampleID] + ' Water-Out, Sand', 'fhc_air_sand')
         FHC_Air.CPPClass.is_FHC = True
         FHC_Air_Snd.CPPClass.is_FHC = True
+        chn_FHC_Air.Add(chn_NEUTRun2Air)
         chn_FHC_Air.Add(chn_NEUTRun3bAir)
         chn_FHC_Air.Add(chn_NEUTRun3cAir)
-        chn_FHC_Air.Add(chn_NEUTRun2Air)
-        FHC_Air.CPPClass.scale = T2KPOT.GetPOTFHCAirData()/T2KPOT.GetPOTFHCAirMC()
-        FHC_Air.CPPClass.data_pot = T2KPOT.GetPOTFHCAirData()
-        FHC_Air_Snd.CPPClass.scale = T2KPOT.GetPOTFHCAirData()/T2KPOT.GetPOTFHCAirSandMC()
+        chn_FHC_Air.Add(chn_NEUTRun8Air)
+        FHC_Air.CPPClass.scale = t2kPOT.GetPOTFHCAirData()/t2kPOT.GetPOTFHCAirMC()
+        FHC_Air.CPPClass.data_pot = t2kPOT.GetPOTFHCAirData()
+        FHC_Air_Snd.CPPClass.scale = t2kPOT.GetPOTFHCAirData()/t2kPOT.GetPOTFHCAirSandMC()
 
     # RHC, P0D water-in
     chn_RHC_Wtr = chn_NEUTRun5cWtr
@@ -928,13 +939,13 @@ def GetMonteCarloSamples(sampleID):
     RHC_Wtr.CPPClass.is_FHC = False
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_NEUTRun7bWtr)
-        RHC_Wtr.CPPClass.scale = T2KPOT.GetPOTRHCWaterData() / T2KPOT.GetPOTRHCWaterMC()
-        RHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRHCWaterData()
-        RHC_Wtr_Snd.CPPClass.scale = T2KPOT.GetPOTRHCWaterData() / T2KPOT.GetPOTRHCAirSandMC()
+        RHC_Wtr.CPPClass.scale = t2kPOT.GetPOTRHCWaterData() / t2kPOT.GetPOTRHCWaterMC()
+        RHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRHCWaterData()
+        RHC_Wtr_Snd.CPPClass.scale = t2kPOT.GetPOTRHCWaterData() / t2kPOT.GetPOTRHCAirSandMC()
     else:
-        RHC_Wtr.CPPClass.scale = T2KPOT.GetPOTRun5cWaterData() / T2KPOT.GetPOTRun5cWaterMC()
-        RHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRun5cWaterData()
-        RHC_Wtr_Snd.CPPClass.scale = T2KPOT.GetPOTRun5cWaterData() / T2KPOT.GetPOTRHCAirSandMC()
+        RHC_Wtr.CPPClass.scale = t2kPOT.GetPOTRun5cWaterData() / t2kPOT.GetPOTRun5cWaterMC()
+        RHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRun5cWaterData()
+        RHC_Wtr_Snd.CPPClass.scale = t2kPOT.GetPOTRun5cWaterData() / t2kPOT.GetPOTRHCAirSandMC()
 
     # RHC, P0D water-out
     if not TN208_ANALYSIS:
@@ -944,11 +955,11 @@ def GetMonteCarloSamples(sampleID):
         chn_RHC_Air.Add(chn_NEUTRun6eAir)
         RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'rhc_air')
         RHC_Air.CPPClass.is_FHC = False
-        RHC_Air.CPPClass.data_pot = T2KPOT.GetPOTRHCAirData()
-        RHC_Air.CPPClass.scale = T2KPOT.GetPOTRHCAirData()/T2KPOT.GetPOTRHCAirMC()
+        RHC_Air.CPPClass.data_pot = t2kPOT.GetPOTRHCAirData()
+        RHC_Air.CPPClass.scale = t2kPOT.GetPOTRHCAirData()/t2kPOT.GetPOTRHCAirMC()
         RHC_Air_Snd = sample(chn_SANDRun3AirRHC, SELECTIONLABELSDICT[sampleID] + ' Water-Out, Sand', 'rhc_air_sand')
         RHC_Air_Snd.CPPClass.is_FHC = False
-        RHC_Air_Snd.CPPClass.scale = T2KPOT.GetPOTRHCAirData() / T2KPOT.GetPOTRHCAirSandMC()
+        RHC_Air_Snd.CPPClass.scale = t2kPOT.GetPOTRHCAirData() / t2kPOT.GetPOTRHCAirSandMC()
 
     all_samples = {
             'FHC_Wtr': {'Magnet': FHC_Wtr, 'Sand': FHC_Wtr_Snd},
@@ -974,47 +985,53 @@ def GetDATAsamples(sampleID):
                  'RHC_Air': RHC_Air
     }
     """
+    t2kPOT = ROOT.TotalPOT()
+    t2kDataMC = ROOT.T2KDataMC()
     file_path = getenv('SYSTEMATICSROOT')
     RunSyst_New_DATA_TTree = 'nominal'
-    chn_DATARun2Air = T2KDATAMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun2Wtr = T2KDATAMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun3bAir = T2KDATAMC.RUN3BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun3cAir = T2KDATAMC.RUN3CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun4Air = T2KDATAMC.RUN4ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun4Wtr = T2KDATAMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun5cWtr = T2KDATAMC.RUN5CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun6bAir = T2KDATAMC.RUN6BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun6cAir = T2KDATAMC.RUN6CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun6dAir = T2KDATAMC.RUN6DDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun6eAir = T2KDATAMC.RUN6EDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
-    chn_DATARun7bWtr = T2KDATAMC.RUN7BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Air = t2kDataMC.RUN2ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun2Wtr = t2kDataMC.RUN2WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun3bAir = t2kDataMC.RUN3BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun3cAir = t2kDataMC.RUN3CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun4Air = t2kDataMC.RUN4ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun4Wtr = t2kDataMC.RUN4WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun5cWtr = t2kDataMC.RUN5CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun6bAir = t2kDataMC.RUN6BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun6cAir = t2kDataMC.RUN6CDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun6dAir = t2kDataMC.RUN6DDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun6eAir = t2kDataMC.RUN6EDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun7bWtr = t2kDataMC.RUN7BDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun8Wtr = t2kDataMC.RUN8WDATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
+    chn_DATARun8Air = t2kDataMC.RUN8ADATA.GetAllChainsFrom(RunSyst_New_DATA_TTree, file_path)
 
     chn_FHC_Wtr = chn_DATARun4Wtr
     FHC_Wtr = sample(chn_FHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'fhc_water')
     FHC_Wtr.CPPClass.is_FHC = True
     if not TN208_ANALYSIS:
         chn_FHC_Wtr.Add(chn_DATARun2Wtr)
-        FHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTFHCWaterData()
+        chn_FHC_Wtr.Add(chn_DATARun8Wtr)
+        FHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTFHCWaterData()
     else:
-        FHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRun4WaterData()
+        FHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRun4WaterData()
 
     if not TN208_ANALYSIS:
         chn_FHC_Air = chn_DATARun4Air
         FHC_Air = sample(chn_FHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'fhc_air')
-        FHC_Air.CPPClass.data_pot = T2KPOT.GetPOTFHCAirData()
+        FHC_Air.CPPClass.data_pot = t2kPOT.GetPOTFHCAirData()
         FHC_Air.CPPClass.is_FHC = True
+        chn_FHC_Air.Add(chn_DATARun2Air)
         chn_FHC_Air.Add(chn_DATARun3bAir)
         chn_FHC_Air.Add(chn_DATARun3cAir)
-        chn_FHC_Air.Add(chn_DATARun2Air)
+        chn_FHC_Air.Add(chn_DATARun8Air)
 
     chn_RHC_Wtr = chn_DATARun5cWtr
     RHC_Wtr = sample(chn_RHC_Wtr, SELECTIONLABELSDICT[sampleID] + ' Water-In', 'rhc_water')
     RHC_Wtr.CPPClass.is_FHC = False
     if not TN208_ANALYSIS:
         chn_RHC_Wtr.Add(chn_DATARun7bWtr)
-        RHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRHCWaterData()
+        RHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRHCWaterData()
     else:
-        RHC_Wtr.CPPClass.data_pot = T2KPOT.GetPOTRun5cWaterData()
+        RHC_Wtr.CPPClass.data_pot = t2kPOT.GetPOTRun5cWaterData()
 
     if not TN208_ANALYSIS:
         chn_RHC_Air = chn_DATARun6bAir
@@ -1022,7 +1039,7 @@ def GetDATAsamples(sampleID):
         chn_RHC_Air.Add(chn_DATARun6dAir)
         chn_RHC_Air.Add(chn_DATARun6eAir)
         RHC_Air = sample(chn_RHC_Air, SELECTIONLABELSDICT[sampleID] + ' Water-Out', 'rhc_air')
-        RHC_Air.CPPClass.data_pot = T2KPOT.GetPOTRHCAirData()
+        RHC_Air.CPPClass.data_pot = t2kPOT.GetPOTRHCAirData()
         RHC_Air.CPPClass.is_FHC = False
 
     all_samples = {
@@ -1041,95 +1058,105 @@ def GetNeutrinoSelectionList(sampleID):
     Get a list of the selections (selection_info) for the neutrino species
     """
     more_cuts = TCut()
+    cuts = ROOT.DefineCuts()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        more_cuts += CUTS.FVTN208
+        more_cuts += cuts.FVTN208
 
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillNeutrinoSelections('TrueNuPDG', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    sampleIds = ROOT.SampleId()
+    cuts.FillNeutrinoSelections('TrueNuPDG', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     neutrino_selections = list()
-    for index in range(0, CUTS.NMAXNEUTRINOSELECTIONS):
-        neutrino_selections.append(CUTS.GetNeutrinoSelection(index))
+    for index in range(0, cuts.NMAXNEUTRINOSELECTIONS):
+        neutrino_selections.append(cuts.GetNeutrinoSelection(index))
     return neutrino_selections
 
 
 def GetLeptonCandidateSelectionList(sampleID):
     """Make a list of lepton candidate cuts by particle"""
     more_cuts = TCut()
+    cuts = ROOT.DefineCuts()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        more_cuts += CUTS.FVTN208
+        more_cuts += cuts.FVTN208
 
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillParticleSelections('LeptonCandidateTruePDG', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    sampleIds = ROOT.SampleId()
+    cuts.FillParticleSelections('LeptonCandidateTruePDG', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     particle_selections = list()
-    for index in range(0, CUTS.NMAXPARTICLESELECTIONS):
-        particle_selections.append(CUTS.GetParticleSelection(index))
+    for index in range(cuts.NMAXPARTICLESELECTIONS):
+        particle_selections.append(cuts.GetParticleSelection(index))
     return particle_selections
 
 
 def GetNEUTNuSelectionList(sampleID):
     """Make a list of true reaction code cuts (Nu)"""
     more_cuts = TCut()
+    cuts = ROOT.DefineCuts()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        more_cuts += CUTS.FVTN208
+        more_cuts += cuts.FVTN208
 
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillNEUTNuSelections('NEUTNuReactionCodes', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    sampleIds = ROOT.SampleId()
+    cuts.FillNEUTNuSelections('NEUTNuReactionCodes', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     neut_nu_selections = list()
-    for index in range(CUTS.NMAXNEUTSELECTIONS):
-        neut_nu_selections.append(CUTS.GetNEUTNuSelection(index))
+    for index in range(cuts.NMAXNEUTSELECTIONS):
+        neut_nu_selections.append(cuts.GetNEUTNuSelection(index))
     return neut_nu_selections
 
 
 def GetNEUTAntiNuSelectionList(sampleID):
     """Make a list of true reaction code cuts (Anti-nu)"""
     more_cuts = TCut()
+    cuts = ROOT.DefineCuts()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        more_cuts += CUTS.FVTN208
+        more_cuts += cuts.FVTN208
 
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillNEUTAntiNuSelections('NEUTAntiNuReactionCodes', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    sampleIds = ROOT.SampleId()
+    cuts.FillNEUTAntiNuSelections('NEUTAntiNuReactionCodes', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     neut_antinu_selections = list()
-    for index in range(CUTS.NMAXNEUTSELECTIONS):
-        neut_antinu_selections.append(CUTS.GetNEUTAntiNuSelection(index))
+    for index in range(cuts.NMAXNEUTSELECTIONS):
+        neut_antinu_selections.append(cuts.GetNEUTAntiNuSelection(index))
     return neut_antinu_selections
 
 
 def GetTopologySelectionList(sampleID):
     """Make a list of true topology cuts """
     more_cuts = TCut()
+    cuts = ROOT.DefineCuts()
     if ADDITIONAL_CUTS and type(ADDITIONAL_CUTS) == TCut:
         more_cuts = ADDITIONAL_CUTS
 
     if TN208_ANALYSIS:
-        more_cuts += CUTS.FVTN208
+        more_cuts += cuts.FVTN208
 
     if USE_MOMENTUM_CUT:
         more_cuts += TCut('LeptonMomNom<=%s' % MOMENTUM_CUT_VALUE)
 
-    CUTS.FillTopologySelections('TrueTopology', SAMPLEIDS.GetLabelName(sampleID), sampleID, more_cuts)
+    sampleIds = ROOT.SampleId()
+    cuts.FillTopologySelections('TrueTopology', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     topology_selections = list()
-    for index in range(CUTS.NMAXTOPOLOGYSELECTIONS):
-        topology_selections.append(CUTS.GetTopologySelection(index))
+    for index in range(cuts.NMAXTOPOLOGYSELECTIONS):
+        topology_selections.append(cuts.GetTopologySelection(index))
     return topology_selections
 
 
@@ -1141,7 +1168,8 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     if len(anaBins.GetUnits()) < 1:
         return
     units = anaBins.GetUnits()
-    hstack.plot_var += '*%f' % HEPCONSTANTS.Convert(units)
+    hepConstants = ROOT.HEPConstants()
+    hstack.plot_var += '*%f' % hepConstants.Convert(units)
     hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
         y_title = 'Events / %s / (%s)'
@@ -1154,13 +1182,14 @@ def ConfigureROOTH2(hist2D, anaBins2D, pot_str):
     For the hist2D (ROOTH2), get options from anaBins2D (AnalysisBins2D)
     """
     unitsX, unitsY = None, None
+    hepConstants = ROOT.HEPConstants()
     if len(anaBins2D.anaBinsX.GetUnits()) > 1:
         unitsX = anaBins2D.anaBinsX.GetUnits()
-        hist2D.varX += '*%f' % HEPCONSTANTS.Convert(unitsX)
+        hist2D.varX += '*%f' % hepConstants.Convert(unitsX)
         hist2D.x_title += ' [%s]' % unitsX
     if len(anaBins2D.anaBinsY.GetUnits()) > 1:
         unitsY = anaBins2D.anaBinsY.GetUnits()
-        hist2D.varY += '*%f' % HEPCONSTANTS.Convert(unitsY)
+        hist2D.varY += '*%f' % hepConstants.Convert(unitsY)
         hist2D.y_title += ' [%s]' % unitsY
     if unitsX and unitsY:
         print 'anaBins2D.GetDivideByBinWidth() =', anaBins2D.GetDivideByBinWidth()
@@ -1176,26 +1205,17 @@ def LoadP0DBANFF():
     if len(P0DBANFFROOT) <= 0:
         print 'P0DBANFFROOT NOT exported. Please export it now'
         sys.exit(1)
-    global ENGINE
-    ENGINE = ROOT.TXMLEngine()
+    engine = ROOT.TXMLEngine()
     loadStatus = gSystem.Load("libP0DBANFF")
     if not (loadStatus == 1 or loadStatus == 0):
         print "Unable to load libP0DBANFF.so. gSystem.Load(\"libP0DBANFF\") returned", loadStatus
         sys.exit(1)
-    global INTERFACE, SAMPLEIDS, T2KPOT, T2KDATAMC
-    global XML, HEPCONSTANTS, CUTS, COORDS
+    global INTERFACE
     try:
         INTERFACE = ROOT.P0DBANFFInterface()
         INTERFACE.SetBatch(True)
         ROOT.gStyle.SetOptStat(0000)
         INTERFACE.LoadColorBlindPalette()
-        SAMPLEIDS = ROOT.SampleId()
-        T2KPOT = ROOT.TotalPOT()
-        T2KDATAMC = ROOT.T2KDataMC()
-        HEPCONSTANTS = ROOT.HEPConstants()
-        XML = ROOT.XMLTools()
-        CUTS = ROOT.DefineCuts()
-        COORDS = ROOT.CanvasCoordinates()
     except Exception as exc:
         print type(exc)
         print "unable to load libP0DBANFF.so"
@@ -1203,117 +1223,121 @@ def LoadP0DBANFF():
     global STACK_COLORS, BLACK
     BLACK = INTERFACE.kcbBlack
     STACK_COLORS = INTERFACE.GetStackColors()
+    del engine
 
 
 def LoadSampleIDs():
     """Using the SampleIds class, load the samples set at the top of file"""
     global SELECTIONLABELSDICT, SELECTIONSAVENAMEDICT
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCC()] = '#nu_{#mu} CCInc in FHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
+    sampleIds = ROOT.SampleId()
+    # SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuCC()] = '#nu_{#mu} CCInc in FHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
 
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
+    # SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
 
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg CCInc in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} Bkg CC1Tracks in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} Bkg CCNTracks in RHC'
+    # SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg CCInc in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} Bkg CC1Tracks in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} Bkg CCNTracks in RHC'
 
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCC()] = '#nu_{#mu} CCInc in FHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
+    # SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuCC()] = '#nu_{#mu} CCInc in FHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuCC1Track()] = '#nu_{#mu} CC1Track in FHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuCCNTracks()] = '#nu_{#mu} CCNTracks in FHC'
 
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
+    # SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC()] = '#bar{#nu}_{#mu} CCInc in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = '#bar{#nu}_{#mu} CC1Track in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
 
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} CCInc Bkg in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} CC1Track Bkg in RHC'
-    SELECTIONLABELSDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} CCNTracks Bkg in RHC'
+    # SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} CCInc Bkg in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} CC1Track Bkg in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} CCNTracks Bkg in RHC'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCC()] = 'numuCCIncWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCC1Track()] = 'numuCC1TrackWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuCCNTracks()] = 'numuCCNTracksWaterIn'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuCC()] = 'numuCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuCC1Track()] = 'numuCC1TrackWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuCCNTracks()] = 'numuCCNTracksWaterIn'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterIn'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterIn'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterIn'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterIn'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterIn'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCC()] = 'numuCCIncWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCC1Track()] = 'numuCC1TrackWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuCCNTracks()] = 'numuCCNTracksWaterOut'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCC()] = 'numuCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCC1Track()] = 'numuCC1TrackWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCCNTracks()] = 'numuCCNTracksWaterOut'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterOut'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterOut'
 
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterOut'
-    SELECTIONSAVENAMEDICT[SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterOut'
+    # SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterOut'
 
 
-def RunWithCurrentSample(xmlTools, sampleId):
+def RunWithCurrentSample(sampleId):
     """
     For all the various samples, check if the sampleId (int)
     will be plotted
     """
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCC():
+
+    sampleIds = ROOT.SampleId()
+    if sampleId == sampleIds.GetP0DWaterNuMuCC():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCC1Track():
+    if sampleId == sampleIds.GetP0DWaterNuMuCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuCCNTracks():
+    if sampleId == sampleIds.GetP0DWaterNuMuCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUCCNTRACKSSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC():
+    if sampleId == sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCC1Track():
+    if sampleId == sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBarInAntiNuModeCCNTracks():
+    if sampleId == sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC():
+    if sampleId == sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCC1Track():
+    if sampleId == sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks():
+    if sampleId == sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuCC():
+    if sampleId == sampleIds.GetP0DAirNuMuCC():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuCC1Track():
+    if sampleId == sampleIds.GetP0DAirNuMuCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuCCNTracks():
+    if sampleId == sampleIds.GetP0DAirNuMuCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUCCNTRACKSSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC():
+    if sampleId == sampleIds.GetP0DAirNuMuBarInAntiNuModeCC():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCC1Track():
+    if sampleId == sampleIds.GetP0DAirNuMuBarInAntiNuModeCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBarInAntiNuModeCCNTracks():
+    if sampleId == sampleIds.GetP0DAirNuMuBarInAntiNuModeCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC():
+    if sampleId == sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECCSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCC1Track():
+    if sampleId == sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC1Track():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION')
 
-    if sampleId == SAMPLEIDS.GetP0DAirNuMuBkgInAntiNuModeCCNTracks():
+    if sampleId == sampleIds.GetP0DAirNuMuBkgInAntiNuModeCCNTracks():
         return CONFIGURATION.GetAttribBool('RUNP0DAIRNUMUBKGINANTINUMODECCNTRACKSSELECTION')
 
     return False
@@ -1349,7 +1373,7 @@ def LoadGlobalConfigurations(configFile):
 
     global PLOTNEUTANTINUREACTIONCODES, PLOTTOPOLOGY
     PLOTNEUTANTINUREACTIONCODES = CONFIGURATION.GetAttribBool('PLOTNEUTANTINUREACTIONCODES')
-    PLOTTOPOLOGY = ('PLOTTOPOLOGY')
+    PLOTTOPOLOGY = CONFIGURATION.GetAttribBool('PLOTTOPOLOGY')
 
     global SHOW_LOGZ
     SHOW_LOGZ = CONFIGURATION.GetAttribBool('SHOW_LOGZ')
