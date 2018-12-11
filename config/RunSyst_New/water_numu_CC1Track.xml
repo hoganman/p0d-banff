@@ -15,10 +15,10 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_PMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_COSTHETAMU>
 
         <comment attr="#***************************************#"/>
@@ -55,6 +55,9 @@
         <PLOTTOPOLOGY>
             <value attr="1"/>
         </PLOTTOPOLOGY>
+        <PLOTNEUTNUREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTNUREACTIONCODES>
 
         <comment attr="#***************************************#"/>
         <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>
