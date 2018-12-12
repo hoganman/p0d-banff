@@ -9,15 +9,7 @@ ClassImp(DefineCuts)
 //**************************************************
 DefineCuts::~DefineCuts()
 //**************************************************
-{
-    //std::vector<PlottingSelectionInfo*>::const_iterator it;
-    //for(it = ParticleSelections.begin(); it != ParticleSelections.end(); ++it)
-    //    if(*it) delete *it;
-    //for(it = NeutrinoSelections.begin(); it != NeutrinoSelections.end(); ++it)
-    //    if(*it) delete *it;
-    //for(it = NEUTNuSelections.begin(); it != NEUTNuSelections.end(); ++it)
-    //    if(*it) delete *it;
-}
+{}
 
 //**************************************************
 void DefineCuts::SetCuts()
@@ -740,7 +732,7 @@ void DefineCuts::FillNEUTCCQELikeSelections(const TString &name, const TString &
 
     if(entry != NMAXNEUTCCQELIKESELECTIONS)
     {
-        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTCCQELikeSelection");
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTCCQELikeSelections");
     }
 
 }

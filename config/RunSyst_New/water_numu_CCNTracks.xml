@@ -53,11 +53,14 @@
         <comment attr="       Draw by category"                  />
         <comment attr="#***************************************#"/>
         <PLOTTOPOLOGY>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTTOPOLOGY>
         <PLOTNEUTNUREACTIONCODES>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTNEUTNUREACTIONCODES>
+        <PLOTNEUTCCQELIKEREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTCCQELIKEREACTIONCODES>
 
         <comment attr="#***************************************#"/>
         <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>

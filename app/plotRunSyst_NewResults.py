@@ -105,12 +105,12 @@ def main(argv):
         neut_nu_selections = GetNEUTNuSelectionList(current_sampleID)
         neut_antinu_selections = GetNEUTAntiNuSelectionList(current_sampleID)
         topology_selecitons = GetTopologySelectionList(current_sampleID)
-        ccqelike_selections = GetNEUTCCQELikeSelectionList(current_sampleID)
+        neut_ccqelike_selections = GetNEUTCCQELikeSelectionList(current_sampleID)
 
         # these are data/mc histograms
         all_selection_sets = [particle_selections, neut_antinu_selections,
                               neut_nu_selections, topology_selecitons,
-                              ccqelike_selections]
+                              neut_ccqelike_selections]
 
         # loop over sample classes
         for smpls in mc_data_sample_dict.values():
@@ -161,26 +161,33 @@ def main(argv):
 
             for a_selection_set in all_selection_sets:
                 selection_name = TString(a_selection_set[0].name)
+                print 'pre - check selection_name =', selection_name
                 if selection_name.Contains('LeptonCandidateTruePDG'):
                     if not CONFIGURATION.GetAttribBool('PLOTLEPTONCANDIDATETRUEPDG'):
                         continue
-                if selection_name.Contains('NEUTNuReactionCodes'):
+                elif selection_name.Contains('NEUTNuReactionCodes'):
                     if not CONFIGURATION.GetAttribBool('PLOTNEUTNUREACTIONCODES'):
                         continue
                     if not (sampleIds.IsP0DNuMuSample(current_sampleID)
                             or sampleIds.IsP0DNuMuBkgInAntiNuModeSample(current_sampleID)):
                         continue
-                if selection_name.Contains('NEUTAntiNuReactionCodes'):
+                elif selection_name.Contains('NEUTAntiNuReactionCodes'):
                     if not CONFIGURATION.GetAttribBool('PLOTNEUTANTINUREACTIONCODES'):
                         continue
                     if not sampleIds.IsP0DNuMuBarInAntiNuModeSample(current_sampleID):
                         continue
-                if selection_name.Contains('Topology'):
+                elif selection_name.Contains('Topology'):
                     if not CONFIGURATION.GetAttribBool('PLOTTOPOLOGY'):
                         continue
-                if selection_name.Contains('NEUTCCQELike'):
+                elif selection_name.Contains('NEUTCCQELike'):
                     if not CONFIGURATION.GetAttribBool('PLOTNEUTCCQELIKEREACTIONCODES'):
                         continue
+                    else:
+                        print 'Plotting with PLOTNEUTCCQELIKEREACTIONCODES'
+                else:
+                    print 'Could not determine which selection to use, continuing'
+                    continue
+
                 print 'Plotting', selection_name
 
                 # neutrino energy
@@ -1073,7 +1080,7 @@ def GetNEUTNuSelectionList(sampleID):
     more_cuts = GetAllAdditionalCuts(cuts)
     cuts.FillNEUTNuSelections('NEUTNuReactionCodes', sampleIds.GetLabelName(sampleID), sampleID, more_cuts)
     neut_nu_selections = list()
-    for index in range(cuts.NMAXNEUTSELECTIONS):
+    for index in range(cuts.NMAXNEUTNUSELECTIONS):
         neut_nu_selections.append(cuts.GetNEUTNuSelection(index))
     return neut_nu_selections
 
@@ -1087,7 +1094,7 @@ def GetNEUTAntiNuSelectionList(sampleID):
                                   sampleIds.GetLabelName(sampleID), sampleID,
                                   more_cuts)
     neut_antinu_selections = list()
-    for index in range(cuts.NMAXNEUTSELECTIONS):
+    for index in range(cuts.NMAXNEUTANTINUSELECTIONS):
         neut_antinu_selections.append(cuts.GetNEUTAntiNuSelection(index))
     return neut_antinu_selections
 
@@ -1111,9 +1118,9 @@ def GetNEUTCCQELikeSelectionList(sampleID):
     sampleIds = ROOT.SampleId()
     cuts = ROOT.DefineCuts()
     more_cuts = GetAllAdditionalCuts(cuts)
-    cuts.FillNEUTCCQELikeSelection('NEUTCCQELike',
-                                   sampleIds.GetLabelName(sampleID), sampleID,
-                                   more_cuts)
+    cuts.FillNEUTCCQELikeSelections('NEUTCCQELike',
+                                    sampleIds.GetLabelName(sampleID), sampleID,
+                                    more_cuts)
     ccqelike_selections = list()
     for index in range(cuts.NMAXNEUTCCQELIKESELECTIONS):
         ccqelike_selections.append(cuts.GetNEUTCCQELikeSelection(index))
@@ -1312,7 +1319,7 @@ def GetAllAdditionalCuts(cuts):
     """
     more_cuts = TCut()
     if CONFIGURATION.GetAttribBool('USE_ADDITIONAL_CUTS'):
-        more_cuts = TCut(CONFIGURATION.GetAttrib('ADDITIONAL_CUTS'))
+        more_cuts += TCut(CONFIGURATION.GetAttrib('ADDITIONAL_CUTS'))
 
     if CONFIGURATION.GetAttribBool('TN208_ANALYSIS'):
         more_cuts += cuts.FVTN208
