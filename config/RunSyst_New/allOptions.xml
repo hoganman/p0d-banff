@@ -90,6 +90,9 @@
         <PLOTNEUTANTINUREACTIONCODES>
             <value attr="0"/>
         </PLOTNEUTANTINUREACTIONCODES>
+        <PLOTNEUTCCQELIKEREACTIONCODES>
+            <value attr="0"/>
+        </PLOTNEUTCCQELIKEREACTIONCODES>
         <PLOTTOPOLOGY>
             <value attr="0"/>
         </PLOTTOPOLOGY>
@@ -116,6 +119,9 @@
         <comment attr="   If the user wants to apply an addition"/>
         <comment attr="   set of cuts"                           />
         <comment attr="#***************************************#"/>
+        <USE_ADDITIONAL_CUTS>
+            <value attr="0"/>
+        </USE_ADDITIONAL_CUTS>
         <ADDITIONAL_CUTS>
             <type attr="String"/>
             <value attr="None"/>

@@ -283,6 +283,8 @@ public:
     Int_t kNEUTNuP_NCQE; //51 : NEU,P --> NEU,P
     Int_t kNEUTNuN_NCQE; //52 : NEU,N --> NEU,N
 
+    Int_t kNEUTNu_Invalid; // 100
+
     // ***** NEUBAR CHARGED CURRENT *****
     // -- ELASTIC --
     Int_t kNEUTAntiNu_CCQE; //-1 : NEUBAR,N --> LEPTON-,P
@@ -340,6 +342,7 @@ public:
     Int_t kNEUTAntiNuP_NCQE; //-51 : NEUBAR,P --> NEUBAR,P
     Int_t kNEUTAntiNuN_NCQE; //-52 : NEUBAR,N --> NEUBAR,N
 
+    Int_t kNEUTAntiNu_Invalid; // -100
 
     /// Enumeration of all particles
     enum ParticleEnum {
@@ -394,10 +397,3 @@ public:
     ClassDef(HEPConstants, 1)
 };
 #endif
-
-
-
-
-
-
-

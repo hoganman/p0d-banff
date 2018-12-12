@@ -678,16 +678,16 @@ void DefineCuts::FillTopologySelections(const TString &name, const TString &titl
 }
 
 //**************************************************
-void DefineCuts::FillNEUTQELikeSelection(const TString &name, const TString &title,
+void DefineCuts::FillNEUTCCQELikeSelections(const TString &name, const TString &title,
        const SampleId::SampleEnum &sampleID, const TCut &additionalCuts)
 //**************************************************
 {
     std::vector<PlottingSelectionInfo*>::iterator it;
-    for(it = NEUTQELikeSelections.begin(); it != NEUTQELikeSelections.end(); ++it)
+    for(it = NEUTCCQELikeSelections.begin(); it != NEUTCCQELikeSelections.end(); ++it)
     {
         if(*it) delete *it;
     }
-    NEUTQELikeSelections.clear();
+    NEUTCCQELikeSelections.clear();
     TCut all_nom_sel_cut = GetNominalSelectionCut(sampleID);
     if(TString(all_nom_sel_cut.GetTitle()).Length() == 0)
     {
@@ -703,44 +703,44 @@ void DefineCuts::FillNEUTQELikeSelection(const TString &name, const TString &tit
         tOOFV_Correction = tOOFVTN208;
     }
 
-    NEUTQELikeSelections.resize(NMAXNEUTQELIKESELECTIONS);
+    NEUTCCQELikeSelections.resize(NMAXNEUTCCQELIKESELECTIONS);
     if(TString(additionalCuts.GetTitle()).Length() > 0)
         all_nom_sel_cut = all_nom_sel_cut && additionalCuts;
 
     UInt_t entry = 0;
     // all selection events
     PlottingSelectionInfo* all_nom_sel = new PlottingSelectionInfo(name, all_nom_sel_cut, title);
-    NEUTQELikeSelections[entry++] = all_nom_sel;
+    NEUTCCQELikeSelections[entry++] = all_nom_sel;
 
     TCut nu_ccqe_topology_sel_cut = all_nom_sel_cut && tNEUTNuCCQE && tFV_Correction;
     PlottingSelectionInfo* nu_ccqe_topology_sel = new PlottingSelectionInfo("nu_ccqe_topology_sel", nu_ccqe_topology_sel_cut, "#nu CCQE");
-    NEUTQELikeSelections[entry++] = nu_ccqe_topology_sel;
+    NEUTCCQELikeSelections[entry++] = nu_ccqe_topology_sel;
 
     TCut non_nu_ccqe_topology_sel_cut = all_nom_sel_cut && tNEUTNuNonCCQE && tFV_Correction;
     PlottingSelectionInfo* non_nu_ccqe_topology_sel = new PlottingSelectionInfo("non_nu_ccqe_topology_sel", non_nu_ccqe_topology_sel_cut, "#nu non-CCQE");
-    NEUTQELikeSelections[entry++] = non_nu_ccqe_topology_sel;
+    NEUTCCQELikeSelections[entry++] = non_nu_ccqe_topology_sel;
 
     TCut antinu_ccqe_topology_sel_cut = all_nom_sel_cut && tNEUTAntiNuCCQE && tFV_Correction;
     PlottingSelectionInfo* antinu_ccqe_topology_sel = new PlottingSelectionInfo("antinu_ccqe_topology_sel", antinu_ccqe_topology_sel_cut, "#bar{#nu} CCQE");
-    NEUTQELikeSelections[entry++] = antinu_ccqe_topology_sel;
+    NEUTCCQELikeSelections[entry++] = antinu_ccqe_topology_sel;
 
     TCut non_antinu_ccqe_topology_sel_cut = all_nom_sel_cut && tNEUTAntiNuNonCCQE && tFV_Correction;
     PlottingSelectionInfo* non_antinu_ccqe_topology_sel = new PlottingSelectionInfo("non_antinu_ccqe_topology_sel", non_antinu_ccqe_topology_sel_cut, "#bar{#nu} nonCCQE");
-    NEUTQELikeSelections[entry++] = non_antinu_ccqe_topology_sel;
+    NEUTCCQELikeSelections[entry++] = non_antinu_ccqe_topology_sel;
 
     // OOFV
     TCut oofv_sel_cut = all_nom_sel_cut && tOOFV_Correction;
     PlottingSelectionInfo* oofv_sel = new PlottingSelectionInfo("oofv_sel", oofv_sel_cut, "OOFV");
-    NEUTQELikeSelections[entry++] = oofv_sel;
+    NEUTCCQELikeSelections[entry++] = oofv_sel;
 
     // sand muons
     TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
     PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
-    NEUTQELikeSelections[entry++] = sandmu_sel;
+    NEUTCCQELikeSelections[entry++] = sandmu_sel;
 
-    if(entry != NMAXNEUTQELIKESELECTIONS)
+    if(entry != NMAXNEUTCCQELIKESELECTIONS)
     {
-        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTQELikeSelection");
+        P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillNEUTCCQELikeSelection");
     }
 
 }

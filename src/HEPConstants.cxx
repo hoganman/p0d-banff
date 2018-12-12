@@ -166,6 +166,7 @@ void HEPConstants::Init()
     kNEUTNuP_NCQE = 51; // NEU,P --> NEU,P
     kNEUTNuN_NCQE = 52; // NEU,N --> NEU,N
 
+    kNEUTNu_Invalid = 100; // 100
 
     // ***** NEUBAR CHARGED CURRENT *****
     // -- ELASTIC --
@@ -226,6 +227,7 @@ void HEPConstants::Init()
     kNEUTAntiNuP_NCQE = -51; // NEUBAR,P --> NEUBAR,P
     kNEUTAntiNuN_NCQE = -52; // NEUBAR,N --> NEUBAR,N
 
+    kNEUTAntiNu_Invalid = -100;
 }
 
 //**************************************************
