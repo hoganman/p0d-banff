@@ -144,7 +144,6 @@ def main(argv):
                     ('Air' in mc_sample.CPPClass.plotTitle or
                         'Water-Out' in mc_sample.CPPClass.plotTitle):
                 continue
-            print 'mc_sample.CPPClass.plotTitle =', mc_sample.CPPClass.plotTitle
             data_pot_exponent = INTERFACE.\
                 GetExponentBase10(mc_sample.CPPClass.data_pot)
             data_pot_mantissa = INTERFACE.\
@@ -176,7 +175,6 @@ def main(argv):
 
             for a_selection_set in all_selection_sets:
                 selection_name = ROOT.TString(a_selection_set[0].name)
-                print 'selection_name =', selection_name
                 if selection_name.Contains('LeptonCandidateTruePDG'):
                     if not PLOTLEPTONCANDIDATETRUEPDG:
                         continue
@@ -631,7 +629,6 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     sand_sample = evt_sample['MC']['Sand']
 
     save_as = '%s_%s_MC_only_%s_%s' % (SELECTIONSAVENAME, save_title, true_selections[0].name, mc_sample.CPPClass.saveTitle)
-    print 'save_as =', save_as
     canvas = ROOT.TCanvas("canvas", "", 800, 600)
     legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
                      coordinates.Legend_RHS_X2, coordinates.Legend_RHS_Y2,
@@ -647,7 +644,6 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     # MC loop over true_selections to create stack,
     #    first entry is full selection
 
-    print 'selection.cuts =', true_selections[0].cuts.GetTitle()
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
@@ -835,7 +831,6 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
     h_total = anaBins2D.GetTH2DClone("h_total_%s" % save_title)
     INTERFACE.PrettyUpTH2(h_total, hist2D.x_title, hist2D.y_title)
     new_title = '%s MC: %s' % (mc_sample.CPPClass.plotTitle, hist2D.z_title)
-    print 'new_title =', new_title
     h_total.SetTitle(new_title)
 
     for a_hist in mc_hists:

@@ -35,45 +35,51 @@ void DefineCuts::SetCuts()
     minSandCoords.SetXYZ(-10000., -10000., -280.e+3);  // in mm
     maxSandCoords.SetXYZ(+10000., +10000., -3500.);  // in mm
 
-    muMinusCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
-                samples.GetP0DWaterNuMuCC(), samples.GetP0DAirNuMuCC()));
-    muMinusCCSelection.SetName("#mu^{-} CC-Inc Selection Cut");
-
-    muPlusInRHCCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
-                samples.GetP0DWaterNuMuBarInAntiNuModeCC(), samples.GetP0DAirNuMuBarInAntiNuModeCC()));
-    muPlusInRHCCCSelection.SetName("#mu^{+} in RHC CC-Inc Selection Cut");
-
-    muMinusBkgInRHCCCSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
-                samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()));
-    muMinusBkgInRHCCCSelection.SetName("#mu^{-} Bkg in RHC CC-Inc Selection Cut");
-
-    muMinusCC1TrackSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusCC1TrackSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuCC1Track(), samples.GetP0DAirNuMuCC1Track()));
     muMinusCC1TrackSelection.SetName("#mu^{-} CC1Track Selection Cut");
 
-    muPlusInRHCCC1TrackSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muPlusInRHCCC1TrackSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBarInAntiNuModeCC1Track(), samples.GetP0DAirNuMuBarInAntiNuModeCC1Track()));
     muPlusInRHCCC1TrackSelection.SetName("#mu^{+} in RHC CC1Track Selection Cut");
 
-    muMinusBkgInRHCCC1TrackSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusBkgInRHCCC1TrackSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCC1Track(), samples.GetP0DAirNuMuBkgInAntiNuModeCC1Track()));
     muMinusBkgInRHCCC1TrackSelection.SetName("#mu^{-} Bkg in RHC CC1Track Selection Cut");
 
-    muMinusCCNTracksSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusCCNTracksSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuCCNTracks(), samples.GetP0DAirNuMuCCNTracks()));
     muMinusCCNTracksSelection.SetName("#mu^{-} CCNTracks Selection Cut");
 
-    muPlusInRHCCCNTracksSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muPlusInRHCCCNTracksSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBarInAntiNuModeCCNTracks(), samples.GetP0DAirNuMuBarInAntiNuModeCCNTracks()));
     muPlusInRHCCCNTracksSelection.SetName("#mu^{+} in RHC CCNTracks Selection Cut");
 
-    muMinusBkgInRHCCCNTracksSelection = TCut(TString::Format("SelectionNom==%d||SelectionNom==%d",
+    muMinusBkgInRHCCCNTracksSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks(), samples.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()));
     muMinusBkgInRHCCCNTracksSelection.SetName("#mu^{-} Bkg in RHC CCNTracks Selection Cut");
 
-    anyP0DSelection = muMinusCCSelection || muMinusBkgInRHCCCSelection || muPlusInRHCCCSelection ||
-                      muMinusCC1TrackSelection || muMinusBkgInRHCCC1TrackSelection || muPlusInRHCCC1TrackSelection ||
-                      muMinusCCNTracksSelection || muMinusBkgInRHCCCNTracksSelection || muPlusInRHCCCNTracksSelection;
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    muMinusCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
+                samples.GetP0DWaterNuMuCC(), samples.GetP0DAirNuMuCC()))
+                || muMinusCC1TrackSelection || muMinusCCNTracksSelection;
+    muMinusCCSelection.SetName("#mu^{-} CC-Inc Selection Cut");
+
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    muPlusInRHCCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
+                samples.GetP0DWaterNuMuBarInAntiNuModeCC(), samples.GetP0DAirNuMuBarInAntiNuModeCC()))
+                || muPlusInRHCCC1TrackSelection || muPlusInRHCCCNTracksSelection;
+    muPlusInRHCCCSelection.SetName("#mu^{+} in RHC CC-Inc Selection Cut");
+
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    muMinusBkgInRHCCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
+                samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()))
+                || muMinusBkgInRHCCC1TrackSelection || muMinusBkgInRHCCCNTracksSelection;
+    muMinusBkgInRHCCCSelection.SetName("#mu^{-} Bkg in RHC CC-Inc Selection Cut");
+
+    anyP0DSelection = muMinusCCSelection || muMinusBkgInRHCCCSelection || muPlusInRHCCCSelection;
+                      //|| muMinusCC1TrackSelection || muMinusBkgInRHCCC1TrackSelection || muPlusInRHCCC1TrackSelection
+                      //|| muMinusCCNTracksSelection || muMinusBkgInRHCCCNTracksSelection || muPlusInRHCCCNTracksSelection;
 
     anyP0DSelection.SetName("Any P0D+TPC selection cut");
 
