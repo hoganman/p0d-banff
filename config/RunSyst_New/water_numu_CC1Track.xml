@@ -53,10 +53,10 @@
         <comment attr="       Draw by category"                  />
         <comment attr="#***************************************#"/>
         <PLOTTOPOLOGY>
-            <value attr="0"/>
+            <value attr="1"/>
         </PLOTTOPOLOGY>
         <PLOTNEUTNUREACTIONCODES>
-            <value attr="0"/>
+            <value attr="1"/>
         </PLOTNEUTNUREACTIONCODES>
         <PLOTNEUTCCQELIKEREACTIONCODES>
             <value attr="1"/>
