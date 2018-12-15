@@ -132,6 +132,9 @@ public:
     ///Topology does not fit into any above category
     TCut tCCOtherTopology;
 
+    Double_t kMAXEVENTWEIGHT;
+    Double_t kMAXFLUXWEIGHT;
+
     ///Is the parent interaction NC?
     /// The 3 dim coordinates of P0D FV
     TVector3 minFidVolCoords;

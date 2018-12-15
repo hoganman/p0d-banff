@@ -202,45 +202,45 @@ public:
 protected:
 
     //taken from http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
-    TColor* cbBlack ;
-    TColor* cbOrange;
-    TColor* cbSky   ;
-    TColor* cbGreen ;
-    TColor* cbBlue  ;
-    TColor* cbRed   ;
-    TColor* cbPurple;
-    TColor* cbYellow;
+    TColor* cbBlack;   //!
+    TColor* cbOrange;   //!
+    TColor* cbSky;   //!
+    TColor* cbGreen;   //!
+    TColor* cbBlue;   //!
+    TColor* cbRed;   //!
+    TColor* cbPurple;   //!
+    TColor* cbYellow;   //!
 
     //taken from https://personal.sron.nl/~pault/
-    TColor* cbBrightBlue;
-    TColor* cbBrightCyan;
-    TColor* cbBrightGreen;
-    TColor* cbBrightYellow;
-    TColor* cbBrightPink; //called red
-    TColor* cbBrightPurple;
-    TColor* cbBrightGrey;
+    TColor* cbBrightBlue;   //!
+    TColor* cbBrightCyan;   //!
+    TColor* cbBrightGreen;   //!
+    TColor* cbBrightYellow;   //!
+    TColor* cbBrightPink;   //!
+    TColor* cbBrightPurple;   //!
+    TColor* cbBrightGrey;   //!
 
     //taken from https://personal.sron.nl/~pault/
-    TColor* cbVibrantBlue;
-    TColor* cbVibrantCyan;
-    TColor* cbVibrantGreen; //called teal
-    TColor* cbVibrantOrange;
-    TColor* cbVibrantRed;
-    TColor* cbVibrantMagenta;
+    TColor* cbVibrantBlue;   //!
+    TColor* cbVibrantCyan;   //!
+    TColor* cbVibrantGreen;   //!
+    TColor* cbVibrantOrange;   //!
+    TColor* cbVibrantRed;   //!
+    TColor* cbVibrantMagenta;   //!
 
     //taken from https://personal.sron.nl/~pault/
-    TColor* cbMutedBlue;
-    TColor* cbMutedCyan;
-    TColor* cbMutedTeal;
-    TColor* cbMutedGreen;
-    TColor* cbMutedOlive;
-    TColor* cbMutedYellow; //called sand
-    TColor* cbMutedPink; //called rose
-    TColor* cbMutedWine;
-    TColor* cbMutedPurple;
-    TColor* cbMutedGrey;
+    TColor* cbMutedBlue;   //!
+    TColor* cbMutedCyan;   //!
+    TColor* cbMutedTeal;   //!
+    TColor* cbMutedGreen;   //!
+    TColor* cbMutedOlive;   //!
+    TColor* cbMutedYellow;   //!
+    TColor* cbMutedPink;   //!
+    TColor* cbMutedWine;   //!
+    TColor* cbMutedPurple;   //!
+    TColor* cbMutedGrey;   //!
 
-    TStyle* P0DBANFFStyle;
+    TStyle* P0DBANFFStyle;   //!
     std::map<Int_t, Int_t> pdgColorCodes;
 public:
 

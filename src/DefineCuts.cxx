@@ -51,19 +51,19 @@ void DefineCuts::SetCuts()
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks(), samples.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()));
     muMinusBkgInRHCCCNTracksSelection.SetName("#mu^{-} Bkg in RHC CCNTracks Selection Cut");
 
-    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both selections
     muMinusCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuCC(), samples.GetP0DAirNuMuCC()))
                 || muMinusCC1TrackSelection || muMinusCCNTracksSelection;
     muMinusCCSelection.SetName("#mu^{-} CC-Inc Selection Cut");
 
-    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both selections
     muPlusInRHCCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBarInAntiNuModeCC(), samples.GetP0DAirNuMuBarInAntiNuModeCC()))
                 || muPlusInRHCCC1TrackSelection || muPlusInRHCCCNTracksSelection;
     muPlusInRHCCCSelection.SetName("#mu^{+} in RHC CC-Inc Selection Cut");
 
-    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both
+    //due to exclusivity of the 1 and N track selections, CC-Inc is the sum of both selections
     muMinusBkgInRHCCCSelection = TCut(TString::Format("SelectionNom==%d || SelectionNom==%d",
                 samples.GetP0DWaterNuMuBkgInAntiNuModeCC(), samples.GetP0DAirNuMuBkgInAntiNuModeCC()))
                 || muMinusBkgInRHCCC1TrackSelection || muMinusBkgInRHCCCNTracksSelection;
@@ -255,6 +255,9 @@ void DefineCuts::SetCuts()
     tParNuSand = TCut(TString::Format("abs(TrueNuPDGNom)==abs(%d)&&(%f<=tVtxZ&&tVtxZ<=%f)",
                                       pdg.kNuMuPDG, minSandCoords.Z(), maxSandCoords.Z()));
     tParNuSand.SetName("True Sand Neutrino Cut");
+
+    kMAXFLUXWEIGHT = 1.0E+003;
+    kMAXEVENTWEIGHT = 1.0E+003;
 
 }
 
@@ -717,7 +720,7 @@ void DefineCuts::FillNEUTCCQELikeSelections(const TString &name, const TString &
     NEUTCCQELikeSelections[entry++] = antinu_ccqe_topology_sel;
 
     TCut non_antinu_ccqe_topology_sel_cut = all_nom_sel_cut && tNEUTAntiNuNonCCQE && tFV_Correction;
-    PlottingSelectionInfo* non_antinu_ccqe_topology_sel = new PlottingSelectionInfo("non_antinu_ccqe_topology_sel", non_antinu_ccqe_topology_sel_cut, "#bar{#nu} nonCCQE");
+    PlottingSelectionInfo* non_antinu_ccqe_topology_sel = new PlottingSelectionInfo("non_antinu_ccqe_topology_sel", non_antinu_ccqe_topology_sel_cut, "#bar{#nu} non-CCQE");
     NEUTCCQELikeSelections[entry++] = non_antinu_ccqe_topology_sel;
 
     // OOFV
