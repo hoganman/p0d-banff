@@ -112,8 +112,7 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         Double_t recoLowValue, Double_t recoHighValue, TCut cuts,
         Int_t limitEntries);
 
-void GetAllMC(TChain* const chain);
-
+void GetAllMC(TChain* const chain, const Int_t sampleID);
 
 inline const Double_t CalculateSystematicError(const Double_t& alpha);
 
@@ -132,7 +131,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const Int_t sampleID,
 {
 
   TChain* const FT = new TChain("all");
-  GetAllMC(FT);
+  GetAllMC(FT, sampleID);
   gROOT->SetBatch(1);
   const Long64_t nEntries = limitEntries <= 0 ? FT->GetEntries() : limitEntries;
 
