@@ -20,7 +20,8 @@ void HEPConstants::Init()
     convert["GeV/c2"] = GeV;
     MeV2 = MeV*MeV;
     convert["MeV2"] = MeV2;
-    GeV2 = GeV*GeV;
+    GeV2 = GeV * GeV;
+    convert["GeV^{2}"] = GeV2;
     convert["GeV2"] = GeV2;
 
     mm = 1.0;
@@ -28,9 +29,12 @@ void HEPConstants::Init()
     convert["mm"] = mm;
     convert["m"] = meter;
     convert["meter"] = meter;
+
     convert["cos(#theta)"] = 1.;
     convert["cos(theta)"] = 1.;
+    convert["costheta"] = 1.;
     convert["cos(q)"] = 1.;
+    convert["cosq"] = 1.;
     convert["cos #theta"] = 1.;
 
     PDGINDEX    = 0;

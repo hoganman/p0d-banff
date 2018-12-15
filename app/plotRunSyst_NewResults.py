@@ -45,6 +45,7 @@ def main(argv):
     p0dZ_AnaBins = ROOT.AnalysisBins('P0DuleCoarseZ', binningLocation, xmlTools)
     p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, xmlTools)
     p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, xmlTools)
+    trueQ2_AnaBins = ROOT.AnalysisBins('TrueQ2', binningLocation, xmlTools)
 
     P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, xmlTools)
     P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, xmlTools)
@@ -196,6 +197,16 @@ def main(argv):
                     ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
                     make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
                                        histstack_Enu, 'trueE_nu')
+
+                # true Q2
+                if CONFIGURATION.GetAttribBool('DRAW_Q2'):
+                    histstack_trueQ2 = ROOTHStack()
+                    histstack_trueQ2.plot_var = 'tQ2'
+                    histstack_trueQ2.x_title = 'True Q^{2}'
+                    histstack_trueQ2.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_trueQ2, trueQ2_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueQ2_AnaBins,
+                                       histstack_trueQ2, 'trueQ2')
 
                 # TN-328 Momentum
                 if CONFIGURATION.GetAttribBool('DRAW_PMU_TN328'):

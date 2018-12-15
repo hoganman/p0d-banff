@@ -162,7 +162,7 @@ TH1D* XMLTools::GetTH1DWithBinning(TString binningName)
     if(static_cast<Int_t>(binEdges_vect.size()) != nBinEdges)
     {
         P0DBANFFInterface::Error(this, TString::Format("In %s. The number of stated bin entries (%d) for these bins does NOT match the number of found entries (%ld).", binningName.Data(), nBinEdges, binEdges_vect.size()));
-        return NULL;
+        throw;
     }
     std::vector<Double_t> binEdges(nBinEdges);
     for(Int_t index = 0; index < nBinEdges; ++index)

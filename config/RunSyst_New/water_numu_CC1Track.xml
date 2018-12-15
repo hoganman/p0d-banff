@@ -15,11 +15,14 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_PMU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_COSTHETAMU>
+        <DRAW_Q2>
+            <value attr="1"/>
+        </DRAW_Q2>
 
         <comment attr="#***************************************#"/>
         <comment attr="Toggle these to draw particular variables"/>
