@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<main>
+    <RunSyst_New_Options>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="            Show data points"             />
+        <comment attr="#***************************************#"/>
+        <PLOTDATA>
+            <value attr="0"/>
+        </PLOTDATA>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="1D histograms" />
+        <comment attr="#***************************************#"/>
+
+        <DRAW_PMU>
+            <value attr="1"/>
+        </DRAW_PMU>
+        <DRAW_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_COSTHETAMU>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="2D histograms"/>
+        <comment attr="#***************************************#"/>
+        <DRAW_P0DFITFHC_PMU_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_P0DFITFHC_PMU_COSTHETAMU>
+        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="          Option only for 2D"             />
+        <comment attr="#***************************************#"/>
+        <SHOW_LOGZ>
+            <value attr="1"/>
+        </SHOW_LOGZ>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Apply event + flux weight"         />
+        <comment attr="#***************************************#"/>
+        <APPLY_FLUX_WEIGHTS>
+            <value attr="1"/>
+        </APPLY_FLUX_WEIGHTS>
+        <APPLY_EVENT_WEIGHTS>
+            <value attr="1"/>
+        </APPLY_EVENT_WEIGHTS>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Draw by category"                  />
+        <comment attr="#***************************************#"/>
+        <PLOTTOPOLOGY>
+            <value attr="1"/>
+        </PLOTTOPOLOGY>
+        <PLOTNEUTANTINUREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTANTINUREACTIONCODES>
+        <PLOTNEUTCCQELIKEREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTCCQELIKEREACTIONCODES>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Water numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+
+        <RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION>
+            <value attr="1"/>
+        </RUNP0DWATERNUMUBARINANTINUMODECCNTRACKSSELECTION>
+
+    </RunSyst_New_Options>
+</main>
