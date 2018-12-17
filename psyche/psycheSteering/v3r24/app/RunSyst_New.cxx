@@ -26,6 +26,7 @@ Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& Start
 inline Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
 Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles);
+AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex);
 
 namespace Reset
 {
@@ -627,6 +628,7 @@ if(debug) DEBUG(summary->EventSample)
                 AnaParticleMomB* lepCand = static_cast<AnaParticleMomB*>(summary->LeptonCandidate[summary->EventSample]);
                 AnaTrueVertexB* trVtx = NULL;
                 AnaTrueParticleB *trueParticle = NULL;
+                AnaTrueParticleB *trueLepton = NULL;
                 //fill MC info
                 if(!isData)
                 {
@@ -659,24 +661,28 @@ if(debug) DEBUG(trueParticle->PDG)
                         TrueNuPDGNom    = trVtx->NuPDG;
                         tQ2 = trVtx->Q2;
 
-                        const Float_t Mmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trueParticle->PDG));
-                        if(Mmu > 0)
+                        trueLepton = GetTrueOutgoingLepton(trVtx);
+                        if(trueLepton)
                         {
-                            // Get the target mass for CC-QE
-                            // anti-nu CCQE on neutron or nu CCQE on proton
-                            const Float_t M_N = (TrueNuPDGNom < 0) ?
-                                                 anaUtils::GetParticleMass(ParticleId::kNeutron) :
-                                                 anaUtils::GetParticleMass(ParticleId::kProton);
-                            tNu  = trVtx->NuEnergy - std::sqrt(tLeptonMomentum*tLeptonMomentum+Mmu*Mmu);
-                            tYbj = tNu / trVtx->NuEnergy;
-                            tXbj = tQ2 / (2.0 * M_N * tNu);
-                            tW2  = M_N * M_N + 2.0 * M_N * tNu - tQ2;
+                            const Float_t massTrueLepton = anaUtils::GetParticleMass(ParticleId::GetParticle(trueLepton->PDG));
+                            if(massTrueLepton > 0)
+                            {
+                                // Get the target mass for CC-QE
+                                // anti-nu CCQE on neutron or nu CCQE on proton
+                                const Float_t massNucleon = (TrueNuPDGNom < 0) ?
+                                                     anaUtils::GetParticleMass(ParticleId::kNeutron) :
+                                                     anaUtils::GetParticleMass(ParticleId::kProton);
+                                tNu  = TrueEnuNom - sqrt(trueLepton->Momentum * trueLepton->Momentum + massTrueLepton * massTrueLepton);
+                                tYbj = tNu / TrueEnuNom;
+                                tXbj = tQ2 / (2.0 * massNucleon * tNu);
+                                tW2  = (massNucleon * massNucleon) + (2.0 * massNucleon * tNu) - tQ2;
+                            }
                         }
 
                         if(geoManager && (SampleId::IsP0DSelection(summary->EventSample)))
                         {
-                            const TLorentzVector &start = trVtx->Position;
-                            const Int_t tmp = IsWaterP0Dule(geoManager,start);
+                            const TLorentzVector start(trVtx->Position);
+                            const Int_t tmp = IsWaterP0Dule(geoManager, start);
                             tOnWaterTarget = (tmp % 10);
                         }
                     }
@@ -1082,4 +1088,24 @@ void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryPa
                                                   NPrimaryParticles[ParticleId::kKPos]   +
                                                   NPrimaryParticles[ParticleId::kKNeg]   ;
 
+}
+
+AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex)
+{
+    if(!trueVertex)
+        return NULL;
+    AnaTrueParticleB** particles = trueVertex->TrueParticles;
+    if(!particles)
+        return NULL;
+    const Int_t nTrueParticles = trueVertex->nTrueParticles;
+    for(Int_t particleIndex = 0; particleIndex < nTrueParticles; ++particleIndex)
+    {
+        AnaTrueParticleB* trueParticle = particles[particleIndex];
+        if(!trueParticle)
+            continue;
+        const Int_t absPDG = abs(trueParticle->PDG);
+        if(absPDG == ParticleId::kMuonPDG || absPDG == ParticleId::kElectronPDG)
+            return trueParticle;
+    }
+    return NULL;
 }
