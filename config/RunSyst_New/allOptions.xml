@@ -17,6 +17,21 @@
         <DRAW_ENU>
             <value attr="0"/>
         </DRAW_ENU>
+        <DRAW_Q2>
+            <value attr="0"/>
+        </DRAW_Q2>
+        <DRAW_W2>
+            <value attr="0"/>
+        </DRAW_W2>
+        <DRAW_BJORKEN_X>
+            <value attr="0"/>
+        </DRAW_BJORKEN_X>
+        <DRAW_BJORKEN_Y>
+            <value attr="0"/>
+        </DRAW_BJORKEN_Y>
+        <DRAW_ENERGY_TRANSFER_NU>
+            <value attr="0"/>
+        </DRAW_ENERGY_TRANSFER_NU>
         <DRAW_PMU>
             <value attr="0"/>
         </DRAW_PMU>
