@@ -46,15 +46,17 @@ def main(argv):
     p0dX_AnaBins = ROOT.AnalysisBins('P0DPositionX', binningLocation, xmlTools)
     p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, xmlTools)
     trueQ2_AnaBins = ROOT.AnalysisBins('TrueQ2', binningLocation, xmlTools)
-
+    trueW2_AnaBins = ROOT.AnalysisBins('TrueW2', binningLocation, xmlTools)
+    trueXbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenX', binningLocation, xmlTools)
+    trueYbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenY', binningLocation, xmlTools)
+    trueNu_AnaBins = ROOT.AnalysisBins('TrueEnergyTransferNu', binningLocation, xmlTools)
     P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, xmlTools)
     P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, xmlTools)
     P0DFitFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFitFHC_pMu_AnaBins,
                                                              P0DFitFHC_cosThetaMu_AnaBins)
     # P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, xmlTools)
     # P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, xmlTools)
-    # P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins,
-    #                                                          P0DCovFHC_cosThetaMu_AnaBins)
+    # P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins, P0DCovFHC_cosThetaMu_AnaBins)
 
     evts_p_bin = 'Events / bin'
     mc_data_sample_dict_MC_key = 'MC'
@@ -207,6 +209,46 @@ def main(argv):
                     ConfigureROOTHStack(histstack_trueQ2, trueQ2_AnaBins, pot_str)
                     make_mc_only_stack(smpls, a_selection_set, trueQ2_AnaBins,
                                        histstack_trueQ2, 'trueQ2')
+
+                # true W2
+                if CONFIGURATION.GetAttribBool('DRAW_W2'):
+                    histstack_trueW2 = ROOTHStack()
+                    histstack_trueW2.plot_var = 'tW2'
+                    histstack_trueW2.x_title = 'True W^{2}'
+                    histstack_trueW2.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_trueW2, trueW2_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueW2_AnaBins,
+                                       histstack_trueW2, 'trueW2')
+
+                # true Bjorken x
+                if CONFIGURATION.GetAttribBool('DRAW_BJORKEN_X'):
+                    histstack_trueXbj = ROOTHStack()
+                    histstack_trueXbj.plot_var = 'tXbj'
+                    histstack_trueXbj.x_title = 'True Bjorken X'
+                    histstack_trueXbj.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_trueXbj, trueXbj_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueXbj_AnaBins,
+                                       histstack_trueXbj, 'trueXbj')
+
+                # true Bjorken Y
+                if CONFIGURATION.GetAttribBool('DRAW_BJORKEN_Y'):
+                    histstack_trueYbj = ROOTHStack()
+                    histstack_trueYbj.plot_var = 'tYbj'
+                    histstack_trueYbj.x_title = 'True Bjorken Y'
+                    histstack_trueYbj.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_trueYbj, trueYbj_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueYbj_AnaBins,
+                                       histstack_trueYbj, 'trueYbj')
+
+                # true energy transfer nu
+                if CONFIGURATION.GetAttribBool('DRAW_ENERGY_TRANSFER_NU'):
+                    histstack_tNu = ROOTHStack()
+                    histstack_tNu.plot_var = 'tNu'
+                    histstack_tNu.x_title = 'True Energy Transfer #nu'
+                    histstack_tNu.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_tNu, trueNu_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueNu_AnaBins,
+                                       histstack_tNu, 'tNu')
 
                 # TN-328 Momentum
                 if CONFIGURATION.GetAttribBool('DRAW_PMU_TN328'):
@@ -1223,7 +1265,8 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     units = anaBins.GetUnits()
     hepConstants = ROOT.HEPConstants()
     hstack.plot_var += '*%f' % hepConstants.Convert(units)
-    hstack.x_title += ' [%s]' % units
+    if not units.EqualTo('1'):
+        hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
         y_title = 'Events / %s / (%s)'
         y_title_tuple = (units, pot_str)
@@ -1239,11 +1282,13 @@ def ConfigureROOTH2(hist2D, anaBins2D, pot_str):
     if len(anaBins2D.anaBinsX.GetUnits()) > 1:
         unitsX = anaBins2D.anaBinsX.GetUnits()
         hist2D.varX += '*%f' % hepConstants.Convert(unitsX)
-        hist2D.x_title += ' [%s]' % unitsX
+        if not unitsX.EqualTo('1'):
+            hist2D.x_title += ' [%s]' % unitsX
     if len(anaBins2D.anaBinsY.GetUnits()) > 1:
         unitsY = anaBins2D.anaBinsY.GetUnits()
         hist2D.varY += '*%f' % hepConstants.Convert(unitsY)
-        hist2D.y_title += ' [%s]' % unitsY
+        if not unitsY.EqualTo('1'):
+            hist2D.y_title += ' [%s]' % unitsY
     if unitsX and unitsY:
         print 'anaBins2D.GetDivideByBinWidth() =', anaBins2D.GetDivideByBinWidth()
         if anaBins2D.GetDivideByBinWidth():
