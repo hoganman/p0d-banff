@@ -15,14 +15,26 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_PMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_COSTHETAMU>
         <DRAW_Q2>
             <value attr="1"/>
         </DRAW_Q2>
+        <DRAW_W2>
+            <value attr="1"/>
+        </DRAW_W2>
+        <DRAW_BJORKEN_X>
+            <value attr="1"/>
+        </DRAW_BJORKEN_X>
+        <DRAW_BJORKEN_Y>
+            <value attr="1"/>
+        </DRAW_BJORKEN_Y>
+        <DRAW_ENERGY_TRANSFER_NU>
+            <value attr="1"/>
+        </DRAW_ENERGY_TRANSFER_NU>
 
         <comment attr="#***************************************#"/>
         <comment attr="Toggle these to draw particular variables"/>

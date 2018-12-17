@@ -20,7 +20,6 @@
         <DRAW_COSTHETAMU>
             <value attr="1"/>
         </DRAW_COSTHETAMU>
-
         <comment attr="#***************************************#"/>
         <comment attr="Toggle these to draw particular variables"/>
         <comment attr="2D histograms"/>

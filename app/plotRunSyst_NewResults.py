@@ -34,7 +34,7 @@ def main(argv):
     LoadP0DBANFF(configFile)
     LoadSampleIDs()
 
-    binningLocation = '%s/config/Binning.xml' % getenv('P0DBANFFROOT')
+    binningLocation = '%s/config/RunSyst_New/Binning.xml' % getenv('P0DBANFFROOT')
     xmlTools = ROOT.XMLTools()
     cosThetaMu_AnaBins = ROOT.AnalysisBins('CosTheta', binningLocation, xmlTools)
     Enu_AnaBins = ROOT.AnalysisBins('NeutrinoEnergy', binningLocation, xmlTools)
