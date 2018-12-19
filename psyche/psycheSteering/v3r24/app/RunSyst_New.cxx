@@ -28,6 +28,11 @@ Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles);
 AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex);
 
+inline TVector3 GetNuParentDecayPoint();
+TVector3 GetNuDirection(const TVector3 &vertex);
+Double_t GetAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection);
+Double_t GetCosAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection);
+
 namespace Reset
 {
     const Int_t kInt = -1;
@@ -306,12 +311,16 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     Double_t tVtxX = Reset::kDouble;
     Double_t tVtxY = Reset::kDouble;
     Double_t tVtxZ = Reset::kDouble;
+    Double_t EnuQE = Reset::kDouble;
+    Double_t Q2QE = Reset::kDouble;
 
     Int_t tReactionCode = Reset::kInt;
     Double_t tNu = Reset::kDouble;
     Double_t tYbj = Reset::kDouble;
     Double_t tW2 = Reset::kDouble;
     Double_t tQ2 = Reset::kDouble;
+    Double_t tEnuQE = Reset::kDouble;
+    Double_t tQ2QE = Reset::kDouble;
     Double_t tXbj = Reset::kDouble;
 
     //reconstructed quantities
@@ -437,6 +446,8 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         tree->Branch("vtxX" ,&vtxX ,"vtxX/D");
         tree->Branch("vtxY" ,&vtxY ,"vtxY/D");
         tree->Branch("vtxZ" ,&vtxZ ,"vtxZ/D");
+        tree->Branch("EnuQE", &EnuQE, "EnuQE/D");
+        tree->Branch("Q2QE", &Q2QE, "Q2QE/D");
         tree->Branch("LeptonPositionX", &LeptonPositionX, "LeptonPositionX/D");
         tree->Branch("LeptonPositionY", &LeptonPositionY, "LeptonPositionY/D");
         tree->Branch("LeptonPositionZ", &LeptonPositionZ, "LeptonPositionZ/D");
@@ -449,6 +460,8 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
         tree->Branch("tReactionCode",&tReactionCode,"tReactionCode/I");
         tree->Branch("tW2", &tW2, "tW2/D");
         tree->Branch("tQ2", &tQ2, "tQ2/D");
+        tree->Branch("tEnuQE", &tEnuQE, "tEnuQE/D");
+        tree->Branch("tQ2QE", &tQ2QE, "tQ2QE/D");
         tree->Branch("tXbj", &tXbj, "tXbj/D");
         tree->Branch("tNu", &tNu, "tNu/D");
         tree->Branch("tYbj", &tYbj, "tYbj/D");
@@ -581,12 +594,16 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
             tVtxZ             = Reset::kDouble;
             tW2               = Reset::kDouble;
             tQ2               = Reset::kDouble;
+            tEnuQE            = Reset::kDouble;
+            tQ2QE             = Reset::kDouble;
             tNu               = Reset::kDouble;
             tYbj              = Reset::kDouble;
             tXbj              = Reset::kDouble;
             vtxX              = Reset::kDouble;
             vtxY              = Reset::kDouble;
             vtxZ              = Reset::kDouble;
+            EnuQE             = Reset::kDouble;
+            Q2QE              = Reset::kDouble;
             tReactionCode     = Reset::kInt;
             NumberOfTracks    = Reset::kInt;
             tOnWaterTarget    = Reset::kInt;
@@ -658,24 +675,83 @@ if(debug) DEBUG(trueParticle->PDG)
                         tReactionCode = trVtx->ReacCode;
                         FillNPrimaryParticles(trVtx, NPrimaryParticles);
                         TrueEnuNom      = trVtx->NuEnergy;
+                        if(TrueEnuNom < 0)
+                        {
+                            printf("Enu is negative!\n");
+                            throw;
+                        }
                         TrueNuPDGNom    = trVtx->NuPDG;
                         tQ2 = trVtx->Q2;
+                        if(tQ2 < 0)
+                        {
+                            printf("Invariate Q2 is negative!\n");
+                            throw;
+                        }
 
                         trueLepton = GetTrueOutgoingLepton(trVtx);
                         if(trueLepton)
                         {
-                            const Float_t massTrueLepton = anaUtils::GetParticleMass(ParticleId::GetParticle(trueLepton->PDG));
+                            Float_t massTrueLepton = anaUtils::GetParticleMass(ParticleId::GetParticle(trueLepton->PDG));
+                            if(massTrueLepton < 0)
+                            {
+                                printf("M_l = %f\n", massTrueLepton);
+                            }
+                            const Int_t absReactionCode = abs(tReactionCode);
                             if(massTrueLepton > 0)
                             {
-                                // Get the target mass for CC-QE
-                                // anti-nu CCQE on neutron or nu CCQE on proton
-                                const Float_t massNucleon = (TrueNuPDGNom < 0) ?
-                                                     anaUtils::GetParticleMass(ParticleId::kNeutron) :
-                                                     anaUtils::GetParticleMass(ParticleId::kProton);
-                                tNu  = TrueEnuNom - sqrt(trueLepton->Momentum * trueLepton->Momentum + massTrueLepton * massTrueLepton);
+                                const Float_t tEmu = sqrt(trueLepton->Momentum * trueLepton->Momentum + massTrueLepton * massTrueLepton);
+                                tNu  = TrueEnuNom - tEmu;
+                                if(tNu <= 0)
+                                {
+                                    printf("Invariate energy transfer is negative!\n");
+                                    printf("Enu = %f\n", TrueEnuNom);
+                                    printf("M = %f, P = %f\n", massTrueLepton, trueLepton->Momentum);
+                                    throw;
+                                }
                                 tYbj = tNu / TrueEnuNom;
-                                tXbj = tQ2 / (2.0 * massNucleon * tNu);
+
+                                const Float_t massNucleon = (TrueNuPDGNom < 0) ? units::mass_neutron : units::mass_proton;
                                 tW2  = (massNucleon * massNucleon) + (2.0 * massNucleon * tNu) - tQ2;
+                                if(tW2 < 0 && absReactionCode != 1)
+                                {
+                                    printf("Invariate mass is negative!\n");
+                                    printf("Reaction code = %d\n", tReactionCode);
+                                    printf("M_N = %f\n", massNucleon * 1e-3);
+                                    printf("tNu = %f\n", tNu * 1e-3);
+                                    printf("tQ2 = %f\n", tQ2 * 1e-6);
+                                    printf("M_N * M_N = %f\n", massNucleon * massNucleon * 1e-6);
+                                    printf("2.0 * M_N * tNu = %f\n", (2.0 * massNucleon * tNu) * 1e-6);
+                                    printf("-tQ2 = %f\n", -tQ2 * 1e-6);
+                                    throw;
+                                }
+                                tXbj = tQ2 / (2.0 * massNucleon * tNu);
+                                if(tXbj < 0 && absReactionCode != 1)
+                                {
+                                    printf("Bjorken X is negative!\n");
+                                    throw;
+                                }
+                                if(tReactionCode == -1)
+                                {
+                                    using namespace units;
+                                    const TVector3 directionMu(trueLepton->Direction);
+                                    const TVector3 vertexPosition(trVtx->Position);
+                                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(vertexPosition, directionMu);
+                                    tEnuQE = ((mass_neutron * mass_neutron) - (mass_proton * mass_proton) -
+                                             (mass_muon * mass_muon) + (2 * mass_proton * tEmu)) /
+                                             (2.0 * (mass_proton - tEmu + trueLepton->Momentum * cosThetaMuBeam ));
+                                    tQ2QE = (trueLepton->Momentum * trueLepton->Momentum + tEnuQE * tEnuQE - 2 * trueLepton->Momentum * tEnuQE * cosThetaMuBeam) + (tEmu - tEnuQE) * (tEmu - tEnuQE);
+                                }
+                                if(tReactionCode == 1)
+                                {
+                                    using namespace units;
+                                    const TVector3 directionMu(trueLepton->Direction);
+                                    const TVector3 vertexPosition(trVtx->Position);
+                                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(vertexPosition, directionMu);
+                                    tEnuQE = (-(mass_neutron * mass_neutron) + (mass_proton * mass_proton) -
+                                             (mass_muon * mass_muon) + (2 * mass_neutron * tEmu)) /
+                                             (2.0 * (mass_neutron - tEmu + trueLepton->Momentum * cosThetaMuBeam ));
+                                    tQ2QE = (trueLepton->Momentum * trueLepton->Momentum + tEnuQE * tEnuQE - 2 * trueLepton->Momentum * tEnuQE * cosThetaMuBeam) + (tEmu - tEnuQE) * (tEmu - tEnuQE);
+                                }
                             }
                         }
 
@@ -699,6 +775,31 @@ if(debug) DEBUG(trueParticle->PDG)
                 LeptonPositionZ = lepStart[2];
                 LeptonMomNom    = lepCand->Momentum;
                 LeptonCosNom    = lepCand->DirectionStart[2];
+                {
+                    using namespace units;
+                    const TVector3 recoVtxPosition(recoVtx);
+                    const TVector3 trkDirection(lepCand->DirectionStart);
+                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(recoVtxPosition, trkDirection);
+                    const Double_t Emu = sqrt(LeptonMomNom * LeptonMomNom + mass_muon * mass_muon);
+                    if(static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DWaterNuMuBarInAntiNuModeCC ||
+                       static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ||
+                       static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks  ||
+                       static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DAirNuMuBarInAntiNuModeCC ||
+                       static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track ||
+                       static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks)
+                    {
+                        EnuQE = ((mass_neutron * mass_neutron) - (mass_proton * mass_proton) -
+                                (mass_muon * mass_muon) + (2.0 * mass_neutron * Emu)) /
+                                (2.0 * (mass_neutron - Emu + LeptonMomNom * cosThetaMuBeam));
+                    }
+                    else
+                    {
+                        EnuQE = (-(mass_neutron * mass_neutron) + (mass_proton * mass_proton) -
+                                (mass_muon * mass_muon) + (2.0 * mass_proton * Emu)) /
+                                (2.0 * (mass_proton - Emu + LeptonMomNom * cosThetaMuBeam));
+                    }
+                    Q2QE = (lepCand->Momentum * lepCand->Momentum + EnuQE * EnuQE - 2 * lepCand->Momentum * EnuQE * cosThetaMuBeam) + (Emu - EnuQE) * (Emu - EnuQE);
+                }
 
                 // Get all tracks
                 EventBoxB* EventBox = event->EventBoxes[EventBoxId::kEventBoxTracker];
@@ -1104,8 +1205,22 @@ AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex)
         if(!trueParticle)
             continue;
         const Int_t absPDG = abs(trueParticle->PDG);
-        if(absPDG == ParticleId::kMuonPDG || absPDG == ParticleId::kElectronPDG)
+        const Int_t absNuPDG = abs(trueVertex->NuPDG);
+        //first try to get muon for CC
+        if(absPDG == ParticleId::kMuonPDG && absNuPDG == 14)
+            return trueParticle;
+        //try to get electron for CC
+        if(absPDG == ParticleId::kElectronPDG && absNuPDG == 12)
+            return trueParticle;
+        //lastely try numu or nue for NC
+        if(absPDG == 14 || absPDG == 12)
             return trueParticle;
     }
     return NULL;
 }
+
+const TVector3 tNuParentDecayPointoaAnalysisCoor(3083.2, 6417 ,-245550); // in units of mm for oaAnalysis
+TVector3 GetNuParentDecayPoint(){return tNuParentDecayPointoaAnalysisCoor;}
+TVector3 GetNuDirection(const TVector3 &vertex){return (vertex - GetNuParentDecayPoint()).Unit();}
+Double_t GetAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection){return GetNuDirection(vertex).Angle(trkDirection);}
+Double_t GetCosAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection){return TMath::Cos(GetAngleWRTBeam(vertex,trkDirection)); }
