@@ -30,6 +30,7 @@ if [ $HOSTNAME == $TA50D ]; then
     export CMTROOT=${ND280}/CMT/$CMTVERSION
     export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p34n00
+    export SYSTEMATICSROOT=/Hitachi/systematics
 fi
 
 if [ $HOSTNAME == $ENSHPC ] || [ $HOSTNAME == $ENSSANDBOX ] || [ $ISENSHPCQUEUENODE == 1 ]; then

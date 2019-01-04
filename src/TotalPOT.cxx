@@ -52,7 +52,7 @@ void TotalPOT::SetPOT(){
     _POTRun6bAirData   = 1.27412 * data_POT;
     _POTRun6cAirData   = 0.50203 * data_POT;
     _POTRun6dAirData   = 0.76662 * data_POT;
-    _POTRun6eAirData   = 0.83972 * data_POT;
+    _POTRun6eAirData   = 0.83972 * data_POT; // Run 6 Air TOTAL = 3.38E20
     _POTRun7bWaterData = 2.41221 * data_POT;
 
     _POTRun8WaterData = 1.580529 * data_POT;

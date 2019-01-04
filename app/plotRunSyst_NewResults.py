@@ -47,6 +47,7 @@ def main(argv):
     p0dY_AnaBins = ROOT.AnalysisBins('P0DPositionY', binningLocation, xmlTools)
     trueQ2_AnaBins = ROOT.AnalysisBins('TrueQ2', binningLocation, xmlTools)
     trueW2_AnaBins = ROOT.AnalysisBins('TrueW2', binningLocation, xmlTools)
+    trueW_AnaBins = ROOT.AnalysisBins('TrueW', binningLocation, xmlTools)
     trueXbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenX', binningLocation, xmlTools)
     trueYbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenY', binningLocation, xmlTools)
     trueNu_AnaBins = ROOT.AnalysisBins('TrueEnergyTransferNu', binningLocation, xmlTools)
@@ -219,6 +220,16 @@ def main(argv):
                     ConfigureROOTHStack(histstack_trueW2, trueW2_AnaBins, pot_str)
                     make_mc_only_stack(smpls, a_selection_set, trueW2_AnaBins,
                                        histstack_trueW2, 'trueW2')
+
+                # true W2
+                if CONFIGURATION.GetAttribBool('DRAW_W'):
+                    histstack_trueW = ROOTHStack()
+                    histstack_trueW.plot_var = 'sqrt(tW2*(tW2>0))'
+                    histstack_trueW.x_title = 'True W'
+                    histstack_trueW.y_title = evts_p_bin_p_pot
+                    ConfigureROOTHStack(histstack_trueW, trueW_AnaBins, pot_str)
+                    make_mc_only_stack(smpls, a_selection_set, trueW_AnaBins,
+                                       histstack_trueW, 'trueW')
 
                 # true Bjorken x
                 if CONFIGURATION.GetAttribBool('DRAW_BJORKEN_X'):
@@ -821,8 +832,8 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
 
-    h_total.Draw()
-    h_stack.Draw('same')
+    h_total.Draw('HIST')
+    h_stack.Draw('HIST SAME')
     legend.Draw()
     mc_stats.Draw()
     canvas.cd()

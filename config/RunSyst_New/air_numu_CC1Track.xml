@@ -24,13 +24,13 @@
             <value attr="1"/>
         </DRAW_Q2>
         <DRAW_W2>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_W2>
         <DRAW_BJORKEN_X>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_BJORKEN_X>
         <DRAW_BJORKEN_Y>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_BJORKEN_Y>
         <DRAW_ENERGY_TRANSFER_NU>
             <value attr="1"/>

@@ -18,10 +18,13 @@ void HEPConstants::Init()
     convert["GeV"   ] = GeV;
     convert["GeV/c" ] = GeV;
     convert["GeV/c2"] = GeV;
+    convert["GeV/c^{2}"] = GeV;
     MeV2 = MeV*MeV;
     convert["MeV2"] = MeV2;
     GeV2 = GeV * GeV;
     convert["GeV^{2}"] = GeV2;
+    convert["GeV^{2}/c^{4}"] = GeV2;
+    convert["(GeV/c^{2})^{2}"] = GeV2;
     convert["GeV2"] = GeV2;
 
     mm = 1.0;
