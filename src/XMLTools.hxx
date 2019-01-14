@@ -22,9 +22,6 @@ public:
     ///The destructor
     virtual ~XMLTools();
 
-    ///Get the engine
-    TXMLEngine* Engine();
-
     ///Sets the XML file to read
     void SetFile(TString file);
 
@@ -54,6 +51,8 @@ public:
     ///If you want to use the last bin as overflow, see AnalysisBins
     TH1D* GetTH1DWithBinning(TString binningName);
 
+    ///Get the engine
+    TXMLEngine* Engine() {return fxml;}
 
 protected:
 

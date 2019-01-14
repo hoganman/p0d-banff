@@ -531,14 +531,14 @@ Bool_t HEPConstants::IsParticleNeutral(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticle(const Int_t &pdgA, Int_t pdgB) const
+Bool_t HEPConstants::IsParticle(const Int_t &pdgA, Int_t pdgB) const
 //**************************************************
 {
     return pdgA == pdgB ? kTRUE : kFALSE;
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleAbs(const Int_t &pdgA, Int_t pdgB) const
+Bool_t HEPConstants::IsParticleAbs(const Int_t &pdgA, Int_t pdgB) const
 //**************************************************
 {
     return std::abs(pdgA)==std::abs(pdgB) ? kTRUE : kFALSE;
@@ -577,7 +577,7 @@ Bool_t HEPConstants::IsParticleChargedPion(const Int_t &pdg, Double_t charge) co
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiPlus(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticlePiPlus(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -586,7 +586,7 @@ inline Bool_t HEPConstants::IsParticlePiPlus(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiMinus(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticlePiMinus(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -595,7 +595,7 @@ inline Bool_t HEPConstants::IsParticlePiMinus(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePiZero(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticlePiZero(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -604,7 +604,7 @@ inline Bool_t HEPConstants::IsParticlePiZero(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleElectron(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticleElectron(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -613,7 +613,7 @@ inline Bool_t HEPConstants::IsParticleElectron(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticlePositron(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticlePositron(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -622,7 +622,7 @@ inline Bool_t HEPConstants::IsParticlePositron(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleGamma(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticleGamma(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -642,7 +642,7 @@ Bool_t HEPConstants::IsParticleEM(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleProton(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticleProton(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))
@@ -651,7 +651,7 @@ inline Bool_t HEPConstants::IsParticleProton(const Int_t &pdg) const
 }
 
 //**************************************************
-inline Bool_t HEPConstants::IsParticleNeutron(const Int_t &pdg) const
+Bool_t HEPConstants::IsParticleNeutron(const Int_t &pdg) const
 //**************************************************
 {
     if(!IsValidParticle(pdg))

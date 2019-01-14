@@ -27,13 +27,14 @@ ROOT          := $(shell which root) -l -b -q
 ROOTCONFIG    := $(shell which root-config)
 ROOTCINT      := $(shell which rootcint)
 ROOTLIBSDIR   := $(shell root-config --libdir)
-ROOTGLIBS     := $(shell root-config --glibs)
+ROOTGLIBS     := $(shell root-config --glibs) -lXMLIO
 ROOTINCDIR    := $(shell root-config --incdir)
 ROOT_INCLUDES := -I$(ROOTINCDIR)
 
 #Your compiler
-CXX	= $(shell root-config --cxx --cflags) $(CXX_MACHINE_FLAGS)
-LD	= $(CXX)
+CXX		= $(shell root-config --cxx --cflags) $(CXX_MACHINE_FLAGS)
+LDOBJ	= $(CXX)
+LDEXE 	= $(shell root-config --cxx
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f
 
@@ -47,9 +48,10 @@ INCLUDES := -I${P0DBANFFROOT}
 # Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
 CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
 # Optimize, create a shared library
-LDFLAGS		= $(ROOTGLIBS) -O -shared -g -Wl,--no-as-needed
+LDOBJFLAGS	= -O -shared -g -Wl,--no-as-needed $(ROOTGLIBS)
+LDEXEFLAGS 	= -g -Wl,--no-as-needed $(ROOTGLIBS)
 
-ALLCLASSES_CXX := src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/AttributeMap.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx src/P0DBANFFInterface.cxx
+ALLCLASSES_CXX :=  src/P0DBANFFInterface.cxx src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/AttributeMap.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
 ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
 
 # dict.o Object
@@ -63,10 +65,10 @@ ALLOBJS := $(OBJS) $(ROOTDICTS_O)
 # lib%.so Shared library Objects
 ALLLIBS	:= libP0DBANFF.so
 # Executables
-ALLEXES :=
+ALLEXES := oneDimResidualsWithSpecialErrorTreatment.exe
 ##### Rules #####
 
-TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
+TGT =  $(ALLOBS) $(ALLLIBS)
 
 .PHONY: all clean distclean
 
@@ -83,8 +85,12 @@ lib/%.o: src/%.cxx
 
 ##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
-	$(LD) $(LDFLAGS) $^ -o lib/$@
+	$(LDOBJ) $(LDOBJFLAGS) $^ -o lib/$@
 #############################################
+
+oneDimResidualsWithSpecialErrorTreatment.exe: app/oneDimResidualsWithSpecialErrorTreatment.cxx
+	$(CXX) $(CXXFLAGS) -I$(SRC) -c $< -o lib/$(@:.exe=.o)
+	g++ -g -Wl,--no-as-needed lib/$(@:.exe=.o) -L$(LIB) -lP0DBANFF $(ROOTGLIBS) -o bin/$@
 
 #add a rule to clean all generated files from your directory
 clean:

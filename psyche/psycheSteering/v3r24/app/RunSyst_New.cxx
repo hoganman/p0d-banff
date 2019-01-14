@@ -19,7 +19,10 @@
 #include <unistd.h>
 #include <vector>
 
+const TVector3 tNuParentDecayPointoaAnalysisCoor(3083.2, 6417 ,-245550);
+
 #define DEBUG(X) std::cout << #X << " = " << X << std::endl;
+
 std::string GetMCGeoPositionPath(TGeoManager* const thisGeoManger,const TLorentzVector& checkPosition);
 std::vector<std::string> SplitString(const std::string &inString, const char SplitBy);
 Int_t IsWaterP0Dule(TGeoManager* const tmpGeoManger, const TLorentzVector& StartPosition);
@@ -27,11 +30,11 @@ inline Bool_t IsPositionInWaterVolume(TGeoManager* const tmpGeoManger, const TLo
 Int_t GetSameGenerationLepton(const Int_t& nuPDG);
 void FillNPrimaryParticles(const AnaTrueVertexB* const vertex, Int_t* NPrimaryParticles);
 AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex);
-
 inline TVector3 GetNuParentDecayPoint();
 TVector3 GetNuDirection(const TVector3 &vertex);
 Double_t GetAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection);
 Double_t GetCosAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection);
+inline void CheckIfNegative(const char* const name, const Double_t &value);
 
 namespace Reset
 {
@@ -54,17 +57,17 @@ int main(int argc, char **argv){
     if(argc < 4)
     {
         std::cerr << usage << std::endl;
-        throw;
+        return 0;
     }
 
     std::string inputFileName = Reset::kString;
     std::string outputFileName = Reset::kString;
     std::string parameterFileOveride = Reset::kString;
     std::string correlationFile = Reset::kString;
-    Long64_t nmax = 100000000;
+    Long64_t nmax = TChain::kBigNumber;
     Int_t nToys = 0;
     Bool_t preload = kFALSE;
-    Bool_t isData = false;
+    Bool_t isData = kFALSE;
     TGeoManager* geoManager = NULL;
 
     for (;;)
@@ -149,12 +152,12 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     ND::params().SetReadParamOverrideFilePointPassed();
 
     // Parameters to control the systematics
-    Bool_t applyVariationSystematics  = false;
-    Bool_t applyWeightSystematics     = false;
-    Bool_t applyFluxWeightSystematics = false;
-    Bool_t RunAllSyst                 = false;
-    Bool_t RunOnInidividualSyst       = false;
-    Bool_t ThrowToys                  = false;
+    Bool_t applyVariationSystematics  = kFALSE;
+    Bool_t applyWeightSystematics     = kFALSE;
+    Bool_t applyFluxWeightSystematics = kFALSE;
+    Bool_t RunAllSyst                 = kFALSE;
+    Bool_t RunOnInidividualSyst       = kFALSE;
+    Bool_t ThrowToys                  = kFALSE;
 
     if(!isData)
     {
@@ -199,8 +202,8 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
 
     // Initialize the InputManager by specifying the input type and the input file
     const std::string inputFileType = "kHighlandTree";
-    if (!_man.input().Initialize(inputFileName,inputFileType, false))
-        return false;
+    if (!_man.input().Initialize(inputFileName,inputFileType, kFALSE))
+        return kFALSE;
 
     std::vector<EventVariationBase*> allVar  = _man.evar().GetEventVariations();
     std::vector<SystematicBase*>     allSyst = _man.syst().GetSystematics();
@@ -522,7 +525,7 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
             // 1. ====================================================================
             // Fill the event structure
 
-            Bool_t FillTree = false;
+            Bool_t FillTree = kFALSE;
             AnaEventB* event = NULL;
 
             if(preload)
@@ -612,7 +615,7 @@ if(debug) std::cout << "Initialize The SystBox for variation systematics" << std
                 NPrimaryParticles[index] = 0;
 
             //_man.syst().InitializeEventSystematics(_man.sel(),*event);
-            Bool_t passednom = false;
+            Bool_t passednom = kFALSE;
 
             if(!isData)
             {
@@ -669,97 +672,63 @@ if(debug) DEBUG(trueParticle->PDG)
                     trVtx = summary->TrueVertex[summary->EventSample];
                     if(trVtx)
                     {
-                        tVtxX = trVtx->Position[0];
-                        tVtxY = trVtx->Position[1];
-                        tVtxZ = trVtx->Position[2];
+                        tVtxX         = trVtx->Position[0];
+                        tVtxY         = trVtx->Position[1];
+                        tVtxZ         = trVtx->Position[2];
                         tReactionCode = trVtx->ReacCode;
+                        TrueEnuNom    = trVtx->NuEnergy;
+                        TrueNuPDGNom  = trVtx->NuPDG;
+                        tQ2           = trVtx->Q2;
+
                         FillNPrimaryParticles(trVtx, NPrimaryParticles);
-                        TrueEnuNom      = trVtx->NuEnergy;
-                        if(TrueEnuNom < 0)
-                        {
-                            printf("Enu is negative!\n");
-                            throw;
-                        }
-                        TrueNuPDGNom    = trVtx->NuPDG;
-                        tQ2 = trVtx->Q2;
-                        if(tQ2 < 0)
-                        {
-                            printf("Invariate Q2 is negative!\n");
-                            throw;
-                        }
+                        CheckIfNegative("Enu", TrueEnuNom);
+                        CheckIfNegative("4-momentum transfer Q2", tQ2);
 
                         trueLepton = GetTrueOutgoingLepton(trVtx);
-                        if(trueLepton)
+                        if(trueLepton && tQ2 > 0)
                         {
-                            Float_t massTrueLepton = anaUtils::GetParticleMass(ParticleId::GetParticle(trueLepton->PDG));
-                            if(massTrueLepton < 0)
+                            const Double_t tMmu = anaUtils::GetParticleMass(ParticleId::GetParticle(trueLepton->PDG));
+                            if(tMmu > 0)
                             {
-                                printf("M_l = %f\n", massTrueLepton);
-                            }
-                            const Int_t absReactionCode = abs(tReactionCode);
-                            if(massTrueLepton > 0)
-                            {
-                                const Float_t tEmu = sqrt(trueLepton->Momentum * trueLepton->Momentum + massTrueLepton * massTrueLepton);
+                                using namespace units;
+                                const Double_t &tPmu = trueLepton->Momentum;
+                                const Double_t  tEmu = sqrt(tPmu * tPmu + tMmu * tMmu);
+                                const Double_t &massNucleon = mass_proton;
+                                //const Double_t massNucleon = (TrueNuPDGNom < 0) ? mass_neutron : mass_proton;
+
                                 tNu  = TrueEnuNom - tEmu;
-                                if(tNu <= 0)
-                                {
-                                    printf("Invariate energy transfer is negative!\n");
-                                    printf("Enu = %f\n", TrueEnuNom);
-                                    printf("M = %f, P = %f\n", massTrueLepton, trueLepton->Momentum);
-                                    throw;
-                                }
                                 tYbj = tNu / TrueEnuNom;
 
-                                const Float_t massNucleon = (TrueNuPDGNom < 0) ? units::mass_neutron : units::mass_proton;
-                                tW2  = (massNucleon * massNucleon) + (2.0 * massNucleon * tNu) - tQ2;
-                                if(tW2 < 0 && absReactionCode != 1)
+                                const Double_t twoMnu = (2.0 * massNucleon * tNu);
+                                tXbj = tQ2 / twoMnu;
+                                tW2  = (massNucleon * massNucleon) + twoMnu - tQ2;
+
+                                CheckIfNegative("Invariate mass W2", tW2 * 1e-6);
+
+                                const TVector3 dirMu(trueLepton->Direction);
+                                const TVector3 vtxPos(trVtx->Position);
+                                const Double_t cosThetaMu = GetCosAngleWRTBeam(vtxPos, dirMu);
+                                if(tReactionCode < 0)
                                 {
-                                    printf("Invariate mass is negative!\n");
-                                    printf("Reaction code = %d\n", tReactionCode);
-                                    printf("M_N = %f\n", massNucleon * 1e-3);
-                                    printf("tNu = %f\n", tNu * 1e-3);
-                                    printf("tQ2 = %f\n", tQ2 * 1e-6);
-                                    printf("M_N * M_N = %f\n", massNucleon * massNucleon * 1e-6);
-                                    printf("2.0 * M_N * tNu = %f\n", (2.0 * massNucleon * tNu) * 1e-6);
-                                    printf("-tQ2 = %f\n", -tQ2 * 1e-6);
-                                    throw;
+                                    tEnuQE = (+(mass_neutron * mass_neutron) - (mass_proton * mass_proton)
+                                             - (mass_muon * mass_muon) + (2 * mass_proton * tEmu))
+                                             / (2.0 * (mass_proton - tEmu + tPmu * cosThetaMu));
                                 }
-                                tXbj = tQ2 / (2.0 * massNucleon * tNu);
-                                if(tXbj < 0 && absReactionCode != 1)
+                                else
                                 {
-                                    printf("Bjorken X is negative!\n");
-                                    throw;
+                                    tEnuQE = (-(mass_neutron * mass_neutron) + (mass_proton * mass_proton)
+                                             - (mass_muon * mass_muon) + (2 * mass_neutron * tEmu))
+                                             / (2.0 * (mass_neutron - tEmu + tPmu * cosThetaMu));
                                 }
-                                if(tReactionCode == -1)
-                                {
-                                    using namespace units;
-                                    const TVector3 directionMu(trueLepton->Direction);
-                                    const TVector3 vertexPosition(trVtx->Position);
-                                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(vertexPosition, directionMu);
-                                    tEnuQE = ((mass_neutron * mass_neutron) - (mass_proton * mass_proton) -
-                                             (mass_muon * mass_muon) + (2 * mass_proton * tEmu)) /
-                                             (2.0 * (mass_proton - tEmu + trueLepton->Momentum * cosThetaMuBeam ));
-                                    tQ2QE = (trueLepton->Momentum * trueLepton->Momentum + tEnuQE * tEnuQE - 2 * trueLepton->Momentum * tEnuQE * cosThetaMuBeam) + (tEmu - tEnuQE) * (tEmu - tEnuQE);
-                                }
-                                if(tReactionCode == 1)
-                                {
-                                    using namespace units;
-                                    const TVector3 directionMu(trueLepton->Direction);
-                                    const TVector3 vertexPosition(trVtx->Position);
-                                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(vertexPosition, directionMu);
-                                    tEnuQE = (-(mass_neutron * mass_neutron) + (mass_proton * mass_proton) -
-                                             (mass_muon * mass_muon) + (2 * mass_neutron * tEmu)) /
-                                             (2.0 * (mass_neutron - tEmu + trueLepton->Momentum * cosThetaMuBeam ));
-                                    tQ2QE = (trueLepton->Momentum * trueLepton->Momentum + tEnuQE * tEnuQE - 2 * trueLepton->Momentum * tEnuQE * cosThetaMuBeam) + (tEmu - tEnuQE) * (tEmu - tEnuQE);
-                                }
+                                tQ2QE = (tPmu * tPmu + tEnuQE * tEnuQE - 2 * tPmu * tEnuQE * cosThetaMu)
+                                        + (tEmu - tEnuQE) * (tEmu - tEnuQE);
                             }
                         }
 
                         if(geoManager && (SampleId::IsP0DSelection(summary->EventSample)))
                         {
-                            const TLorentzVector start(trVtx->Position);
-                            const Int_t tmp = IsWaterP0Dule(geoManager, start);
-                            tOnWaterTarget = (tmp % 10);
+                            const TLorentzVector startPos(trVtx->Position);
+                            tOnWaterTarget = IsPositionInWaterVolume(geoManager, startPos);
                         }
                     }
                 }
@@ -779,7 +748,7 @@ if(debug) DEBUG(trueParticle->PDG)
                     using namespace units;
                     const TVector3 recoVtxPosition(recoVtx);
                     const TVector3 trkDirection(lepCand->DirectionStart);
-                    const Double_t cosThetaMuBeam = GetCosAngleWRTBeam(recoVtxPosition, trkDirection);
+                    const Double_t cosThetaMu = GetCosAngleWRTBeam(recoVtxPosition, trkDirection);
                     const Double_t Emu = sqrt(LeptonMomNom * LeptonMomNom + mass_muon * mass_muon);
                     if(static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DWaterNuMuBarInAntiNuModeCC ||
                        static_cast<SampleId::SampleEnum>(SelectionNom) == SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track ||
@@ -790,15 +759,15 @@ if(debug) DEBUG(trueParticle->PDG)
                     {
                         EnuQE = ((mass_neutron * mass_neutron) - (mass_proton * mass_proton) -
                                 (mass_muon * mass_muon) + (2.0 * mass_neutron * Emu)) /
-                                (2.0 * (mass_neutron - Emu + LeptonMomNom * cosThetaMuBeam));
+                                (2.0 * (mass_neutron - Emu + LeptonMomNom * cosThetaMu));
                     }
                     else
                     {
                         EnuQE = (-(mass_neutron * mass_neutron) + (mass_proton * mass_proton) -
                                 (mass_muon * mass_muon) + (2.0 * mass_proton * Emu)) /
-                                (2.0 * (mass_proton - Emu + LeptonMomNom * cosThetaMuBeam));
+                                (2.0 * (mass_proton - Emu + LeptonMomNom * cosThetaMu));
                     }
-                    Q2QE = (lepCand->Momentum * lepCand->Momentum + EnuQE * EnuQE - 2 * lepCand->Momentum * EnuQE * cosThetaMuBeam) + (Emu - EnuQE) * (Emu - EnuQE);
+                    Q2QE = (LeptonMomNom * LeptonMomNom + EnuQE * EnuQE - 2 * LeptonMomNom * EnuQE * cosThetaMu) + (Emu - EnuQE) * (Emu - EnuQE);
                 }
 
                 // Get all tracks
@@ -869,7 +838,7 @@ if(debug) DEBUG(trueParticle->PDG)
 
                 // 3. ====================================================================
                 // Process the current event (bunch). That means applying the systematics, the selections and computing the weights
-                Bool_t toyPassed = false;
+                Bool_t toyPassed = kFALSE;
                 Weight_h* weights = NULL;
                 // std::cout << "entry " << entry << std::endl;
 
@@ -1219,8 +1188,28 @@ AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex)
     return NULL;
 }
 
-const TVector3 tNuParentDecayPointoaAnalysisCoor(3083.2, 6417 ,-245550); // in units of mm for oaAnalysis
-TVector3 GetNuParentDecayPoint(){return tNuParentDecayPointoaAnalysisCoor;}
-TVector3 GetNuDirection(const TVector3 &vertex){return (vertex - GetNuParentDecayPoint()).Unit();}
-Double_t GetAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection){return GetNuDirection(vertex).Angle(trkDirection);}
-Double_t GetCosAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection){return TMath::Cos(GetAngleWRTBeam(vertex,trkDirection)); }
+
+TVector3 GetNuParentDecayPoint()
+{
+    return tNuParentDecayPointoaAnalysisCoor;
+}
+
+TVector3 GetNuDirection(const TVector3 &vertex)
+{
+    return (vertex - GetNuParentDecayPoint()).Unit();
+}
+
+Double_t GetAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection)
+{
+    return GetNuDirection(vertex).Angle(trkDirection);
+}
+
+Double_t GetCosAngleWRTBeam(const TVector3 &vertex, const TVector3 &trkDirection)
+{
+    return TMath::Cos(GetAngleWRTBeam(vertex,trkDirection));
+}
+
+void CheckIfNegative(const char* const name, const Double_t &value)
+{
+    if(value < 0) printf("WARNING: %s (%f) is negative! \n", name, value);
+}

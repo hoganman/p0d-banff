@@ -2,6 +2,7 @@
 -I/physics/software/t2k/ND280/v11r31/ROOT/v5r34p09n04/Linux-x86_64/root/include
 -I/physics/software/t2k/ND280/v11r31/oaAnalysis/v5r29p19/src
 -I/home/mhogan/software/root/include
+-I/physics/home/mhogan/software/p0d-banff/p0d-banff/src
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheCore/v3r26/src
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheCore/v3r26/app
 -I/physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheEventModel/v3r24/src

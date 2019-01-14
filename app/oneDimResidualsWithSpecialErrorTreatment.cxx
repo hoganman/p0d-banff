@@ -10,36 +10,51 @@
  *    root -b -q -l 'oneDimResidualsWithSpecialErrorTreatment.C(1041003,"theta_Vect*TMath::RadtoDeg()","htemp(50,0.0,90.0)","htemp","isEnteringTPC_Vect==1&&T2PMatchFound_Vect==1&&algorithm_Vect==1","tTheta_Vect","Reco #theta",true,"muKalTPCThetaBins.root")'
 */
 
-#include<utility>
-#include<vector>
-#include<iostream>
-#include<cmath>
-#include<algorithm>
-#include"TH1D.h"
-#include"TCut.h"
-#include"TF1.h"
-#include"TCanvas.h"
-#include"TDirectory.h"
-#include"TROOT.h"
-#include"TEventList.h"
-#include"TGraphErrors.h"
-#include"TGraph.h"
-#include"TMultiGraph.h"
-#include"TLegend.h"
-#include"TMath.h"
-#include"TGaxis.h"
-#include"TSystem.h"
+#include"T2KDataMC.hxx"
+
+//#include"TCanvas.h"
 #include"TChain.h"
+//#include"TCut.h"
+//#include"TDirectory.h"
+//#include"TEventList.h"
+//#include"TF1.h"
+//#include"TGaxis.h"
+//#include"TGraph.h"
+//#include"TGraphErrors.h"
+//#include"TH1D.h"
+//#include"TLegend.h"
+//#include"TMath.h"
+//#include"TMultiGraph.h"
+//#include"TROOT.h"
+#include"TString.h"
+//#include"TSystem.h"
 
-#include"Math/ProbFunc.h"
-#include"Math/DistFunc.h"
+//#include"Math/DistFunc.h"
+//#include"Math/ProbFunc.h"
 
+//#include<algorithm>
+//#include<cmath>
+#include<iostream>
+#include<sstream>
+//#include<utility>
+//#include<vector>
+
+namespace Reset
+{
+    const Int_t kInt = -1;
+    const UInt_t kUInt = 0;
+    const Double_t kDouble = -999;
+    const std::string kString = "";
+};
+
+
+/*
 typedef std::pair<Int_t, Int_t> BinPair;
 
 //void oneDimResidualsWithSpecialErrorTreatment(const Int_t files, const string recoPlotVar, const string histRefNameAndBins, const string histRefName, const TCut cuts, const string truePlotVar, const string xAxisTitle = "X var [Units]", const Bool_t truePlotVarIsAResidual = false, const string outputName = "", const Double_t lowestBinEdge = -1, const Double_t highestBinEdge = -1, const Int_t limitEntries = -1);
 
 const Double_t MinFracDiff = 2.0e-02; //
-bool residualTruePlotVar;
+Bool_t residualTruePlotVar;
 TChain* FT = NULL;
 Double_t POTweight = 1;
 
@@ -56,7 +71,7 @@ public:
     Edge() :
         hRef(NULL), hFineBinning(NULL), isUpEdge(false)
     {}
-    Edge(TH1D* hReference,TH1D* hEqualStatistics,bool UpEdge);
+    Edge(TH1D* hReference,TH1D* hEqualStatistics,Bool_t UpEdge);
 
     virtual ~Edge(){}
 
@@ -112,14 +127,13 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         Double_t recoLowValue, Double_t recoHighValue, TCut cuts,
         Int_t limitEntries);
 
-void GetAllMC(TChain* const chain, const Int_t sampleID);
+TChain* GetAllMC();
 
 inline const Double_t CalculateSystematicError(const Double_t& alpha);
 
 void CalculateErrors(const TH1D* hist, const Edge& lowEdge, const Edge& upEdge,
         const Double_t& sigma, Double_t& errorStat, Double_t& errorSystematic,
         Double_t& alpha);
-
 
 void oneDimResidualsWithSpecialErrorTreatment(const Int_t sampleID,
         const string recoPlotVar, const string histRefNameAndBins,
@@ -130,16 +144,15 @@ void oneDimResidualsWithSpecialErrorTreatment(const Int_t sampleID,
         const Double_t highestBinEdge = -1, const Long64_t limitEntries = -1)
 {
 
-  TChain* const FT = new TChain("all");
-  GetAllMC(FT, sampleID);
+  TChain* FT = GetAllMC();
   gROOT->SetBatch(1);
   const Long64_t nEntries = limitEntries <= 0 ? FT->GetEntries() : limitEntries;
 
   TCut allCuts;
-  if(cuts.GetTitle()){
+  if(((TString)cuts.GetTitle()).Length() > 0){
     allCuts =  allCuts&&cuts;
   }
-  const TCut allCutsCopy = allCuts;
+  const TCut allCutsCopy(allCuts);
   const Double_t POTweight = 1;
 
   FT->SetEventList(0);
@@ -891,7 +904,7 @@ void CalculateErrors(const TH1D* hist, const Edge& lowEdge, const Edge& upEdge,
   errorSystematic = CalculateSystematicError(alpha);
 }
 
-Edge::Edge(TH1D* hReference,TH1D* hEqualStatistics,bool UpEdge) :
+Edge::Edge(TH1D* hReference,TH1D* hEqualStatistics,Bool_t UpEdge) :
         hRef(NULL), hFineBinning(NULL), isUpEdge(false)
 {
     hRef = hReference;
@@ -959,4 +972,201 @@ void Edge::ShiftToBin(Int_t newBin)
         MoveUp();
         return;
     }
+}
+
+TChain* GetAllMC()
+{
+    T2KDataMC t2kDataMC;
+    const TString RunSyst_New_TTree = "all";
+    const TString file_path = getenv("SYSTEMATICSROOT");
+    TChain* all = new TChain("all", "");
+    TChain* chn_NEUTRun2Air = t2kDataMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun2Wtr = t2kDataMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun3bAir = t2kDataMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun3cAir = t2kDataMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun4Air = t2kDataMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun4Wtr = t2kDataMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun5cWtr = t2kDataMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun6cAir = t2kDataMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun6dAir = t2kDataMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun7bWtr = t2kDataMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun8Wtr = t2kDataMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    TChain* chn_NEUTRun8Air = t2kDataMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+    all->Add(chn_NEUTRun2Air);
+    all->Add(chn_NEUTRun2Wtr);
+    all->Add(chn_NEUTRun3bAir);
+    all->Add(chn_NEUTRun3cAir);
+    all->Add(chn_NEUTRun4Air);
+    all->Add(chn_NEUTRun4Wtr);
+    all->Add(chn_NEUTRun5cWtr);
+    all->Add(chn_NEUTRun6bAir);
+    all->Add(chn_NEUTRun6cAir);
+    all->Add(chn_NEUTRun6dAir);
+    all->Add(chn_NEUTRun6eAir);
+    all->Add(chn_NEUTRun7bWtr);
+    all->Add(chn_NEUTRun8Wtr);
+    all->Add(chn_NEUTRun8Air);
+    return all;
+}
+*/
+
+int main(int argc, char** argv)
+{
+
+    const std::string programName = argv[0];
+    Char_t usage[2048];
+    sprintf(usage, "Usage: %s -i sampleID -o outputfile.root -x recoPlotVariable -t truePlotVariable -h histogramName(NbinsX,xLow,xHigh)\
+\n       Additional Parameters: -c additionalCuts=\"\" -T xAxisTitle=\"recoPlotVariable\" \
+-r isTrueVariableResidual=kFalse -L lowestBinEdgeValue=-1 -H highestBinEdgeValue=-1 -n limitEntries=-1]", programName.c_str());
+
+    if(argc < 5)
+    {
+        std::cerr << usage << std::endl;
+        return 0;
+    }
+
+    using namespace Reset;
+    Int_t sampleID = kInt;
+    TString outputFileName = kString;
+    TString recoPlotVariable = kString;
+    TString truePlotVariable = kString;
+    TString histogramParameters = kString;
+    TString additionalCuts = kString;
+    TString xAxisTitle = kString;
+    Int_t isTrueVariableResidual = kFALSE;
+    TString lowestBinEdgeValue = kString;
+    TString highestBinEdgeValue = kString;
+    Long64_t nmax = TChain::kBigNumber;
+
+    for (;;)
+    {
+        Int_t c = getopt(argc, argv, "i:o:x:t:h:c:T:r:L:H:n:");
+        if (c < 0)
+            break;
+        switch (c)
+        {
+            case 'n':
+            {
+                std::istringstream tmp(optarg);
+                tmp >> nmax;
+                break;
+            }
+            case 'i':
+            {
+                std::istringstream tmp(optarg);
+                tmp >> sampleID;
+                break;
+            }
+            case 'o':
+            {
+                outputFileName = optarg;
+                break;
+            }
+            case 'x':
+            {
+                recoPlotVariable = optarg;
+                break;
+            }
+            case 't':
+            {
+                truePlotVariable = optarg;
+                break;
+            }
+            case 'h':
+            {
+                histogramParameters = optarg;
+                break;
+            }
+            case 'c':
+            {
+                additionalCuts = optarg;
+                break;
+            }
+            case 'T':
+            {
+                xAxisTitle = optarg;
+                break;
+            }
+            case 'r':
+            {
+                std::istringstream tmp(optarg);
+                tmp >> isTrueVariableResidual;
+                break;
+            }
+            case 'L':
+            {
+                lowestBinEdgeValue = optarg;
+                break;
+            }
+            case 'H':
+            {
+                highestBinEdgeValue = optarg;
+                break;
+            }
+            default:
+            {
+                std::cout << optarg << " is an unknown option" << std::endl;
+                std::cout << usage << std::endl;
+                throw;
+            }
+        }
+    }//end for
+
+    if(sampleID <= 0)
+    {
+        printf("Invalid sampleId = %d\n", sampleID);
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(outputFileName.Length() < 1)
+    {
+        printf("Invalid output name %s\n", outputFileName.Data());
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(recoPlotVariable.Length() < 1)
+    {
+        printf("Invalid reco plot variable %s\n", recoPlotVariable.Data());
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(truePlotVariable.Length() < 1)
+    {
+        printf("Invalid true plot variable %s\n", truePlotVariable.Data());
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(!(isTrueVariableResidual == kFALSE || isTrueVariableResidual == kTRUE))
+    {
+        printf("Invalid parameter isTrueVariableResidual %d\nMust be 0 or 1", isTrueVariableResidual);
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(histogramParameters.First('(') == -1 || histogramParameters.First(')') == -1 || histogramParameters.CountChar(',') != 2 || histogramParameters.First(',') < histogramParameters.First('(') || histogramParameters.Last(',') > histogramParameters.Last(')'))
+    {
+        printf("Invalid parameter histogramParameters %s\nMust be histogramName(nBinsX,lowX,highX)", histogramParameters.Data());
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    TString histogramName = histogramParameters(0, histogramParameters.First('('));
+    printf("sampleID %d, recoPlotVariable.Data() %s\n, histogramParameters.Data() %s, histogramName.Data() %s\n, additionalCuts.Data() %s, truePlotVariable.Data() %s\n, xAxisTitle.Data() %s, isTrueVariableResidual %d\n, outputFileName.Data() %s, lowestBinEdgeValue.Atof() %f, highestBinEdgeValue.Atof() %f, nmax %d\n",
+            sampleID, recoPlotVariable.Data(),
+            histogramParameters.Data(), histogramName.Data(),
+            additionalCuts.Data(), truePlotVariable.Data(),
+            xAxisTitle.Data(), isTrueVariableResidual,
+            outputFileName.Data(), lowestBinEdgeValue.Atof(),
+            highestBinEdgeValue.Atof(), nmax);
+
+
+    /*
+    oneDimResidualsWithSpecialErrorTreatment(sampleID, recoPlotVariable.Data(),
+            histogramParameters.Data(), histogramName.Data(),
+            additionalCuts.Data(), truePlotVariable.Data(),
+            xAxisTitle.Data(), isTrueVariableResidual,
+            outputFileName.Data(), lowestBinEdgeValue.Atof(),
+            highestBinEdgeValue.Atof(), nmax);
+    */
+    return 0;
 }

@@ -20,25 +20,25 @@ public:
     Double_t Convert(const TString &unit) const;
 
     ///
-    inline Double_t ConvertKineticEToMomentum(const Double_t &kinE, const Double_t &mass) const
+    Double_t ConvertKineticEToMomentum(const Double_t &kinE, const Double_t &mass) const
     {
         return std::sqrt((kinE + mass) * (kinE + mass) - (mass * mass));
     }
 
     ///
-    inline Double_t ConvertMomentumToKineticE(const Double_t &mom, const Double_t &mass) const
+    Double_t ConvertMomentumToKineticE(const Double_t &mom, const Double_t &mass) const
     {
         return sqrt(mom * mom + mass * mass) - mass;
     }
 
     ///
-    inline Double_t ConvertMomentumToEnergy(const Double_t &mom, const Double_t &mass) const
+    Double_t ConvertMomentumToEnergy(const Double_t &mom, const Double_t &mass) const
     {
         return sqrt(mom * mom + mass * mass);
     }
 
 
-    inline Bool_t IsValidParticle(const Int_t &pdg) const {return !TMath::IsNaN(pdg) && pdg != 0;}
+    Bool_t IsValidParticle(const Int_t &pdg) const {return !TMath::IsNaN(pdg) && pdg != 0;}
 
     ///
     Double_t GetParticleMass(const Int_t &pdg) const;
@@ -100,7 +100,7 @@ public:
     ///
     Bool_t IsParticleNeutron(const Int_t &pdg) const;
 
-    inline Bool_t IsValidNEUTCode(const Int_t &code) const {return !TMath::IsNaN(code) && code != 0 && abs(code) < kNEUT_Max;}
+    Bool_t IsValidNEUTCode(const Int_t &code) const {return !TMath::IsNaN(code) && code != 0 && abs(code) < kNEUT_Max;}
 
     Bool_t IsNEUTCodeNuCCQE(const Int_t &code) const;
 
@@ -129,10 +129,6 @@ public:
     Bool_t IsNEUTCodeAntiNuNC(const Int_t &code) const;
 
     Bool_t IsNEUTCodeAntiNuAny(const Int_t &code) const;
-
-    Bool_t IsNEUTCodeNuCC1Gamma(const Int_t &code) const;
-
-    Bool_t IsNEUTCodeAntiNuCC1Gamma(const Int_t &code) const;
 
     //***********
     // Lepton
