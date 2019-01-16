@@ -10,9 +10,11 @@
 # executing "make" will generate all libraries and executiables
 
 LIB	:= ${P0DBANFFROOT}/lib
+APP := ${P0DBANFFROOT}/app
 SRC	:= ${P0DBANFFROOT}/src
 MACROS  := ${P0DBANFFROOT}/macros
 DIC     := ${P0DBANFFROOT}/dict
+BIN     := ${P0DBANFFROOT}/bin
 VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC):$(LIB)
 
 EMPTYSTRING :=
@@ -27,14 +29,15 @@ ROOT          := $(shell which root) -l -b -q
 ROOTCONFIG    := $(shell which root-config)
 ROOTCINT      := $(shell which rootcint)
 ROOTLIBSDIR   := $(shell root-config --libdir)
-ROOTGLIBS     := $(shell root-config --glibs) -lXMLIO
 ROOTINCDIR    := $(shell root-config --incdir)
+ROOTGLIBS     := $(shell root-config --glibs) -lXMLIO
+LIBP0DBANFF   := -L$(LIB) -lP0DBANFF
 ROOT_INCLUDES := -I$(ROOTINCDIR)
 
 #Your compiler
 CXX		= $(shell root-config --cxx --cflags) $(CXX_MACHINE_FLAGS)
 LDOBJ	= $(CXX)
-LDEXE 	= $(shell root-config --cxx
+LDEXE 	= $(shell root-config --cxx)
 #command to run to remove files (see 'clean' later)
 RM	= $(shell which rm) -f
 
@@ -46,10 +49,11 @@ INCLUDES := -I${P0DBANFFROOT}
 
 # compiler and preprocessor flags
 # Optimize, Warnings on, Generate code that can be copied and executed anywhere in the memory
-CXXFLAGS	:= -O -Wall -fPIC -MMD -MP $(INCLUDES)
+CXXFLAGS	:= -O -Wall -fPIC -MMD -MP
 # Optimize, create a shared library
-LDOBJFLAGS	= -O -shared -g -Wl,--no-as-needed $(ROOTGLIBS)
-LDEXEFLAGS 	= -g -Wl,--no-as-needed $(ROOTGLIBS)
+LDOBJFLAGS	= -O -shared -g -Wl,--no-as-needed
+# Create executible
+LDEXEFLAGS 	= -g -Wl,--no-as-needed
 
 ALLCLASSES_CXX :=  src/P0DBANFFInterface.cxx src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/AttributeMap.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
 ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
@@ -68,7 +72,7 @@ ALLLIBS	:= libP0DBANFF.so
 ALLEXES := oneDimResidualsWithSpecialErrorTreatment.exe
 ##### Rules #####
 
-TGT =  $(ALLOBS) $(ALLLIBS)
+TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)
 
 .PHONY: all clean distclean
 
@@ -77,20 +81,20 @@ all: $(TGT)
 ##### compile all the objects "ALLOBJS" #####
 lib/%dict.o: src/%.hxx
 	$(ROOTCINT) -f $(subst src, dict, $(<:.hxx=dict.C)) -c $<
-	$(CXX) $(CXXFLAGS) -c $(subst src, dict, $(<:.hxx=dict.C)) -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $(subst src, dict, $(<:.hxx=dict.C)) -o $@
 
-lib/%.o: src/%.cxx
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+lib/%.o: $(SRC)/%.cxx
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 #############################################
 
 ##########  # master library   #############
 libP0DBANFF.so: $(ALLOBJS)
-	$(LDOBJ) $(LDOBJFLAGS) $^ -o lib/$@
+	$(LDOBJ) $(LDOBJFLAGS) $(ROOTGLIBS) $^ -o $(LIB)/$@
 #############################################
 
-oneDimResidualsWithSpecialErrorTreatment.exe: app/oneDimResidualsWithSpecialErrorTreatment.cxx
-	$(CXX) $(CXXFLAGS) -I$(SRC) -c $< -o lib/$(@:.exe=.o)
-	g++ -g -Wl,--no-as-needed lib/$(@:.exe=.o) -L$(LIB) -lP0DBANFF $(ROOTGLIBS) -o bin/$@
+oneDimResidualsWithSpecialErrorTreatment.exe: $(APP)/oneDimResidualsWithSpecialErrorTreatment.cxx
+	$(CXX) $(CXXFLAGS) -I$(SRC) -c $< -o $(LIB)/$(@:.exe=.o)
+	$(LDEXE) $(LDEXEFLAGS) $(LIB)/$(@:.exe=.o) $(LIBP0DBANFF) $(ROOTGLIBS) -o $(BIN)/$@
 
 #add a rule to clean all generated files from your directory
 clean:

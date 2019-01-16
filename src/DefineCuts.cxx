@@ -72,7 +72,6 @@ void DefineCuts::SetCuts()
     anyP0DSelection = muMinusCCSelection || muMinusBkgInRHCCCSelection || muPlusInRHCCCSelection;
                       //|| muMinusCC1TrackSelection || muMinusBkgInRHCCC1TrackSelection || muPlusInRHCCC1TrackSelection
                       //|| muMinusCCNTracksSelection || muMinusBkgInRHCCCNTracksSelection || muPlusInRHCCCNTracksSelection;
-
     anyP0DSelection.SetName("Any P0D+TPC selection cut");
 
     FV = TCut(TString::Format("(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)&&(%f<=%s&&%s<=%f)",

@@ -3,41 +3,39 @@
  *
  * Procedure is described in TN-333
  *
- * Example: Kalman contained muons
- *    root -b -q -l 'oneDimResidualsWithSpecialErrorTreatment.C(1041003,"momentumMuonHypothesis_Vect","htemp(50,0,10000)","htemp","isContained_Vect==1&&algorithm_Vect==1","tMomentum_Vect","Reco Momentum [MeV/c]",false,"muKalContainedPBins.root")'
- *
- * Example: Kalman P0D->TPC muons
- *    root -b -q -l 'oneDimResidualsWithSpecialErrorTreatment.C(1041003,"theta_Vect*TMath::RadtoDeg()","htemp(50,0.0,90.0)","htemp","isEnteringTPC_Vect==1&&T2PMatchFound_Vect==1&&algorithm_Vect==1","tTheta_Vect","Reco #theta",true,"muKalTPCThetaBins.root")'
 */
 
 #include"T2KDataMC.hxx"
+#include"DefineCuts.hxx"
+#include"SampleId.hxx"
+#include"P0DBANFFInterface.hxx"
 
-//#include"TCanvas.h"
+#include"TCanvas.h"
 #include"TChain.h"
-//#include"TCut.h"
-//#include"TDirectory.h"
-//#include"TEventList.h"
-//#include"TF1.h"
-//#include"TGaxis.h"
-//#include"TGraph.h"
-//#include"TGraphErrors.h"
-//#include"TH1D.h"
-//#include"TLegend.h"
-//#include"TMath.h"
-//#include"TMultiGraph.h"
-//#include"TROOT.h"
+#include"TCut.h"
+#include"TDirectory.h"
+#include"TEventList.h"
+#include"TF1.h"
+#include"TGaxis.h"
+#include"TGraph.h"
+#include"TGraphErrors.h"
+#include"TH1D.h"
+#include"TLegend.h"
+#include"TMath.h"
+#include"TMultiGraph.h"
+#include"TROOT.h"
 #include"TString.h"
-//#include"TSystem.h"
+#include"TSystem.h"
 
-//#include"Math/DistFunc.h"
-//#include"Math/ProbFunc.h"
+#include"Math/DistFunc.h"
+#include"Math/ProbFunc.h"
 
-//#include<algorithm>
-//#include<cmath>
+#include<algorithm>
+#include<cmath>
 #include<iostream>
 #include<sstream>
-//#include<utility>
-//#include<vector>
+#include<utility>
+#include<vector>
 
 namespace Reset
 {
@@ -47,29 +45,18 @@ namespace Reset
     const std::string kString = "";
 };
 
-
-/*
 typedef std::pair<Int_t, Int_t> BinPair;
 
-//void oneDimResidualsWithSpecialErrorTreatment(const Int_t files, const string recoPlotVar, const string histRefNameAndBins, const string histRefName, const TCut cuts, const string truePlotVar, const string xAxisTitle = "X var [Units]", const Bool_t truePlotVarIsAResidual = false, const string outputName = "", const Double_t lowestBinEdge = -1, const Double_t highestBinEdge = -1, const Int_t limitEntries = -1);
-
-const Double_t MinFracDiff = 2.0e-02; //
-Bool_t residualTruePlotVar;
-TChain* FT = NULL;
-Double_t POTweight = 1;
-
-TMultiGraph* mg;
-TGraphErrors* gStatErrors;// = new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr1Y_augmented);
-TGraphErrors* gSysErrors ;//= new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr2Y_augmented);
-TH1D* herrorStat;
-TH1D* herrorSystematic;
-using namespace std;
+const Double_t MinFracDiff = 2.0e-02;
+const Double_t POTweight = 1;
+Bool_t residualTruePlotVar = kFALSE;
+TChain* eventTree = NULL;
 
 class Edge
 {
 public:
     Edge() :
-        hRef(NULL), hFineBinning(NULL), isUpEdge(false)
+        hRef(NULL), hFineBinning(NULL), isUpEdge(kFALSE)
     {}
     Edge(TH1D* hReference,TH1D* hEqualStatistics,Bool_t UpEdge);
 
@@ -107,8 +94,8 @@ public:
 };
 
 
-inline const Bool_t SortParametersByEdges(OneDimParameters p1,
-        OneDimParameters p2);
+const Bool_t SortParametersByEdges(const OneDimParameters &p1,
+        const OneDimParameters &p2);
 
 //return the one-sided (RHS) probability
 inline const Double_t ProbNormal_c(const Double_t& x,
@@ -127,635 +114,721 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         Double_t recoLowValue, Double_t recoHighValue, TCut cuts,
         Int_t limitEntries);
 
-TChain* GetAllMC();
-
 inline const Double_t CalculateSystematicError(const Double_t& alpha);
 
 void CalculateErrors(const TH1D* hist, const Edge& lowEdge, const Edge& upEdge,
         const Double_t& sigma, Double_t& errorStat, Double_t& errorSystematic,
         Double_t& alpha);
 
-void oneDimResidualsWithSpecialErrorTreatment(const Int_t sampleID,
-        const string recoPlotVar, const string histRefNameAndBins,
-        const string histRefName, const TCut cuts, const string truePlotVar,
-        const string xAxisTitle = "X var [Units]",
-        const Bool_t truePlotVarIsAResidual = false,
-        const string outputName = "", const Double_t lowestBinEdge = -1,
+void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sampleID,
+        const std::string recoPlotVar, const std::string histParametersTuple,
+        const std::string histRefName, const TCut cuts, const std::string truePlotVar,
+        const std::string xAxisTitle = "X var [Units]",
+        const Bool_t truePlotVarIsAResidual = kFALSE,
+        const std::string outputName = "", const Double_t lowestBinEdge = -1,
         const Double_t highestBinEdge = -1, const Long64_t limitEntries = -1)
 {
 
-  TChain* FT = GetAllMC();
-  gROOT->SetBatch(1);
-  const Long64_t nEntries = limitEntries <= 0 ? FT->GetEntries() : limitEntries;
+    P0DBANFFInterface interface;
+    interface.GetThisStyle()->SetOptStat(0000);
+    interface.LoadColorBlindPalette();
 
-  TCut allCuts;
-  if(((TString)cuts.GetTitle()).Length() > 0){
-    allCuts =  allCuts&&cuts;
-  }
-  const TCut allCutsCopy(allCuts);
-  const Double_t POTweight = 1;
+    const DefineCuts defCuts;
+    const T2KDataMC t2kDataMC;
+    const SampleId samples;
+    const TString RunSyst_New_TTree = "all";
+    const TString file_path = getenv("SYSTEMATICSROOT");
+    const Double_t statsLimit = 150;
+    const Int_t nBinsFine = 100000;
+    eventTree = new TChain("all", "");
 
-  FT->SetEventList(0);
-  FT->Draw(">>eList",allCutsCopy);
-  TEventList* eList = static_cast<TEventList*>(gDirectory->Get("eList"));
-  FT->SetEventList(eList);
-
-  Double_t weight = 1;
-  FT->Draw(Form("%s>>%s",recoPlotVar.c_str(),histRefNameAndBins.c_str()),Form("(%f)*(%s)",weight,allCutsCopy.GetTitle()),"goff",nEntries);
-
-  TH1D* histRef = static_cast<TH1D*>( gDirectory->Get(histRefName.c_str()) );
-  if(!histRef){
-    cout << "ERROR! No histogram with name " << histRefName.c_str() << endl;
-    return;
-  }
-
-  residualTruePlotVar = truePlotVarIsAResidual;
-  const Double_t highRef = histRef->GetXaxis()->GetBinUpEdge(histRef->GetNbinsX());
-  const Double_t lowRef = histRef->GetBinLowEdge(1);
-  const Double_t uniformBinWidth = (highRef-lowRef)/histRef->GetNbinsX();
-  //a sansity check that steps in the finest binning is not too infinitessimal
-  const Double_t limitStepSize = 0.1*uniformBinWidth;
-
-  const Double_t statsLimit = 150;
-  const Int_t nBinsFine = 5000;
-  TH1D* histFineBinning = new TH1D("histFineBinning","",nBinsFine,lowRef,highRef);
-
-  FT->Draw(Form("%s>>histFineBinning",recoPlotVar.c_str()),Form("(%f)*(%s)",weight,allCutsCopy.GetTitle()),"goff",nEntries);
-
-  std::vector<OneDimParameters> allParams;
-  Int_t UpEdge = 1;
-  Int_t LowEdge = 0;
-  Double_t alpha = 0;
-  Double_t sigma = 0;
-  Double_t errorStat = -1;
-  Double_t errorSystematic = -2;
-
-  const Int_t nShifts = 1;
-  const Edge middleEdge = Edge(histRef,histFineBinning,LowEdge);
-  //use slightly wider reco bins to get accurate residual fit
-  Edge tempLowEdge(histRef,histFineBinning,LowEdge);
-  Edge tempUpEdge (histRef,histFineBinning,UpEdge);
-  do{
-    if(!tempLowEdge.MoveLow()){
-      break;
+    const TCut sampleCut = defCuts.GetNominalSelectionCut(sampleID);
+    TCut allCuts = sampleCut && defCuts.tFV;
+    if(((TString)cuts.GetTitle()).Length() > 0)
+    {
+        allCuts = allCuts&&cuts;
     }
-  }while(histFineBinning->Integral(tempLowEdge.bin,middleEdge.bin) <= statsLimit);
 
-  do{
-    if(!tempUpEdge.MoveUp()){
-      break;
+    if(((TString)sampleCut.GetTitle()).Length() < 1)
+    {
+        P0DBANFFInterface::Error("oneDimResidualsWithSpecialErrorTreatment", TString::Format("Unable to determine the sample cut using SampleEnum=%d", samples.Convert(sampleID)));
     }
-  }while(histFineBinning->Integral(middleEdge.bin,tempUpEdge.bin) <= statsLimit);
 
-  sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),tempLowEdge.edge,tempUpEdge.edge,allCutsCopy,nEntries);
+    if(samples.IsP0DAirSample(sampleID) && samples.IsP0DNuMuSample(sampleID))
+    {
+        TChain* chn_NEUTRun2Air = t2kDataMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun3bAir = t2kDataMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun3cAir = t2kDataMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun4Air = t2kDataMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun8Air = t2kDataMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        eventTree->Add(chn_NEUTRun2Air);
+        eventTree->Add(chn_NEUTRun3bAir);
+        eventTree->Add(chn_NEUTRun3cAir);
+        eventTree->Add(chn_NEUTRun4Air);
+        eventTree->Add(chn_NEUTRun8Air);
+        allCuts = allCuts && defCuts.tLepMuMinus;
+    }
+    else if(samples.IsP0DWaterSample(sampleID) && samples.IsP0DNuMuSample(sampleID))
+    {
+        TChain* chn_NEUTRun2Wtr = t2kDataMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun4Wtr = t2kDataMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun8Wtr = t2kDataMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        eventTree->Add(chn_NEUTRun2Wtr);
+        eventTree->Add(chn_NEUTRun4Wtr);
+        eventTree->Add(chn_NEUTRun8Wtr);
+        allCuts = allCuts && defCuts.tLepMuMinus;
+    }
+    else if(samples.IsP0DWaterSample(sampleID) && samples.IsP0DRHCSample(sampleID))
+    {
+        TChain* chn_NEUTRun5cWtr = t2kDataMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun7bWtr = t2kDataMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        eventTree->Add(chn_NEUTRun5cWtr);
+        eventTree->Add(chn_NEUTRun7bWtr);
+        if(samples.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
+            allCuts = allCuts && defCuts.tLepMuMinus;
+        else
+            allCuts = allCuts && defCuts.tLepMuPlus;
+    }
+    else if(samples.IsP0DAirSample(sampleID) && samples.IsP0DRHCSample(sampleID))
+    {
+        TChain* chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun6cAir = t2kDataMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun6dAir = t2kDataMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        eventTree->Add(chn_NEUTRun6bAir);
+        eventTree->Add(chn_NEUTRun6cAir);
+        eventTree->Add(chn_NEUTRun6dAir);
+        eventTree->Add(chn_NEUTRun6eAir);
+        if(samples.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
+            allCuts = allCuts && defCuts.tLepMuMinus;
+        else
+            allCuts = allCuts && defCuts.tLepMuPlus;
+    }
+    else
+    {
+        P0DBANFFInterface::Error("oneDimResidualsWithSpecialErrorTreatment", TString::Format("Unable to determine the sample TChain using SampleEnum=%d", samples.Convert(sampleID)));
+        throw;
+    }
 
-  Edge lowEdge(histRef,histFineBinning,LowEdge);
-  Edge upEdge(histRef,histFineBinning,UpEdge);
-  CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+    //gROOT->SetBatch(1);
+    const TCut allCutsCopy(allCuts);
+    const Long64_t nEntries = limitEntries <= 0 ? eventTree->GetEntries() : limitEntries;
 
-  cout << lowEdge.bin << endl;
-  cout << upEdge.bin << endl;
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "Getting event list");
+    eventTree->SetEventList(0);
+    eventTree->Draw(">>eList",allCutsCopy);
+    TEventList* eList = static_cast<TEventList*>(gDirectory->Get("eList"));
+    eventTree->SetEventList(eList);
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "...Done!");
 
-  Edge previousLowEdge = lowEdge;
-  Edge previousUpEdge = upEdge;
-  //now that we have a sigma, need to find how many events fall outside reco range for max bin plus extra needed width
-  do {
+    const TString weights = "WeightNom*FluxWeightNom";
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "Creating regular histogram using input specifications");
+    //TCanvas* canvas = new TCanvas("canvas", "", 800, 600);
+    //canvas->cd();
+    eventTree->Draw(Form("%s>>%s%s",recoPlotVar.c_str(),histRefName.c_str(), histParametersTuple.c_str()),
+                    Form("(%s)*(%s)",weights.Data(),allCutsCopy.GetTitle()),
+                    "goff",
+                    nEntries);
+    //P0DBANFFInterface::SaveCanvasAs(canvas, histRefName.c_str());
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "...Done!");
+
+    TH1D* histRef = static_cast<TH1D*>( gDirectory->Get(histRefName.c_str()) );
+    if(!histRef){
+        std::cout << "ERROR! No histogram with name " << histRefName.c_str() << std::endl;
+        return;
+    }
+
+    residualTruePlotVar = truePlotVarIsAResidual;
+    const Double_t highRef = histRef->GetXaxis()->GetBinUpEdge(histRef->GetNbinsX());
+    const Double_t lowRef = histRef->GetBinLowEdge(1);
+    //const Double_t uniformBinWidth = (highRef-lowRef)/histRef->GetNbinsX();
+    //a sansity check that steps in the finest binning is not too infinitessimal
+    //const Double_t limitStepSize = 0.1*uniformBinWidth;
+    TH1D* histFineBinning = new TH1D("histFineBinning","",nBinsFine,lowRef,highRef);
+
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "Getting finely binned histogram");
+    //canvas->cd();
+    eventTree->Draw(Form("%s>>histFineBinning",recoPlotVar.c_str()),Form("(%s)*(%s)",weights.Data(),allCutsCopy.GetTitle()),"goff",nEntries);
+    //P0DBANFFInterface::SaveCanvasAs(canvas, "histFineBinning");
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "...Done!");
+
+    std::vector<OneDimParameters> allParams;
+    Int_t UpEdge = 1;
+    Int_t LowEdge = 0;
+    Double_t alpha = 0;
+    Double_t sigma = 0;
+    Double_t errorStat = -1;
+    Double_t errorSystematic = -2;
+
+    const Int_t nShifts = 1;
+    Edge *middleEdge = new Edge(histRef,histFineBinning,LowEdge);
+    //use slightly wider reco bins to get accurate residual fit
+    Edge *tempLowEdge = new Edge(histRef,histFineBinning,LowEdge);
+    Edge *tempUpEdge  = new Edge(histRef,histFineBinning,UpEdge);
+
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "Determining first bin edges to analyze");
+    do{
+        if(!tempLowEdge->MoveLow()){
+            break;
+        }
+    }while(histFineBinning->Integral(tempLowEdge->bin,middleEdge->bin) <= statsLimit);
+
+    do{
+        if(!tempUpEdge->MoveUp()){
+            break;
+        }
+    }while(histFineBinning->Integral(middleEdge->bin,tempUpEdge->bin) <= statsLimit);
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "...Done!");
+
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "Determining first bin edges simga");
+    sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),tempLowEdge->edge,tempUpEdge->edge,allCutsCopy,nEntries);
+    delete middleEdge;
+    delete tempLowEdge;
+    delete tempUpEdge;
+    P0DBANFFInterface::Announce("oneDimResidualsWithSpecialErrorTreatment", "...Done!");
+
+    Edge lowEdge(histRef, histFineBinning, LowEdge);
+    Edge upEdge(histRef, histFineBinning, UpEdge);
     CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    //cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-    //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
-    if(errorStat >= errorSystematic && errorStat <= 0.5){
-      break;
-    }
+
+    std::cout << lowEdge.bin << std::endl;
+    std::cout << upEdge.bin <<  std::endl;
+
     Edge previousLowEdge = lowEdge;
-    //do{
-      lowEdge.MoveLow();
-      if(lowEdge.bin == lowEdge.firstNonZeroBin)
-        break;
-    //}while(histFineBinning->Integral(lowEdge.bin,previousLowEdge.bin) <= 1);
-    //cout << lowEdge.bin << endl;
-    //cout << upEdge.bin << endl;
-    CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    //cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-    //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
-    if(errorStat >= errorSystematic && errorStat <= 0.5){
-      break;
-    }
     Edge previousUpEdge = upEdge;
-    //do{
-      upEdge.MoveUp();
-      if(upEdge.bin == upEdge.lastNonZeroBin)
-        break;
-    //}while(histFineBinning->Integral(previousUpEdge.bin,upEdge.bin) <= 1);
+    //now that we have a sigma, need to find how many events fall outside reco range for max bin plus extra needed width
+    do {
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+        //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
+        if(errorStat >= errorSystematic && errorStat <= 0.5){
+            break;
+        }
+        Edge previousLowEdge = lowEdge;
+        //do{
+            lowEdge.MoveLow();
+            if(lowEdge.bin == lowEdge.firstNonZeroBin)
+                break;
+        //}while(histFineBinning->Integral(lowEdge.bin,previousLowEdge.bin) <= 1);
+        //std::cout << lowEdge.bin << std::endl;
+        //std::cout << upEdge.bin << std::endl;
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+        //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
+        if(errorStat >= errorSystematic && errorStat <= 0.5){
+            break;
+        }
+        Edge previousUpEdge = upEdge;
+        //do{
+            upEdge.MoveUp();
+            if(upEdge.bin == upEdge.lastNonZeroBin)
+                break;
+        //}while(histFineBinning->Integral(previousUpEdge.bin,upEdge.bin) <= 1);
 
-    //cout << lowEdge.bin << endl;
-    //cout << upEdge.bin << endl;
-    //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    //cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-  }while(1);
+        //std::cout << lowEdge.bin << std::endl;
+        //std::cout << upEdge.bin << std::endl;
+        //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+    }while(1);
 
-  //remember the edges we already compared
-  Edge peakBinLowEdge = lowEdge;
-  Edge peakBinUpEdge = upEdge;
-  Double_t nMCStats = histFineBinning->Integral(peakBinLowEdge.bin,peakBinUpEdge.bin);
-  Double_t nMCStatsMin = nMCStats; //histFineBinning->Integral(peakBinLowEdge.bin,peakBinUpEdge.bin);
-  Double_t previousBinMCStats = nMCStats;
-  cout << "nMCStatsMin = " << nMCStatsMin << endl;
+    //remember the edges we already compared
+    Edge peakBinLowEdge = lowEdge;
+    Edge peakBinUpEdge = upEdge;
+    Double_t nMCStats = histFineBinning->Integral(peakBinLowEdge.bin,peakBinUpEdge.bin);
+    Double_t nMCStatsMin = nMCStats; //histFineBinning->Integral(peakBinLowEdge.bin,peakBinUpEdge.bin);
+    Double_t previousBinMCStats = nMCStats;
+    std::cout << "nMCStatsMin = " << nMCStatsMin << std::endl;
 
-  OneDimParameters peakBin;
-  peakBin.low = lowEdge.edge;
-  peakBin.up  = upEdge.edge;
-  peakBin.sigma = sigma;
-  peakBin.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-  peakBin.nEntriesMC = nMCStats;
-  peakBin.nEntriesData = nMCStats*POTweight;
-  peakBin.sysFracErr = errorSystematic;
-  peakBin.statFracErr = errorStat;
+    OneDimParameters peakBin;
+    peakBin.low = lowEdge.edge;
+    peakBin.up    = upEdge.edge;
+    peakBin.sigma = sigma;
+    peakBin.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+    peakBin.nEntriesMC = nMCStats;
+    peakBin.nEntriesData = nMCStats*POTweight;
+    peakBin.sysFracErr = errorSystematic;
+    peakBin.statFracErr = errorStat;
 
-  allParams.push_back(peakBin);
-  cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin  << endl;
-  cout << "                      edge " << lowEdge.edge << " to " << upEdge.edge  << endl;
-  cout << "N = " << peakBin.nEntriesData << " and errorStat = " << errorStat << endl;
-  cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
+    allParams.push_back(peakBin);
+    std::cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin    << std::endl;
+    std::cout << "                                            edge " << lowEdge.edge << " to " << upEdge.edge    << std::endl;
+    std::cout << "N = " << peakBin.nEntriesData << " and errorStat = " << errorStat << std::endl;
+    std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
 
-  cout << "process higher bins" << endl;
-  lowEdge.ShiftToBin(peakBinUpEdge.bin+1);
-  //upEdge.ShiftToBin(upEdge.lastNonZeroBin);
+    std::cout << "process higher bins" << std::endl;
+    lowEdge.ShiftToBin(peakBinUpEdge.bin+1);
+    //upEdge.ShiftToBin(upEdge.lastNonZeroBin);
 
-  //now process higher bins
-  while(lowEdge.bin < lowEdge.lastNonZeroBin){
-    //nMCStatsMin = max(nMCStatsMin,1.1*previousBinMCStats);
-    BinPair lowHighBins = GetLowHighBinsFromLowEnd(histFineBinning,lowEdge.edge,nMCStatsMin);
-    upEdge.ShiftToBin(lowHighBins.second);
+    //now process higher bins
+    while(lowEdge.bin < lowEdge.lastNonZeroBin){
+        //nMCStatsMin = max(nMCStatsMin,1.1*previousBinMCStats);
+        BinPair lowHighBins = GetLowHighBinsFromLowEnd(histFineBinning,lowEdge.edge,nMCStatsMin);
+        upEdge.ShiftToBin(lowHighBins.second);
 
-    //cout << lowEdge.bin << endl;
-    //cout << upEdge.bin << endl;
-    cout << "Number of MC entries is " << histFineBinning->Integral(lowEdge.bin,upEdge.bin) << endl;
+        //std::cout << lowEdge.bin << std::endl;
+        //std::cout << upEdge.bin << std::endl;
+        std::cout << "Number of MC entries is " << histFineBinning->Integral(lowEdge.bin,upEdge.bin) << std::endl;
 
-    //if we cannot satisfy the stats condition with the widest bin possible
-    //if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*previousBinMCStats && abs(upEdge.bin-upEdge.lastNonZeroBin)<=1){
-    if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*nMCStatsMin && abs(upEdge.bin-upEdge.lastNonZeroBin)<=1){
-      cout << "Merging previous high bin with current range" << endl;
-      cout << lowEdge.bin << endl;
-      cout << upEdge.bin << endl;
-      lowEdge = previousLowEdge;
-      upEdge.ShiftToBin(upEdge.lastNonZeroBin);
+        //if we cannot satisfy the stats condition with the widest bin possible
+        //if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*previousBinMCStats && abs(upEdge.bin-upEdge.lastNonZeroBin)<=1){
+        if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*nMCStatsMin && abs(upEdge.bin-upEdge.lastNonZeroBin)<=1){
+            std::cout << "Merging previous high bin with current range" << std::endl;
+            std::cout << lowEdge.bin << std::endl;
+            std::cout << upEdge.bin << std::endl;
+            lowEdge = previousLowEdge;
+            upEdge.ShiftToBin(upEdge.lastNonZeroBin);
 
-      sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
-      previousBinMCStats = nStatsMC;
-      OneDimParameters params;
-      params.low = lowEdge.edge;
-      params.up  = upEdge.edge;
-      params.sigma = sigma;
-      params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-      params.nEntriesMC = nStatsMC;
-      peakBin.nEntriesData = nStatsMC*POTweight;
-      params.sysFracErr = errorSystematic;
-      params.statFracErr = errorStat;
-      if(fabs(lowEdge.edge-allParams.back().low) <= 0.01 && (upEdge.edge-lowEdge.edge) > (allParams.back().up-allParams.back().low)){
-        allParams.pop_back();
-        cout << "Previous entry removed" << endl;
-      }
-      allParams.push_back(params);
+            sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
+            previousBinMCStats = nStatsMC;
+            OneDimParameters params;
+            params.low = lowEdge.edge;
+            params.up    = upEdge.edge;
+            params.sigma = sigma;
+            params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+            params.nEntriesMC = nStatsMC;
+            peakBin.nEntriesData = nStatsMC*POTweight;
+            params.sysFracErr = errorSystematic;
+            params.statFracErr = errorStat;
+            if(fabs(lowEdge.edge-allParams.back().low) <= 0.01 && (upEdge.edge-lowEdge.edge) > (allParams.back().up-allParams.back().low)){
+                allParams.pop_back();
+                std::cout << "Previous entry removed" << std::endl;
+            }
+            allParams.push_back(params);
 
-      cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin  << endl;
-      cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-      cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-      //now that we did this, we should shift the bins to be at the far end
-      lowEdge.ShiftToBin(lowEdge.lastNonZeroBin);
-      upEdge.ShiftToBin(upEdge.lastNonZeroBin);
-      break;
-    }
+            std::cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin    << std::endl;
+            std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+            std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+            //now that we did this, we should shift the bins to be at the far end
+            lowEdge.ShiftToBin(lowEdge.lastNonZeroBin);
+            upEdge.ShiftToBin(upEdge.lastNonZeroBin);
+            break;
+        }
 
-    //cout << lowEdge.bin << endl;
-    //cout << upEdge.bin << endl;
-    sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+        //std::cout << lowEdge.bin << std::endl;
+        //std::cout << upEdge.bin << std::endl;
+        sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
 
 
-    //if(histFineBinning->FindBin(upEdge.edge*0.9) >= lowEdge.bin){
-    //  upEdge.ShiftToBin(histFineBinning->FindBin(upEdge.edge*0.9));
-    //}
-    upEdge.ShiftToBin(lowEdge.bin);
-    CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
-      upEdge.MoveUp();
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    }
+        //if(histFineBinning->FindBin(upEdge.edge*0.9) >= lowEdge.bin){
+        //    upEdge.ShiftToBin(histFineBinning->FindBin(upEdge.edge*0.9));
+        //}
+        upEdge.ShiftToBin(lowEdge.bin);
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
+            upEdge.MoveUp();
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        }
 
-    CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    Int_t nIterations = 0;
-    while(errorStat <= errorSystematic){
-      for(Int_t i = 0;i<nShifts;i++){
-        upEdge.MoveUp();
-      }
-      if(upEdge.bin >= upEdge.lastNonZeroBin){
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        Int_t nIterations = 0;
+        while(errorStat <= errorSystematic){
+            for(Int_t i = 0;i<nShifts;i++){
+                upEdge.MoveUp();
+            }
+            if(upEdge.bin >= upEdge.lastNonZeroBin){
+                upEdge.ShiftToBin(upEdge.lastNonZeroBin);
+                sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+                CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+                break;
+            }
+
+            //std::cout << lowEdge.bin << std::endl;
+            //std::cout << upEdge.bin << std::endl;
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+            //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+            nIterations++;
+
+        }
+
+        if(nIterations == 0){
+            std::cout << "first attempt to find appropriate binning by increasing the size failed. Attemping to move downwards" << std::endl;
+
+            std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+            std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+            //upEdge.ShiftToBin(lowHighBins.second);
+            upEdge.ShiftToBin(GetLowHighBinsFromLowEnd(histFineBinning,lowEdge.edge,3.*nMCStatsMin).second);
+            while(errorSystematic <= errorStat){
+            //while(errorSystematic <= errorStat){
+                for(Int_t i = 0;i<nShifts;i++){
+                    upEdge.MoveLow();
+                }
+
+                //std::cout << lowEdge.bin << std::endl;
+                //std::cout << upEdge.bin << std::endl;
+                CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+                std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+                std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+                nIterations++;
+            }
+        }
+        Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
+        OneDimParameters params;
+        params.low = lowEdge.edge;
+        params.up    = upEdge.edge;
+        params.sigma = sigma;
+        params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+        params.nEntriesMC = nStatsMC;
+        params.nEntriesData = nStatsMC*POTweight;
+        params.sysFracErr = errorSystematic;
+        params.statFracErr = errorStat;
+        allParams.push_back(params);
+        //nMCStatsMin = nStatsMC;
+        previousBinMCStats = nStatsMC;
+
+        std::cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin    << std::endl;
+        std::cout << "                                            edge " << lowEdge.edge << " to " << upEdge.edge    << std::endl;
+        std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+
+        previousUpEdge = upEdge;
+        previousLowEdge = lowEdge;
+
+        lowEdge.ShiftToBin(upEdge.bin+1);
         upEdge.ShiftToBin(upEdge.lastNonZeroBin);
-        sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-        break;
-      }
-
-      //cout << lowEdge.bin << endl;
-      //cout << upEdge.bin << endl;
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-      //cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-      nIterations++;
+        std::cout << lowEdge.bin << std::endl;
+        std::cout << upEdge.bin << std::endl;
 
     }
 
-    if(nIterations == 0){
-      cout << "first attempt to find appropriate binning by increasing the size failed. Attemping to move downwards" << endl;
+    std::cout << lowEdge.bin << std::endl;
+    std::cout << upEdge.bin << std::endl;
 
-      cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-      cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-      //upEdge.ShiftToBin(lowHighBins.second);
-      upEdge.ShiftToBin(GetLowHighBinsFromLowEnd(histFineBinning,lowEdge.edge,3.*nMCStatsMin).second);
-      while(errorSystematic <= errorStat){
-      //while(errorSystematic <= errorStat){
-        for(Int_t i = 0;i<nShifts;i++){
-          upEdge.MoveLow();
-        }
+    std::cout << "done with upper bins" << std::endl;
 
-        //cout << lowEdge.bin << endl;
-        //cout << upEdge.bin << endl;
-        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-        cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-        cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-        nIterations++;
-      }
-    }
-    Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
-    OneDimParameters params;
-    params.low = lowEdge.edge;
-    params.up  = upEdge.edge;
-    params.sigma = sigma;
-    params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-    params.nEntriesMC = nStatsMC;
-    params.nEntriesData = nStatsMC*POTweight;
-    params.sysFracErr = errorSystematic;
-    params.statFracErr = errorStat;
-    allParams.push_back(params);
-    //nMCStatsMin = nStatsMC;
-    previousBinMCStats = nStatsMC;
+    //sort(allParams.begin(),allParams.end(),SortParametersByEdges);
+    //for(UInt_t i = 0;i<allParams.size();i++){
+    //    std::cout << "low Edge = " << allParams[i].low << std::endl;
+    //    std::cout << "N = " << allParams[i].nEntriesData << std::endl;
+    //    std::cout << "errorStat = " << allParams[i].statFracErr << std::endl;
+    //    std::cout << "errorSystematic = " << allParams[i].sysFracErr << std::endl;
+    //    std::cout << "si = " << allParams[i].sigma << std::endl;
+    //    std::cout << "up Edge = " << allParams[i].up << std::endl;
+    //}
 
-    cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin  << endl;
-    cout << "                      edge " << lowEdge.edge << " to " << upEdge.edge  << endl;
-    cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-
-    previousUpEdge = upEdge;
-    previousLowEdge = lowEdge;
-
-    lowEdge.ShiftToBin(upEdge.bin+1);
-    upEdge.ShiftToBin(upEdge.lastNonZeroBin);
-    cout << lowEdge.bin << endl;
-    cout << upEdge.bin << endl;
-
-  }
-
-  cout << lowEdge.bin << endl;
-  cout << upEdge.bin << endl;
-
-  cout << "done with upper bins" << endl;
-
-  //sort(allParams.begin(),allParams.end(),SortParametersByEdges);
-  //for(UInt_t i = 0;i<allParams.size();i++){
-  //  cout << "low Edge = " << allParams[i].low << endl;
-  //  cout << "N = " << allParams[i].nEntriesData << endl;
-  //  cout << "errorStat = " << allParams[i].statFracErr << endl;
-  //  cout << "errorSystematic = " << allParams[i].sysFracErr << endl;
-  //  cout << "si = " << allParams[i].sigma << endl;
-  //  cout << "up Edge = " << allParams[i].up << endl;
-  //}
-
-  upEdge.ShiftToBin(peakBinLowEdge.bin-1);
-  lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
-
-  previousUpEdge = upEdge;
-  previousLowEdge = lowEdge;
-
-  cout << lowEdge.bin << endl;
-  cout << upEdge.bin << endl;
-
-  //work on lower bins
-  cout << "lower bins" << endl;
-  while(upEdge.bin > upEdge.firstNonZeroBin){
-
-    //nMCStatsMin = max(nMCStatsMin,1.1*previousBinMCStats);
-    BinPair lowHighBins = GetLowHighBinsFromHighEnd(histFineBinning,upEdge.edge,nMCStatsMin);
-    lowEdge.ShiftToBin(lowHighBins.first);
-    //if we cannot satisfy the stats condition with the widest bin possible
-    if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*nMCStatsMin && abs(lowEdge.bin-lowEdge.firstNonZeroBin)<=1){
-
-      lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
-      upEdge = previousUpEdge;
-      sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
-      previousBinMCStats = nStatsMC;
-      OneDimParameters params;
-      params.low = lowEdge.edge;
-      params.up  = upEdge.edge;
-      params.sigma = sigma;
-      params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-      params.nEntriesMC = nStatsMC;
-      params.nEntriesData = nStatsMC*POTweight;
-      params.sysFracErr = errorSystematic;
-      params.statFracErr = errorStat;
-      if(fabs(upEdge.edge-allParams.back().up) <= 0.01 && (upEdge.edge-lowEdge.edge) > (allParams.back().up-allParams.back().low)){
-        allParams.pop_back();
-        cout << "Previous entry removed" << endl;
-      }
-      allParams.push_back(params);
-
-      cout << "saved a parameter in special check for bins " << lowEdge.bin << " to " << upEdge.bin  << endl;
-      cout << "                                       edges" << lowEdge.edge << " to " << upEdge.edge  << endl;
-      cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-      cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-      lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
-      upEdge.ShiftToBin(upEdge.firstNonZeroBin);
-      break;
-    }
-
-    //cout << lowEdge.bin << endl;
-    //cout << upEdge.bin << endl;
-    sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-
-    lowEdge.ShiftToBin(upEdge.bin);
-    CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
-    //while(errorStat > 0.5 || errorStat == TMath::Infinity()){
-      lowEdge.MoveLow();
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    }
-
-    //cout << "lowEdge bin = " << lowEdge.bin << endl;
-    //cout << "upEdge bin = " << upEdge.bin << endl;
-    CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-    cout << "upEdge bin = " << upEdge.bin << endl;
-
-    Int_t nIterations = 0;
-    while(errorStat <= errorSystematic){
-      for(Int_t i = 0;i<nShifts;i++){
-        lowEdge.MoveLow();
-      }
-      if(lowEdge.bin <= lowEdge.firstNonZeroBin){
-        lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
-        sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-        break;
-      }
-      cout << "lowEdge bin = " << lowEdge.bin << endl;
-      CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-      cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-      cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-      nIterations++;
-
-    }
-    if(nIterations == 0){
-      cout << "first attempt to find appropriate binning by increasing the size failed. Attemping to move downwards" << endl;
-      lowEdge.ShiftToBin(lowHighBins.first);
-      while(errorSystematic <= errorStat){
-        for(Int_t i = 0;i<nShifts;i++){
-          lowEdge.MoveUp();
-        }
-
-        //cout << lowEdge.bin << endl;
-        //cout << upEdge.bin << endl;
-        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
-        //cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-        //cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-        nIterations++;
-      }
-    }
-    Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
-    OneDimParameters params;
-    params.low = lowEdge.edge;
-    params.up  = upEdge.edge;
-    params.sigma = sigma;
-    params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
-    params.nEntriesMC = nStatsMC;
-    params.nEntriesData = nStatsMC*POTweight;
-    params.sysFracErr = errorSystematic;
-    params.statFracErr = errorStat;
-    allParams.push_back(params);
-    //nMCStatsMin = nStatsMC;
-    previousBinMCStats = nStatsMC;
-
-    cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin  << endl;
-    cout << "                      edges" << lowEdge.edge << " to " << upEdge.edge  << endl;
-    cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << endl;
-    cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << endl;
-
-    previousUpEdge = upEdge;
-    previousLowEdge = lowEdge;
-
-    upEdge.ShiftToBin(lowEdge.bin-1);
+    upEdge.ShiftToBin(peakBinLowEdge.bin-1);
     lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
-  }
-  cout << "done with lower bins" << endl;
 
-  cout << "number of parameter sets saved = " << allParams.size() << endl;
-  sort(allParams.begin(),allParams.end(),SortParametersByEdges);
+    previousUpEdge = upEdge;
+    previousLowEdge = lowEdge;
 
-  OneDimParameters lowestPossibleEdge;
-  lowestPossibleEdge.low = lowestBinEdge;
-  lowestPossibleEdge.sigma = 0;
-  lowestPossibleEdge.trueSigma = 0;
-  lowestPossibleEdge.nEntriesMC = 0;
-  lowestPossibleEdge.nEntriesData = 0;
-  lowestPossibleEdge.sysFracErr = 0;
-  lowestPossibleEdge.statFracErr = 0;
+    std::cout << lowEdge.bin << std::endl;
+    std::cout << upEdge.bin << std::endl;
 
-  OneDimParameters highestPossibleEdge;
-  highestPossibleEdge.up = highestBinEdge;
-  highestPossibleEdge.sigma = 0;
-  highestPossibleEdge.trueSigma = 0;
-  highestPossibleEdge.nEntriesMC = 0;
-  highestPossibleEdge.nEntriesData = 0;
-  highestPossibleEdge.sysFracErr = 0;
-  highestPossibleEdge.statFracErr = 0;
+    //work on lower bins
+    std::cout << "lower bins" << std::endl;
+    while(upEdge.bin > upEdge.firstNonZeroBin){
 
-  if(allParams.back().up < highestPossibleEdge.up && highestBinEdge != -1){
-    highestPossibleEdge.low = allParams.back().up;
-    allParams.push_back(highestPossibleEdge);
-  }
+        //nMCStatsMin = max(nMCStatsMin,1.1*previousBinMCStats);
+        BinPair lowHighBins = GetLowHighBinsFromHighEnd(histFineBinning,upEdge.edge,nMCStatsMin);
+        lowEdge.ShiftToBin(lowHighBins.first);
+        //if we cannot satisfy the stats condition with the widest bin possible
+        if(histFineBinning->Integral(lowEdge.bin,upEdge.bin) <= 0.25*nMCStatsMin && abs(lowEdge.bin-lowEdge.firstNonZeroBin)<=1){
 
-  if(allParams.front().low > lowestPossibleEdge.low && lowestBinEdge != -1){
-    lowestPossibleEdge.up = allParams.front().low;
-    allParams.push_back(lowestPossibleEdge);
-  }
+            lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
+            upEdge = previousUpEdge;
+            sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
+            previousBinMCStats = nStatsMC;
+            OneDimParameters params;
+            params.low = lowEdge.edge;
+            params.up    = upEdge.edge;
+            params.sigma = sigma;
+            params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+            params.nEntriesMC = nStatsMC;
+            params.nEntriesData = nStatsMC*POTweight;
+            params.sysFracErr = errorSystematic;
+            params.statFracErr = errorStat;
+            if(fabs(upEdge.edge-allParams.back().up) <= 0.01 && (upEdge.edge-lowEdge.edge) > (allParams.back().up-allParams.back().low)){
+                allParams.pop_back();
+                std::cout << "Previous entry removed" << std::endl;
+            }
+            allParams.push_back(params);
 
-  sort(allParams.begin(),allParams.end(),SortParametersByEdges);
+            std::cout << "saved a parameter in special check for bins " << lowEdge.bin << " to " << upEdge.bin    << std::endl;
+            std::cout << "                                                                             edges" << lowEdge.edge << " to " << upEdge.edge    << std::endl;
+            std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+            std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+            lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
+            upEdge.ShiftToBin(upEdge.firstNonZeroBin);
+            break;
+        }
 
-  std::vector<double> binEdgesXVect_augmented;
-  std::vector<double> graphMiddleXVect_augmented;
-  std::vector<double> graphErrXVect_augmented;
-  std::vector<double> graphYVectVect_augmented;
-  std::vector<double> graphErr1YVect_augmented;
-  std::vector<double> graphErr2YVect_augmented;
+        //std::cout << lowEdge.bin << std::endl;
+        //std::cout << upEdge.bin << std::endl;
+        sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
 
-  //binEdgesXVect_augmented.push_back(lowestBinEdge);
-  for(UInt_t i = 0 ; i<allParams.size() ; i++){
-    cout << "low Edge = " << allParams[i].low << endl;
-    //cout << "errorStat = " << pow(allParams[i].nEntriesData,-0.5) << endl;
-    cout << "errorStat = " << allParams[i].statFracErr << endl;
-    cout << "errorSystematic = " << allParams[i].sysFracErr << endl;
-    cout << "si = " << allParams[i].sigma << endl;
-    cout << "up Edge = " << allParams[i].up << endl;
-    //const Double_t N = allParams[i].nEntriesData;
-    const Double_t N = allParams[i].statFracErr == 0 ? 0 : pow(allParams[i].statFracErr,-2.);
-    binEdgesXVect_augmented.push_back(allParams[i].low);
-    graphMiddleXVect_augmented.push_back(0.5*(allParams[i].up+allParams[i].low));
-    graphErrXVect_augmented.push_back(0.5*(allParams[i].up-allParams[i].low));
-    graphYVectVect_augmented.push_back(N);
-    //graphErr1YVect_augmented.push_back(N*errorStatprime);
-    //graphErr2YVect_augmented.push_back(N*sqrt(pow(errorStatprime,2)+pow(allParams[i].sysFracErr,2)));
+        lowEdge.ShiftToBin(upEdge.bin);
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
+        //while(errorStat > 0.5 || errorStat == TMath::Infinity()){
+            lowEdge.MoveLow();
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        }
 
-    graphErr1YVect_augmented.push_back(sqrt(N));
-    graphErr2YVect_augmented.push_back(N*sqrt( 1./N + pow(allParams[i].sysFracErr,2)));
-  }
-  binEdgesXVect_augmented.push_back(allParams.back().up);
-  //binEdgesXVect_augmented.push_back(highestBinEdge);
-  const Int_t nBins_augmented = binEdgesXVect_augmented.size()-1;
-  double* binEdgesX_augmented = &binEdgesXVect_augmented[0];
+        //std::cout << "lowEdge bin = " << lowEdge.bin << std::endl;
+        //std::cout << "upEdge bin = " << upEdge.bin << std::endl;
+        CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+        std::cout << "upEdge bin = " << upEdge.bin << std::endl;
+
+        Int_t nIterations = 0;
+        while(errorStat <= errorSystematic){
+            for(Int_t i = 0;i<nShifts;i++){
+                lowEdge.MoveLow();
+            }
+            if(lowEdge.bin <= lowEdge.firstNonZeroBin){
+                lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
+                sigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+                CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+                break;
+            }
+            std::cout << "lowEdge bin = " << lowEdge.bin << std::endl;
+            CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+            std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+            std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+            nIterations++;
+
+        }
+        if(nIterations == 0){
+            std::cout << "first attempt to find appropriate binning by increasing the size failed. Attemping to move downwards" << std::endl;
+            lowEdge.ShiftToBin(lowHighBins.first);
+            while(errorSystematic <= errorStat){
+                for(Int_t i = 0;i<nShifts;i++){
+                    lowEdge.MoveUp();
+                }
+
+                //std::cout << lowEdge.bin << std::endl;
+                //std::cout << upEdge.bin << std::endl;
+                CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
+                //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+                //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+                nIterations++;
+            }
+        }
+        Double_t nStatsMC = histFineBinning->Integral(lowEdge.bin,upEdge.bin);
+        OneDimParameters params;
+        params.low = lowEdge.edge;
+        params.up    = upEdge.edge;
+        params.sigma = sigma;
+        params.trueSigma = GetSigma(truePlotVar.c_str(),recoPlotVar.c_str(),lowEdge.edge,upEdge.edge,allCutsCopy,nEntries);
+        params.nEntriesMC = nStatsMC;
+        params.nEntriesData = nStatsMC*POTweight;
+        params.sysFracErr = errorSystematic;
+        params.statFracErr = errorStat;
+        allParams.push_back(params);
+        //nMCStatsMin = nStatsMC;
+        previousBinMCStats = nStatsMC;
+
+        std::cout << "saved a parameter for bins " << lowEdge.bin << " to " << upEdge.bin    << std::endl;
+        std::cout << "                                            edges" << lowEdge.edge << " to " << upEdge.edge    << std::endl;
+        std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
+        std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
+
+        previousUpEdge = upEdge;
+        previousLowEdge = lowEdge;
+
+        upEdge.ShiftToBin(lowEdge.bin-1);
+        lowEdge.ShiftToBin(lowEdge.firstNonZeroBin);
+    }
+    std::cout << "done with lower bins" << std::endl;
+
+    std::cout << "number of parameter sets saved = " << allParams.size() << std::endl;
+    sort(allParams.begin(),allParams.end(),SortParametersByEdges);
+
+    OneDimParameters lowestPossibleEdge;
+    lowestPossibleEdge.low = lowestBinEdge;
+    lowestPossibleEdge.sigma = 0;
+    lowestPossibleEdge.trueSigma = 0;
+    lowestPossibleEdge.nEntriesMC = 0;
+    lowestPossibleEdge.nEntriesData = 0;
+    lowestPossibleEdge.sysFracErr = 0;
+    lowestPossibleEdge.statFracErr = 0;
+
+    OneDimParameters highestPossibleEdge;
+    highestPossibleEdge.up = highestBinEdge;
+    highestPossibleEdge.sigma = 0;
+    highestPossibleEdge.trueSigma = 0;
+    highestPossibleEdge.nEntriesMC = 0;
+    highestPossibleEdge.nEntriesData = 0;
+    highestPossibleEdge.sysFracErr = 0;
+    highestPossibleEdge.statFracErr = 0;
+
+    if(allParams.back().up < highestPossibleEdge.up && highestBinEdge != -1){
+        highestPossibleEdge.low = allParams.back().up;
+        allParams.push_back(highestPossibleEdge);
+    }
+
+    if(allParams.front().low > lowestPossibleEdge.low && lowestBinEdge != -1){
+        lowestPossibleEdge.up = allParams.front().low;
+        allParams.push_back(lowestPossibleEdge);
+    }
+
+    sort(allParams.begin(),allParams.end(),SortParametersByEdges);
+
+    std::vector<double> binEdgesXVect_augmented;
+    std::vector<double> graphMiddleXVect_augmented;
+    std::vector<double> graphErrXVect_augmented;
+    std::vector<double> graphYVectVect_augmented;
+    std::vector<double> graphErr1YVect_augmented;
+    std::vector<double> graphErr2YVect_augmented;
+
+    //binEdgesXVect_augmented.push_back(lowestBinEdge);
+    for(UInt_t i = 0 ; i<allParams.size() ; i++){
+        std::cout << "low Edge = " << allParams[i].low << std::endl;
+        //std::cout << "errorStat = " << pow(allParams[i].nEntriesData,-0.5) << std::endl;
+        std::cout << "errorStat = " << allParams[i].statFracErr << std::endl;
+        std::cout << "errorSystematic = " << allParams[i].sysFracErr << std::endl;
+        std::cout << "si = " << allParams[i].sigma << std::endl;
+        std::cout << "up Edge = " << allParams[i].up << std::endl;
+        //const Double_t N = allParams[i].nEntriesData;
+        const Double_t N = allParams[i].statFracErr == 0 ? 0 : pow(allParams[i].statFracErr,-2.);
+        binEdgesXVect_augmented.push_back(allParams[i].low);
+        graphMiddleXVect_augmented.push_back(0.5*(allParams[i].up+allParams[i].low));
+        graphErrXVect_augmented.push_back(0.5*(allParams[i].up-allParams[i].low));
+        graphYVectVect_augmented.push_back(N);
+        //graphErr1YVect_augmented.push_back(N*errorStatprime);
+        //graphErr2YVect_augmented.push_back(N*sqrt(pow(errorStatprime,2)+pow(allParams[i].sysFracErr,2)));
+
+        graphErr1YVect_augmented.push_back(sqrt(N));
+        graphErr2YVect_augmented.push_back(N*sqrt( 1./N + pow(allParams[i].sysFracErr,2)));
+    }
+    binEdgesXVect_augmented.push_back(allParams.back().up);
+    //binEdgesXVect_augmented.push_back(highestBinEdge);
+    const Int_t nBins_augmented = binEdgesXVect_augmented.size()-1;
+    double* binEdgesX_augmented = &binEdgesXVect_augmented[0];
 
 
-  const Int_t nPoints = graphMiddleXVect_augmented.size();
-  double* graphMiddleX_augmented = &graphMiddleXVect_augmented[0];
-  double* graphErrX_augmented    = &graphErrXVect_augmented[0];
-  double* graphY_augmented       = &graphYVectVect_augmented[0];
-  double* graphErr1Y_augmented   = &graphErr1YVect_augmented[0];
-  double* graphErr2Y_augmented   = &graphErr2YVect_augmented[0];
-
-  TCanvas* gCanvas = new TCanvas("gCanvas","",800,800);
-  gCanvas->cd();
-
-  mg          = new TMultiGraph();
-  gStatErrors = new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr1Y_augmented);
-  gSysErrors  = new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr2Y_augmented);
-  TH1D* hNoErrors = new TH1D("hNoErrors","",nBins_augmented,binEdgesX_augmented);
-  for(UInt_t i = 0;i<allParams.size();i++){
-    //const Double_t N = pow(allParams[i].statFracErr,-2.);
-    const Double_t N = allParams[i].statFracErr == 0 ? 0 : pow(allParams[i].statFracErr,-2.);
-    hNoErrors->SetBinContent(hNoErrors->FindBin(allParams[i].low),N);
-    hNoErrors->SetBinError(hNoErrors->FindBin(allParams[i].low),0);
-
-  }
-
-  gStatErrors->SetFillColor(kBlue);
-  gSysErrors->SetFillColor(kRed);
-  hNoErrors->SetLineWidth(3);
-
-  mg->Add(gSysErrors);
-  mg->Add(gStatErrors);
-  mg->Draw("AP5");
-  mg->SetMinimum(0);
-  mg->GetXaxis()->SetTitle(xAxisTitle.c_str());
-  mg->GetYaxis()->SetTitle("Entries per bin");
-  mg->GetYaxis()->SetTitleOffset(mg->GetYaxis()->GetTitleOffset()*1.25);
-  hNoErrors->SetMinimum(0);
-  hNoErrors->GetXaxis()->SetTitle(xAxisTitle.c_str());
-  hNoErrors->GetYaxis()->SetTitle("Entries per bin");
-  hNoErrors->GetYaxis()->SetTitleOffset(mg->GetYaxis()->GetTitleOffset()*1.25);
-  mg->Draw("AP5");
-  hNoErrors->Draw("same");
-
-  TLegend* gLegend = new TLegend(0.7,0.7,0.88,0.88,"");
-  gLegend->AddEntry(gStatErrors,"Stat. Error","F");
-  gLegend->AddEntry(gSysErrors,"Total Error","F");
-
-  gLegend->SetLineStyle(0);
-  gLegend->SetLineColor(0);
-  gLegend->SetFillStyle(0);
-  gLegend->Draw();
-  gCanvas->SaveAs(Form("plots/%serrors.root",outputName.c_str()));
-  gCanvas->SaveAs(Form("plots/%serrors.png",outputName.c_str()));
-  gCanvas->SaveAs(Form("plots/%serrors.eps",outputName.c_str()));
-  gCanvas->SaveAs(Form("plots/%serrors.pdf",outputName.c_str()));
-
-  TCanvas* hCanvas = new TCanvas("hCanvas","",800,800);
-  hCanvas->cd();
-
-  TH1D* hSigmas = new TH1D("hSigmas","",nBins_augmented,binEdgesX_augmented);
-  TH1D* htrueSigmas = new TH1D("htrueSigmas","",nBins_augmented,binEdgesX_augmented);
-  htrueSigmas->SetLineColor(kBlue);
-  TH1D* hSigmaOverBinCenter = new TH1D("hSigmaOverBinCenter","",nBins_augmented,binEdgesX_augmented);
-  TH1D* htrueSigmaSigmaRatio = new TH1D("htrueSigmaSigmaRatio","",nBins_augmented,binEdgesX_augmented);
-  hSigmas->GetXaxis()->SetTitle(xAxisTitle.c_str());
-  hSigmas->GetYaxis()->SetTitle("1 #sigma range");
-  hSigmas->GetYaxis()->SetTitleOffset(hSigmas->GetYaxis()->GetTitleOffset()*1.25);
-  hSigmas->SetLineWidth(3);
-  hSigmaOverBinCenter->SetLineColor(kRed);
-  hSigmaOverBinCenter->SetLineWidth(3);
-  hSigmaOverBinCenter->SetLineStyle(2);
-  for(UInt_t i = 0;i<allParams.size();i++){
-    hSigmas->SetBinContent(i+1,allParams[i].sigma);
-    htrueSigmas->SetBinContent(i+1,allParams[i].trueSigma);
-    hSigmaOverBinCenter->SetBinContent(i+1,allParams[i].sigma/hSigmaOverBinCenter->GetBinCenter(i+1));
-    htrueSigmaSigmaRatio->SetBinContent(i+1,allParams[i].sigma/allParams[i].trueSigma);
-  }
-
-  hSigmas->SetMaximum(hSigmas->GetMaximum()*1.1);
-  hSigmas->SetMinimum(0);
-
-  hSigmas->Draw();
-  htrueSigmas->Draw("same");
-
-  TLegend* hLegend = new TLegend(0.7,0.7,0.88,0.88,"");
-  hLegend->AddEntry(hSigmas,"Initial Estimate","L");
-  hLegend->AddEntry(htrueSigmas,"After Bin Formed","L");
-  hLegend->SetLineStyle(0);
-  hLegend->SetLineColor(0);
-  hLegend->SetFillStyle(0);
-  hLegend->Draw();
+    const Int_t nPoints = graphMiddleXVect_augmented.size();
+    double* graphMiddleX_augmented = &graphMiddleXVect_augmented[0];
+    double* graphErrX_augmented    = &graphErrXVect_augmented[0];
+    double* graphY_augmented       = &graphYVectVect_augmented[0];
+    double* graphErr1Y_augmented   = &graphErr1YVect_augmented[0];
+    double* graphErr2Y_augmented   = &graphErr2YVect_augmented[0];
 
 
-  hCanvas->Update();
-  Double_t rightmax = 1.1*htrueSigmaSigmaRatio->GetMaximum();
-  Double_t scale = gPad->GetUymax()/rightmax;
-  htrueSigmaSigmaRatio->Scale(scale);
-  htrueSigmaSigmaRatio->Draw("same");
+    TCanvas* gCanvas = new TCanvas("gCanvas","",800,800);
+    gCanvas->cd();
+    gCanvas->SetLeftMargin(.125);
+    gCanvas->SetBottomMargin(.125);
 
-  TGaxis* axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
-     gPad->GetUxmax(), gPad->GetUymax(),0,rightmax,510,"+L");
-  axis->SetLineColor(kRed);
-  axis->SetLabelColor(kRed);
-  axis->SetTitleColor(kRed);
-  //axis->SetTitleSize(axis->GetTitleSize()*0.5);
-  //axis->SetLabelSize(axis->GetTitleSize());
-  axis->SetTitle("Ratio");
-  axis->SetTitleOffset(axis->GetTitleOffset()*1.5);
-  axis->Draw();
+    TMultiGraph* mg = new TMultiGraph();
+    TGraphErrors* gStatErrors = new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr1Y_augmented);
+    TGraphErrors* gSysErrors  = new TGraphErrors(nPoints,graphMiddleX_augmented,graphY_augmented,graphErrX_augmented,graphErr2Y_augmented);
+    TH1D* hNoErrors = new TH1D("hNoErrors","",nBins_augmented,binEdgesX_augmented);
+    for(UInt_t i = 0;i<allParams.size();i++){
+        //const Double_t N = pow(allParams[i].statFracErr,-2.);
+        const Double_t N = allParams[i].statFracErr == 0 ? 0 : pow(allParams[i].statFracErr,-2.);
+        hNoErrors->SetBinContent(hNoErrors->FindBin(allParams[i].low),N);
+        hNoErrors->SetBinError(hNoErrors->FindBin(allParams[i].low),0);
 
-  hCanvas->SaveAs(Form("plots/%ssigmas.root",outputName.c_str()));
-  hCanvas->SaveAs(Form("plots/%ssigmas.png",outputName.c_str()));
-  hCanvas->SaveAs(Form("plots/%ssigmas.eps",outputName.c_str()));
-  hCanvas->SaveAs(Form("plots/%ssigmas.pdf",outputName.c_str()));
+    }
 
-  delete histFineBinning;
+    gStatErrors->SetFillColor(P0DBANFFInterface::kcbBlue);
+    gSysErrors->SetFillColor(P0DBANFFInterface::kcbRed);
+    hNoErrors->SetLineWidth(3);
 
-  delete axis;
-  delete hSigmas;
-  delete hSigmaOverBinCenter;
-  delete htrueSigmas;
-  delete htrueSigmaSigmaRatio;
-  delete hCanvas;
+    mg->Add(gSysErrors);
+    mg->Add(gStatErrors);
+    mg->Draw("AP5");
+    mg->SetMinimum(0);
+    mg->GetXaxis()->SetTitle(xAxisTitle.c_str());
+    mg->GetYaxis()->SetTitle("Entries per bin");
+    mg->GetYaxis()->SetTitleOffset(mg->GetYaxis()->GetTitleOffset()*1.25);
+    hNoErrors->SetMinimum(0);
+    hNoErrors->GetXaxis()->SetTitle(xAxisTitle.c_str());
+    hNoErrors->GetYaxis()->SetTitle("Entries per bin");
+    hNoErrors->GetYaxis()->SetTitleOffset(mg->GetYaxis()->GetTitleOffset()*1.25);
+    mg->Draw("AP5");
+    hNoErrors->Draw("same");
 
-  delete gStatErrors;
-  delete gSysErrors ;
-  delete gLegend;
-  delete mg         ;
-  delete hNoErrors;
-  delete gCanvas;
+    TLegend* gLegend = new TLegend(0.7,0.7,0.88,0.88,"");
+    gLegend->AddEntry(gStatErrors,"Stat. Error","F");
+    gLegend->AddEntry(gSysErrors,"Total Error","F");
+
+    gLegend->SetLineStyle(0);
+    gLegend->SetLineColor(0);
+    gLegend->SetFillStyle(0);
+    gLegend->SetBorderSize(0);
+    gLegend->Draw();
+    P0DBANFFInterface::SaveCanvasAs(gCanvas, TString::Format("plots/%serrors", outputName.c_str()));
+
+    TCanvas* hCanvas = new TCanvas("hCanvas","",800,800);
+    hCanvas->cd();
+
+    TH1D* hSigmas = new TH1D("hSigmas","",nBins_augmented,binEdgesX_augmented);
+    P0DBANFFInterface::PrettyUpTH1(hSigmas, xAxisTitle.c_str(), "1 #sigma range", P0DBANFFInterface::kcbBlack);
+    TH1D* htrueSigmas = new TH1D("htrueSigmas","",nBins_augmented,binEdgesX_augmented);
+    P0DBANFFInterface::PrettyUpTH1(htrueSigmas, xAxisTitle.c_str(), "1 #sigma range", P0DBANFFInterface::kcbBlue);
+
+    TH1D* hSigmaOverBinCenter = new TH1D("hSigmaOverBinCenter","",nBins_augmented,binEdgesX_augmented);
+    TH1D* htrueSigmaSigmaRatio = new TH1D("htrueSigmaSigmaRatio","",nBins_augmented,binEdgesX_augmented);
+    P0DBANFFInterface::PrettyUpTH1(hSigmaOverBinCenter, xAxisTitle.c_str(), "1 #sigma range", P0DBANFFInterface::kcbRed);
+    hSigmaOverBinCenter->SetLineStyle(2);
+    for(UInt_t i = 0;i<allParams.size();i++){
+        hSigmas->SetBinContent(i+1,allParams[i].sigma);
+        htrueSigmas->SetBinContent(i+1,allParams[i].trueSigma);
+        hSigmaOverBinCenter->SetBinContent(i+1,allParams[i].sigma/hSigmaOverBinCenter->GetBinCenter(i+1));
+        htrueSigmaSigmaRatio->SetBinContent(i+1,allParams[i].sigma/allParams[i].trueSigma);
+    }
+
+    hSigmas->SetMaximum(hSigmas->GetMaximum()*1.1);
+    hSigmas->SetMinimum(0);
+
+    hSigmas->Draw();
+    htrueSigmas->Draw("same");
+
+    TLegend* hLegend = new TLegend(0.2,0.7,0.45,0.88,"");
+    hLegend->AddEntry(hSigmas,"Initial Estimate","L");
+    hLegend->AddEntry(htrueSigmas,"After Bin Formed","L");
+    hLegend->SetLineStyle(0);
+    hLegend->SetLineColor(0);
+    hLegend->SetFillStyle(0);
+    hLegend->SetBorderSize(0);
+    hLegend->Draw();
+
+    hCanvas->Update();
+    Double_t rightmax = 1.1*htrueSigmaSigmaRatio->GetMaximum();
+    Double_t scale = gPad->GetUymax()/rightmax;
+    htrueSigmaSigmaRatio->Scale(scale);
+    htrueSigmaSigmaRatio->Draw("same");
+
+    TGaxis* axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),
+         gPad->GetUxmax(), gPad->GetUymax(),0,rightmax,510,"+L");
+    axis-> SetLineColor(P0DBANFFInterface::kcbRed);
+    axis->SetLabelColor(P0DBANFFInterface::kcbRed);
+    axis->SetTitleColor(P0DBANFFInterface::kcbRed);
+    //axis->SetTitleSize(axis->GetTitleSize()*0.5);
+    //axis->SetLabelSize(axis->GetTitleSize());
+    axis->SetTitle("Ratio");
+    axis->SetTitleOffset(axis->GetTitleOffset()*1.25);
+    axis->Draw();
+
+    P0DBANFFInterface::SaveCanvasAs(hCanvas, TString::Format("plots/%ssigmas", outputName.c_str()));
+
+    delete histFineBinning;
+
+    delete axis;
+    delete hSigmas;
+    delete hSigmaOverBinCenter;
+    delete htrueSigmas;
+    delete htrueSigmaSigmaRatio;
+    delete hCanvas;
+
+    delete gStatErrors;
+    delete gSysErrors;
+    delete gLegend;
+    delete mg;
+    delete hNoErrors;
+    delete gCanvas;
 
 
 }
@@ -818,7 +891,6 @@ BinPair GetLowHighBinsFromHighEnd(TH1D* hFineBinning, const Double_t& highEdge,
 }
 
 
-
 Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         Double_t recoLowValue, Double_t recoHighValue, TCut cuts,
         Int_t limitEntries)
@@ -831,10 +903,11 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
     TCanvas* temp = new TCanvas("temp","",800,800);
     temp->cd();
     TF1* normFit = new TF1("normFit","gaus(0)",0.1*recoLowValue,2*recoHighValue);
+    P0DBANFFInterface::Announce("GetSigma", "Attempting to find bin edges and sigmas");
     do
     {
         TCut rangeCut = Form("%f<=%s&&%s<%f",lowCut,recoVar,recoVar,highCut);
-        string DrawCommand = "";//Form("%s>>htemp(32,%f,%f)",trueVar,0.1*lowCut,2*highCut);
+        std::string DrawCommand = "";//Form("%s>>htemp(32,%f,%f)",trueVar,0.1*lowCut,2*highCut);
         if(residualTruePlotVar)
         {
             Double_t avg = 0.5*(lowCut+highCut);
@@ -843,8 +916,8 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
         else
             DrawCommand = Form("%s>>htemp(32,%f,%f)",trueVar,0.1*lowCut,2*highCut);
 
-        cout << rangeCut.GetTitle() << endl;
-        FT->Draw(DrawCommand.c_str(),cuts&&rangeCut,"goff",limitEntries);
+        P0DBANFFInterface::Announce("GetSigma", TString::Format("Range cut \"%s\"",rangeCut.GetTitle()));
+        eventTree->Draw(DrawCommand.c_str(),cuts&&rangeCut,"goff",limitEntries);
         htemp = static_cast<TH1D*>(gDirectory->Get("htemp"));
         normFit->SetParameters(htemp->GetMaximum(),htemp->GetXaxis()->GetBinLowEdge(htemp->GetMaximumBin()),0.5*fabs(highCut-lowCut));
         htemp->Fit(normFit);
@@ -858,8 +931,8 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
                                                                     0.5*fabs(highCut-lowCut));
             htemp->Fit(normFit);
         }
-        //cout << sigmas[0] << endl;
-        //cout << sigmas[1] << endl;
+        //std::cout << sigmas[0] << std::endl;
+        //std::cout << sigmas[1] << std::endl;
         if(sigmas[1] > 0 && sigmas[0] > 0)
         {
             sigmas[0] = sigmas[1];
@@ -877,13 +950,14 @@ Double_t GetSigma(const char* const trueVar, const char* const recoVar,
     //}while(fabs(sigmas[1]/sigmas[0]-1.)>MinFracDiff || TMath::IsNaN(sigmas[1]/sigmas[0]) || sigmas[1]/sigmas[0] == TMath::Infinity() || sigmas[1] == 0);
     } while(1);
 
-    htemp->Draw();
+    //htemp->Draw();
     //temp->SaveAs(Form("plots/range_%6f_%6f.root",recoLowValue,recoHighValue));
     //temp->SaveAs(Form("plots/range_%6f_%6f.png",recoLowValue,recoHighValue));
     //temp->SaveAs(Form("plots/range_%6f_%6f.pdf",recoLowValue,recoHighValue));
     //temp->SaveAs(Form("plots/range_%6f_%6f.eps",recoLowValue,recoHighValue));
-    delete normFit;
-    delete temp;
+    P0DBANFFInterface::Announce("GetSigma", TString::Format("Sigma found! sigma[1]=%f", sigmas[1]));
+    if(normFit) delete normFit;
+    if(temp) delete temp;
 
     return sigmas[1];
 }
@@ -904,8 +978,7 @@ void CalculateErrors(const TH1D* hist, const Edge& lowEdge, const Edge& upEdge,
   errorSystematic = CalculateSystematicError(alpha);
 }
 
-Edge::Edge(TH1D* hReference,TH1D* hEqualStatistics,Bool_t UpEdge) :
-        hRef(NULL), hFineBinning(NULL), isUpEdge(false)
+Edge::Edge(TH1D* hReference,TH1D* hEqualStatistics,Bool_t UpEdge)
 {
     hRef = hReference;
     hFineBinning = hEqualStatistics;
@@ -932,9 +1005,9 @@ Bool_t Edge::MoveUp()
     if(rightBin > lastNonZeroBin)
     {
         ShiftToBin(lastNonZeroBin+1);
-        return false;
+        return kFALSE;
     }
-    return true;
+    return kTRUE;
 }
 
 Bool_t Edge::MoveLow()
@@ -951,9 +1024,9 @@ Bool_t Edge::MoveLow()
     if(leftBin < firstNonZeroBin)
     {
         ShiftToBin(firstNonZeroBin);
-        return false;
+        return kFALSE;
     }
-    return true;
+    return kTRUE;
 }
 
 void Edge::ShiftToBin(Int_t newBin)
@@ -974,43 +1047,6 @@ void Edge::ShiftToBin(Int_t newBin)
     }
 }
 
-TChain* GetAllMC()
-{
-    T2KDataMC t2kDataMC;
-    const TString RunSyst_New_TTree = "all";
-    const TString file_path = getenv("SYSTEMATICSROOT");
-    TChain* all = new TChain("all", "");
-    TChain* chn_NEUTRun2Air = t2kDataMC.RUN2A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun2Wtr = t2kDataMC.RUN2W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun3bAir = t2kDataMC.RUN3B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun3cAir = t2kDataMC.RUN3C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun4Air = t2kDataMC.RUN4A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun4Wtr = t2kDataMC.RUN4W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun5cWtr = t2kDataMC.RUN5C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun6cAir = t2kDataMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun6dAir = t2kDataMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun7bWtr = t2kDataMC.RUN7B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun8Wtr = t2kDataMC.RUN8W.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    TChain* chn_NEUTRun8Air = t2kDataMC.RUN8A.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-    all->Add(chn_NEUTRun2Air);
-    all->Add(chn_NEUTRun2Wtr);
-    all->Add(chn_NEUTRun3bAir);
-    all->Add(chn_NEUTRun3cAir);
-    all->Add(chn_NEUTRun4Air);
-    all->Add(chn_NEUTRun4Wtr);
-    all->Add(chn_NEUTRun5cWtr);
-    all->Add(chn_NEUTRun6bAir);
-    all->Add(chn_NEUTRun6cAir);
-    all->Add(chn_NEUTRun6dAir);
-    all->Add(chn_NEUTRun6eAir);
-    all->Add(chn_NEUTRun7bWtr);
-    all->Add(chn_NEUTRun8Wtr);
-    all->Add(chn_NEUTRun8Air);
-    return all;
-}
-*/
 
 int main(int argc, char** argv)
 {
@@ -1114,9 +1150,10 @@ int main(int argc, char** argv)
         }
     }//end for
 
-    if(sampleID <= 0)
+    SampleId sampleIDs;
+    if(sampleID <= 0 || !sampleIDs.IsP0DAnySample(sampleIDs.Convert(sampleID)))
     {
-        printf("Invalid sampleId = %d\n", sampleID);
+        printf("Invalid sampleId = %d\nMust be a P0D sampleId defined in SampleId.hxx", sampleID);
         std::cout << usage << std::endl;
         return 0;
     }
@@ -1146,12 +1183,12 @@ int main(int argc, char** argv)
     }
     if(histogramParameters.First('(') == -1 || histogramParameters.First(')') == -1 || histogramParameters.CountChar(',') != 2 || histogramParameters.First(',') < histogramParameters.First('(') || histogramParameters.Last(',') > histogramParameters.Last(')'))
     {
-        printf("Invalid parameter histogramParameters %s\nMust be histogramName(nBinsX,lowX,highX)", histogramParameters.Data());
+        printf("Invalid parameter histogramParameters %s\nMust be (nBinsX,lowX,highX)", histogramParameters.Data());
         std::cout << usage << std::endl;
         return 0;
     }
-    TString histogramName = histogramParameters(0, histogramParameters.First('('));
-    printf("sampleID %d, recoPlotVariable.Data() %s\n, histogramParameters.Data() %s, histogramName.Data() %s\n, additionalCuts.Data() %s, truePlotVariable.Data() %s\n, xAxisTitle.Data() %s, isTrueVariableResidual %d\n, outputFileName.Data() %s, lowestBinEdgeValue.Atof() %f, highestBinEdgeValue.Atof() %f, nmax %d\n",
+    const TString histogramName = "histReference";
+    printf("sampleID %d, recoPlotVariable.Data() %s\n, histogramParameters.Data() %s, histogramName.Data() %s\n, additionalCuts.Data() %s, truePlotVariable.Data() %s\n, xAxisTitle.Data() %s, isTrueVariableResidual %d\n, outputFileName.Data() %s, lowestBinEdgeValue.Atof() %f, highestBinEdgeValue.Atof() %f, nmax %lld\n",
             sampleID, recoPlotVariable.Data(),
             histogramParameters.Data(), histogramName.Data(),
             additionalCuts.Data(), truePlotVariable.Data(),
@@ -1159,14 +1196,11 @@ int main(int argc, char** argv)
             outputFileName.Data(), lowestBinEdgeValue.Atof(),
             highestBinEdgeValue.Atof(), nmax);
 
-
-    /*
-    oneDimResidualsWithSpecialErrorTreatment(sampleID, recoPlotVariable.Data(),
+    oneDimResidualsWithSpecialErrorTreatment(sampleIDs.Convert(sampleID), recoPlotVariable.Data(),
             histogramParameters.Data(), histogramName.Data(),
             additionalCuts.Data(), truePlotVariable.Data(),
             xAxisTitle.Data(), isTrueVariableResidual,
             outputFileName.Data(), lowestBinEdgeValue.Atof(),
             highestBinEdgeValue.Atof(), nmax);
-    */
     return 0;
 }

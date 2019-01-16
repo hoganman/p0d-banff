@@ -157,6 +157,7 @@ public:
     virtual ~SampleId(){}
 
     inline SampleId::SampleEnum Convert(const Int_t& input) const {return static_cast<SampleId::SampleEnum>(input);}
+    inline Int_t Convert(const SampleId::SampleEnum& input) const {return static_cast<Int_t>(input);}
     SampleId::SampleEnum GetP0DWaterNuMuCCEnum() const {return kP0DWaterNuMuCC;}
     SampleId::SampleEnum GetP0DWaterNuMuCC1TrackEnum() const {return kP0DWaterNuMuCC1Track;}
     SampleId::SampleEnum GetP0DWaterNuMuCCNTracksEnum() const {return kP0DWaterNuMuCCNTracks;}
@@ -206,6 +207,7 @@ public:
     Bool_t IsP0DAirSample(const SampleId::SampleEnum &testEnum) const;
     Bool_t IsP0DFHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuSample(testEnum);}
     Bool_t IsP0DRHCSample(const SampleId::SampleEnum &testEnum) const {return IsP0DNuMuBkgInAntiNuModeSample(testEnum)||IsP0DNuMuBarInAntiNuModeSample(testEnum);}
+    Bool_t IsP0DAnySample(const SampleId::SampleEnum &testEnum) const {return IsP0DFHCSample(testEnum)||IsP0DRHCSample(testEnum);}
 
     //Converts the Water-In to Water-Out (air) and vice versa
     SampleId::SampleEnum GetComplimentarySample(const SampleId::SampleEnum &testEnum) const;
