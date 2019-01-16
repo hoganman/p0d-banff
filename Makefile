@@ -15,7 +15,7 @@ SRC	:= ${P0DBANFFROOT}/src
 MACROS  := ${P0DBANFFROOT}/macros
 DIC     := ${P0DBANFFROOT}/dict
 BIN     := ${P0DBANFFROOT}/bin
-VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC):$(LIB)
+VPATH    = ${P0DBANFFROOT}:$(SRC):$(DIC):$(LIB):$(BIN)
 
 EMPTYSTRING :=
 
@@ -93,7 +93,7 @@ libP0DBANFF.so: $(ALLOBJS)
 #############################################
 
 oneDimResidualsWithSpecialErrorTreatment.exe: $(APP)/oneDimResidualsWithSpecialErrorTreatment.cxx
-	$(CXX) $(CXXFLAGS) -I$(SRC) -c $< -o $(LIB)/$(@:.exe=.o)
+	$(CXX) $(CXXFLAGS) -I$(SRC) -c $^ -o $(LIB)/$(@:.exe=.o)
 	$(LDEXE) $(LDEXEFLAGS) $(LIB)/$(@:.exe=.o) $(LIBP0DBANFF) $(ROOTGLIBS) -o $(BIN)/$@
 
 #add a rule to clean all generated files from your directory
