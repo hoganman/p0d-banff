@@ -104,7 +104,7 @@ def main(argv):
                 }
 
         # these store how to break down the samples by particles or other grouping
-        neutrino_selections = GetNeutrinoSelectionList(current_sampleID)
+        # neutrino_selections = GetNeutrinoSelectionList(current_sampleID)
         particle_selections = GetLeptonCandidateSelectionList(current_sampleID)
         neut_nu_selections = GetNEUTNuSelectionList(current_sampleID)
         neut_antinu_selections = GetNEUTAntiNuSelectionList(current_sampleID)
@@ -198,8 +198,10 @@ def main(argv):
                     histstack_Enu.x_title = 'True Neutrino Energy'
                     histstack_Enu.y_title = evts_p_bin_p_pot
                     ConfigureROOTHStack(histstack_Enu, Enu_AnaBins, pot_str)
-                    make_mc_only_stack(mc_sample, neutrino_selections, Enu_AnaBins,
+                    make_mc_only_stack(smpls, a_selection_set, Enu_AnaBins,
                                        histstack_Enu, 'trueE_nu')
+                    # make_mc_only_stack(smpls, neutrino_selections, Enu_AnaBins,
+                    #                    histstack_Enu, 'trueE_nu')
 
                 # true Q2
                 if CONFIGURATION.GetAttribBool('DRAW_Q2'):
@@ -728,6 +730,10 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     stack_colors = INTERFACE.GetStackColors()
 
     mc_hists = list()
+    mcEventListName = "mcEventList"
+    mc_sample.getTChain().Draw(">>%s" % mcEventListName, true_selections[0].cuts)
+    mcEventList = ROOT.gDirectory.Get(mcEventListName)
+    mc_sample.getTChain().SetEventList(mcEventList)
 
     # MC loop over true_selections to create stack,
     #    first entry is full selection
@@ -865,6 +871,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         a_hist.Delete()
     legend.Delete()
     canvas.Close()
+    mc_sample.getTChain().SetEventList(0)
     return
 
 

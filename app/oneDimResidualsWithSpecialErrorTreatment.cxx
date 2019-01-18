@@ -199,19 +199,19 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
     }
     else if(samples.IsP0DAirSample(sampleID) && samples.IsP0DRHCSample(sampleID))
     {
-        //TChain* chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        TChain* chn_NEUTRun6bAir = t2kDataMC.RUN6B.GetAllChainsFrom(RunSyst_New_TTree, file_path);
         //TChain* chn_NEUTRun6cAir = t2kDataMC.RUN6C.GetAllChainsFrom(RunSyst_New_TTree, file_path);
         //TChain* chn_NEUTRun6dAir = t2kDataMC.RUN6D.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-        TChain* chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path);
-        //eventTree->Add(chn_NEUTRun6bAir);
+        //TChain* chn_NEUTRun6eAir = t2kDataMC.RUN6E.GetAllChainsFrom(RunSyst_New_TTree, file_path);
+        eventTree->Add(chn_NEUTRun6bAir);
         //eventTree->Add(chn_NEUTRun6cAir);
         //eventTree->Add(chn_NEUTRun6dAir);
-        eventTree->Add(chn_NEUTRun6eAir);
+        //eventTree->Add(chn_NEUTRun6eAir);
         if(samples.IsP0DNuMuBkgInAntiNuModeSample(sampleID))
             allCuts = allCuts && defCuts.tLepMuMinus;
         else
             allCuts = allCuts && defCuts.tLepMuPlus;
-        POTweight = T2KPOT.GetPOTRHCAirData()/T2KPOT.GetPOTRun6eAirMC();
+        POTweight = T2KPOT.GetPOTRHCAirData()/T2KPOT.GetPOTRun6bAirMC();
     }
     else
     {
@@ -778,14 +778,13 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
     histRef->SetLineWidth(0);
     histRef->Draw("same");
 
-    TLegend* gLegend = new TLegend(0.7,0.7,0.88,0.88,"");
+    TLegend* gLegend = new TLegend(0.187,0.679,0.366,0.86,"");
     gLegend->AddEntry(gStatErrors,"Stat. Error","F");
     gLegend->AddEntry(gSysErrors,"Total Error","F");
 
     gLegend->SetLineStyle(0);
-    gLegend->SetLineColor(0);
-    gLegend->SetFillStyle(0);
     gLegend->SetBorderSize(0);
+    gLegend->SetFillColor(kWhite);
     gLegend->Draw();
     gCanvas->SetLogx();
     P0DBANFFInterface::SaveCanvasAs(gCanvas, TString::Format("plots/%serrors", outputName.c_str()));
@@ -1084,8 +1083,8 @@ int main(int argc, char** argv)
 
     const std::string programName = argv[0];
     Char_t usage[2048];
-    sprintf(usage, "Usage: %s -i sampleID -o outputfile.root -x recoPlotVariable -t truePlotVariable -h histogramName(NbinsX,xLow,xHigh)\
-\n       Additional Parameters: -c additionalCuts=\"\" -m minimumBinWidth=-1 -T xAxisTitle=\"recoPlotVariable\" \
+    sprintf(usage, "Usage: %s -i sampleID -o outputfile.root -x recoPlotVariable -t truePlotVariable -h (NbinsX,xLow,xHigh) -m minimumBinWidth \
+\n       Additional Parameters: -c additionalCuts=\"\" -T xAxisTitle=\"recoPlotVariable\" \
 -r isTrueVariableResidual=kFalse -L lowestBinEdgeValue=-1 -H highestBinEdgeValue=-1 -n limitEntries=-1]", programName.c_str());
 
     if(argc < 5)
@@ -1221,6 +1220,12 @@ int main(int argc, char** argv)
     if(histogramParameters.First('(') == -1 || histogramParameters.First(')') == -1 || histogramParameters.CountChar(',') != 2 || histogramParameters.First(',') < histogramParameters.First('(') || histogramParameters.Last(',') > histogramParameters.Last(')'))
     {
         printf("Invalid parameter histogramParameters %s\nMust be (nBinsX,lowX,highX)", histogramParameters.Data());
+        std::cout << usage << std::endl;
+        return 0;
+    }
+    if(minBinWidth.Atof() < 0)
+    {
+        printf("Invalid minimum bin width variabe %s", minBinWidth.Data());
         std::cout << usage << std::endl;
         return 0;
     }
