@@ -14,6 +14,9 @@
         <comment attr="1D histograms" />
         <comment attr="#***************************************#"/>
 
+        <DRAW_ENU>
+            <value attr="1"/>
+        </DRAW_ENU>
         <DRAW_PMU>
             <value attr="0"/>
         </DRAW_PMU>
