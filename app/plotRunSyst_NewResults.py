@@ -141,7 +141,7 @@ def main(argv):
                                   data_pot_exponent)
             pot_str_fmt = '%.2f #times 10^{%d} PoT'
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
-            evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
+            evts_p_bin_p_pot = '%s / (%s)' % (evts_p_bin, pot_str)
 
             if CONFIGURATION.GetAttribBool('DRAW_P0DFITFHC_PMU_COSTHETAMU'):
                 hist2D_pmu_costhetamu = ROOTH2()
@@ -606,9 +606,9 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         pad1.SetBottomMargin(0)
         pad1.Draw()
         pad1.cd()
-    h_stack.Draw()
-    h_total.Draw('SAME')
-    data_hist.Draw('SAME E0')
+    h_stack.Draw('HIST')
+    h_total.Draw('HIST SAME')
+    data_hist.Draw('HIST SAME E0')
     legend.Draw()
     data_stats.Draw()
     mc_stats.Draw()
@@ -832,8 +832,8 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
 
-    h_total.Draw('HIST')
-    h_stack.Draw('HIST SAME')
+    h_stack.Draw('HIST')
+    h_total.Draw('HIST SAME')
     legend.Draw()
     mc_stats.Draw()
     canvas.cd()
@@ -1279,7 +1279,7 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     if not units.EqualTo('1'):
         hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
-        y_title = 'Events / %s / (%s)'
+        y_title = 'Events / (%s) / (%s)'
         y_title_tuple = (units, pot_str)
         hstack.y_title = y_title % y_title_tuple
 

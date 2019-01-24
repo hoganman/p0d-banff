@@ -15,23 +15,17 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_PMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_COSTHETAMU>
-        <DRAW_THETAMU>
-            <value attr="0"/>
-        </DRAW_THETAMU>
         <DRAW_Q2>
             <value attr="0"/>
         </DRAW_Q2>
         <DRAW_W2>
             <value attr="0"/>
         </DRAW_W2>
-        <DRAW_W>
-            <value attr="1"/>
-        </DRAW_W>
         <DRAW_BJORKEN_X>
             <value attr="0"/>
         </DRAW_BJORKEN_X>
@@ -67,7 +61,7 @@
             <value attr="1"/>
         </APPLY_FLUX_WEIGHTS>
         <APPLY_EVENT_WEIGHTS>
-            <value attr="1"/>
+            <value attr="0"/>
         </APPLY_EVENT_WEIGHTS>
 
         <comment attr="#***************************************#"/>
@@ -76,6 +70,9 @@
         <PLOTTOPOLOGY>
             <value attr="1"/>
         </PLOTTOPOLOGY>
+        <PLOTLEPTONCANDIDATETRUEPDG>
+            <value attr="1"/>
+        </PLOTLEPTONCANDIDATETRUEPDG>
         <PLOTNEUTNUREACTIONCODES>
             <value attr="1"/>
         </PLOTNEUTNUREACTIONCODES>
@@ -84,12 +81,11 @@
         </PLOTNEUTCCQELIKEREACTIONCODES>
 
         <comment attr="#***************************************#"/>
-        <comment attr="Water numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>
         <comment attr="#***************************************#"/>
-
-        <RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+        <RUNP0DWATERNUMUCCSELECTION>
             <value attr="1"/>
-        </RUNP0DWATERNUMUBKGINANTINUMODECCNTRACKSSELECTION>
+        </RUNP0DWATERNUMUCCSELECTION>
 
     </RunSyst_New_Options>
 </main>
