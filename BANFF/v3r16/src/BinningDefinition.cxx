@@ -56,6 +56,18 @@ BANFF::BinningDefinition::BinningDefinition(){
   int    P0DRHCNumubarCCInclusive_Det_Cos_NBin = 4;
   double P0DRHCNumubarCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
 
+  //P0D FHC numu CC 1-track
+  int    P0DFHCNumuCC1Tr_Mom_NBin = 7;
+  double P0DFHCNumuCC1Tr_Mom_Bin[8] = {0, 400, 600, 800, 1000, 2500, 5000, 30000};
+  int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 6;
+  int    P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0, 600, 1000, 5000, 30000};
+
+  int    P0DFHCNumuCC1Tr_Cos_NBin = 8;
+  double P0DFHCNumuCC1Tr_Cos_Bin[9] = {-1.0, 0.7, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 4;
+  int    P0DFHCNumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.92, 0.96, 1.0};
+
+
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
   double FHCNumuCC0Pi_Mom_Bin[15] = {0, 300, 400, 500, 600, 700, 800, 900, 1000, 1250, 1500, 2000, 3000, 5000, 30000};

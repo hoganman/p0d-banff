@@ -444,6 +444,8 @@ std::vector<TString> P0DBANFFInterface::SplitString(TString theOpt,
    // splits the option string at 'separator' and fills the list
    // 'splitV' with the primitive strings
    std::vector<TString> splitV;
+   if(theOpt.Length() < 1)
+       return splitV;
    TString splitOpt(theOpt);
    splitOpt.ReplaceAll("\n"," ");
    splitOpt = splitOpt.Strip(TString::kBoth,separator);

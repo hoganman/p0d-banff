@@ -51,13 +51,13 @@ def main(argv):
     trueXbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenX', binningLocation, xmlTools)
     trueYbj_AnaBins = ROOT.AnalysisBins('TrueBjorkenY', binningLocation, xmlTools)
     trueNu_AnaBins = ROOT.AnalysisBins('TrueEnergyTransferNu', binningLocation, xmlTools)
-    P0DFitFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCCosTheta', binningLocation, xmlTools)
-    P0DFitFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DFitFHCMomentum', binningLocation, xmlTools)
-    P0DFitFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFitFHC_pMu_AnaBins,
-                                                             P0DFitFHC_cosThetaMu_AnaBins)
-    # P0DCovFHC_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCCosTheta', binningLocation, xmlTools)
-    # P0DCovFHC_pMu_AnaBins = ROOT.AnalysisBins('P0DCovFHCMomentum', binningLocation, xmlTools)
-    # P0DCovFHC_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCovFHC_pMu_AnaBins, P0DCovFHC_cosThetaMu_AnaBins)
+    P0DFit_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DFitCosTheta', binningLocation, xmlTools)
+    P0DFit_pMu_AnaBins = ROOT.AnalysisBins('P0DFitMomentum', binningLocation, xmlTools)
+    P0DFit_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DFit_pMu_AnaBins,
+                                                          P0DFit_cosThetaMu_AnaBins)
+    P0DCov_cosThetaMu_AnaBins = ROOT.AnalysisBins('P0DCovCosTheta', binningLocation, xmlTools)
+    P0DCov_pMu_AnaBins = ROOT.AnalysisBins('P0DCovMomentum', binningLocation, xmlTools)
+    P0DCov_pMu_cosThetaMu_AnaBins2D = ROOT.AnalysisBins2D(P0DCov_pMu_AnaBins, P0DCov_cosThetaMu_AnaBins)
 
     evts_p_bin = 'Events / bin'
     mc_data_sample_dict_MC_key = 'MC'
@@ -143,25 +143,25 @@ def main(argv):
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
             evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
 
-            if CONFIGURATION.GetAttribBool('DRAW_P0DFITFHC_PMU_COSTHETAMU'):
+            if CONFIGURATION.GetAttribBool('DRAW_P0DFIT_PMU_COSTHETAMU'):
                 hist2D_pmu_costhetamu = ROOTH2()
                 hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
                 hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
                 hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
                 hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
-                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DFitFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
-                make_mc_only_H2D(smpls, all_selection_sets[0], P0DFitFHC_pMu_cosThetaMu_AnaBins2D,
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DFit_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DFit_pMu_cosThetaMu_AnaBins2D,
                                  hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_MC_only')
                 del hist2D_pmu_costhetamu
-            # if CONFIGURATION.GetAttribBool('DRAW_P0DCOVFHC_PMU_COSTHETAMU'):
-            #     hist2D_pmu_costhetamu = ROOTH2()
-            #     hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
-            #     hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
-            #     hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
-            #     hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
-            #     ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCovFHC_pMu_cosThetaMu_AnaBins2D, pot_str)
-            #     make_mc_only_H2D(smpls, all_selection_sets[0], P0DCovFHC_pMu_cosThetaMu_AnaBins2D,
-            #                      hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
+            if CONFIGURATION.GetAttribBool('DRAW_P0DCOV_PMU_COSTHETAMU'):
+                hist2D_pmu_costhetamu = ROOTH2()
+                hist2D_pmu_costhetamu.varX = 'LeptonMomNom'
+                hist2D_pmu_costhetamu.varY = 'LeptonCosNom'
+                hist2D_pmu_costhetamu.x_title = 'Lepton Candidate Momentum'
+                hist2D_pmu_costhetamu.y_title = 'Lepton Candidate Angle'
+                ConfigureROOTH2(hist2D_pmu_costhetamu, P0DCov_pMu_cosThetaMu_AnaBins2D, pot_str)
+                make_mc_only_H2D(smpls, all_selection_sets[0], P0DCov_pMu_cosThetaMu_AnaBins2D,
+                                 hist2D_pmu_costhetamu, 'recoPmu_recocosq_mu_Cov')
 
             for a_selection_set in all_selection_sets:
                 selection_name = TString(a_selection_set[0].name)
@@ -986,6 +986,8 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
     plot_title.SetMargin(0.1)
 
     canvas.cd()
+    if 1 < h_total.GetMinimum() and h_total.GetMinimum() < 10:
+        h_total.SetMinimum(1)
     h_total.Draw('COLZ')
     mc_stats.Draw()
     plot_title.Draw()

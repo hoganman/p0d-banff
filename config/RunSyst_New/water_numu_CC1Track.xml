@@ -14,14 +14,17 @@
         <comment attr="1D histograms" />
         <comment attr="#***************************************#"/>
 
+        <DRAW_ENU>
+            <value attr="0"/>
+        </DRAW_ENU>
         <DRAW_PMU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_COSTHETAMU>
         <DRAW_Q2>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_Q2>
         <DRAW_W2>
             <value attr="0"/>
@@ -33,19 +36,19 @@
             <value attr="0"/>
         </DRAW_BJORKEN_Y>
         <DRAW_ENERGY_TRANSFER_NU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_ENERGY_TRANSFER_NU>
 
         <comment attr="#***************************************#"/>
         <comment attr="Toggle these to draw particular variables"/>
         <comment attr="2D histograms"/>
         <comment attr="#***************************************#"/>
-        <DRAW_P0DFITFHC_PMU_COSTHETAMU>
-            <value attr="0"/>
-        </DRAW_P0DFITFHC_PMU_COSTHETAMU>
-        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
-            <value attr="0"/>
-        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+        <DRAW_P0DFIT_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DFIT_PMU_COSTHETAMU>
+        <DRAW_P0DCOV_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DCOV_PMU_COSTHETAMU>
 
         <comment attr="#***************************************#"/>
         <comment attr="          Option only for 2D"             />
