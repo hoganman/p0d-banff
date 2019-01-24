@@ -14,14 +14,11 @@
         <comment attr="1D histograms" />
         <comment attr="#***************************************#"/>
 
-        <DRAW_ENU>
-            <value attr="0"/>
-        </DRAW_ENU>
         <DRAW_PMU>
             <value attr="1"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_COSTHETAMU>
         <DRAW_Q2>
             <value attr="0"/>
@@ -46,9 +43,9 @@
         <DRAW_P0DFIT_PMU_COSTHETAMU>
             <value attr="0"/>
         </DRAW_P0DFIT_PMU_COSTHETAMU>
-        <DRAW_P0DCOV_PMU_COSTHETAMU>
+        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
             <value attr="0"/>
-        </DRAW_P0DCOV_PMU_COSTHETAMU>
+        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
 
         <comment attr="#***************************************#"/>
         <comment attr="          Option only for 2D"             />
@@ -61,34 +58,34 @@
         <comment attr="       Apply event + flux weight"         />
         <comment attr="#***************************************#"/>
         <APPLY_FLUX_WEIGHTS>
-            <value attr="1"/>
+            <value attr="0"/>
         </APPLY_FLUX_WEIGHTS>
         <APPLY_EVENT_WEIGHTS>
-            <value attr="1"/>
+            <value attr="0"/>
         </APPLY_EVENT_WEIGHTS>
 
         <comment attr="#***************************************#"/>
         <comment attr="       Draw by category"                  />
         <comment attr="#***************************************#"/>
+        <PLOTTOPOLOGY>
+            <value attr="1"/>
+        </PLOTTOPOLOGY>
         <PLOTLEPTONCANDIDATETRUEPDG>
             <value attr="1"/>
         </PLOTLEPTONCANDIDATETRUEPDG>
-        <PLOTTOPOLOGY>
-            <value attr="0"/>
-        </PLOTTOPOLOGY>
         <PLOTNEUTNUREACTIONCODES>
-            <value attr="0"/>
+            <value attr="1"/>
         </PLOTNEUTNUREACTIONCODES>
         <PLOTNEUTCCQELIKEREACTIONCODES>
-            <value attr="0"/>
+            <value attr="1"/>
         </PLOTNEUTCCQELIKEREACTIONCODES>
 
         <comment attr="#***************************************#"/>
         <comment attr="Water numu CCInc or CC-1Track or CC-NTracks"/>
         <comment attr="#***************************************#"/>
-        <RUNP0DWATERNUMUCC1TRACKSELECTION>
+        <RUNP0DAIRNUMUCCSELECTION>
             <value attr="1"/>
-        </RUNP0DWATERNUMUCC1TRACKSELECTION>
+        </RUNP0DAIRNUMUCCSELECTION>
 
     </RunSyst_New_Options>
 </main>

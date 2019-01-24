@@ -40,9 +40,9 @@
         <comment attr="Toggle these to draw particular variables"/>
         <comment attr="2D histograms"/>
         <comment attr="#***************************************#"/>
-        <DRAW_P0DFITFHC_PMU_COSTHETAMU>
+        <DRAW_P0DFIT_PMU_COSTHETAMU>
             <value attr="0"/>
-        </DRAW_P0DFITFHC_PMU_COSTHETAMU>
+        </DRAW_P0DFIT_PMU_COSTHETAMU>
         <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
             <value attr="0"/>
         </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
@@ -61,7 +61,7 @@
             <value attr="1"/>
         </APPLY_FLUX_WEIGHTS>
         <APPLY_EVENT_WEIGHTS>
-            <value attr="0"/>
+            <value attr="1"/>
         </APPLY_EVENT_WEIGHTS>
 
         <comment attr="#***************************************#"/>
