@@ -147,7 +147,7 @@ public:
     static const UInt_t NMAXNEUTNUSELECTIONS = 11;
     static const UInt_t NMAXNEUTANTINUSELECTIONS = 11;
     static const UInt_t NMAXNEUTCCQELIKESELECTIONS = 7;
-    static const UInt_t NMAXPARTICLESELECTIONS = 10;
+    static const UInt_t NMAXPARTICLESELECTIONS = 8;
     static const UInt_t NMAXNEUTRINOSELECTIONS = 7;
     static const UInt_t NMAXTOPOLOGYSELECTIONS = 7;
 

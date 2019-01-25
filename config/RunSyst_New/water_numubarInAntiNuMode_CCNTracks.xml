@@ -33,6 +33,9 @@
         <DRAW_W2>
             <value attr="0"/>
         </DRAW_W2>
+        <DRAW_W>
+            <value attr="1"/>
+        </DRAW_W>
         <DRAW_BJORKEN_X>
             <value attr="0"/>
         </DRAW_BJORKEN_X>

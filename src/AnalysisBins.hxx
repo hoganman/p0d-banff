@@ -96,6 +96,12 @@ public:
     ///Divide each bin by its bin width. If hist->Sumw2(kTRUE), then errors are calculated
     void DivideByBinWidth(Bool_t Sumw2=kTRUE);
 
+    Double_t GetMinimum() {return hist->GetMinimum();}
+
+    Double_t GetMaximum() {return hist->GetMaximum();}
+
+    void Scale(Double_t scale) {hist->Scale(scale);}
+
 protected:
 
     ///Initializes the members

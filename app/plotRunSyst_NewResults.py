@@ -6,6 +6,7 @@ A script that makes histogram of the resulting TTree from
 Usage: plotRunSyst_NewResults.py $PODBANFFROOT/config/RunSyst_New/config.xml
 """
 
+import math
 from os import getenv
 from os.path import join
 import ROOT
@@ -141,7 +142,7 @@ def main(argv):
                                   data_pot_exponent)
             pot_str_fmt = '%.2f #times 10^{%d} PoT'
             pot_str = pot_str_fmt % (data_pot_mantissa, data_pot_exponent)
-            evts_p_bin_p_pot = '%s / %s ' % (evts_p_bin, pot_str)
+            evts_p_bin_p_pot = '%s / (%s)' % (evts_p_bin, pot_str)
 
             if CONFIGURATION.GetAttribBool('DRAW_P0DFIT_PMU_COSTHETAMU'):
                 hist2D_pmu_costhetamu = ROOTH2()
@@ -492,23 +493,22 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
         mc_hist = None
 
-        if not TString(a_selection.cuts.GetName()).\
-                Contains('Sand'):
+        if not TString(a_selection.cuts.GetName()).Contains('Sand'):
             mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom:FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
             mc_var = mc_sample.getTChain().GetV1()
             mc_systematic_weights = mc_sample.getTChain().GetV2()
             mc_flux_weights = mc_sample.getTChain().GetV3()
             for entry_in_draw in range(mc_nEntries):
                 weight = 1.0
+                flux_weight = mc_flux_weights[entry_in_draw]
+                event_weight = mc_systematic_weights[entry_in_draw]
                 if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-                    flux_weight = mc_flux_weights[entry_in_draw]
                     if flux_weight > cuts.kMAXFLUXWEIGHT:
                         msg = 'Rejecting event with flux weight %f' % (flux_weight)
                         INTERFACE.Warning(cuts, msg)
                         continue
                     weight *= flux_weight
                 if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-                    event_weight = mc_systematic_weights[entry_in_draw]
                     if event_weight > cuts.kMAXEVENTWEIGHT:
                         msg = 'Rejecting event with event weight %f' % (event_weight)
                         INTERFACE.Warning(cuts, msg)
@@ -521,8 +521,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
             mc_hist = anaBins.GetTH1DClone(
                     name_fmt % (tmp_save_name, mc_sample.CPPClass.saveTitle))
             mc_hist.Scale(mc_sample.CPPClass.scale)
-
-        else:
+        else:  # Sand MC
             sandTChain = sand_sample.getTChain()
             sand_nEntries = sandTChain.Draw('%s:WeightNom:FluxWeightNom' % plot_var,
                                             a_selection.cuts,
@@ -608,9 +607,9 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         pad1.SetBottomMargin(0)
         pad1.Draw()
         pad1.cd()
-    h_stack.Draw()
-    h_total.Draw('SAME')
-    data_hist.Draw('SAME E0')
+    h_stack.Draw('HIST')
+    h_total.Draw('HIST SAME')
+    data_hist.Draw('HIST SAME E0')
     legend.Draw()
     data_stats.Draw()
     mc_stats.Draw()
@@ -735,13 +734,40 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     mcEventList = ROOT.gDirectory.Get(mcEventListName)
     mc_sample.getTChain().SetEventList(mcEventList)
 
+    # Determine the global maxiumum using all combinations of weights
+    MCAnaBins = {'NOM': ROOT.AnalysisBins(anaBins)}
+    MCAnaBins['FLUX'] = ROOT.AnalysisBins(MCAnaBins['NOM'])
+    MCAnaBins['SYST'] = ROOT.AnalysisBins(MCAnaBins['FLUX'])
+    MCAnaBins['SYSTFLUX'] = ROOT.AnalysisBins(MCAnaBins['SYST'])
+    mc_nEntries = mc_sample.getTChain().Draw(draw_cmd, true_selections[0].cuts, 'goff')
+    mc_var = mc_sample.getTChain().GetV1()
+    mc_systematic_weights = mc_sample.getTChain().GetV2()
+    mc_flux_weights = mc_sample.getTChain().GetV3()
+    for entry in range(mc_nEntries):
+        MCAnaBins['NOM'].Fill(mc_var[entry])
+        MCAnaBins['FLUX'].Fill(mc_var[entry], mc_flux_weights[entry])
+        MCAnaBins['SYST'].Fill(mc_var[entry], mc_systematic_weights[entry])
+        MCAnaBins['SYSTFLUX'].Fill(mc_var[entry], mc_flux_weights[entry] * mc_systematic_weights[entry])
+    if anaBins.GetDivideByBinWidth():
+        MCAnaBins['NOM'].DivideByBinWidth()
+        MCAnaBins['FLUX'].DivideByBinWidth()
+        MCAnaBins['SYST'].DivideByBinWidth()
+        MCAnaBins['SYSTFLUX'].DivideByBinWidth()
+    MCAnaBins['NOM'].Scale(mc_sample.CPPClass.scale)
+    MCAnaBins['FLUX'].Scale(mc_sample.CPPClass.scale)
+    MCAnaBins['SYST'].Scale(mc_sample.CPPClass.scale)
+    MCAnaBins['SYSTFLUX'].Scale(mc_sample.CPPClass.scale)
+    histMax = max([MCAnaBins['NOM'].GetMaximum(), MCAnaBins['FLUX'].GetMaximum(), MCAnaBins['SYST'].GetMaximum(), MCAnaBins['SYSTFLUX'].GetMaximum()])
+    histMax = 1.05 * (histMax + math.sqrt(histMax))
+    del MCAnaBins
+
     # MC loop over true_selections to create stack,
     #    first entry is full selection
     for index in range(1, len(true_selections)):
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
-        mc_hist = None
 
+        mc_hist = None
         sel_cuts = a_selection.cuts
         sel_cuts_name = sel_cuts.GetName()
         if not (TString(sel_cuts_name).Contains('Sand') or
@@ -783,15 +809,15 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
             sand_systematic_weights = sand_sample.getTChain().GetV2()
             for entry_in_draw in range(sand_nEntries):
                 weight = 1.0
+                flux_weight = sand_flux_weights[entry_in_draw]
+                event_weight = sand_systematic_weights[entry_in_draw]
                 if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-                    flux_weight = sand_flux_weights[entry_in_draw]
                     if flux_weight > cuts.kMAXFLUXWEIGHT:
                         msg = 'Rejecting event with flux weight %f' % (flux_weight)
                         INTERFACE.Warning(cuts, msg)
                         continue
                     weight *= flux_weight
                 if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-                    event_weight = sand_systematic_weights[entry_in_draw]
                     if event_weight > cuts.kMAXEVENTWEIGHT:
                         msg = 'Rejecting event with event weight %f' % (event_weight)
                         INTERFACE.Warning(cuts, msg)
@@ -837,9 +863,12 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         new_max = hstack.maximum
         h_stack.SetMaximum(new_max)
         h_total.SetMaximum(new_max)
+    else:
+        h_stack.SetMaximum(histMax)
+        h_total.SetMaximum(histMax)
 
-    h_total.Draw('HIST')
-    h_stack.Draw('HIST SAME')
+    h_stack.Draw('HIST')
+    h_total.Draw('HIST SAME')
     legend.Draw()
     mc_stats.Draw()
     canvas.cd()
@@ -1291,7 +1320,7 @@ def ConfigureROOTHStack(hstack, anaBins, pot_str):
     if not units.EqualTo('1'):
         hstack.x_title += ' [%s]' % units
     if anaBins.GetDivideByBinWidth():
-        y_title = 'Events / %s / (%s)'
+        y_title = 'Events / (%s) / (%s)'
         y_title_tuple = (units, pot_str)
         hstack.y_title = y_title % y_title_tuple
 

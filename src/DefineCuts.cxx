@@ -114,41 +114,39 @@ void DefineCuts::SetCuts()
     tOOFVTN208 = !tFVTN208;
     tOOFVTN208.SetName("True OOFVTN208 Cut");
 
-    tLepMuMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuMinusPDG)) && tFV;
+    tLepMuMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuMinusPDG));// && tFV;
     tLepMuMinus.SetName("#mu^{-} Cut");
 
-    tLepMuPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuPlusPDG)) && tFV;
+    tLepMuPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kMuPlusPDG));// && tFV;
     tLepMuPlus.SetName("#mu^{+} Cut");
 
-    tLepPiPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiPlusPDG)) && tFV;
+    tLepPiPlus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiPlusPDG));// && tFV;
     tLepPiPlus.SetName("#pi^{+} Cut");
 
-    tLepPiMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiMinusPDG)) && tFV;
+    tLepPiMinus = TCut(TString::Format("tLeptonPDG==%d", pdg.kPiMinusPDG));// && tFV;
     tLepPiMinus.SetName("#pi^{-} Cut");
 
-    tLepProton = TCut(TString::Format("tLeptonPDG==%d", pdg.kProtonPDG)) && tFV;
+    tLepProton = TCut(TString::Format("tLeptonPDG==%d", pdg.kProtonPDG));// && tFV;
     tLepProton.SetName("Proton Cut");
 
-    tLepGamma = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kGammaPDG)) && tFV;
+    tLepGamma = TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kGammaPDG));// && tFV;
     tLepGamma.SetName("#gamma Cut");
 
-    tLepElectron = TCut(TString::Format("tLeptonPDG==%d", pdg.kElectronPDG)) && tFV;
+    tLepElectron = TCut(TString::Format("tLeptonPDG==%d", pdg.kElectronPDG));// && tFV;
     tLepElectron.SetName("Electron Cut");
 
-    tLepPositron = TCut(TString::Format("tLeptonPDG==%d", pdg.kPositronPDG)) && tFV;
+    tLepPositron = TCut(TString::Format("tLeptonPDG==%d", pdg.kPositronPDG));// && tFV;
     tLepPositron.SetName("Positron Cut");
 
     tLepEMParticle = (TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kGammaPDG)) ||
-                      TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kElectronPDG))) &&
-                      tFV;
+                      TCut(TString::Format("abs(tLeptonPDG)==abs(%d)", pdg.kElectronPDG)));//; && tFV;
     tLepEMParticle.SetName("e^{#pm}/#gamma Cut");
 
-    tLepOther = tFV &&
-                TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kMuMinusPDG)) &&
+    tLepOther = TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kMuMinusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kPiPlusPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kElectronPDG)) &&
                 TCut(TString::Format("abs(tLeptonPDG)!=abs(%d)", pdg.kGammaPDG)) &&
-                TCut(TString::Format("tLeptonPDG!=%d" , pdg.kProtonPDG));
+                TCut(TString::Format("tLeptonPDG!=%d" , pdg.kProtonPDG));// && tFV;
     tLepOther.SetName("Other Particle Cut");
 
     tSand = TCut(TString::Format("%f<=tVtxZ&&tVtxZ<=%f", minSandCoords.Z(), maxSandCoords.Z()));
@@ -283,6 +281,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
     if(TString(additionalCuts.GetTitle()).Length() > 0)
         all_nom_sel_cut = all_nom_sel_cut && additionalCuts;
 
+    /*
     //Since cuts like tLepMuMinus have tFV in them, there is no need to add
     //extra checks on the FV X and Y since the only Z is different
     TCut tFV_Correction = "1";
@@ -294,6 +293,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
                                  "tVtxZ", maxFidVolTN208Coords.Z()));
         tOOFV_Correction = tOOFVTN208;
     }
+    */
 
     UInt_t entry = 0;
     // all selection events
@@ -301,40 +301,41 @@ void DefineCuts::FillParticleSelections(const TString &name,
     ParticleSelections[entry++] = all_nom_sel;
 
     // mu minuses
-    TCut muMinus_sel_cut = all_nom_sel_cut && tLepMuMinus && tFV_Correction;
+    TCut muMinus_sel_cut = all_nom_sel_cut && tLepMuMinus;// && tFV_Correction;
     PlottingSelectionInfo* muMinus_sel = new PlottingSelectionInfo("muMinus_sel", muMinus_sel_cut, "#mu^{-}");
     ParticleSelections[entry++] = muMinus_sel;
 
     // mu plus
-    TCut muPlus_sel_cut = all_nom_sel_cut && tLepMuPlus && tFV_Correction;
+    TCut muPlus_sel_cut = all_nom_sel_cut && tLepMuPlus;// && tFV_Correction;
     PlottingSelectionInfo* muPlus_sel = new PlottingSelectionInfo("muPlus_sel", muPlus_sel_cut, "#mu^{+}");
     ParticleSelections[entry++] = muPlus_sel;
 
     // pi minus
-    TCut piMinus_sel_cut = all_nom_sel_cut && tLepPiMinus && tFV_Correction;
+    TCut piMinus_sel_cut = all_nom_sel_cut && tLepPiMinus;// && tFV_Correction;
     PlottingSelectionInfo* piMinus_sel = new PlottingSelectionInfo("piMinus_sel", piMinus_sel_cut, "#pi^{-}");
     ParticleSelections[entry++] = piMinus_sel;
 
     // pi plus
-    TCut piPlus_sel_cut = all_nom_sel_cut && tLepPiPlus && tFV_Correction;
+    TCut piPlus_sel_cut = all_nom_sel_cut && tLepPiPlus;// && tFV_Correction;
     PlottingSelectionInfo* piPlus_sel = new PlottingSelectionInfo("piPlus_sel", piPlus_sel_cut, "#pi^{+}");
     ParticleSelections[entry++] = piPlus_sel;
 
     // pi plus
-    TCut proton_sel_cut = all_nom_sel_cut && tLepProton && tFV_Correction;
+    TCut proton_sel_cut = all_nom_sel_cut && tLepProton;// && tFV_Correction;
     PlottingSelectionInfo* proton_sel = new PlottingSelectionInfo("proton_sel", proton_sel_cut, "p");
     ParticleSelections[entry++] = proton_sel;
 
     // EM particles
-    TCut em_sel_cut = all_nom_sel_cut && tLepEMParticle && tFV_Correction;
+    TCut em_sel_cut = all_nom_sel_cut && tLepEMParticle;// && tFV_Correction;
     PlottingSelectionInfo* em_sel = new PlottingSelectionInfo("em_sel", em_sel_cut, "e^{#pm}/#gamma");
     ParticleSelections[entry++] = em_sel;
 
     // other particles
-    TCut other_sel_cut = all_nom_sel_cut && tLepOther && tFV_Correction;
+    TCut other_sel_cut = all_nom_sel_cut && tLepOther;// && tFV_Correction;
     PlottingSelectionInfo* other_sel = new PlottingSelectionInfo("other_sel", other_sel_cut, "other");
     ParticleSelections[entry++] = other_sel;
 
+    /*
     // OOFV
     TCut oofv_sel_cut = all_nom_sel_cut && tOOFV_Correction;
     PlottingSelectionInfo* oofv_sel = new PlottingSelectionInfo("oofv_sel", oofv_sel_cut, "OOFV");
@@ -344,7 +345,7 @@ void DefineCuts::FillParticleSelections(const TString &name,
     TCut sandmu_sel_cut = all_nom_sel_cut && tSand;
     PlottingSelectionInfo* sandmu_sel = new PlottingSelectionInfo("sandmu_sel", sandmu_sel_cut, "Sand muons");
     ParticleSelections[entry++] = sandmu_sel;
-
+    */
     if(entry != NMAXPARTICLESELECTIONS)
     {
         P0DBANFFInterface::Error(this, "There is a mismatch between the number of cuts in DefineCuts::FillParticleSelections");
