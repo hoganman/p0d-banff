@@ -58,7 +58,7 @@ BANFF::BinningDefinition::BinningDefinition(){
 
   //P0D FHC numu CC 1-track
   int    P0DFHCNumuCC1Tr_Mom_NBin = 7;
-  double P0DFHCNumuCC1Tr_Mom_Bin[8] = {0, 400, 600, 800, 1000, 2500, 5000, 30000};
+  double P0DFHCNumuCC1Tr_Mom_Bin[8] = {0, 400, 600, 1000, 2500, 5000, 30000};
   int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 6;
   int    P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0, 600, 1000, 5000, 30000};
 
@@ -67,6 +67,21 @@ BANFF::BinningDefinition::BinningDefinition(){
   int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 4;
   int    P0DFHCNumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.92, 0.96, 1.0};
 
+  //P0D FHC numu CC N-tracks
+  int    P0DFHCNumuCCnTr_Mom_NBin = 9;
+  double P0DFHCNumuCCnTr_Mom_Bin[10] = {0, 300, 500, 900, 1500, 2500, 5000, 10000, 30000};
+  int    P0DFHCNumuCCnTr_Det_Mom_NBin = 4;
+  int    P0DFHCNumuCCnTr_Det_Mom_Bin[5] = {0, 500, 1500, 5000, 30000};
+
+  int    P0DFHCNumuCCnTr_Cos_NBin = 8;
+  double P0DFHCNumuCCnTr_Cos_Bin[9] = {-1.0, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1.0};
+  int    P0DFHCNumuCCnTr_Det_Cos_NBin = 4;
+  int    P0DFHCNumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.8, 0.9, 0.98, 1.0};
+
+  //P0D RHC numubar CC 1-track
+
+  //Momentum (6): 0, 0.4, 0.6, 0.9, 2.4, 30
+  //CosTheta (11): -1, 0.335, 0.777, 0.856, 0.909, 0.945, 0.968, 0.983, 0.991, 0.995, 1
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
@@ -78,6 +93,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   double FHCNumuCC0Pi_Cos_Bin[25];
   int    FHCNumuCC0Pi_Det_Cos_NBin = 7;
   double FHCNumuCC0Pi_Det_Cos_Bin[25];
+
 
   if(!Do4PiFHC){
     FHCNumuCC0Pi_Cos_NBin = 11;

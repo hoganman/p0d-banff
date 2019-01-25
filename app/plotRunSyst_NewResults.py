@@ -989,6 +989,9 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
     if 1 < h_total.GetMinimum() and h_total.GetMinimum() < 10:
         h_total.SetMinimum(1)
     h_total.Draw('COLZ')
+    ROOT.gPad.Update()
+    palette = h_total.GetListOfFunctions().FindObject("palette")
+    palette.SetY1NDC(0.14)
     mc_stats.Draw()
     plot_title.Draw()
     if CONFIGURATION.GetAttribBool('SHOW_LOGZ'):
@@ -1310,12 +1313,10 @@ def ConfigureROOTH2(hist2D, anaBins2D, pot_str):
         if not unitsY.EqualTo('1'):
             hist2D.y_title += ' [%s]' % unitsY
     if unitsX and unitsY:
-        print 'anaBins2D.GetDivideByBinWidth() =', anaBins2D.GetDivideByBinWidth()
         if anaBins2D.GetDivideByBinWidth():
             hist2D.z_title = 'Events / ( %s ) / ( %s ) / ( %s )' % (unitsX, unitsY, pot_str)
         else:
             hist2D.z_title = 'Events / bin / (%s)' % (pot_str)
-    print 'hist2D.z_title =', hist2D.z_title
 
 
 def LoadP0DBANFF(configurationFile):

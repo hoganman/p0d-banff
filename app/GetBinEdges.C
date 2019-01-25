@@ -15,7 +15,7 @@ void GetBinEdges(const char* fileName, const char* canvasName="gCanvas", const c
     Double_t* cosbinEdges = new Double_t[size];
     Int_t* sortedIndices = new Int_t[size];
     for(Int_t bin = 1; bin <= hist->GetNbinsX()+2; ++bin){ binEdges[bin-1] = hist->GetXaxis()->GetBinLowEdge(bin); cosbinEdges[bin-1] = TMath::Cos(TMath::DegToRad()*binEdges[bin-1]);}
-    TMath::Sort(size, cosbinEdges, sortedIndices, kFALSE);
+    TMath::Sort(size, cosbinEdges, sortedIndices, kTRUE);
     printf("Momentum (%d): ", size); for(UInt_t index = 0; index < size; ++index) {printf("%.3f, ", binEdges[index]);} printf("\n");
     printf("CosTheta (%d): ", size); for(UInt_t index = 0; index < size; ++index) {printf("%.3f, ", cosbinEdges[sortedIndices[index]]);} printf("\n");
     _file0->Close();

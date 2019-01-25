@@ -22,9 +22,7 @@ void MatchMinMax2D(const char* fileCanvasHist0="fileName0,CanvasName0,HistName0"
     Double_t max = -1;
     for(UInt_t index = 0; index < nFiles; ++index)
     {
-        if(inputs[index].Length() < 1)
-            continue;
-        if(allTuples[index][FILENAME].Length() < 1)
+        if(inputs[index].Length() < 1 || allTuples[index][FILENAME].Length() < 1)
             continue;
         TFile* file = TFile::Open(allTuples[index][FILENAME].Data());
         if (!file)
@@ -55,9 +53,7 @@ void MatchMinMax2D(const char* fileCanvasHist0="fileName0,CanvasName0,HistName0"
     printf("min: %.3f\nmax: %.3f\n", min, max);
     for(UInt_t index = 0; index < nFiles; ++index)
     {
-        if(inputs[index].Length() < 1)
-            continue;
-        if(!P0DBANFFInterface::IsGoodFile(allTuples[index][FILENAME].Data()))
+        if(inputs[index].Length() < 1 || allTuples[index][FILENAME].Length() < 1)
             continue;
         TFile* file = TFile::Open(allTuples[index][FILENAME].Data());
         if (!file)
@@ -78,13 +74,13 @@ void MatchMinMax2D(const char* fileCanvasHist0="fileName0,CanvasName0,HistName0"
             printf("no hist");
             continue;
         }
+        Canvas->cd();
         hist->SetMaximum(max);
         hist->SetMinimum(min);
-        Canvas->cd();
-        hist->Draw("COLZ");
+        //TPaletteAxis* palette = static_cast<TPaletteAxis*>(hist->GetListOfFunctions()->FindObject("palette"));
+        gPad->Update();
         TString filename(allTuples[index][FILENAME]);
         filename.Remove(filename.Last('.'));
-        printf("file: %s\n", filename.Data());
         P0DBANFFInterface::SaveCanvasAs(Canvas, filename.Data());
         file->Close();
     }

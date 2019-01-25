@@ -15,7 +15,7 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_ENU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_ENU>
         <DRAW_PMU>
             <value attr="0"/>

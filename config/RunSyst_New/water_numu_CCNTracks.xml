@@ -15,7 +15,7 @@
         <comment attr="#***************************************#"/>
 
         <DRAW_ENU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_ENU>
         <DRAW_PMU>
             <value attr="0"/>
@@ -46,12 +46,12 @@
         <comment attr="Toggle these to draw particular variables"/>
         <comment attr="2D histograms"/>
         <comment attr="#***************************************#"/>
-        <DRAW_P0DFITFHC_PMU_COSTHETAMU>
-            <value attr="0"/>
-        </DRAW_P0DFITFHC_PMU_COSTHETAMU>
-        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
-            <value attr="0"/>
-        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+        <DRAW_P0DFIT_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DFIT_PMU_COSTHETAMU>
+        <DRAW_P0DCOV_PMU_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_P0DCOV_PMU_COSTHETAMU>
 
         <comment attr="#***************************************#"/>
         <comment attr="          Option only for 2D"             />
@@ -80,7 +80,7 @@
             <value attr="0"/>
         </PLOTNEUTNUREACTIONCODES>
         <PLOTNEUTCCQELIKEREACTIONCODES>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTNEUTCCQELIKEREACTIONCODES>
 
         <comment attr="#***************************************#"/>

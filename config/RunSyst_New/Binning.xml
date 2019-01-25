@@ -69,28 +69,28 @@
         </TN328CosTheta>
         <P0DFitMomentum>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0, 400, 600, 800, 1000, 2500, 5000, 30000" />
-            <nBinEdges attr="8" />
+            <binEdges attr="0, 300, 500, 900, 1500, 2500, 5000, 10000, 30000" />
+            <nBinEdges attr="9" />
             <uniformWidth attr="0"/>
             <units attr="MeV/c"/>
         </P0DFitMomentum>
         <P0DCovMomentum>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0, 600, 1000, 5000, 30000" />
+            <binEdges attr="0, 500, 1500, 5000, 30000" />
             <nBinEdges attr="5" />
             <uniformWidth attr="0"/>
             <units attr="MeV/c"/>
         </P0DCovMomentum>
         <P0DFitCosTheta>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="-1.0, 0.7, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0"/>
+            <binEdges attr="-1.0, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1.0"/>
             <nBinEdges attr="9" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>
         </P0DFitCosTheta>
         <P0DCovCosTheta>
             <comment> Testing P-Theta binning </comment>
-            <binEdges attr="-1.0, 0.85, 0.92, 0.98, 1."/>
+            <binEdges attr="-1.0, 0.8, 0.9, 0.98, 1.0"/>
             <nBinEdges attr="5" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>
