@@ -42,11 +42,10 @@ void P0DOOFVSystematics::Initialize()
 Int_t P0DOOFVSystematics::GetBeamNumber(const Int_t& runperiod, AnaTrackB* maInt_track) const
 //********************************************************************
 {
-  // FHC
-  if(!anaUtils::IsRHC(runperiod))
-    return 0;
+
+//This is used for OOFV rate
   // RHC
-  else
+  if(anaUtils::IsRHC(runperiod))
   {
     // NUMU BKG
     if(maInt_track->Charge < 0)
@@ -55,6 +54,7 @@ Int_t P0DOOFVSystematics::GetBeamNumber(const Int_t& runperiod, AnaTrackB* maInt
     else
       return 2;
   }
+  return 0;
 }
 
 //********************************************************************
@@ -105,7 +105,7 @@ Weight_h P0DOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEv
     //const SubDetId::SubDetEnum detector = static_cast<const SubDetId::SubDetEnum>(anaUtils::GetDetector(tvertex));
     const SubDetId::SubDetEnum detector = anaUtils::GetDetector(tvertex);
 
-    Int_t categ =-1;
+    Int_t categ = -1;
     if(SubDetId::IsP0DDetector(detector))
     {
         //In P0D CEcal.
@@ -133,12 +133,8 @@ Weight_h P0DOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEv
 
     if(categ >= 0)
     {
-
         const AnaEventB& event = *static_cast<const AnaEventB*>(&eventC);
-        if (!_p0d->GetBinValues(GetBeamNumber(anaUtils::GetRunPeriod(event.EventInfo.Run), box.MainTrack),
-                                GetDetNumber(detector),
-                                _reco_corr, _reco_error, _reco_index)
-           )
+        if (!_p0d->GetBinValues(GetBeamNumber(anaUtils::GetRunPeriod(event.EventInfo.Run), box.MainTrack), GetDetNumber(detector), _reco_corr, _reco_error, _reco_index))
         {
             _reco_index=-1;
         }
@@ -146,15 +142,15 @@ Weight_h P0DOOFVSystematics::ComputeWeight(const ToyExperiment& toy, const AnaEv
         // eval the other detector rate OOFV contribution
         if (_rate_index[categ] >= 0)
         {
-          eventWeight.Systematic *= 1 + _rate_corr[categ] + (_rate_error[categ] * toy.GetToyVariations(_index)->Variations[_rate_index[categ]]);
-          eventWeight.Correction *= 1 + _rate_corr[categ];
+            eventWeight.Systematic *= 1 + _rate_corr[categ] + (_rate_error[categ] * toy.GetToyVariations(_index)->Variations[_rate_index[categ]]);
+            eventWeight.Correction *= 1 + _rate_corr[categ];
         }
 
         // eval the P0D reco OOFV contribution
         if (_reco_index >= 0)
         {
-          eventWeight.Systematic *= 1 + _reco_corr + _reco_error * (toy.GetToyVariations(_index)->Variations[_reco_index]);
-          eventWeight.Correction *= 1 + _reco_corr;
+            eventWeight.Systematic *= 1 + _reco_corr + _reco_error * (toy.GetToyVariations(_index)->Variations[_reco_index]);
+            eventWeight.Correction *= 1 + _reco_corr;
         }
     }
 

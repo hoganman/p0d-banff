@@ -31,7 +31,7 @@ ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicMana
       index++;
     }
   }
-  
+
   _correlation_matrix = new TMatrixTSym<Double_t>(_mat_size);
 
   for(size_t i = 0; i < _mat_size; ++i){
@@ -40,8 +40,8 @@ ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicMana
       (*_correlation_matrix)[i][i] = 1.+kSmallNumber;
     }
   }
-  
-  
+
+
   for(size_t ind = 0; ind < _mat_size; ++ind){
     for(std::vector<SystematicBase*>::iterator it = _systematic_vector.begin();
         it != _systematic_vector.end(); ++it){
@@ -51,9 +51,9 @@ ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicMana
       }
     }
   }
-  
 
-  
+
+
 };
 
 
@@ -65,7 +65,7 @@ ToyMakerCorrelatedSyst::~ToyMakerCorrelatedSyst(){
   if(_inverted_correlation_matrix) delete _inverted_correlation_matrix;
   //if(_xml_input_file)              delete _xml_input_file;
   if(_xml_engine)                  delete _xml_engine;
-  
+
   _correlation_matrix          = NULL;
   _inverted_correlation_matrix = NULL;
   //_xml_input_file              = NULL;
@@ -78,15 +78,15 @@ ToyMakerCorrelatedSyst::~ToyMakerCorrelatedSyst(){
 //********************************************
 void ToyMakerCorrelatedSyst::InvertMatrix(){
   //********************************************
-  
+
   TMatrixTSym<double> *smallercorr = new TMatrixTSym<double>(_correlation_matrix->GetNrows());
-  
+
   for(int i = 0; i < _correlation_matrix->GetNrows(); i++)
     for(int j = 0; j < _correlation_matrix->GetNrows(); j++)
       (*smallercorr)(i, j) = (*_correlation_matrix)(i, j);
-  
+
   TDecompChol *chdcmp = new TDecompChol(*_correlation_matrix);
-  
+
   int chuck = 0;
   while(!chdcmp->Decompose()){
     if(chuck == 1){
@@ -94,11 +94,11 @@ void ToyMakerCorrelatedSyst::InvertMatrix(){
     }
     std::cerr << "ERROR: Cholesky decomposition failed!" << std::endl;
     std::cerr << "ERROR: Check the file FailedMatrix.root!" << std::endl;
-    
+
     if(smallercorr)
       delete smallercorr;
-    
-    smallercorr = new TMatrixTSym<double>(_correlation_matrix->GetNrows() - chuck); 
+
+    smallercorr = new TMatrixTSym<double>(_correlation_matrix->GetNrows() - chuck);
     for(int i = 0; i < _correlation_matrix->GetNrows() - chuck; i++)
       for(int j = 0; j < _correlation_matrix->GetNrows() - chuck; j++)
         (*smallercorr)(i, j) = (*_correlation_matrix)(i, j);
@@ -115,7 +115,7 @@ void ToyMakerCorrelatedSyst::InvertMatrix(){
     std::cerr << "ERROR: For now, exit..." << std::endl;
     throw;
   }
-  
+
   //get upper triangular matrix - want lower so transpose
   _inverted_correlation_matrix = new TMatrixT<Double_t>(chdcmp->GetU());
   _inverted_correlation_matrix->Transpose(*_inverted_correlation_matrix);
@@ -123,9 +123,9 @@ void ToyMakerCorrelatedSyst::InvertMatrix(){
     std::cerr << "Problem in the matrix inversion" << std::endl;
     throw;
   }
-    
+
   delete chdcmp;
-  
+
 };
 
 
@@ -137,7 +137,7 @@ void ToyMakerCorrelatedSyst::Usage() {
   std::cout << "ToyMakerCorrelatedSyst tm(seed)" << std::endl;
   std::cout << "tm.InvertMatrix()" << std::endl;
   std::cout << "tm.CreateToyExperiments(ntoys, systematics)" << std::endl;
-  
+
 };
 
 
@@ -151,12 +151,12 @@ std::vector<UInt_t> ToyMakerCorrelatedSyst::ParseCommaSeparatedValueString(std::
   UInt_t i;
   while (ss >> i){
     vect.push_back(i);
-      
+
     if (ss.peek() == ',' || ss.peek() == ' ' || ss.peek() == ';')
       ss.ignore();
   }
   return vect;
-  
+
 }
 
 
@@ -169,31 +169,31 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
     std::cerr << "ERROR: Exiting " << std::endl;
     throw;
   }
-  
+
   if(!_correlation_matrix){
     std::cerr << "ERROR: Can't parse the file because the correlation matrix isn't initialised!" << std::endl;
     std::cerr << "ERROR: Exiting " << std::endl;
     throw;
   }
-  
+
   _xml_input_file = _xml_engine->ParseFile(_file_name.c_str());
-  
+
   if (_xml_input_file == NULL) {
     delete _xml_engine;
     return;
   }
-    
+
   // take access to main node
   XMLNodePointer_t mainnode = _xml_engine->DocGetRootElement(_xml_input_file);
-  
+
   // Now parse the heck out of this
   std::cout << "Using the XML parser!" << std::endl;
-    
+
   XMLNodePointer_t SystematicNode = _xml_engine->GetChild(mainnode);
 
   while(SystematicNode != 0){ // First loop is over the systematic
     std::string SystematicName1(_xml_engine->GetNodeName(SystematicNode));
-    
+
     std::cout << "Parsing info for systematic " << SystematicName1 << std::endl;
     SystId::SystEnum syst1 = SystId::GetSystematic(SystematicName1);
 
@@ -201,14 +201,14 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
       std::cerr << SystematicName1 << " doesn't exist?!?" << std::endl;
       throw;
     }
-    
+
     XMLNodePointer_t TypeOfCorrNode = _xml_engine->GetChild(SystematicNode);
 
     while(TypeOfCorrNode != 0){
       std::string TypeOfCorr(_xml_engine->GetNodeName(TypeOfCorrNode));
 
       SystId::SystEnum syst2 = SystId::kNotASyst;
-      
+
       if(TypeOfCorr == "WithItself"){
         std::cout << "Correlating " << SystematicName1 << " with itself" << std::endl;
         syst2 = syst1;
@@ -219,7 +219,7 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
       XMLAttrPointer_t attr = _xml_engine->GetFirstAttr(TypeOfCorrNode);
       while(attr != NULL){
         std::string TheCorr  = _xml_engine->GetAttrName(attr);
-        
+
         if      (TheCorr == "AllParams" || TheCorr == ""){
           CorrelateSystematic(_map_systematic[syst1],_map_systematic[syst2]);
 
@@ -230,7 +230,7 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
 
           std::string ValueStr = _xml_engine->GetAttrValue(attr);
           std::vector<UInt_t> Values = ParseCommaSeparatedValueString(ValueStr);
-          
+
           if(TheCorr == "Param"){
             if(Values.size() != 2){
               std::cerr << "you need 2 values for correlating 2 param in the systematic (param1, param2)" << std::endl;
@@ -250,33 +250,33 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
               throw;
             }
             CorrelateParametersBlockSystematic(_map_systematic[syst1], _map_systematic[syst2], Values[0], Values[1], Values[2]);
-          
+
           }else if(TheCorr == "BlockParam"){
             if(Values.size() != 3){
               std::cerr << "you need 3 values for correlating a block to a parameter in the systematic (size, position1, param)" << std::endl;
               throw;
             }
             CorrelateParametersBlockToParamSystematic(_map_systematic[syst1], _map_systematic[syst2], Values[0], Values[1], Values[2]);
-          
+
 
 
           }
-          
+
           attr = _xml_engine->GetNextAttr(attr);
         }
       }
-      
+
       TypeOfCorrNode = _xml_engine->GetNext(TypeOfCorrNode);
-      
+
     }
-    
+
     SystematicNode = _xml_engine->GetNext(SystematicNode);
   }
-  
+
   // Release memory before exit
   _xml_engine->FreeDoc(_xml_input_file);
   delete _xml_engine;
-  
+
 };
 
 //********************************************
@@ -285,7 +285,7 @@ void ToyMakerCorrelatedSyst::CreateInputXMLParameterFileFromCov(){
 
   std::cerr << "This functionality hasn't been implemented yet!" << std::endl;
   throw;
-  
+
 };
 
 //********************************************
@@ -298,7 +298,7 @@ void ToyMakerCorrelatedSyst::CorrelateParametersBlockSystematic(SystematicBase* 
               << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
               << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
     std::cerr << "ERROR: Exiting" << std::endl;
-    throw; 
+    throw;
   }
   for(UInt_t i=0; i<size; ++i){
     for(UInt_t j=0; j<size; ++j){
@@ -320,7 +320,7 @@ void ToyMakerCorrelatedSyst::CorrelateParametersBlockToParamSystematic(Systemati
               << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
               << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
     std::cerr << "ERROR: Exiting" << std::endl;
-    throw; 
+    throw;
   }
   // You first need to make sure that the block is already correlated within itself
   CorrelateParametersBlockSystematic(syst1, syst1, size, param1, param1);
@@ -339,7 +339,7 @@ void ToyMakerCorrelatedSyst::CorrelateParametersBlockToParamSystematic(Systemati
     UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),i+param1)];
     FillCorrelationInMatrix(index1, index2);
   }
-  
+
 }
 
 
@@ -362,7 +362,7 @@ void ToyMakerCorrelatedSyst::DeCorrelateInMatrix(unsigned int i, unsigned int j)
     (*_correlation_matrix)[i][j] = 0.;
     (*_correlation_matrix)[j][i] = 0.;
   }
-  
+
 };
 
 
@@ -383,7 +383,7 @@ void ToyMakerCorrelatedSyst::CorrelateSystematic(SystematicBase* syst1, Systemat
         UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),j)];
         FillCorrelationInMatrix(index1, index2);
       }
-    } 
+    }
   }else{
     for(UInt_t i=0; i<syst1->GetNParameters(); ++i){
       for(UInt_t j=0; j<syst2->GetNParameters(); ++j){
@@ -391,7 +391,7 @@ void ToyMakerCorrelatedSyst::CorrelateSystematic(SystematicBase* syst1, Systemat
         UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),j)];
         FillCorrelationInMatrix(index1, index2);
       }
-    } 
+    }
   }
 
 };
@@ -405,14 +405,14 @@ void ToyMakerCorrelatedSyst::CorrelateDiagonalOfSystematic(SystematicBase* syst1
     std::cerr << "ERROR: you can't correlate the diagonal of 2 systematics if they don't have the same number of parameters:" << std::endl;
     std::cerr << "ERROR: Systematics " << syst1->Name() << " and " << syst2->Name() << " don't have the same number of parameters (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters() << ")" << std::endl;
     std::cerr << "ERROR: Exiting" << std::endl;
-    throw; 
+    throw;
   }else{
     for(UInt_t i=0; i<syst1->GetNParameters(); ++i){
       UInt_t index1 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst1->GetIndex(),i)];
       UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),i)];
       FillCorrelationInMatrix(index1, index2);
     }
-    
+
   }
 
 };
@@ -428,7 +428,7 @@ void ToyMakerCorrelatedSyst::CorrelateAllParametersInSystematic(SystematicBase* 
       UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst->GetIndex(),j)];
       FillCorrelationInMatrix(index1, index2);
     }
-  } 
+  }
 
 };
 
@@ -503,7 +503,7 @@ void ToyMakerCorrelatedSyst::FillToyExperiment(ToyExperiment& toy){
       toy.SetToyVariation(syst->GetIndex(), ipar, var, weight);
     }
   }
-  
+
 };
 
 
@@ -525,7 +525,7 @@ void ToyMakerCorrelatedSyst::SaveCorrelationMatrixTH2D(std::string filename){
     }
     corr->Write();
   }
-  
+
   if(_inverted_correlation_matrix){
     inv  = new TH2D("inv",  "inv", _mat_size, 0, _mat_size, _mat_size, 0, _mat_size);
     for(size_t i = 0; i < _mat_size; ++i){
@@ -535,11 +535,11 @@ void ToyMakerCorrelatedSyst::SaveCorrelationMatrixTH2D(std::string filename){
     }
     inv->Write();
   }
-  
+
   file->Close();
   // This already happens when you close the file??
   //  if(corr) delete corr;
-  //  if(inv ) delete inv ; 
+  //  if(inv ) delete inv ;
 }
 
 

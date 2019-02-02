@@ -86,6 +86,8 @@ def main(argv):
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6d-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/neut/run6e-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run7b-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run8-water',
+            '/physics/home/mhogan/flattrees/mcp6_Spin_L/neut/run8-air',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/sand/run3-air_FHC',
             '/physics/home/mhogan/flattrees/mcp6_Spin_B/sand/run3-air_RHC'
     ]
@@ -103,6 +105,8 @@ def main(argv):
             '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6d-air',
             '/physics/home/mhogan/flattrees/rdp6_Spin_M/run6e-air',
             '/physics/home/mhogan/flattrees/rdp6_Spin_N/run7b-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_P/run8-water',
+            '/physics/home/mhogan/flattrees/rdp6_Spin_P/run8-air',
             '',
             ''
     ]
@@ -120,6 +124,8 @@ def main(argv):
             'Run6d_Air',
             'Run6e_Air',
             'Run7b_Water',
+            'Run8_Water',
+            'Run8_Air',
             'Run3_Air_FHC',
             'Run3_Air_RHC'
     ]
@@ -137,6 +143,8 @@ def main(argv):
            'antinu',  # 6d air
            'antinu',  # 6e air
            'antinu',  # 7b water
+           'nu',  # 8 water
+           'nu',  # 8 air
            'nu',  # 3 air sand
            'antinu',  # 3 air sand
     ]

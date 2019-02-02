@@ -72,12 +72,18 @@ void OOFVSystematics::Initialize(){
 //********************************************************************
 Int_t OOFVSystematics::GetBeamNumber(Int_t runperiod,AnaTrackB *maintrack){
 //********************************************************************
-  if(runperiod==8){
+
+  //run 5 RHC
+  if(runperiod==8)
+  {
+    //mu-minus
     if(maintrack->Charge<0)
       return 1;
+    //mu-plus
     else
       return 2;
-  }else
+  }
+  else
     return 0;
 }
 //********************************************************************

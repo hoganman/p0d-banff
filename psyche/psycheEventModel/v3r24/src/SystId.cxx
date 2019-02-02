@@ -42,6 +42,7 @@ std::string SystId::ConvertSystematic(SystId::SystEnum syst){
     case kP0DELossScale             : return "P0DELossScale";
     case kP0DELossResol             : return "P0DELossResol";
     case kP0DVeto                   : return "P0DVeto";
+    case kP0DOOFV                   : return "P0DOOFV";
     default : return "kNotASyst";
   }
 };
@@ -87,5 +88,6 @@ SystId::SystEnum SystId::GetSystematic(std::string syst){
   if(syst == "P0DELossScale"             ) return SystId::kP0DELossScale             ;
   if(syst == "P0DELossResol"             ) return SystId::kP0DELossResol             ;
   if(syst == "P0DVeto"                   ) return SystId::kP0DVeto                   ;
+  if(syst == "P0DOOFV"                   ) return SystId::kP0DOOFV                   ;
   return SystId::kNotASyst;
 };

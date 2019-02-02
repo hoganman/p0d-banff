@@ -9,9 +9,10 @@ import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
-QUEUE = '\"physics.q|short.q\"'
+# QUEUE = '\"physics.q|short.q\"'
 # HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node30|node29\"'
-HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
+# MCMIN = str(int(60*8))
+# DATAMIN = str(int(60*8))
 # EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 # HOSTS = '\"'
 # for x in range(20) + range(27, 31) + range(40, 46):
@@ -20,11 +21,13 @@ HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
 #     HOSTS += 'node{}|'.format(x)
 # HOSTS = HOSTS.rstrip("|")
 # HOSTS += '\"'
-MEM = '1024'
+QUEUE = '\"physics.q\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
+MCMIN = '9999'
+DATAMIN = '9999'
+MEM = '2048'
 MCNJOBS = '100'
 DATANJOBS = '10'
-MCMIN = str(int(60*8))
-DATAMIN = '120'
 FLATTREEBASE = os.getenv('FLATTREEROOT')
 SPLINEBASE = os.getenv('SPLINEROOT')
 NEUT_6B = 'mcp6_Spin_B/neut'
@@ -32,6 +35,7 @@ NEUT_6L = 'mcp6_Spin_L/neut'
 SAND = 'mcp6_Spin_B/sand'
 DATA_6M = 'rdp6_Spin_M'
 DATA_6N = 'rdp6_Spin_N'
+DATA_6P = 'rdp6_Spin_P'
 
 QSUBSPLINE = 'python qsubmitter_splines.py'
 
@@ -135,6 +139,8 @@ def submit_spline_mc():
     run6d_sp_mc = make_qsub_spline_mc(RN.RUN6D, NEUT_6B, DATATYPES.MC)
     run6e_sp_mc = make_qsub_spline_mc(RN.RUN6E, NEUT_6B, DATATYPES.MC)
     run7b_sp_mc = make_qsub_spline_mc(RN.RUN7B, NEUT_6L, DATATYPES.MC)
+    run8w_sp_mc = make_qsub_spline_mc(RN.RUN8W, NEUT_6L, DATATYPES.MC)
+    run8a_sp_mc = make_qsub_spline_mc(RN.RUN8A, NEUT_6L, DATATYPES.MC)
     sand_fhc_sp_mc = make_qsub_spline_mc(RN.SANDFHC, SAND, DATATYPES.SAND)
     sand_rhc_sp_mc = make_qsub_spline_mc(RN.SANDRHC, SAND, DATATYPES.SAND)
 
@@ -150,6 +156,8 @@ def submit_spline_mc():
     run6d_sp_mc.run(not ShellCommand.IN_BKG)
     run6e_sp_mc.run(not ShellCommand.IN_BKG)
     run7b_sp_mc.run(not ShellCommand.IN_BKG)
+    run8w_sp_mc.run(not ShellCommand.IN_BKG)
+    run8a_sp_mc.run(not ShellCommand.IN_BKG)
     sand_fhc_sp_mc.run(not ShellCommand.IN_BKG)
     sand_rhc_sp_mc.run(not ShellCommand.IN_BKG)
 
@@ -168,6 +176,8 @@ def submit_spline_data():
     run6d_sp_data = make_qsub_spline_data(RN.RUN6DDATA, DATA_6M)
     run6e_sp_data = make_qsub_spline_data(RN.RUN6EDATA, DATA_6M)
     run7b_sp_data = make_qsub_spline_data(RN.RUN7BDATA, DATA_6N)
+    run8w_sp_data = make_qsub_spline_data(RN.RUN8WDATA, DATA_6P)
+    run8a_sp_data = make_qsub_spline_data(RN.RUN8ADATA, DATA_6P)
 
     run2w_sp_data.run(not ShellCommand.IN_BKG)
     run2a_sp_data.run(not ShellCommand.IN_BKG)
@@ -181,6 +191,8 @@ def submit_spline_data():
     run6d_sp_data.run(not ShellCommand.IN_BKG)
     run6e_sp_data.run(not ShellCommand.IN_BKG)
     run7b_sp_data.run(not ShellCommand.IN_BKG)
+    run8w_sp_data.run(not ShellCommand.IN_BKG)
+    run8a_sp_data.run(not ShellCommand.IN_BKG)
 
 
 class DATATYPES(object):

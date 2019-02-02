@@ -27,8 +27,9 @@
         </P0DPositionY>
         <NeutrinoEnergy>
             <comment> NeutrinoEnergy: Uniform in 200 MeV steps </comment>
-            <binEdges attr="0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0,3.2,3.4,3.6,3.8,4.0,4.2,4.4,4.6,4.8,5.0,5.2,5.4,5.6,5.8,6.0,6.2,6.4,6.6,6.8,7.0,7.2,7.4,7.6,7.8,8.0,8.2,8.4,8.6,8.8,9.0,9.2,9.4,9.6,9.8,10.0,10.2,10.4,10.6,10.8,11.0,11.2,11.4,11.6,11.8,12.0,12.2,12.4,12.6,12.8,13.0,13.2,13.4,13.6,13.8,14.0,14.2,14.4,14.6,14.8,15.0,16.0"/>
-            <nBinEdges attr="77" />
+            <binEdges attr="0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0,3.2,3.4,3.6,3.8,4.0,4.2,4.4,4.6,4.8,5.0,5.2,5.4,5.6,5.8,6.0,6.2,6.4,6.6,6.8,7.0,7.2"/>
+            <comment> Old bining 0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0,3.2,3.4,3.6,3.8,4.0,4.2,4.4,4.6,4.8,5.0,5.2,5.4,5.6,5.8,6.0,6.2,6.4,6.6,6.8,7.0,7.2,7.4,7.6,7.8,8.0,8.2,8.4,8.6,8.8,9.0,9.2,9.4,9.6,9.8,10.0,10.2,10.4,10.6,10.8,11.0,11.2,11.4,11.6,11.8,12.0,12.2,12.4,12.6,12.8,13.0,13.2,13.4,13.6,13.8,14.0,14.2,14.4,14.6,14.8,15.0,16.0 </comment>
+            <nBinEdges attr="37" />
             <units attr="GeV/c"/>
             <lastBinOverflow attr="1"/>
         </NeutrinoEnergy>
@@ -70,29 +71,29 @@
             <units attr="cos(#theta)"/>
         </TN328CosTheta>
         <P0DFitMomentum>
-            <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0, 300, 500, 900, 1500, 2500, 5000, 10000, 30000" />
-            <nBinEdges attr="9" />
+            <comment> Testing P Fit binning </comment>
+            <binEdges attr="0, 400, 700, 1000, 1500, 2100, 3400, 6000, 9000, 30000" />
+            <nBinEdges attr="10" />
             <uniformWidth attr="0"/>
             <units attr="MeV/c"/>
         </P0DFitMomentum>
         <P0DCovMomentum>
-            <comment> Testing P-Theta binning </comment>
-            <binEdges attr="0, 500, 1500, 5000, 30000" />
-            <nBinEdges attr="5" />
+            <comment> Testing P Cov binning </comment>
+            <binEdges attr="0, 700, 1500, 2100, 6000, 30000" />
+            <nBinEdges attr="6" />
             <uniformWidth attr="0"/>
             <units attr="MeV/c"/>
         </P0DCovMomentum>
         <P0DFitCosTheta>
-            <comment> Testing P-Theta binning </comment>
-            <binEdges attr="-1.0, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1.0"/>
-            <nBinEdges attr="9" />
+            <comment> Testing Theta Fit binning </comment>
+            <binEdges attr="-1.0, 0.86, 0.92, 0.95, 0.97, 0.99, 1.0"/>
+            <nBinEdges attr="7" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>
         </P0DFitCosTheta>
         <P0DCovCosTheta>
-            <comment> Testing P-Theta binning </comment>
-            <binEdges attr="-1.0, 0.8, 0.9, 0.98, 1.0"/>
+            <comment> Testing Theta Cov binning </comment>
+            <binEdges attr="-1.0, 0.86, 0.95, 0.99, 1.0"/>
             <nBinEdges attr="5" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>

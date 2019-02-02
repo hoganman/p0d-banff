@@ -48,4 +48,13 @@
   <SandMu>
     <WithItself Param="1,2"/>
   </SandMu>
+  <P0DELossResol>
+    <WithItself/>
+  </P0DELossResol>
+  <P0DOOFV>
+    <WithItself/>
+  </P0DOOFV>
+  <P0DVeto>
+    <WithItself/>
+  </P0DVeto>
 </main>

@@ -46,6 +46,8 @@ def submit_runsyst_new_mc():
     run6d_mc = make_qsub(RN.RUN6D, NEUT_6B)
     run6e_mc = make_qsub(RN.RUN6E, NEUT_6B)
     run7b_mc = make_qsub(RN.RUN7B, NEUT_6L)
+    run8w_mc = make_qsub(RN.RUN8W, NEUT_6L)
+    run8a_mc = make_qsub(RN.RUN8A, NEUT_6L)
     sand_fhc_mc = make_qsub(RN.SANDFHC, SAND)
     sand_rhc_mc = make_qsub(RN.SANDRHC, SAND)
 
@@ -61,6 +63,8 @@ def submit_runsyst_new_mc():
     run6d_mc.run(ShellCommand.IN_BKG)
     run6e_mc.run(ShellCommand.IN_BKG)
     run7b_mc.run(ShellCommand.IN_BKG)
+    run8w_mc.run(ShellCommand.IN_BKG)
+    run8a_mc.run(ShellCommand.IN_BKG)
     sand_fhc_mc.run(ShellCommand.IN_BKG)
     sand_rhc_mc.run(ShellCommand.IN_BKG)
 

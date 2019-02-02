@@ -23,6 +23,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   }
   FullToReduMap.clear();
 
+  /*
   //P0D FHC numuCC-Inclusive
   int    P0DFHCNumuCCInclusive_Mom_NBin = 8;
   double P0DFHCNumuCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
@@ -55,33 +56,73 @@ BANFF::BinningDefinition::BinningDefinition(){
   double P0DRHCNumubarCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
   int    P0DRHCNumubarCCInclusive_Det_Cos_NBin = 4;
   double P0DRHCNumubarCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
+  */
 
   //P0D FHC numu CC 1-track
-  int    P0DFHCNumuCC1Tr_Mom_NBin = 7;
-  double P0DFHCNumuCC1Tr_Mom_Bin[8] = {0, 400, 600, 1000, 2500, 5000, 30000};
-  int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 6;
-  int    P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0, 600, 1000, 5000, 30000};
+  int    P0DFHCNumuCC1Tr_Mom_NBin = 8;
+  double P0DFHCNumuCC1Tr_Mom_Bin[9] = {0, 400, 600, 800, 1000, 2500, 4000, 10000, 30000};
+  int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 4;
+  double P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0, 600, 1000, 4000, 30000};
 
   int    P0DFHCNumuCC1Tr_Cos_NBin = 8;
   double P0DFHCNumuCC1Tr_Cos_Bin[9] = {-1.0, 0.7, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
-  int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 4;
-  int    P0DFHCNumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.92, 0.96, 1.0};
+  int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 5;
+  double P0DFHCNumuCC1Tr_Det_Cos_Bin[6] = {-1.0, 0.7, 0.85, 0.96, 0.99, 1.0};
 
   //P0D FHC numu CC N-tracks
-  int    P0DFHCNumuCCnTr_Mom_NBin = 9;
-  double P0DFHCNumuCCnTr_Mom_Bin[10] = {0, 300, 500, 900, 1500, 2500, 5000, 10000, 30000};
-  int    P0DFHCNumuCCnTr_Det_Mom_NBin = 4;
-  int    P0DFHCNumuCCnTr_Det_Mom_Bin[5] = {0, 500, 1500, 5000, 30000};
+  int    P0DFHCNumuCCnTr_Mom_NBin = 10;
+  double P0DFHCNumuCCnTr_Mom_Bin[11] = {0, 300, 500, 700, 900, 1500, 2500, 4000, 6000, 10000, 30000};
+  int    P0DFHCNumuCCnTr_Det_Mom_NBin = 5;
+  double    P0DFHCNumuCCnTr_Det_Mom_Bin[6] = {0, 500, 900, 2500, 6000, 30000};
 
   int    P0DFHCNumuCCnTr_Cos_NBin = 8;
   double P0DFHCNumuCCnTr_Cos_Bin[9] = {-1.0, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1.0};
-  int    P0DFHCNumuCCnTr_Det_Cos_NBin = 4;
-  int    P0DFHCNumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.8, 0.9, 0.98, 1.0};
+  int    P0DFHCNumuCCnTr_Det_Cos_NBin = 5;
+  double P0DFHCNumuCCnTr_Det_Cos_Bin[6] = {-1.0, 0.7, 0.8, 0.9, 0.98, 1.0};
 
   //P0D RHC numubar CC 1-track
+  int    P0DRHCANumuCC1Tr_Mom_NBin = 9;
+  double P0DRHCANumuCC1Tr_Mom_Bin[10] = {0, 500, 700, 900, 1500, 2000, 3000, 5000, 10000, 30000};
+  int    P0DRHCANumuCC1Tr_Det_Mom_NBin = 5;
+  double P0DRHCANumuCC1Tr_Det_Mom_Bin[6] = {0, 700, 1500, 3000, 10000, 30000};
 
-  //Momentum (6): 0, 0.4, 0.6, 0.9, 2.4, 30
-  //CosTheta (11): -1, 0.335, 0.777, 0.856, 0.909, 0.945, 0.968, 0.983, 0.991, 0.995, 1
+  int    P0DRHCANumuCC1Tr_Cos_NBin = 7;
+  double P0DRHCANumuCC1Tr_Cos_Bin[8] = {-1.0, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  int    P0DRHCANumuCC1Tr_Det_Cos_NBin = 4;
+  double P0DRHCANumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.96, 0.99, 1.0};
+
+  //P0D RHC numubar CC N-tracks
+  int    P0DRHCANumuCCnTr_Mom_NBin = 8;
+  double P0DRHCANumuCCnTr_Mom_Bin[9] = {0, 500, 700, 900, 1500, 2000, 3000, 5000, 30000};
+  int    P0DRHCANumuCCnTr_Det_Mom_NBin = 4;
+  double P0DRHCANumuCCnTr_Det_Mom_Bin[5] = {0, 700, 1500, 3000, 30000};
+
+  int    P0DRHCANumuCCnTr_Cos_NBin = 7;
+  double P0DRHCANumuCCnTr_Cos_Bin[8] = {-1.0, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  int    P0DRHCANumuCCnTr_Det_Cos_NBin = 4;
+  double P0DRHCANumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.96, 0.99, 1.0};
+
+  //P0D RHCNumuCC1Tr
+  int    P0DRHCNumuCC1Tr_Mom_NBin = 9;
+  double P0DRHCNumuCC1Tr_Mom_Bin[10] = {0, 500, 700, 1000, 1300, 1800, 2600, 4500, 9000, 30000};
+  int    P0DRHCNumuCC1Tr_Det_Mom_NBin = 6;
+  double    P0DRHCNumuCC1Tr_Det_Mom_Bin[7] = {0, 700, 1300, 1800, 2600, 9000, 30000};
+
+  int    P0DRHCNumuCC1Tr_Cos_NBin = 6;
+  double P0DRHCNumuCC1Tr_Cos_Bin[7] = {-1.0, 0.88, 0.92, 0.95, 0.97, 0.99, 1.0};
+  int    P0DRHCNumuCC1Tr_Det_Cos_NBin = 4;
+  double P0DRHCNumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.88, 0.95, 0.99, 1.0};
+
+  //P0D RHCNumuCCnTr
+  int    P0DRHCNumuCCnTr_Mom_NBin = 9;
+  double P0DRHCNumuCCnTr_Mom_Bin[10] = {0, 400, 700, 1000, 1500, 2100, 3400, 6000, 9000, 30000};
+  int    P0DRHCNumuCCnTr_Det_Mom_NBin = 5;
+  double P0DRHCNumuCCnTr_Det_Mom_Bin[6] = {0, 700, 1500, 2100, 6000, 30000};
+
+  int    P0DRHCNumuCCnTr_Cos_NBin = 6;
+  double P0DRHCNumuCCnTr_Cos_Bin[7] = {-1.0, 0.86, 0.92, 0.95, 0.97, 0.99, 1.0};
+  int    P0DRHCNumuCCnTr_Det_Cos_NBin = 4;
+  double P0DRHCNumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.86, 0.95, 0.99, 1.0};
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
@@ -449,6 +490,7 @@ BANFF::BinningDefinition::BinningDefinition(){
   if(DoOnlyP0D)
   {
 
+    /*
     // P0D numu FHC
     bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin,     P0DFHCNumuCCInclusive_Mom_Bin,
                                                           P0DFHCNumuCCInclusive_Cos_NBin,     P0DFHCNumuCCInclusive_Cos_Bin);
@@ -461,40 +503,108 @@ BANFF::BinningDefinition::BinningDefinition(){
                                                           P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
 
     // P0D numu BKG in RHC
-    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
-    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
+    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin, P0DRHCNumuBkgCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin, P0DRHCNumuBkgCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin, P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin, P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
+
+    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin, P0DRHCNumuBkgCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin, P0DRHCNumuBkgCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin, P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin, P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
 
     // P0D numubar in RHC
-    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_Bin);
-    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_Bin);
+    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin, P0DRHCNumubarCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_NBin, P0DRHCNumubarCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin, P0DRHCNumubarCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin, P0DRHCNumubarCCInclusive_Det_Cos_Bin);
+
+    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin, P0DRHCNumubarCCInclusive_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Cos_NBin, P0DRHCNumubarCCInclusive_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin, P0DRHCNumubarCCInclusive_Det_Mom_Bin,
+                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin, P0DRHCNumubarCCInclusive_Det_Cos_Bin);
+
+    */
+
+    // P0D numu FHC CC 1-track
+    printf("SampleId::kP0DWaterNuMuCC1Track\n");
+    bothAxis    [SampleId::kP0DWaterNuMuCC1Track] = new TAxis2D(P0DFHCNumuCC1Tr_Mom_NBin,     P0DFHCNumuCC1Tr_Mom_Bin,
+                                                                 P0DFHCNumuCC1Tr_Cos_NBin,     P0DFHCNumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuCC1Track] = new TAxis2D(P0DFHCNumuCC1Tr_Det_Mom_NBin, P0DFHCNumuCC1Tr_Det_Mom_Bin,
+                                                                 P0DFHCNumuCC1Tr_Det_Cos_NBin, P0DFHCNumuCC1Tr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuCC1Track\n");
+    bothAxis    [SampleId::kP0DAirNuMuCC1Track] =   new TAxis2D(P0DFHCNumuCC1Tr_Mom_NBin,     P0DFHCNumuCC1Tr_Mom_Bin,
+                                                                 P0DFHCNumuCC1Tr_Cos_NBin,     P0DFHCNumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuCC1Track] =   new TAxis2D(P0DFHCNumuCC1Tr_Det_Mom_NBin, P0DFHCNumuCC1Tr_Det_Mom_Bin,
+                                                                 P0DFHCNumuCC1Tr_Det_Cos_NBin, P0DFHCNumuCC1Tr_Det_Cos_Bin);
+
+    // P0D numu FHC CC N-tracks
+    printf("SampleId::kP0DWaterNuMuCCNTracks\n");
+    bothAxis    [SampleId::kP0DWaterNuMuCCNTracks] = new TAxis2D(P0DFHCNumuCCnTr_Mom_NBin,     P0DFHCNumuCCnTr_Mom_Bin,
+                                                                 P0DFHCNumuCCnTr_Cos_NBin,     P0DFHCNumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuCCNTracks] = new TAxis2D(P0DFHCNumuCCnTr_Det_Mom_NBin, P0DFHCNumuCCnTr_Det_Mom_Bin,
+                                                                 P0DFHCNumuCCnTr_Det_Cos_NBin, P0DFHCNumuCCnTr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuCCNTracks\n");
+    bothAxis    [SampleId::kP0DAirNuMuCCNTracks] =   new TAxis2D(P0DFHCNumuCCnTr_Mom_NBin,     P0DFHCNumuCCnTr_Mom_Bin,
+                                                                 P0DFHCNumuCCnTr_Cos_NBin,     P0DFHCNumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuCCNTracks] =   new TAxis2D(P0DFHCNumuCCnTr_Det_Mom_NBin, P0DFHCNumuCCnTr_Det_Mom_Bin,
+                                                                 P0DFHCNumuCCnTr_Det_Cos_NBin, P0DFHCNumuCCnTr_Det_Cos_Bin);
+
+    // P0D numubar RHC CC 1-track
+    printf("SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track\n");
+    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track] = new TAxis2D(P0DRHCANumuCC1Tr_Mom_NBin,     P0DRHCANumuCC1Tr_Mom_Bin,
+                                                                               P0DRHCANumuCC1Tr_Cos_NBin,     P0DRHCANumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track] = new TAxis2D(P0DRHCANumuCC1Tr_Det_Mom_NBin, P0DRHCANumuCC1Tr_Det_Mom_Bin,
+                                                                               P0DRHCANumuCC1Tr_Det_Cos_NBin, P0DRHCANumuCC1Tr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track\n");
+    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track] =   new TAxis2D(P0DRHCANumuCC1Tr_Mom_NBin,     P0DRHCANumuCC1Tr_Mom_Bin,
+                                                                               P0DRHCANumuCC1Tr_Cos_NBin,     P0DRHCANumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track] =   new TAxis2D(P0DRHCANumuCC1Tr_Det_Mom_NBin, P0DRHCANumuCC1Tr_Det_Mom_Bin,
+                                                                               P0DRHCANumuCC1Tr_Det_Cos_NBin, P0DRHCANumuCC1Tr_Det_Cos_Bin);
+
+    // P0D numubar RHC CC N-tracks
+    printf("SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks\n");
+    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = new TAxis2D(P0DRHCANumuCCnTr_Mom_NBin,     P0DRHCANumuCCnTr_Mom_Bin,
+                                                                                P0DRHCANumuCCnTr_Cos_NBin,     P0DRHCANumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = new TAxis2D(P0DRHCANumuCCnTr_Det_Mom_NBin, P0DRHCANumuCCnTr_Det_Mom_Bin,
+                                                                                P0DRHCANumuCCnTr_Det_Cos_NBin, P0DRHCANumuCCnTr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks\n");
+    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] =   new TAxis2D(P0DRHCANumuCCnTr_Mom_NBin,     P0DRHCANumuCCnTr_Mom_Bin,
+                                                                                P0DRHCANumuCCnTr_Cos_NBin,     P0DRHCANumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] =   new TAxis2D(P0DRHCANumuCCnTr_Det_Mom_NBin, P0DRHCANumuCCnTr_Det_Mom_Bin,
+                                                                                P0DRHCANumuCCnTr_Det_Cos_NBin, P0DRHCANumuCCnTr_Det_Cos_Bin);
+
+    // P0D numubkg RHC CC 1-track
+    printf("SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track\n");
+    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track] = new TAxis2D(P0DRHCNumuCC1Tr_Mom_NBin,     P0DRHCNumuCC1Tr_Mom_Bin,
+                                                                               P0DRHCNumuCC1Tr_Cos_NBin,     P0DRHCNumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track] = new TAxis2D(P0DRHCNumuCC1Tr_Det_Mom_NBin, P0DRHCNumuCC1Tr_Det_Mom_Bin,
+                                                                               P0DRHCNumuCC1Tr_Det_Cos_NBin, P0DRHCNumuCC1Tr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track\n");
+    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track] =   new TAxis2D(P0DRHCNumuCC1Tr_Mom_NBin,     P0DRHCNumuCC1Tr_Mom_Bin,
+                                                                               P0DRHCNumuCC1Tr_Cos_NBin,     P0DRHCNumuCC1Tr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track] =   new TAxis2D(P0DRHCNumuCC1Tr_Det_Mom_NBin, P0DRHCNumuCC1Tr_Det_Mom_Bin,
+                                                                               P0DRHCNumuCC1Tr_Det_Cos_NBin, P0DRHCNumuCC1Tr_Det_Cos_Bin);
+
+    // P0D numubkg RHC CC N-tracks
+    printf("SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks\n");
+    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks] = new TAxis2D(P0DRHCNumuCCnTr_Mom_NBin,     P0DRHCNumuCCnTr_Mom_Bin,
+                                                                                P0DRHCNumuCCnTr_Cos_NBin,     P0DRHCNumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks] = new TAxis2D(P0DRHCNumuCCnTr_Det_Mom_NBin, P0DRHCNumuCCnTr_Det_Mom_Bin,
+                                                                                P0DRHCNumuCCnTr_Det_Cos_NBin, P0DRHCNumuCCnTr_Det_Cos_Bin);
+
+    printf("SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks\n");
+    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks] =   new TAxis2D(P0DRHCNumuCCnTr_Mom_NBin,     P0DRHCNumuCCnTr_Mom_Bin,
+                                                                                P0DRHCNumuCCnTr_Cos_NBin,     P0DRHCNumuCCnTr_Cos_Bin);
+    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks] =   new TAxis2D(P0DRHCNumuCCnTr_Det_Mom_NBin, P0DRHCNumuCCnTr_Det_Mom_Bin,
+                                                                                P0DRHCNumuCCnTr_Det_Cos_NBin, P0DRHCNumuCCnTr_Det_Cos_Bin);
+
+
   }
 
   if(!DoOnlyNue){
@@ -763,64 +873,88 @@ BANFF::BinningDefinition::BinningDefinition(){
     }
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DWater")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCMultiTrackP0DWater")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DWaterNuMuCC] = false;
+      printf("Disabling SampleId::kP0DWaterNuMuCC1Track\n");
+      printf("Disabling SampleId::kP0DWaterNuMuCCNTracks\n");
+      ActiveSample[SampleId::kP0DWaterNuMuCC1Track] = false;
+      ActiveSample[SampleId::kP0DWaterNuMuCCNTracks] = false;
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCP0DAir")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuCCMultiTrackP0DAir")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DAirNuMuCC  ] = false;
+      printf("Disabling SampleId::kP0DAirNuMuCC1Track\n");
+      printf("Disabling SampleId::kP0DAirNuMuCCNTracks\n");
+      ActiveSample[SampleId::kP0DAirNuMuCC1Track] = false;
+      ActiveSample[SampleId::kP0DAirNuMuCCNTracks] = false;
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DWater")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = false;
+      printf("Disabling SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track\n");
+      printf("Disabling SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks\n");
+      ActiveSample[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track] = false;
+      ActiveSample[SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks] = false;
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DAir")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] = false;
+      printf("Disabling SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track\n");
+      printf("Disabling SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks\n");
+      ActiveSample[SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track] = false;
+      ActiveSample[SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks] = false;
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DWater")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D water sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = false;
+      printf("Disabling SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track\n");
+      printf("Disabling SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks\n");
+      ActiveSample[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track] = false;
+      ActiveSample[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = false;
   }
 
-  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir")))
+
+  if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DAir")))
   {
       if(DoOnlyP0D)
       {
           std::cout << "ERROR: P0D air sample disabled but < BANFF.DoOnlyP0DSelections = 1 >" << std::endl;
           throw;
       }
-      ActiveSample[SampleId::kP0DAirNuMuBarInAntiNuModeCC] = false;
+      printf("Disabling SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track\n");
+      printf("Disabling SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks\n");
+      ActiveSample[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track] = false;
+      ActiveSample[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks] = false;
   }
 
   if(!(bool)(ND::params().GetParameterI("psycheSteering.Selections.EnableTrackerNumuCCMultiPi"))){
@@ -925,7 +1059,7 @@ BANFF::BinningDefinition::BinningDefinition(){
 }
 
 //*****************************************************************************
-BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1,int nbin2, double* bins2)
+BANFF::TAxis2D::TAxis2D(int nbin1, double* bins1, int nbin2, double* bins2)
 //*****************************************************************************
 {
     FirstDim  = new TAxis(nbin1, bins1);

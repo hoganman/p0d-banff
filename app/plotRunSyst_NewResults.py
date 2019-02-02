@@ -613,6 +613,9 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     legend.Draw()
     data_stats.Draw()
     mc_stats.Draw()
+    data_stats.SetTextAlign(22)  # centered
+    mc_stats.SetTextAlign(22)  # centered
+    ROOT.gPad.Update()
     if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
         save_as += '_fluxtuned'
     if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
@@ -678,7 +681,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         ratio.GetXaxis().SetLabelSize(3*h_stack.GetXaxis().GetLabelSize())
         # ratio.GetXaxis().SetLabelSize(15)
 
-    canvas.Update()
+    ROOT.gPad.Update()
     canvas.Draw()
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
@@ -867,11 +870,13 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(histMax)
         h_total.SetMaximum(histMax)
 
+    canvas.cd()
     h_stack.Draw('HIST')
     h_total.Draw('HIST SAME')
     legend.Draw()
     mc_stats.Draw()
-    canvas.cd()
+    mc_stats.SetTextAlign(22)  # centered
+    ROOT.gPad.Update()
     canvas.SetFillColor(0)
     if(ROOT.gPad.GetPrimitive('TFrame')):
         ROOT.gPad.GetPrimitive('TFrame').SetFillColor(0)
@@ -1023,6 +1028,9 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
     palette.SetY1NDC(0.14)
     mc_stats.Draw()
     plot_title.Draw()
+    mc_stats.SetTextAlign(22)  # centered
+    plot_title.SetTextAlign(22)  # centered
+    ROOT.gPad.Update()
     if CONFIGURATION.GetAttribBool('SHOW_LOGZ'):
         canvas.SetLogz(1)
     if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
@@ -1500,13 +1508,13 @@ def GetAllAdditionalCuts(cuts):
     """
     more_cuts = TCut()
     if CONFIGURATION.GetAttribBool('USE_ADDITIONAL_CUTS'):
-        more_cuts += TCut(CONFIGURATION.GetAttrib('ADDITIONAL_CUTS'))
+        more_cuts += TCut(CONFIGURATION.GetAttrib('ADDITIONAL_CUTS').Data())
 
     if CONFIGURATION.GetAttribBool('TN208_ANALYSIS'):
         more_cuts += cuts.FVTN208
 
     if CONFIGURATION.GetAttribBool('USE_MOMENTUM_CUT'):
-        more_cuts += TCut('LeptonMomNom<=%s' % CONFIGURATION.GetAttrib('MOMENTUM_CUT_VALUE'))
+        more_cuts += TCut('LeptonMomNom<=%s' % CONFIGURATION.GetAttrib('MOMENTUM_CUT_VALUE').Data())
     return more_cuts
 
 

@@ -323,7 +323,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
         //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
         //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
-        if(errorStat >= errorSystematic && errorStat <= 0.5){
+        if(errorStat >= errorSystematic && 1./(errorStat*errorStat) > statsLimit){
             break;
         }
         Edge previousLowEdge = lowEdge;
@@ -338,7 +338,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
         //std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
         //if(errorStat >= errorSystematic && pow(errorStat,-2.)/POTweight >= 500){
-        if(errorStat >= errorSystematic && errorStat <= 0.5){
+        if(errorStat >= errorSystematic && 1./(errorStat*errorStat) > statsLimit){
             break;
         }
         Edge previousUpEdge = upEdge;
@@ -440,7 +440,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         upEdge.ShiftToBin(lowEdge.bin);
         CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
         //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
-        while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
+        while(errorStat > 0.5 || errorStat == TMath::Infinity() || 1./(errorStat*errorStat) <= 0 || TMath::IsNaN(errorStat)){
             upEdge.MoveUp();
             CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
             //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
@@ -448,7 +448,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
 
         CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
         Int_t nIterations = 0;
-        while(errorStat <= errorSystematic){
+        while(errorStat <= errorSystematic || 1./(errorStat*errorStat) < statsLimit){
             for(Int_t i = 0;i<nShifts;i++){
                 upEdge.MoveUp();
             }
@@ -475,7 +475,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
             std::cout << "alpha = " << alpha << " and errorSystematic = " << errorSystematic << std::endl;
             //upEdge.ShiftToBin(lowHighBins.second);
             upEdge.ShiftToBin(GetLowHighBinsFromLowEnd(histFineBinning,lowEdge.edge,3.*nMCStatsMin).second);
-            while(errorSystematic <= errorStat){
+            while(errorSystematic <= errorStat || 1./(errorStat*errorStat) < statsLimit){
             //while(errorSystematic <= errorStat){
                 for(Int_t i = 0;i<nShifts;i++){
                     upEdge.MoveLow();
@@ -589,7 +589,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         lowEdge.ShiftToBin(upEdge.bin);
         CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
         //std::cout << "N = " << pow(errorStat,-2.) << " and errorStat = " << errorStat << std::endl;
-        while(errorStat > 0.5 || errorStat == TMath::Infinity() || pow(errorStat,-2.) <= 0 || TMath::IsNaN(errorStat)){
+        while(errorStat > 0.5 || errorStat == TMath::Infinity() || 1./(errorStat*errorStat) <= 0 || TMath::IsNaN(errorStat)){
         //while(errorStat > 0.5 || errorStat == TMath::Infinity()){
             lowEdge.MoveLow();
             CalculateErrors(histFineBinning,lowEdge,upEdge,sigma,errorStat,errorSystematic,alpha);
@@ -602,7 +602,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         std::cout << "upEdge bin = " << upEdge.bin << std::endl;
 
         Int_t nIterations = 0;
-        while(errorStat <= errorSystematic){
+        while(errorStat <= errorSystematic || 1./(errorStat*errorStat) < statsLimit){
             for(Int_t i = 0;i<nShifts;i++){
                 lowEdge.MoveLow();
             }
@@ -622,7 +622,7 @@ void oneDimResidualsWithSpecialErrorTreatment(const SampleId::SampleEnum &sample
         if(nIterations == 0){
             std::cout << "first attempt to find appropriate binning by increasing the size failed. Attemping to move downwards" << std::endl;
             lowEdge.ShiftToBin(lowHighBins.first);
-            while(errorSystematic <= errorStat){
+            while(errorSystematic <= errorStat || 1./(errorStat*errorStat) < statsLimit){
                 for(Int_t i = 0;i<nShifts;i++){
                     lowEdge.MoveUp();
                 }

@@ -91,6 +91,8 @@ def submit_niwg_weights_mc():
     run6d_nw_mc = make_qsub_niwg_weights_mc(RN.RUN6D, NEUT_6B, RUNTYPE.MC)
     run6e_nw_mc = make_qsub_niwg_weights_mc(RN.RUN6E, NEUT_6B, RUNTYPE.MC)
     run7b_nw_mc = make_qsub_niwg_weights_mc(RN.RUN7B, NEUT_6L, RUNTYPE.MC)
+    run8a_nw_mc = make_qsub_niwg_weights_mc(RN.RUN8A, NEUT_6L, RUNTYPE.MC)
+    run8w_nw_mc = make_qsub_niwg_weights_mc(RN.RUN8W, NEUT_6L, RUNTYPE.MC)
     sand_fhc_nw_mc = make_qsub_niwg_weights_mc(RN.SANDFHC, SAND, RUNTYPE.SAND)
     sand_rhc_nw_mc = make_qsub_niwg_weights_mc(RN.SANDRHC, SAND, RUNTYPE.SAND)
 
@@ -106,6 +108,8 @@ def submit_niwg_weights_mc():
     run6d_nw_mc.run(not ShellCommand.IN_BKG)
     run6e_nw_mc.run(not ShellCommand.IN_BKG)
     run7b_nw_mc.run(not ShellCommand.IN_BKG)
+    run8a_nw_mc.run(not ShellCommand.IN_BKG)
+    run8w_nw_mc.run(not ShellCommand.IN_BKG)
     sand_fhc_nw_mc.run(not ShellCommand.IN_BKG)
     sand_rhc_nw_mc.run(not ShellCommand.IN_BKG)
 

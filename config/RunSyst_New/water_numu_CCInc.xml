@@ -14,11 +14,14 @@
         <comment attr="1D histograms" />
         <comment attr="#***************************************#"/>
 
-        <DRAW_PMU>
+        <DRAW_ENU>
             <value attr="1"/>
+        </DRAW_ENU>
+        <DRAW_PMU>
+            <value attr="0"/>
         </DRAW_PMU>
         <DRAW_COSTHETAMU>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_COSTHETAMU>
         <DRAW_Q2>
             <value attr="0"/>
@@ -58,26 +61,26 @@
         <comment attr="       Apply event + flux weight"         />
         <comment attr="#***************************************#"/>
         <APPLY_FLUX_WEIGHTS>
-            <value attr="1"/>
+            <value attr="0"/>
         </APPLY_FLUX_WEIGHTS>
         <APPLY_EVENT_WEIGHTS>
-            <value attr="1"/>
+            <value attr="0"/>
         </APPLY_EVENT_WEIGHTS>
 
         <comment attr="#***************************************#"/>
         <comment attr="       Draw by category"                  />
         <comment attr="#***************************************#"/>
         <PLOTTOPOLOGY>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTTOPOLOGY>
         <PLOTLEPTONCANDIDATETRUEPDG>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTLEPTONCANDIDATETRUEPDG>
         <PLOTNEUTNUREACTIONCODES>
             <value attr="1"/>
         </PLOTNEUTNUREACTIONCODES>
         <PLOTNEUTCCQELIKEREACTIONCODES>
-            <value attr="1"/>
+            <value attr="0"/>
         </PLOTNEUTCCQELIKEREACTIONCODES>
 
         <comment attr="#***************************************#"/>

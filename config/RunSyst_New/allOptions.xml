@@ -135,11 +135,11 @@
         <comment attr="   set of cuts"                           />
         <comment attr="#***************************************#"/>
         <USE_ADDITIONAL_CUTS>
-            <value attr="0"/>
+            <value attr="1"/>
         </USE_ADDITIONAL_CUTS>
         <ADDITIONAL_CUTS>
             <type attr="String"/>
-            <value attr="None"/>
+            <value attr="(-2969.000000<=tVtxZ&&tVtxZ<=-1264.000000)&&(-836.000000<=tVtxX&&tVtxX<=765.000000)&&(-871.000000<=tVtxY&&tVtxY<=869.000000)&&!(-280000.000000<=tVtxZ&&tVtxZ<=-3500.000000)"/>
         </ADDITIONAL_CUTS>
 
         <comment attr="#***************************************#"/>

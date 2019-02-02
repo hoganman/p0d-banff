@@ -315,6 +315,7 @@ int main(int argc, char** argv){
             std::cout << "Other samples loaded that are NOT P0D only!" << std::endl;
             throw;
         }
+        /*
         nSample = 6;
         SampleMap[SampleId::kP0DWaterNuMuCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC, 2,
                                                                      observables, throwMCStat, throwStat);
@@ -327,6 +328,32 @@ int main(int argc, char** argv){
         SampleMap[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBarInAntiNuModeCC, 2,
                                                                      observables, throwMCStat, throwStat);
         SampleMap[SampleId::kP0DAirNuMuBarInAntiNuModeCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBarInAntiNuModeCC  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        */
+        nSample = 12;
+        SampleMap[SampleId::kP0DWaterNuMuCC1Track] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC1Track, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuCCNTracks] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCCNTracks, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuCC1Track  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuCC1Track  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuCCNTracks  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuCCNTracks  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBkgInAntiNuModeCC1Track, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBkgInAntiNuModeCCNTracks, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBkgInAntiNuModeCC1Track  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBkgInAntiNuModeCCNTracks  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBarInAntiNuModeCC1Track, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBarInAntiNuModeCCNTracks, 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBarInAntiNuModeCC1Track  , 2,
+                                                                     observables, throwMCStat, throwStat);
+        SampleMap[SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBarInAntiNuModeCCNTracks  , 2,
                                                                      observables, throwMCStat, throwStat);
     }
     else{ // ONLY NUE SELECTIONS
@@ -410,8 +437,9 @@ int main(int argc, char** argv){
         outputName = "P0DOnly_Fit_" + outputName;
     }
     if(!DoOnlyNue){
-        if(DoMultiPiRHC) { outputName = "MultiPiRHC_"+outputName;    }
-        else             { outputName = "MultiTrackRHC_"+outputName; }
+        if(DoMultiPiRHC)             { outputName = "MultiPiRHC_"+outputName;    }
+        else if(DoOnlyP0DSelections) { outputName = "MultiTrackP0D_"+outputName;    }
+        else                         { outputName = "MultiTrackRHC_"+outputName; }
     }
     else{ outputName = "ONLY"+outputName; }
 

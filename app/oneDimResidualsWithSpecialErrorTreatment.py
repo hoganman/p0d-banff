@@ -68,7 +68,6 @@ def main(argv):
     angleTag = "Theta"
 
     all_kinematics = [momentum, angle]
-    # all_kinematics = [angle]
 
     samples = ROOT.SampleId()
     defCuts = ROOT.DefineCuts()
@@ -96,6 +95,8 @@ def main(argv):
     numubar_samples = [numubarCC1TrackWater, numubarCCNTracksWater, numubarCC1TrackAir, numubarCCNTracksAir]
     numubkg_samples = [numubkgCC1TrackWater, numubkgCCNTracksWater, numubkgCC1TrackAir, numubkgCCNTracksAir]
     all_samples = numu_samples + numubar_samples + numubkg_samples
+
+    all_samples = numubkg_samples
 
     for kinematic in all_kinematics:
         kinematicTag = momentumTag if momentumTag in kinematic.trueVar else angleTag
