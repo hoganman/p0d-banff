@@ -148,12 +148,21 @@ binLabels[80] = "SK #bar{#nu}_{#mu}, RHC"
 binLabels[91] = "SK #nu_{e}, RHC"
 binLabels[93] = "SK #bar{#nu}_{e}, RHC"
 
-binLabels[100] = "Water Nu FHC"
-binLabels[124] = "Water AntiNu RHC"
-binLabels[148] = "Water Nu Bkg RHC"
-binLabels[172] = "Air Nu FHC"
-binLabels[196] = "Air AntiNu RHC"
-binLabels[220] = "Air Nu Bkg RHC"
+#water
+binLabels[100] = "#nu_{#mu} 1Trk"
+binLabels[119] = "#nu_{#mu} NTrks"
+binLabels[144] = "#bar{#nu}_{#mu} RHC 1Trk"
+binLabels[164] = "#bar{#nu}_{#mu} RHC NTrks"
+binLabels[180] = "#nu_{#mu} RHC 1Trk"
+binLabels[204] = "#nu_{#mu} RHC NTrks"
+
+#air
+binLabels[224] = "#nu_{#mu} 1Trk"
+binLabels[244] = "#nu_{#mu} NTrks"
+binLabels[269] = "#bar{#nu}_{#mu} RHC 1Trk"
+binLabels[289] = "#bar{#nu}_{#mu} RHC NTrks"
+binLabels[305] = "#nu_{#mu} RHC 1Trk"
+binLabels[329] = "#nu_{#mu} RHC NTrks"
 
 # binLabels[100] = "FGD 1 CC-0#pi, FHC"
 # binLabels[143] = "FGD 1 CC-1#pi, FHC"
@@ -249,10 +258,10 @@ histoTypes = ["SK FHC #nu_{#mu} Flux", "ObsNorm P0D Water", "ObsNorm P0D Air", "
 paramRange = []
 if (param_list[FEFQERAW] == 'FSI_INEL_LO'):
     # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
-    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+123],[100+124,FEFQERAW-1],[FEFQERAW,FEFQERAW+5],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 else:
     # paramRange = [[50,60],[100,100+273],[100+274,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
-    paramRange = [[50,60],[100,100+71],[100+72,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
+    paramRange = [[50,60],[100,100+123],[100+124,FEFQERAW-1],[FEFQERAW,FEFQERAW+4],[MAQERAW,MAQERAW+7],[BERPARAW,BERPARAW+4],[CA5RAW,CA5RAW+2]]
 yRange = [[0.80,1.2],[0.5,1.5],[0.5,1.5],[0.0,2.1],[0.5,2.1],[0.5,2.1],[0.5,1.4]]
 
 binLabels[50] = "0, 400 MeV"
