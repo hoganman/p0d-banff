@@ -1,0 +1,13 @@
+Minimum accum level in at leat one of the branches to save the event
+
+ < p0dNumubarInANuModeCCQEAnalysis.MinAccumLevelToSave = 3 >
+
+ --- TruthTree Options ------------
+
+ < p0dNumubarInANuModeCCQEAnalysis.TruthTree.SaveAllNumuCC = 1 >
+
+ --- Corrections ------------
+ < p0dNumubarInANuModeCCQEAnalysis.Corrections.EnableP0DPileUp = 0 >
+
+ --- Systematics ------------
+ < p0dNumubarInANuModeCCQEAnalysis.Weights.EnableOOFV = 0 >
