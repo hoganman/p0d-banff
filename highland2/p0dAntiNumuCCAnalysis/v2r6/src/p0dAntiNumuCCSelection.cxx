@@ -3,7 +3,7 @@
 #include "CutUtils.hxx"
 #include "trackerSelectionUtils.hxx"
 #include "EventBoxUtils.hxx"
-
+#include "p0dNumuCCSelection.hxx"
 
 #include "p0dRatioUtils.hxx"
 #include "p0dRatioClasses.hxx"
@@ -33,8 +33,15 @@ void p0dAntiNumuCCSelection::DefineSteps(){
     AddStep(StepBase::kAction, "find vertex",        new FindVertexAction());  
     AddStep(StepBase::kCut,    "quality+fiducial",   new TrackQualityFiducialCut(),   true);  
     AddStep(StepBase::kCut,    "high momentum",      new TrackHighMomentumCut(),   true);  
-    AddStep(StepBase::kCut,    "P0D muon PID",       new P0DMuonPIDCut(), true);
-    AddStep(StepBase::kCut,    "P0D CC0Pi",          new P0DCC0piCut(), true);
+
+    // Original ///////////////////////////////////////////////////////////////////////////
+    //AddStep(StepBase::kCut,    "P0D muon PID",       new P0DMuonPIDCut(), true);
+    //AddStep(StepBase::kCut,    "P0D CC0Pi",          new P0DCC0piCut(), true);
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
+    AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
+
 
     SetBranchAlias(0,"trunk");
 }
@@ -92,47 +99,27 @@ bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 
   trackerSelUtils::FindLeadingTracks(event, box);
 
-  // For this selection the main track is the HMN track
-  if(_IsAntiNu) box.MainTrack = box.HMPtrack;
-  else box.MainTrack = box.HMNtrack;
+  // For this selection the main track is the HMP track unless studying numu bkg
+  if(_IsAntiNu)
+      box.MainTrack = box.HMPtrack;
+  else
+      box.MainTrack = box.HMNtrack;
 
-  //box.MainTrack = box.HMNtrack;
-  //box.MainTrack = box.HMPtrack;
   return true;
 }
 
 
-//old
 //**************************************************
-//bool FindP0DLeadingTracksAction::Apply(AnaEventB& event, ToyBoxB& boxB) const{
-//**************************************************
-/*
-  // Cast the ToyBox to the appropriate type
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
-
-  // For now, fill using old method because it allows specifying the
-  // detector.  In the future the new cutUtils::FindLeadingTracks
-  // method should check for detector and fill using the appropriate
-  // track groupID
-  trackerSelUtils::FindLeadingTracksOld(event, box, true, SubDetId::kP0D);
-
-  // For this selection the main track is the HMN track
-  //box.MainTrack = box.HMPtrack;
-  box.MainTrack = box.HMNtrack;
-  return true;
-}*/
-//**************************************************
-//bool TrackHighMomentumCut::Apply(AnaEventB& event, ToyBoxB& boxB) const{
 bool TrackHighMomentumCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
   (void)event;
   ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
-  if(!_IsAntiNu) return true;
-  if(box.HMPtrack){
-    if(box.HMPtrack->Momentum>=box.HMtrack->Momentum) return true;
-    else return false;
-  }
-  else return false;
+  if(_IsAntiNu && box.HMPtrack && box.HMPtrack->Momentum >= box.HMtrack->Momentum)
+    return true;
+  else if(box.HMNtrack && box.HMNtrack->Momentum >= box.HMtrack->Momentum)
+    return true;
+  else
+    return false;
 }
 //**************************************************
 bool P0DMuonPIDCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{

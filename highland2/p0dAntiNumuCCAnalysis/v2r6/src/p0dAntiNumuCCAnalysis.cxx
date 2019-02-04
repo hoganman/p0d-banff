@@ -119,7 +119,6 @@ void p0dAntiNumuCCAnalysis::DefineSystematics(){
 
   //P0DELossResolSystematics
 
-                             
 }
 
 //********************************************************************

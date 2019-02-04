@@ -33,7 +33,7 @@ void p0dNumuCCAnalysis::DefineInputConverters(){
 //********************************************************************
 
   baseTrackerAnalysis::DefineInputConverters();
-  
+
 }
 
 //********************************************************************
@@ -72,8 +72,7 @@ void p0dNumuCCAnalysis::DefineSelections(){
 //********************************************************************
 
   // ----- Inclusive CC -----------
-  //sel().AddSelection("kP0DNuMuCCWaterOut",           "inclusive p0dNumuCC selection, water-out",     new p0dAirNumuCCSelection(false));
-  sel().AddSelection("kP0DNuMuCCWaterIn",            "inclusive p0dNumuCC selection, water-in",      new p0dWaterNumuCCSelection(false));
+  sel().AddSelection("kP0DNuMuCC",           "inclusive p0dNumuCC selection",     new p0dNumuCCSelection(false));
 }
 
 //********************************************************************
@@ -126,7 +125,7 @@ void p0dNumuCCAnalysis::DefineConfigurations(){
     Int_t index = (*it)->GetIndex();
     if (index != ConfigurationManager::default_conf && (index != all_syst || !_enableAllSystConfig)) continue;
 
-    if (ND::params().GetParameterI("p0dNumuCCAnalysis.Weights.EnableP0DMass"))  
+    if (ND::params().GetParameterI("p0dNumuCCAnalysis.Weights.EnableP0DMass"))
       conf().EnableEventWeight(kP0dMass, index);
     if (ND::params().GetParameterI("p0dNumuCCAnalysis.Weights.EnableP0DOOFV"))
       conf().EnableEventWeight(kP0dOOFV,index);
@@ -196,7 +195,7 @@ void p0dNumuCCAnalysis::FillMicroTrees(bool addBase){
   // Get some more truelepton info
   if (box().MainTrack){
     if(box().MainTrack->GetTrueParticle()) {
-      AnaTrueVertex *vtx = static_cast<AnaTrueVertex*>(box().MainTrack->GetTrueParticle()->TrueVertex);  
+      AnaTrueVertex *vtx = static_cast<AnaTrueVertex*>(box().MainTrack->GetTrueParticle()->TrueVertex);
       if (vtx) {
         output().FillVectorVarFromArray(truelepton_dir, vtx->LeptonDir,3);
         output().FillVectorVarFromArray(truelepton_pos, vtx->Position, 4);
@@ -261,7 +260,7 @@ void p0dNumuCCAnalysis::FillMicroTrees(bool addBase){
         for (std::vector<AnaP0DReconCluster*>::iterator it = p0dRecoBunch->P0DReconClusters.begin();
              it != p0dRecoBunch->P0DReconClusters.end(); ++it) {
           if ((*it)->AlgorithmName.compare("TP0DTagMuonDecay") == 0 && find(clustersUsed.begin(),clustersUsed.end(),(*it)->UniqueID) == clustersUsed.end() ) {
-            nmichels += 1; 
+            nmichels += 1;
             clustersUsed.push_back((*it)->UniqueID);
           }
         }
@@ -282,8 +281,8 @@ void p0dNumuCCAnalysis::FillMicroTrees(bool addBase){
       output().FillVar(nmichel, nmichels);
     }
     else if (_isUsingReconDirP0DNew) {
-      // Count the number of P0D michel candidates. This is precomputed inside oaAnalysisTreeConverter using the method p0dUtils::GetMichelElectrons  
-      Int_t nmichels = static_cast<AnaEvent*>(_event)->nDelayedClusters;  
+      // Count the number of P0D michel candidates. This is precomputed inside oaAnalysisTreeConverter using the method p0dUtils::GetMichelElectrons
+      Int_t nmichels = static_cast<AnaEvent*>(_event)->nDelayedClusters;
       output().FillVar(nmichel, nmichels);
     }
 
@@ -318,7 +317,7 @@ void p0dNumuCCAnalysis::FillToyVarsInMicroTrees(bool addBase){
 bool p0dNumuCCAnalysis::CheckFillTruthTree(const AnaTrueVertex& vtx){
 //********************************************************************
 
-  bool numuCC=vtx.ReacCode>0 && vtx.ReacCode<30 && vtx.NuPDG==14;// && vtx.LeptonPDG==13;  
+  bool numuCC=vtx.ReacCode>0 && vtx.ReacCode<30 && vtx.NuPDG==14;// && vtx.LeptonPDG==13;
   bool inFV = anaUtils::InFiducialVolume(SubDetId::kP0D, vtx.Position);
   bool onPb = anaUtils::GetTargetCode(&vtx) == 82;
   if (_saveNumuCCOnPb) return ((inFV && numuCC) || (onPb && numuCC));
@@ -332,7 +331,7 @@ void p0dNumuCCAnalysis::FillTruthTree(const AnaTrueVertex& vtx){
   // cannot simply call numuCCAnalysis->FillTruthTree because we need to specify
   // the detector which is different
   baseTrackerAnalysis::FillTruthTreeBase(vtx, SubDetId::kP0D);
-  
+
   // p0dNumuCC variables
   output().FillVar(truep_mom,vtx.ProtonMom);
   output().FillVectorVarFromArray(truep_dir, vtx.ProtonDir,3);
