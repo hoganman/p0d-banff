@@ -1,7 +1,6 @@
 #define T2KDATAMC_CXX
 #include"T2KDataMC.hxx"
 ClassImp(T2KDataMC)
-#include <iostream>
 
 //**************************************************
 void T2KDataMC::Init()

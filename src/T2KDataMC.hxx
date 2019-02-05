@@ -2,7 +2,6 @@
 #define T2KDATAMC_HXX
 
 #include "RunName.hxx"
-#include "TChain.h"
 
 class T2KDataMC : public TObject
 {

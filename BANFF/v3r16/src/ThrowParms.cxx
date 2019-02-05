@@ -4,9 +4,9 @@
 #include <math.h>
 
 #include <ThrowParms.hxx>
-  
+
  ThrowParms::ThrowParms(TVectorD &parms, TMatrixDSym &covm)
- {  
+ {
    npars = parms.GetNrows();
    std::cout << "Number of parameters " << npars << std::endl;
    pvals = new TVectorD(npars);
@@ -24,14 +24,14 @@
    CheloskyDecomp((*chel_dec));
    gauss = new TF1("gauss","1./2./3.14159*TMath::Exp(-0.5*x*x)",-7,7);
  }
-   
+
  ThrowParms::~ThrowParms()
  {
    if(pvals!=NULL)    pvals->Delete();
    if(covar!=NULL)    covar->Delete();
    if(chel_dec!=NULL) chel_dec->Delete();
  }
-   
+
  void ThrowParms::ThrowSet(std::vector<double> &parms)
  {
     if(!parms.empty()) parms.clear();
@@ -59,7 +59,7 @@
    //generated -- it is simply an efficient method.
     double u = 2.*rand.Rndm()-1.;
     double v = 2.*rand.Rndm()-1.;
-       
+
     double s = u*u+v*v;
 
     while(s==0 || s>=1.){
@@ -67,13 +67,13 @@
       v = 2.*rand.Rndm()-1.;
       s = u*u+v*v;
     }
-       
+
     z[0] = u*sqrt(-2.*TMath::Log(s)/s);
     z[1] = v*sqrt(-2.*TMath::Log(s)/s);
     //z[0] = gauss->GetRandom();
     //z[1] = gauss->GetRandom();
  }
-  
+
 void ThrowParms::CheloskyDecomp(TMatrixD &chel_mat){
 
 
@@ -93,4 +93,3 @@ void ThrowParms::CheloskyDecomp(TMatrixD &chel_mat){
    }
 
 }
- 

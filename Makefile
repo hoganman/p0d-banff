@@ -55,7 +55,7 @@ LDOBJFLAGS	= -O -shared -g -Wl,--no-as-needed
 # Create executible
 LDEXEFLAGS 	= -g -Wl,--no-as-needed
 
-ALLCLASSES_CXX :=  src/P0DBANFFInterface.cxx src/RunName.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/HEPConstants.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/AttributeMap.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TotalPOT.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/SampleId.cxx src/DefineCuts.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
+ALLCLASSES_CXX := src/ThrowParams.cxx src/P0DBANFFInterface.cxx src/RunName.cxx src/SampleId.cxx src/TotalPOT.cxx src/DefineCuts.cxx src/HEPConstants.cxx src/T2KDataMC.cxx src/PlottingSelectionInfo.cxx src/PlottingSample.cxx src/XMLTools.cxx src/MakeClSampleSummary.cxx src/MakeClFlatTree.cxx src/AttributeMap.cxx src/BenchmarkProcess.cxx src/Header.cxx src/TN80POT.cxx src/AnalysisBins.cxx src/Samples.cxx src/CanvasCoordinates.cxx src/AnalysisBins2D.cxx src/BANFFPostFit.cxx src/MakeClRunSyst_New.cxx
 ALLCLASSES_HXX := $(ALLCLASSES_CXX:.cxx=.hxx)
 
 # dict.o Object
