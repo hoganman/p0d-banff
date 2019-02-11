@@ -315,21 +315,7 @@ int main(int argc, char** argv){
             std::cout << "Other samples loaded that are NOT P0D only!" << std::endl;
             throw;
         }
-        /*
-        nSample = 6;
-        SampleMap[SampleId::kP0DWaterNuMuCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC, 2,
-                                                                     observables, throwMCStat, throwStat);
-        SampleMap[SampleId::kP0DAirNuMuCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuCC  , 2,
-                                                                     observables, throwMCStat, throwStat);
-        SampleMap[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBkgInAntiNuModeCC, 2,
-                                                                     observables, throwMCStat, throwStat);
-        SampleMap[SampleId::kP0DAirNuMuBkgInAntiNuModeCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBkgInAntiNuModeCC  , 2,
-                                                                     observables, throwMCStat, throwStat);
-        SampleMap[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuBarInAntiNuModeCC, 2,
-                                                                     observables, throwMCStat, throwStat);
-        SampleMap[SampleId::kP0DAirNuMuBarInAntiNuModeCC  ] = new BANFFBinnedSample(SampleId::kP0DAirNuMuBarInAntiNuModeCC  , 2,
-                                                                     observables, throwMCStat, throwStat);
-        */
+
         nSample = 12;
         SampleMap[SampleId::kP0DWaterNuMuCC1Track] = new BANFFBinnedSample(SampleId::kP0DWaterNuMuCC1Track, 2,
                                                                      observables, throwMCStat, throwStat);

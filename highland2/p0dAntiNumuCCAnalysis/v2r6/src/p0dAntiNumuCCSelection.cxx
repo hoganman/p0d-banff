@@ -10,8 +10,6 @@
 
 #include "P0DAnalysisUtils.hxx"
 
-
-
 bool _IsAntiNu;
 
 //********************************************************************
@@ -28,11 +26,11 @@ void p0dAntiNumuCCSelection::DefineSteps(){
     // Cuts must be added in the right order
     // last "true" means the step sequence is broken if cut is not passed (default is "false")
     AddStep(StepBase::kCut,    "event quality",      new EventQualityCut(),           true);
-    AddStep(StepBase::kCut,    "> 0 tracks ",        new TotalMultiplicityCut(),      true);  
-    AddStep(StepBase::kAction, "find leading tracks",new FindP0DLeadingTracksAction());  
-    AddStep(StepBase::kAction, "find vertex",        new FindVertexAction());  
-    AddStep(StepBase::kCut,    "quality+fiducial",   new TrackQualityFiducialCut(),   true);  
-    AddStep(StepBase::kCut,    "high momentum",      new TrackHighMomentumCut(),   true);  
+    AddStep(StepBase::kCut,    "> 0 tracks ",        new TotalMultiplicityCut(),      true);
+    AddStep(StepBase::kAction, "find leading tracks",new FindP0DLeadingTracksAction());
+    AddStep(StepBase::kAction, "find vertex",        new FindVertexAction());
+    AddStep(StepBase::kCut,    "quality+fiducial",   new TrackQualityFiducialCut(),   true);
+    AddStep(StepBase::kCut,    "high momentum",      new TrackHighMomentumCut(),   true);
 
     // Original ///////////////////////////////////////////////////////////////////////////
     //AddStep(StepBase::kCut,    "P0D muon PID",       new P0DMuonPIDCut(), true);
@@ -42,8 +40,20 @@ void p0dAntiNumuCCSelection::DefineSteps(){
     AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
     AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
 
+    //Add a split to the trunk with 2 branches. One for single p0d
+    //selection and the other for multiple. This is necessary to get the
+    //weight systs as ApplyWeightSystematic is only called if a branch
+    //passes.
+    AddSplit(2);
 
-    SetBranchAlias(0,"trunk");
+    // QE selection
+    AddStep(0, StepBase::kCut, "single p0d pid", new SingleP0DPIDCut());
+    // Other selection. Need this additional "cut" or else the selection crashes
+    AddStep(1, StepBase::kCut, "multiple p0d pid", new MultipleP0DPIDCut());
+
+    SetBranchAlias(0,"Single-P0D", 0);
+    SetBranchAlias(1,"Multiple-P0D", 1);
+
 }
 
 //**************************************************
@@ -51,7 +61,7 @@ void p0dAntiNumuCCSelection::DefineSteps(){
 void p0dAntiNumuCCSelection::InitializeEvent(AnaEventC& eventC){
   //**************************************************
 
-  AnaEventB& event = *static_cast<AnaEventB*>(&eventC); 
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventC);
   // Create the appropriate EventBox if it does not exist yet
   if (!event.EventBoxes[EventBoxId::kEventBoxTracker])
     event.EventBoxes[EventBoxId::kEventBoxTracker] = new EventBoxTracker();
@@ -95,7 +105,7 @@ bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
 
   // Cast the ToyBox to the appropriate type
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
 
   trackerSelUtils::FindLeadingTracks(event, box);
 
@@ -113,7 +123,7 @@ bool FindP0DLeadingTracksAction::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 bool TrackHighMomentumCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
   (void)event;
-  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB); 
+  ToyBoxTracker& box = *static_cast<ToyBoxTracker*>(&boxB);
   if(_IsAntiNu && box.HMPtrack && box.HMPtrack->Momentum >= box.HMtrack->Momentum)
     return true;
   else if(box.HMNtrack && box.HMNtrack->Momentum >= box.HMtrack->Momentum)
@@ -121,6 +131,7 @@ bool TrackHighMomentumCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
   else
     return false;
 }
+
 //**************************************************
 bool P0DMuonPIDCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
@@ -141,7 +152,7 @@ bool P0DMuonPIDCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
 bool P0DCC0piCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
 //**************************************************
-    
+
     (void)boxB;
 
     AnaEventB& eventPass = *static_cast<AnaEventB*>(&event);
@@ -150,9 +161,9 @@ bool P0DCC0piCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
     //Int_t nVerts = p0dUtils::GetAllP0DVertices(GetEvent(),p0dVertices);
     Int_t nVerts = p0dUtils::GetAllP0DVertices(eventPass,p0dVertices);
     int TagMichelFill[2];
-    int TagMichelReturn = p0dRatioUtils::TagMichel(p0dVertices, nVerts, TagMichelFill); 
+    int TagMichelReturn = p0dRatioUtils::TagMichel(p0dVertices, nVerts, TagMichelFill);
 
-    //Get charge ratios 
+    //Get charge ratios
     int nTracksForChargeRatio = 4;
 
     p0dRatioPID* RatioPIDOut = new p0dRatioPID[nTracksForChargeRatio];
@@ -169,6 +180,36 @@ bool P0DCC0piCut::Apply(AnaEventC& event, ToyBoxB& boxB) const{
       return false;
     }
 
+}
+
+//**************************************************
+bool SingleP0DPIDCut::Apply(AnaEventC& eventC, ToyBoxB& box) const{
+//**************************************************
+
+  (void)box;
+
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventC);
+
+  // Get all tracks using P0D
+  EventBoxB* EventBox = event.EventBoxes[EventBoxId::kEventBoxTracker];
+  int nP0D=EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithP0D];
+
+  return (nP0D == 1);
+}
+
+//**************************************************
+bool MultipleP0DPIDCut::Apply(AnaEventC& eventC, ToyBoxB& box) const{
+//**************************************************
+
+  (void)box;
+
+  AnaEventB& event = *static_cast<AnaEventB*>(&eventC);
+
+  // Get all tracks using P0D
+  EventBoxB* EventBox = event.EventBoxes[EventBoxId::kEventBoxTracker];
+  int nP0D=EventBox->nRecObjectsInGroup[EventBoxTracker::kTracksWithP0D];
+
+  return (nP0D > 1);
 }
 
 

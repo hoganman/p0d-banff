@@ -69,7 +69,7 @@ ALLOBJS := $(OBJS) $(ROOTDICTS_O)
 # lib%.so Shared library Objects
 ALLLIBS	:= libP0DBANFF.so
 # Executables
-ALLEXES := oneDimResidualsWithSpecialErrorTreatment.exe
+ALLEXES := # oneDimResidualsWithSpecialErrorTreatment.exe
 ##### Rules #####
 
 TGT =  $(ALLOBS) $(ALLLIBS) $(ALLEXES)

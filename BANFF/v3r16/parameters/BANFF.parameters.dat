@@ -143,7 +143,7 @@ trying to fit more toys than the file contains.
 < BANFF.RunFit.NToysToFit = 1 >
 
 The name of the output file to put the fit output into.
-< BANFF.RunFit.OutputFile = Asimov_P0DMultiTrack_run2w_run2a_run5c_run6c_LoadDetParamsButNotFit_2018splines_splinesCapped_siproton_sipion_off_xsec2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
+< BANFF.RunFit.OutputFile = Asimov_P0DMultiTrack_run2-8_LoadDetParamsButNotFit_2018splines_splinesCapped_siproton_sipion_off_xsec2017b_v2_CC1pipriors_Unconstrained_mirror_corrected.root >
 
 Whether to throw MC statistical errors or not when assembling the MC prediction.
 < BANFF.RunFit.ThrowMCStat = 0 >

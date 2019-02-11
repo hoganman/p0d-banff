@@ -12,6 +12,6 @@ source /physics/home/mhogan/software/p0d-banff/p0d-banff/Setup-P0DBANFF.sh
 # source $BANFFROOT/cmt/setup.sh
 ########################################################
 ## THIS IS CORRECT! _all.root is appended to output name
-OUTPUTNAME=ND280Cov_P0Donly
+OUTPUTNAME=ND280Cov_P0DMultiTrackOnly_Redo
 ########################################################
 /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/Linux-x86_64/MakeND280Cov.exe /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/app/ListOfFilesWithNDThrows.txt /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/app/ListofFilesWithNIWGWeights.txt /physics/home/mhogan/software/p0d-banff/p0d-banff/BANFF/v3r16/inputs/$OUTPUTNAME

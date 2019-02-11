@@ -1,9 +1,9 @@
 Minimum accum level in at leat one of the branches to save the event
 
- < p0dAntiNumuCCAnalysis.MinAccumLevelToSave = 3 > 
+ < p0dAntiNumuCCAnalysis.MinAccumLevelToSave = 3 >
 
- // Is anti-neutrino files (0=no 1=yes)
- < p0dAntiNumuCCAnalysis.IsAntiNu = 1 > 
+ // select anti-neutrino (0=numubkg 1=numubar)
+ < p0dAntiNumuCCAnalysis.IsAntiNu = 0 >
 
  < highlandIO.P0DDataClasses.UseReconDirP0DNew            = 0 >               Enable/disable reading the P0DRecon dir and filling the new P0DDataClasses
 
@@ -16,38 +16,38 @@ Minimum accum level in at leat one of the branches to save the event
  --- Corrections ------------
 
 --- Modified Tracker Systematics ------------
- < p0dNumuCCAnalysis.Systematics.EnableTrackerMomentumResol    = 0 >	
- < p0dNumuCCAnalysis.Systematics.EnableTrackerMomentumScale    = 0 >	
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerMomentumResol    = 1 >
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerMomentumScale    = 1 >
 
- < p0dNumuCCAnalysis.Systematics.EnableTrackerChargeConf       = 0 >
- < p0dNumuCCAnalysis.Systematics.EnableTrackerBFieldDistortion       = 0 >
- < p0dNumuCCAnalysis.Systematics.EnableTrackerTPCClusterEff       = 0 >
- < p0dNumuCCAnalysis.Systematics.EnableTrackerTPCTrackEff       = 0 >
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerChargeConf       = 1 >
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerBFieldDistortion       = 1 >
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerTPCClusterEff       = 1 >
+ < p0dNumuCCAnalysis.Systematics.EnableTrackerTPCTrackEff       = 1 >
  < p0dNumuCCAnalysis.Systematics.EnableTrackerTPCPID       = 0 >
 
- 
+
 
 --- P0D-specific systematics --------
- < p0dNumuCCAnalysis.Systematics.EnableP0DMomentumScale = 0 >
- < p0dNumuCCAnalysis.Systematics.EnableP0DMomentumResol = 0 >
+ < p0dNumuCCAnalysis.Systematics.EnableP0DMomentumScale = 1 >
+ < p0dNumuCCAnalysis.Systematics.EnableP0DMomentumResol = 1 >
 
  < p0dNumuCCAnalysis.Systematics.EnableP0DMass = 0 >
  < p0dNumuCCAnalysis.Systematics.UseP0DCentralECal = 0 >
- 
+
  < baseAnalysis.Systematics.NumberOfToys = 1 >
 
  < psycheSystematics.Tracker.UseP0DFV  = 1 >
 
 --- Create configurations with a single systematic ( a configuration for each systematic selected above)
 
- < baseAnalysis.Configurations.EnableSingleVariationSystConfigurations = 0 >
- < baseAnalysis.Configurations.EnableSingleWeightSystConfigurations    = 0 >
+ < baseAnalysis.Configurations.EnableSingleVariationSystConfigurations = 1 >
+ < baseAnalysis.Configurations.EnableSingleWeightSystConfigurations    = 1 >
 
 Enable/disable the configuration with all systematics (or the ones selected above)
 
- < baseAnalysis.Configurations.EnableAllSystematics = 0 >
- 
- Whether to apply a zero variation or the random variation. Zero variation is normally used to apply systematic corrections but not systematic errors. 
+ < baseAnalysis.Configurations.EnableAllSystematics = 1 >
+
+ Whether to apply a zero variation or the random variation. Zero variation is normally used to apply systematic corrections but not systematic errors.
 This will results in the zero_var tree,  the enabled systematics are copied from the "All Systematics" config
 
  < baseAnalysis.Configurations.EnableZeroVarConfiguration = 0 >

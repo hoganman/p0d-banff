@@ -23,106 +23,73 @@ BANFF::BinningDefinition::BinningDefinition(){
   }
   FullToReduMap.clear();
 
-  /*
-  //P0D FHC numuCC-Inclusive
-  int    P0DFHCNumuCCInclusive_Mom_NBin = 8;
-  double P0DFHCNumuCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
-  int    P0DFHCNumuCCInclusive_Det_Mom_NBin = 6;
-  double P0DFHCNumuCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
-
-  int    P0DFHCNumuCCInclusive_Cos_NBin = 5;
-  double P0DFHCNumuCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
-  int    P0DFHCNumuCCInclusive_Det_Cos_NBin = 4;
-  double P0DFHCNumuCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
-
-  //P0D RHC numu BKG CC-Inclusive
-  int    P0DRHCNumuBkgCCInclusive_Mom_NBin = 8;
-  double P0DRHCNumuBkgCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
-  int    P0DRHCNumuBkgCCInclusive_Det_Mom_NBin = 6;
-  double P0DRHCNumuBkgCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
-
-  int    P0DRHCNumuBkgCCInclusive_Cos_NBin = 5;
-  double P0DRHCNumuBkgCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
-  int    P0DRHCNumuBkgCCInclusive_Det_Cos_NBin = 4;
-  double P0DRHCNumuBkgCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
-
-  //P0D RHC numubar CC-Inclusive
-  int    P0DRHCNumubarCCInclusive_Mom_NBin = 8;
-  double P0DRHCNumubarCCInclusive_Mom_Bin[9] = {0, 450, 700, 1100, 1600, 2200, 3000, 5000, 30000};
-  int    P0DRHCNumubarCCInclusive_Det_Mom_NBin = 6;
-  double P0DRHCNumubarCCInclusive_Det_Mom_Bin[7] = {0, 450, 1100, 2200, 3000, 5000, 30000};
-
-  int    P0DRHCNumubarCCInclusive_Cos_NBin = 5;
-  double P0DRHCNumubarCCInclusive_Cos_Bin[6] = {-1.0, +0.5, +0.82, +0.94, +0.986, +1.0};
-  int    P0DRHCNumubarCCInclusive_Det_Cos_NBin = 4;
-  double P0DRHCNumubarCCInclusive_Det_Cos_Bin[5] = {-1.0, +0.5, +0.82, +0.94, +1.0};
-  */
-
   //P0D FHC numu CC 1-track
   int    P0DFHCNumuCC1Tr_Mom_NBin = 8;
-  double P0DFHCNumuCC1Tr_Mom_Bin[9] = {0, 400, 600, 800, 1000, 2500, 4000, 10000, 30000};
+  double P0DFHCNumuCC1Tr_Mom_Bin[9] =     {0, 400, 600, 800, 1000, 2500, 4000, 10000, 30000};
   int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 4;
-  double P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0, 600, 1000, 4000, 30000};
+  double P0DFHCNumuCC1Tr_Det_Mom_Bin[5] = {0,      600,      1000,       4000,        30000};
 
   int    P0DFHCNumuCC1Tr_Cos_NBin = 8;
-  double P0DFHCNumuCC1Tr_Cos_Bin[9] = {-1.0, 0.7, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  double P0DFHCNumuCC1Tr_Cos_Bin[9] =     {-1, 0.7, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1};
   int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 5;
-  double P0DFHCNumuCC1Tr_Det_Cos_Bin[6] = {-1.0, 0.7, 0.85, 0.96, 0.99, 1.0};
+  double P0DFHCNumuCC1Tr_Det_Cos_Bin[6] = {-1, 0.7, 0.85,       0.96,       0.99,        1};
 
   //P0D FHC numu CC N-tracks
-  int    P0DFHCNumuCCnTr_Mom_NBin = 10;
-  double P0DFHCNumuCCnTr_Mom_Bin[11] = {0, 300, 500, 700, 900, 1500, 2500, 4000, 6000, 10000, 30000};
+  int    P0DFHCNumuCCnTr_Mom_NBin = 9;
+  double P0DFHCNumuCCnTr_Mom_Bin[10] =    {0, 500, 700, 900, 1500, 2500, 4000, 6000, 10000, 30000};
   int    P0DFHCNumuCCnTr_Det_Mom_NBin = 5;
-  double    P0DFHCNumuCCnTr_Det_Mom_Bin[6] = {0, 500, 900, 2500, 6000, 30000};
+  double P0DFHCNumuCCnTr_Det_Mom_Bin[6] = {0, 500, 900,            2500,       6000,        30000};
 
   int    P0DFHCNumuCCnTr_Cos_NBin = 8;
-  double P0DFHCNumuCCnTr_Cos_Bin[9] = {-1.0, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1.0};
+  double P0DFHCNumuCCnTr_Cos_Bin[9] =     {-1, 0.7, 0.8, 0.9, 0.95, 0.98, 0.9925, 0.9975, 1};
   int    P0DFHCNumuCCnTr_Det_Cos_NBin = 5;
-  double P0DFHCNumuCCnTr_Det_Cos_Bin[6] = {-1.0, 0.7, 0.8, 0.9, 0.98, 1.0};
+  double P0DFHCNumuCCnTr_Det_Cos_Bin[6] = {-1, 0.7, 0.8, 0.9,       0.98,                 1};
 
   //P0D RHC numubar CC 1-track
-  int    P0DRHCANumuCC1Tr_Mom_NBin = 9;
-  double P0DRHCANumuCC1Tr_Mom_Bin[10] = {0, 500, 700, 900, 1500, 2000, 3000, 5000, 10000, 30000};
-  int    P0DRHCANumuCC1Tr_Det_Mom_NBin = 5;
-  double P0DRHCANumuCC1Tr_Det_Mom_Bin[6] = {0, 700, 1500, 3000, 10000, 30000};
+  int    P0DRHCANumuCC1Tr_Mom_NBin = 8;
+  double P0DRHCANumuCC1Tr_Mom_Bin[9] =     {0, 400, 600, 800, 1000, 2500, 4000, 10000, 30000};
+  int    P0DRHCANumuCC1Tr_Det_Mom_NBin = 4;
+  double P0DRHCANumuCC1Tr_Det_Mom_Bin[5] = {0,      600,      1000,       4000,        30000};
 
   int    P0DRHCANumuCC1Tr_Cos_NBin = 7;
-  double P0DRHCANumuCC1Tr_Cos_Bin[8] = {-1.0, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  double P0DRHCANumuCC1Tr_Cos_Bin[8] =     {-1, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1};
   int    P0DRHCANumuCC1Tr_Det_Cos_NBin = 4;
-  double P0DRHCANumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.96, 0.99, 1.0};
+  double P0DRHCANumuCC1Tr_Det_Cos_Bin[5] = {-1, 0.85,       0.96,       0.99,        1};
 
   //P0D RHC numubar CC N-tracks
   int    P0DRHCANumuCCnTr_Mom_NBin = 8;
-  double P0DRHCANumuCCnTr_Mom_Bin[9] = {0, 500, 700, 900, 1500, 2000, 3000, 5000, 30000};
+  double P0DRHCANumuCCnTr_Mom_Bin[9] =     {0, 500, 700, 900, 1500, 2000, 3000, 5000, 30000};
   int    P0DRHCANumuCCnTr_Det_Mom_NBin = 4;
-  double P0DRHCANumuCCnTr_Det_Mom_Bin[5] = {0, 700, 1500, 3000, 30000};
+  double P0DRHCANumuCCnTr_Det_Mom_Bin[5] = {0,      700,      1500,       3000,       30000};
 
   int    P0DRHCANumuCCnTr_Cos_NBin = 7;
-  double P0DRHCANumuCCnTr_Cos_Bin[8] = {-1.0, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1.0};
+  double P0DRHCANumuCCnTr_Cos_Bin[8] =     {-1, 0.85, 0.92, 0.96, 0.98, 0.99, 0.995, 1};
   int    P0DRHCANumuCCnTr_Det_Cos_NBin = 4;
-  double P0DRHCANumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.85, 0.96, 0.99, 1.0};
+  double P0DRHCANumuCCnTr_Det_Cos_Bin[5] = {-1, 0.85,       0.96,       0.99,        1};
 
   //P0D RHCNumuCC1Tr
   int    P0DRHCNumuCC1Tr_Mom_NBin = 9;
-  double P0DRHCNumuCC1Tr_Mom_Bin[10] = {0, 500, 700, 1000, 1300, 1800, 2600, 4500, 9000, 30000};
+  double P0DRHCNumuCC1Tr_Mom_Bin[10] =    {0, 500, 700, 1000, 1300, 1800, 2600, 4500, 9000, 30000};
   int    P0DRHCNumuCC1Tr_Det_Mom_NBin = 6;
-  double    P0DRHCNumuCC1Tr_Det_Mom_Bin[7] = {0, 700, 1300, 1800, 2600, 9000, 30000};
+  double P0DRHCNumuCC1Tr_Det_Mom_Bin[7] = {0,      700,       1300, 1800, 2600,       9000, 30000};
 
   int    P0DRHCNumuCC1Tr_Cos_NBin = 6;
-  double P0DRHCNumuCC1Tr_Cos_Bin[7] = {-1.0, 0.88, 0.92, 0.95, 0.97, 0.99, 1.0};
+  double P0DRHCNumuCC1Tr_Cos_Bin[7] =     {-1, 0.88, 0.92, 0.95, 0.97, 0.99, 1};
   int    P0DRHCNumuCC1Tr_Det_Cos_NBin = 4;
-  double P0DRHCNumuCC1Tr_Det_Cos_Bin[5] = {-1.0, 0.88, 0.95, 0.99, 1.0};
+  double P0DRHCNumuCC1Tr_Det_Cos_Bin[5] = {-1, 0.88,       0.95,       0.99, 1};
 
   //P0D RHCNumuCCnTr
   int    P0DRHCNumuCCnTr_Mom_NBin = 9;
-  double P0DRHCNumuCCnTr_Mom_Bin[10] = {0, 400, 700, 1000, 1500, 2100, 3400, 6000, 9000, 30000};
+  double P0DRHCNumuCCnTr_Mom_Bin[10] =     {0, 400, 700, 1000, 1500, 2100, 3400, 6000, 9000, 30000};
   int    P0DRHCNumuCCnTr_Det_Mom_NBin = 5;
-  double P0DRHCNumuCCnTr_Det_Mom_Bin[6] = {0, 700, 1500, 2100, 6000, 30000};
+  double P0DRHCNumuCCnTr_Det_Mom_Bin[6] =  {0,      700,       1500, 2100,       6000,       30000};
 
   int    P0DRHCNumuCCnTr_Cos_NBin = 6;
-  double P0DRHCNumuCCnTr_Cos_Bin[7] = {-1.0, 0.86, 0.92, 0.95, 0.97, 0.99, 1.0};
+  double P0DRHCNumuCCnTr_Cos_Bin[7] =     {-1, 0.86, 0.92, 0.95, 0.97, 0.99, 1};
   int    P0DRHCNumuCCnTr_Det_Cos_NBin = 4;
-  double P0DRHCNumuCCnTr_Det_Cos_Bin[5] = {-1.0, 0.86, 0.95, 0.99, 1.0};
+  double P0DRHCNumuCCnTr_Det_Cos_Bin[5] = {-1, 0.86,       0.95,       0.99, 1};
+
+  //END P0D
 
   //FHCNumuCC0Pi
   int    FHCNumuCC0Pi_Mom_NBin = 14;
@@ -489,42 +456,6 @@ BANFF::BinningDefinition::BinningDefinition(){
   //Added by MH
   if(DoOnlyP0D)
   {
-
-    /*
-    // P0D numu FHC
-    bothAxis    [SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin,     P0DFHCNumuCCInclusive_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Cos_NBin,     P0DFHCNumuCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DWaterNuMuCC] = new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
-
-    bothAxis    [SampleId::kP0DAirNuMuCC] =   new TAxis2D(P0DFHCNumuCCInclusive_Mom_NBin,     P0DFHCNumuCCInclusive_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Cos_NBin,     P0DFHCNumuCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuCC] =   new TAxis2D(P0DFHCNumuCCInclusive_Det_Mom_NBin, P0DFHCNumuCCInclusive_Det_Mom_Bin,
-                                                          P0DFHCNumuCCInclusive_Det_Cos_NBin, P0DFHCNumuCCInclusive_Det_Cos_Bin);
-
-    // P0D numu BKG in RHC
-    bothAxis    [SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin, P0DRHCNumuBkgCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin, P0DRHCNumuBkgCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DWaterNuMuBkgInAntiNuModeCC] = new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin, P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin, P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
-
-    bothAxis    [SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Mom_NBin, P0DRHCNumuBkgCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Cos_NBin, P0DRHCNumuBkgCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuBkgInAntiNuModeCC] =   new TAxis2D(P0DRHCNumuBkgCCInclusive_Det_Mom_NBin, P0DRHCNumuBkgCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumuBkgCCInclusive_Det_Cos_NBin, P0DRHCNumuBkgCCInclusive_Det_Cos_Bin);
-
-    // P0D numubar in RHC
-    bothAxis    [SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin, P0DRHCNumubarCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_NBin, P0DRHCNumubarCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DWaterNuMuBarInAntiNuModeCC] = new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin, P0DRHCNumubarCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin, P0DRHCNumubarCCInclusive_Det_Cos_Bin);
-
-    bothAxis    [SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Mom_NBin, P0DRHCNumubarCCInclusive_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Cos_NBin, P0DRHCNumubarCCInclusive_Cos_Bin);
-    bothAxis_Det[SampleId::kP0DAirNuMuBarInAntiNuModeCC] =   new TAxis2D(P0DRHCNumubarCCInclusive_Det_Mom_NBin, P0DRHCNumubarCCInclusive_Det_Mom_Bin,
-                                                                         P0DRHCNumubarCCInclusive_Det_Cos_NBin, P0DRHCNumubarCCInclusive_Det_Cos_Bin);
-
-    */
 
     // P0D numu FHC CC 1-track
     printf("SampleId::kP0DWaterNuMuCC1Track\n");
