@@ -13,6 +13,7 @@ GSL
 MYSQL
 ROOT
 nd280Policy
+BANFF
 ./*/*/v*/Linux-x86_64
 ./*/*/v*/cmt/*sh
 ./*/*/v*/cmt/Make*
@@ -20,11 +21,6 @@ nd280Policy
 ./*/v*/cmt/*sh
 ./*/v*/cmt/Make*
 .syntastic*
-BANFF/v3r16/Linux-x86_64/
-BANFF/v3r16/inputs/*eps
-BANFF/v3r16/inputs/*pdf
-BANFF/v3r16/inputs/*png
-BANFF/v3r16/src/BANFF_version.h
 CVS/
 _ROOT_DICT_*
 app/*pyc

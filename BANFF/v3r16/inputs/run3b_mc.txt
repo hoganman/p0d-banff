@@ -1,1 +1,0 @@
-magnet /physics/home/mhogan/splines/mcp6_Spin_B/neut/run3b-air/Run3b_Air_splines.root

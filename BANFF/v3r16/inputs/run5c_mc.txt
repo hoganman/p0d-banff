@@ -1,1 +1,0 @@
-magnet /physics/home/mhogan/splines/mcp6_Spin_B/neut/run5c-water/Run5c_Water_splines.root

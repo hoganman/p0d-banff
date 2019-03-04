@@ -1,1 +1,0 @@
-/physics/home/mhogan/splines/rdp6_Spin_M/run3c-air/Run3c_Air_data_splines.root
