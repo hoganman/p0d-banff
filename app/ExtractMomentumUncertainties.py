@@ -2,13 +2,12 @@
 
 from __future__ import print_function
 
-from math import sqrt
+# from math import sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 import optparse
 import pandas as pd
 import sys
-from scipy.optimize import curve_fit
 
 
 def gauss(x, *p):
@@ -29,24 +28,25 @@ def main(argv):
         parser.print_help()
         return 0
 
-    # minMomentum = 0.200
-    # maxMomentum = 10.0
-    minMomentum = 0.200
-    maxMomentum = 1.200
-    binSpacing = 0.05
+    maxBootstraps = int(1e4)
+    binSpacing = 0.4
+    minMomentum = 1.6
+    maxMomentum = 5.0
     recoMomBins = np.arange(minMomentum, maxMomentum, binSpacing)
-    gauss_p0 = [50., 1e-8, 0.1]
+    # recoMomBins = np.insert(recoMomBins, 0, 0., axis=0)
 
     dataset = pd.read_csv(options.file)
+    dataset = dataset[dataset.recoP < 30]
+    dataset = dataset[dataset.recoP > 0]
+    dataset = dataset[dataset.recoP/dataset.trueP < 3]
+
     # errors of the dist mean and std
+    mean = np.array([], dtype=np.float)
+    std = np.array([], dtype=np.float)
     bootstrapped_mean = np.array([], dtype=np.float)
     bootstrapped_meanstd = np.array([], dtype=np.float)
     bootstrapped_std = np.array([], dtype=np.float)
     bootstrapped_stdstd = np.array([], dtype=np.float)
-    fit_mean = np.array([], dtype=np.float)
-    fit_meanstd = np.array([], dtype=np.float)
-    fit_std = np.array([], dtype=np.float)
-    fit_stdstd = np.array([], dtype=np.float)
 
     for index in range(len(recoMomBins)-1):
         # get the reco low and high range
@@ -59,53 +59,86 @@ def main(argv):
         MomentumInRange = MomentumInRange[MomentumInRange.recoP <= highMomentum]
         trueMomentumInRange = MomentumInRange.trueP
         recoMomentumInRange = MomentumInRange.recoP
-
         resol = (recoMomentumInRange - trueMomentumInRange) / trueMomentumInRange
 
-        # histogram the resolution to get a gauss fit
-        bin_heights, bin_borders, _ = plt.hist(resol, bins=50, range=(-0.5, 0.5), label='histogram')
-        bin_centers = bin_borders[:-1] + np.diff(bin_borders) / 2
-        errors = np.array([sqrt(x)+1e-8 for x in bin_heights.tolist()])
-        popt, pcov = curve_fit(gauss, bin_centers, bin_heights, p0=gauss_p0, sigma=errors)
-        fit_mean = np.append(fit_mean, popt[1])
-        fit_std = np.append(fit_std, popt[2])
-        fit_meanstd = np.append(fit_meanstd, sqrt(pcov[1, 1]))
-        fit_stdstd = np.append(fit_stdstd, sqrt(pcov[2, 2]+1e-8))
+        mean = np.append(mean, np.mean(resol))
+        std = np.append(std, np.std(resol))
 
         # now examine bootstrapping
         bs_mean = np.array([], dtype=np.float)
         bs_std = np.array([], dtype=np.float)
         # iterate of many times and get a distribution of mean and std
-        for bsIter in range(int(1e5)):
+        for bsIter in range(maxBootstraps):
             sample_idx = np.random.choice(len(resol), size=len(resol), replace=True)
             array_bootstrapped = resol.values
             array_bootstrapped = array_bootstrapped[sample_idx]
             bs_mean = np.append(bs_mean, np.mean(array_bootstrapped))
-            bs_std = np.append(bootstrapped_std, np.std(array_bootstrapped))
+            bs_std = np.append(bs_std, np.std(array_bootstrapped))
+
+        # fig, ax = plt.subplots()
+        # ax.hist(bs_std, bins=50, range=(0.9*min(bs_std), max(bs_std)*1.1))
+        # fig.show()
+        # fig.savefig('bs_std_%5.3f_%5.3f.png' % (lowMomentum, highMomentum))
+        if len(bootstrapped_stdstd) > 0 and np.std(bs_std) > 10 * bootstrapped_stdstd[-1]:
+            print('previous stdstd', bootstrapped_stdstd[-1])
+            print('current stdstd', np.std(array_bootstrapped))
+            print(len(bs_std))
+            for bsIter in range(10*maxBootstraps):
+                sample_idx = np.random.choice(len(resol), size=len(resol), replace=True)
+                array_bootstrapped = resol.values
+                array_bootstrapped = array_bootstrapped[sample_idx]
+                bs_mean = np.append(bs_mean, np.mean(array_bootstrapped))
+                bs_std = np.append(bs_std, np.std(array_bootstrapped))
         # store the mean, std, std of mean, and std of std
         bootstrapped_mean = np.append(bootstrapped_mean, np.mean(bs_mean))
         bootstrapped_meanstd = np.append(bootstrapped_meanstd, np.std(bs_mean))
         bootstrapped_std = np.append(bootstrapped_std, np.mean(bs_std))
         bootstrapped_stdstd = np.append(bootstrapped_stdstd, np.std(bs_std))
 
-    print('fit_mean', fit_mean)
-    print('fit_meanstd', fit_meanstd)
-    print('fit_std', fit_std)
-    print('fit_stdstd', fit_stdstd)
-    print(bootstrapped_mean)
-    print(bootstrapped_meanstd)
-    print(bootstrapped_std)
-    print(bootstrapped_stdstd)
-    fig, axes = plt.subplots(1, 2, sharey=True)
-    axes[0].errorbar(recoMomBins[:-1], fit_mean, xerr=0.5*binSpacing, yerr=fit_meanstd, ls='none')
-    axes[0].errorbar(recoMomBins[:-1], fit_std, xerr=0.5*binSpacing, yerr=fit_stdstd, ls='none')
-    axes[1].errorbar(recoMomBins[:-1], bootstrapped_mean, xerr=0.5*binSpacing, yerr=bootstrapped_meanstd, ls='none')
-    axes[1].errorbar(recoMomBins[:-1], bootstrapped_std, xerr=0.5*binSpacing, yerr=bootstrapped_stdstd, ls='none')
+    print('bootstrapped_mean', bootstrapped_mean)
+    print('bootstrapped_meanstd', bootstrapped_meanstd)
+    print('bootstrapped_std', bootstrapped_std)
+    print('bootstrapped_stdstd', bootstrapped_stdstd)
+    fig0, axes0 = plt.subplots()
+    fig1, axes1 = plt.subplots()
+    fig2, axes2 = plt.subplots()
+    fig3, axes3 = plt.subplots()
+    recoMomBins = recoMomBins[:-1]
+    recoMomBins = recoMomBins + 0.5 * binSpacing
+    linear = np.abs(bootstrapped_mean) + 2. * bootstrapped_std
+    print('total uncertainty', linear*recoMomBins*1000)
+    # fracError_mean = np.abs(bootstrapped_meanstd/(1-bootstrapped_mean))
+    # fracError_std = np.abs(bootstrapped_stdstd/bootstrapped_std)
+    # fracError_total = np.sqrt(fracError_mean*fracError_mean + fracError_std*fracError_std)
+    axes0.errorbar(recoMomBins, bootstrapped_mean*recoMomBins*1000, xerr=0.5*binSpacing, yerr=bootstrapped_meanstd*recoMomBins*1000, ls='none', label='Bias')
+    axes0.errorbar(recoMomBins, bootstrapped_std*recoMomBins*1000, xerr=0.5*binSpacing, yerr=bootstrapped_stdstd*recoMomBins*1000, ls='none', label='Resolution')
+    # axes0.errorbar(recoMomBins, linear*recoMomBins*1000, xerr=0.5*binSpacing, yerr=np.sqrt(4.*bootstrapped_stdstd*bootstrapped_stdstd+bootstrapped_meanstd*bootstrapped_meanstd)*recoMomBins*1000, ls='none', label='|B| + 2R')
+    axes0.set_xlabel('Reco Momentum [GeV/c]')
+    axes0.set_ylabel('Uncertainty [MeV/c]')
+    axes0.legend()
+    axes1.errorbar(recoMomBins, bootstrapped_mean, xerr=0.5*binSpacing, yerr=bootstrapped_meanstd, ls='none', label='Mean')
+    axes1.errorbar(recoMomBins, bootstrapped_std, xerr=0.5*binSpacing, yerr=bootstrapped_stdstd, ls='none', label='stddev')
+    # axes1.errorbar(recoMomBins, linear, xerr=0.5*binSpacing, yerr=np.sqrt(4.*bootstrapped_stdstd*bootstrapped_stdstd+bootstrapped_meanstd*bootstrapped_meanstd), ls='none', label='|B| + 2R')
+    axes1.set_xlabel('Reco Momentum [GeV]')
+    axes1.set_title('Bootstrap')
+    axes1.set_ylabel('Resolution')
+    axes1.legend()
+    axes2.errorbar(recoMomBins, mean, xerr=0.5*binSpacing, ls='none', label='Mean')
+    axes2.errorbar(recoMomBins, std, xerr=0.5*binSpacing, ls='none', label='stddev')
+    axes2.set_xlabel('Reco Momentum [GeV]')
+    axes2.set_title('MC')
+    axes2.set_ylabel('Resolution')
+    axes2.legend()
+
     # x_interval_for_fit = np.linspace(bin_borders[0], bin_borders[-1], 10000)
     # axes.plot(x_interval_for_fit, gauss(x_interval_for_fit, *popt), label='fit')
     # fig.legend()
-    fig.show()
-    fig.savefig('test.png')
+    fig0.show()
+    fig0.savefig('Uncertainty.png')
+    fig1.show()
+    fig1.savefig('Bootstrap.png')
+    fig2.show()
+    fig2.savefig('MC.png')
 
 
 if __name__ == '__main__':

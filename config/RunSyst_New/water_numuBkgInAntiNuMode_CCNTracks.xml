@@ -45,7 +45,7 @@
             <value attr="0"/>
         </DRAW_ENERGY_TRANSFER_NU>
         <DRAW_P0DZ>
-            <value attr="1"/>
+            <value attr="0"/>
         </DRAW_P0DZ>
 
         <comment attr="#***************************************#"/>
@@ -53,7 +53,7 @@
         <comment attr="2D histograms"/>
         <comment attr="#***************************************#"/>
         <DRAW_P0DFIT_PMU_COSTHETAMU>
-            <value attr="0"/>
+            <value attr="1"/>
         </DRAW_P0DFIT_PMU_COSTHETAMU>
         <DRAW_P0DCOV_PMU_COSTHETAMU>
             <value attr="0"/>
