@@ -183,6 +183,7 @@ AnalysisManager::AnalysisManager(){
   _nEventsInDataArray = 0;
   _doFGD1             = true;
   _doFGD2             = false;
+  _main_sel           = -999;
 
 }
 
@@ -713,7 +714,11 @@ bool AnalysisManager::ProcessEvent(AnaEventB& event){
 }
 
 //******************************************************************
-bool AnalysisManager::ProcessEvent(const ToyExperiment& toy, AnaEventB& event, std::vector<Weight_h>& totalWeightSystVector, std::vector<Weight_h>& fluxWeightSystVector, Float_t& POTweight){
+bool AnalysisManager::ProcessEvent(const ToyExperiment& toy,
+    AnaEventB& event,
+    std::vector<Weight_h>& totalWeightSystVector,
+    std::vector<Weight_h>& fluxWeightSystVector,
+    Float_t& POTweight){
 //******************************************************************
 
   /*
@@ -762,11 +767,12 @@ Return value:
   /// Loop over selections
   for (std::vector<SelectionBase*>::iterator it=sel().GetSelections().begin();it!=sel().GetSelections().end();it++){
     SelectionBase& selec = **it;
-    selec.InitializeToy();
     // only enabled selections
     if (!selec.IsEnabled()) continue;
     // check we should apply this selection to this run period
     if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
+
+    selec.InitializeToy();
 
     /// Initialize the Flux Weight Systematic to 1 (in the case it is not applied)
     Weight_h fluxWeightSyst = 1.;
@@ -807,7 +813,13 @@ Return value:
     fluxWeightSystVector.push_back(fluxWeightSyst);
 
     // If any of the selections is passed the overall passed is true
-    if (passed_temp) passed=true;
+    if (passed_temp){
+
+      Int_t isel = selec.GetEnabledIndex();
+      SetSelectedSelection(isel);
+      passed=true;
+
+    }
     selec.FinalizeToy();
   }
 
@@ -828,8 +840,11 @@ Return value:
 
 
 //******************************************************************
-bool AnalysisManager::ProcessEventWithIndividualWeightSyst(const ToyExperiment& toy, AnaEventB& event,
-    Weight_h* WeightSyst, Weight_h& fluxWeightSyst){
+bool AnalysisManager::ProcessEventWithIndividualWeightSyst(
+    const ToyExperiment& toy,
+    AnaEventB& event,
+    Weight_h* WeightSyst,
+    Weight_h& fluxWeightSyst){
 //******************************************************************
   /*
      This Method Process one event. That means:
@@ -867,10 +882,10 @@ Return value:
   /// Loop over selections
   for (std::vector<SelectionBase*>::iterator it=sel().GetSelections().begin();it!=sel().GetSelections().end();it++){
     SelectionBase& selec = **it;
-    selec.InitializeToy();
 
     // only enabled selections
     if (!selec.IsEnabled()) continue;
+
     // check we should apply this selection to this run period
     if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
 
@@ -878,6 +893,9 @@ Return value:
     fluxWeightSyst = 1.;
 
     bool redo;
+
+    selec.InitializeToy();
+
     bool passed_temp = selec.Apply(event,redo);
 
     if (passed_temp && event.GetIsMC()){
@@ -901,7 +919,12 @@ Return value:
       }
 
       // If any of the selections is passed the overall passed is true
-      if (passed_temp) passed=true;
+      if (passed_temp){
+
+        Int_t isel = selec.GetEnabledIndex();
+        SetSelectedSelection(isel);
+        passed=true;
+      }
     }
     selec.FinalizeToy();
 
@@ -969,6 +992,9 @@ Return value:
 
     // only enabled selections
     if (!selec.IsEnabled()) continue;
+
+    selec.InitializeToy();
+
     // check we should apply this selection to this run period
     if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
 
@@ -987,9 +1013,14 @@ Return value:
 
         // only enabled selections
         if (!selec2.IsEnabled()) continue;
+
         // check we should apply this selection to this run period
         if (!CheckSelectionAgainstRunPeriod(*it2, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
+
+        selec.InitializeToy();
         bool passed2 = selec2.Apply(event,redo);
+
+        selec.FinalizeToy();
         if(passed2){
           AnaEventSummaryB* summary = static_cast<AnaEventSummaryB*>(event.Summary);
           std::cerr << "ERROR: - " << selec2.Name() << "  " << SampleId::ConvertSample(summary->EventSample) << std::endl;
@@ -1022,12 +1053,17 @@ Return value:
 
     // If any of the selections is passed the overall passed is true
     if (passed_temp){
+
+      Int_t isel = selec.GetEnabledIndex();
+      SetSelectedSelection(isel);
       if(_StrictExclusiveness)
         passed = true;
       else
         return true;
 
     }
+
+    selec.FinalizeToy();
 
   }
   return passed;
@@ -1063,12 +1099,25 @@ Return value:
     SelectionBase& selec = **it;
     // only enabled selections
     if (!selec.IsEnabled()) continue;
+
+    selec.InitializeToy();
+
     if (!CheckSelectionAgainstRunPeriod(*it, anaUtils::GetRunPeriod(static_cast<AnaEventB*>(&event)->EventInfo.Run))) continue;
 
     /// Apply the selection
     bool redo;
     if (selec.Apply(event, redo)) passed=true;
+
+    if (passed){
+    Int_t isel = selec.GetEnabledIndex();
+    SetSelectedSelection(isel);
+
+    }
+    selec.FinalizeToy();
+
   }
+
+
 
   // computes the POT normalization for the current event
   if (_currentSampleGroup){
@@ -1245,7 +1294,7 @@ AnaSuperEventB* AnalysisManager::GetNextSuperEvent(){
 
 //******************************************************************
 AnaEventB* AnalysisManager::GetNextEvent(){
-  //******************************************************************
+//******************************************************************
 
   AnaSuperEventB* sevent = GetNextSuperEvent();
   if (sevent){
@@ -1258,7 +1307,7 @@ AnaEventB* AnalysisManager::GetNextEvent(){
 
 //******************************************************************
 AnaSuperEventB* AnalysisManager::LoadSuperEvent(Long64_t& entry){
-  //******************************************************************
+//******************************************************************
   // Fill the event structure for the current event
   if (!_input.LoadEvent(entry,true)) return NULL;
 
@@ -1275,7 +1324,7 @@ AnaSuperEventB* AnalysisManager::LoadSuperEvent(Long64_t& entry){
 
 //******************************************************************
 AnaEventB* AnalysisManager::GetEvent(Int_t evtIndex){
-  //******************************************************************
+//******************************************************************
 
   AnaSuperEventB* sevent = GetSuperEvent(evtIndex);
   if (sevent) return static_cast<AnaEventB*>(sevent->Event);
@@ -1603,5 +1652,83 @@ bool AnalysisManager::CheckSelectionAgainstRunPeriod(SelectionBase* selec, int R
   return selec->IsValidRun(RunPeriod);
 }
 
+
+//******************************************************************
+void AnalysisManager::DumpVariationSystematics(bool detailed){
+//******************************************************************
+
+  if (!detailed){
+    syst().DumpVariationSystematics();
+    return;
+  }
+
+  int nVariationSystematics;
+
+  EventVariationBase** variationSystematics = syst().GetVariationSystematics(nVariationSystematics);
+
+  std::cout << " \n -------- List of VariationSystematics ------------ " << std::endl;
+  char out[256];
+  sprintf(out,"%3s: %-25s %-15s %-4s", "#", "name", "pdf", "NPar");
+  std::cout << out << "\n" << std::endl;
+
+
+  Int_t j=0;
+  for (int it = 0; it < nVariationSystematics; it++) {
+    if (variationSystematics[it]->IsEnabled()){
+      sprintf(out,"%3d: %-25s %-15s %-4d", j, variationSystematics[it]->Name().c_str(),
+          variationSystematics[it]->ConvertPDF().c_str(),
+          variationSystematics[it]->GetNParameters());
+      std::cout << out << std::endl;
+      if (dynamic_cast<BinnedParams*>(variationSystematics[it]))
+        dynamic_cast<BinnedParams*>(variationSystematics[it])->Print();
+      else
+        variationSystematics[it]->Print();
+      j++;
+    }
+  }
+  std::cout << " -------------------------------------------------- \n " << std::endl;
+
+  return;
+
+}
+
+//******************************************************************
+void AnalysisManager::DumpWeightSystematics(bool detailed){
+//******************************************************************
+
+  if (!detailed){
+    syst().DumpWeightSystematics();
+    return;
+  }
+
+
+  int nWeightSystematics;
+
+  EventWeightBase** weightSystematics = syst().GetWeightSystematics(nWeightSystematics);
+
+  std::cout << " \n -------- List of WeightSystematics ------------ " << std::endl;
+  char out[256];
+  sprintf(out,"%3s: %-25s %-15s %-4s", "#", "name", "pdf", "NPar");
+  std::cout << out << "\n" << std::endl;
+
+
+  Int_t j=0;
+  for (int it = 0; it < nWeightSystematics; it++) {
+    if (weightSystematics[it]->IsEnabled()){
+      sprintf(out,"%3d: %-25s %-15s %-4d", j, weightSystematics[it]->Name().c_str(),
+          weightSystematics[it]->ConvertPDF().c_str(),
+          weightSystematics[it]->GetNParameters());
+      std::cout << out << std::endl;
+      if (dynamic_cast<BinnedParams*>(weightSystematics[it]))
+        dynamic_cast<BinnedParams*>(weightSystematics[it])->Print();
+      else
+        weightSystematics[it]->Print();
+      j++;
+    }
+  }
+  std::cout << " -------------------------------------------------- \n " << std::endl;
+
+  return;
+}
 
 

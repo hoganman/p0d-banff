@@ -49,6 +49,9 @@
         <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
             <value attr="0"/>
         </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+        <DRAW_MOMENTUM_SMEARING>
+            <value attr="1"/>
+        </DRAW_MOMENTUM_SMEARING>
 
         <comment attr="#***************************************#"/>
         <comment attr="          Option only for 2D"             />

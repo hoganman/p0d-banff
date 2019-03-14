@@ -47,8 +47,8 @@ def main(argv):
 
 def submit_spline_jobs():
     """submits the MC and data spline jobs"""
-    submit_spline_data()
     submit_spline_mc()
+    submit_spline_data()
 
 
 def make_qsub_spline_mc(run_name, production, data_type):

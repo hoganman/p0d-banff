@@ -85,6 +85,9 @@ public:
   void InvertMatrix();
   void Usage();
   std::vector<UInt_t> ParseCommaSeparatedValueString(std::string str);
+
+  TMatrixTSym<Double_t>* GetCorrelationMatrix(){return _correlation_matrix;}
+
 private:
 
   /// The random seed used

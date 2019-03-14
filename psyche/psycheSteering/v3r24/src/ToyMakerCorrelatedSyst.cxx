@@ -7,16 +7,17 @@ const double kSmallNumber = 0.00000001;
 
 
 //********************************************
-ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicManager& systs):ToyMaker(),
-                                                                                            _seed(seed),
-                                                                                            _RandomGenerator(new TRandom3(_seed)),
-                                                                                            _mat_size(0),
-                                                                                            _correlation_matrix(NULL),
-                                                                                            _inverted_correlation_matrix(NULL),
-                                                                                            _file_name(""),
-                                                                                            _xml_engine(new TXMLEngine()),
-                                                                                            _xml_input_file(NULL){
-  //********************************************
+ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicManager& systs)
+    :ToyMaker(),
+    _seed(seed),
+    _RandomGenerator(new TRandom3(_seed)),
+    _mat_size(0),
+    _correlation_matrix(NULL),
+    _inverted_correlation_matrix(NULL),
+    _file_name(""),
+    _xml_engine(new TXMLEngine()),
+    _xml_input_file(NULL){
+//********************************************
 
   _systematic_vector = systs.GetEnabledSystematics();
   _mat_size = 0;
@@ -46,20 +47,17 @@ ToyMakerCorrelatedSyst::ToyMakerCorrelatedSyst(unsigned int seed, SystematicMana
     for(std::vector<SystematicBase*>::iterator it = _systematic_vector.begin();
         it != _systematic_vector.end(); ++it){
       for(UInt_t i=0; i<(*it)->GetNParameters(); ++i){
-        //        if(_map_systematic_param[SystematicParameter((SystId::SystEnum)(*it)->GetIndex(),i)] == ind)
-          //          std::cout << "Index " << ind << ": " << SystId::ConvertSystematic((SystId::SystEnum)(*it)->GetIndex()) << "  param " << i << std::endl;
+        //    if(_map_systematic_param[SystematicParameter((SystId::SystEnum)(*it)->GetIndex(),i)] == ind)
+        //      std::cout << "Index " << ind << ": " << SystId::ConvertSystematic((SystId::SystEnum)(*it)->GetIndex()) << "  param " << i << std::endl;
       }
     }
   }
-
-
-
 };
 
 
 //********************************************
 ToyMakerCorrelatedSyst::~ToyMakerCorrelatedSyst(){
-  //********************************************
+//********************************************
 
   if(_correlation_matrix)          delete _correlation_matrix;
   if(_inverted_correlation_matrix) delete _inverted_correlation_matrix;
@@ -77,7 +75,7 @@ ToyMakerCorrelatedSyst::~ToyMakerCorrelatedSyst(){
 
 //********************************************
 void ToyMakerCorrelatedSyst::InvertMatrix(){
-  //********************************************
+//********************************************
 
   TMatrixTSym<double> *smallercorr = new TMatrixTSym<double>(_correlation_matrix->GetNrows());
 
@@ -131,7 +129,7 @@ void ToyMakerCorrelatedSyst::InvertMatrix(){
 
 //********************************************
 void ToyMakerCorrelatedSyst::Usage() {
-  //********************************************
+//********************************************
 
   std::cout << "To use the ToyMakerCorrelatedSyst, you have to call (at least)!" << std::endl;
   std::cout << "ToyMakerCorrelatedSyst tm(seed)" << std::endl;
@@ -212,22 +210,38 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
       if(TypeOfCorr == "WithItself"){
         std::cout << "Correlating " << SystematicName1 << " with itself" << std::endl;
         syst2 = syst1;
-      }else{
+      }
+      else{
         syst2 = SystId::GetSystematic(TypeOfCorr);
         std::cout << "Correlating " << SystematicName1 << " with " << TypeOfCorr <<  "(" << SystId::ConvertSystematic(syst2) << ")" << std::endl;
       }
+
+
+      // Check that the systematic is switched on
+      std::map<SystId::SystEnum, SystematicBase*>::iterator it1 = _map_systematic.find(syst1);
+      std::map<SystId::SystEnum, SystematicBase*>::iterator it2 = _map_systematic.find(syst2);
+      if(it1 == _map_systematic.end() || it2 == _map_systematic.end()){
+        std::cout << "Systematic ID = " << syst1 << " or " << syst2 << " is not enabled, so skip correlations for that systematic" << std::endl;
+        TypeOfCorrNode = _xml_engine->GetNext(TypeOfCorrNode);
+        continue;
+      }
+
+
       XMLAttrPointer_t attr = _xml_engine->GetFirstAttr(TypeOfCorrNode);
+      //std::cout << "Before loop " << std::endl;
       while(attr != NULL){
         std::string TheCorr  = _xml_engine->GetAttrName(attr);
 
-        if      (TheCorr == "AllParams" || TheCorr == ""){
+        if(TheCorr == "AllParams" || TheCorr == ""){
+          std::cout << "Correlating all systematics " << syst1 << std::endl;
           CorrelateSystematic(_map_systematic[syst1],_map_systematic[syst2]);
 
-        }else if(TheCorr == "Diag"){
+        }
+        else if(TheCorr == "Diag"){
           CorrelateDiagonalOfSystematic(_map_systematic[syst1], _map_systematic[syst2]);
 
-        }else{ //these ones need atribute values!
-
+        }
+        else{ //these ones need attribute values!
           std::string ValueStr = _xml_engine->GetAttrValue(attr);
           std::vector<UInt_t> Values = ParseCommaSeparatedValueString(ValueStr);
 
@@ -237,34 +251,31 @@ void ToyMakerCorrelatedSyst::ParseInputXMLFileAndCreateCorrelation() {
               throw;
             }
             CorrelateParametersSystematic(_map_systematic[syst1], Values[0], _map_systematic[syst2], Values[1]);
-
-          }else if(TheCorr == "UncorFromSystParam"){
+          }
+          else if(TheCorr == "UncorFromSystParam"){
             if(Values.size() != 2){
               std::cerr << "you need 2 values for uncorrelating a param in the systematic (param1, param2)" << std::endl;
               throw;
             }
             UnCorrelateParametersSystematic(_map_systematic[syst1], Values[0], _map_systematic[syst2], Values[1]);
-          }else if(TheCorr == "Block"){
+          }
+          else if(TheCorr == "Block"){
             if(Values.size() != 3){
               std::cerr << "you need 3 values for correlating a block in the systematic (size, position1, position2)" << std::endl;
               throw;
             }
             CorrelateParametersBlockSystematic(_map_systematic[syst1], _map_systematic[syst2], Values[0], Values[1], Values[2]);
-
-          }else if(TheCorr == "BlockParam"){
+          }
+          else if(TheCorr == "BlockParam"){
             if(Values.size() != 3){
               std::cerr << "you need 3 values for correlating a block to a parameter in the systematic (size, position1, param)" << std::endl;
               throw;
             }
             CorrelateParametersBlockToParamSystematic(_map_systematic[syst1], _map_systematic[syst2], Values[0], Values[1], Values[2]);
-
-
-
           }
-
-          attr = _xml_engine->GetNextAttr(attr);
         }
-      }
+        attr = _xml_engine->GetNextAttr(attr);
+       }
 
       TypeOfCorrNode = _xml_engine->GetNext(TypeOfCorrNode);
 
@@ -290,13 +301,13 @@ void ToyMakerCorrelatedSyst::CreateInputXMLParameterFileFromCov(){
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateParametersBlockSystematic(SystematicBase* syst1, SystematicBase* syst2,
-                                                                UInt_t size, UInt_t param1, UInt_t param2){
+    UInt_t size, UInt_t param1, UInt_t param2){
 //********************************************
   if(size + param1 > syst1->GetNParameters() ||
-     size + param2 > syst2->GetNParameters()){
+      size + param2 > syst2->GetNParameters()){
     std::cerr << "ERROR: Systematics size " << syst1->Name() << " and " << syst2->Name()
-              << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
-              << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
+      << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
+      << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
     std::cerr << "ERROR: Exiting" << std::endl;
     throw;
   }
@@ -311,14 +322,14 @@ void ToyMakerCorrelatedSyst::CorrelateParametersBlockSystematic(SystematicBase* 
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateParametersBlockToParamSystematic(SystematicBase* syst1, SystematicBase* syst2,
-                                                                       UInt_t size, UInt_t param1, UInt_t param2){
+    UInt_t size, UInt_t param1, UInt_t param2){
 //********************************************
 
   if(size + param1 >  syst1->GetNParameters() ||
-     param2 > syst2->GetNParameters()){
+      param2 > syst2->GetNParameters()){
     std::cerr << "ERROR: Systematics size " << syst1->Name() << " and " << syst2->Name()
-              << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
-              << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
+      << " (" << syst1->GetNParameters()<<", "<< syst2->GetNParameters()
+      << ") is smaller than the block you want ot correlate (" << size+param1 << ", " << size+param2 << ")" << std::endl;
     std::cerr << "ERROR: Exiting" << std::endl;
     throw;
   }
@@ -345,7 +356,7 @@ void ToyMakerCorrelatedSyst::CorrelateParametersBlockToParamSystematic(Systemati
 
 //********************************************
 void ToyMakerCorrelatedSyst::FillCorrelationInMatrix(unsigned int i, unsigned int j){
-  //********************************************
+//********************************************
 
   (*_correlation_matrix)[i][j] = 1.;
   (*_correlation_matrix)[j][i] = 1.;
@@ -355,7 +366,7 @@ void ToyMakerCorrelatedSyst::FillCorrelationInMatrix(unsigned int i, unsigned in
 
 //********************************************
 void ToyMakerCorrelatedSyst::DeCorrelateInMatrix(unsigned int i, unsigned int j){
-  //********************************************
+//********************************************
 
   if(i == j)(*_correlation_matrix)[i][j] = 1. + kSmallNumber;
   else{
@@ -368,11 +379,11 @@ void ToyMakerCorrelatedSyst::DeCorrelateInMatrix(unsigned int i, unsigned int j)
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateSystematic(SystematicBase* syst1, SystematicBase* syst2){
-  //********************************************
+//********************************************
 
   if(syst1->GetNParameters() != syst2->GetNParameters()){
     std::cerr << "WARNING: you are trying to correlate " <<syst1->Name() << " to " << syst2->Name()
-              << " which don't have the same number of parameters (" << syst1->GetNParameters() << " and" << syst2->GetNParameters() << ")" << std::endl;
+      << " which don't have the same number of parameters (" << syst1->GetNParameters() << " and" << syst2->GetNParameters() << ")" << std::endl;
     std::cerr << "WARNING: To get a invertible matrix, all the parameters of each systematic need to be correlated together." << std::endl;
     std::cerr << "WARNING: Correlating all the parameters of " << syst1->Name() << " and " << syst2->Name() << std::endl;
     CorrelateAllParametersInSystematic(syst1);
@@ -393,13 +404,12 @@ void ToyMakerCorrelatedSyst::CorrelateSystematic(SystematicBase* syst1, Systemat
       }
     }
   }
-
 };
 
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateDiagonalOfSystematic(SystematicBase* syst1, SystematicBase* syst2){
-  //********************************************
+//********************************************
 
   if(syst1->GetNParameters() != syst2->GetNParameters()){
     std::cerr << "ERROR: you can't correlate the diagonal of 2 systematics if they don't have the same number of parameters:" << std::endl;
@@ -420,7 +430,7 @@ void ToyMakerCorrelatedSyst::CorrelateDiagonalOfSystematic(SystematicBase* syst1
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateAllParametersInSystematic(SystematicBase* syst){
-  //********************************************
+//********************************************
 
   for(UInt_t i=0; i<syst->GetNParameters(); ++i){
     for(UInt_t j=0; j<syst->GetNParameters(); ++j){
@@ -435,7 +445,7 @@ void ToyMakerCorrelatedSyst::CorrelateAllParametersInSystematic(SystematicBase* 
 
 //********************************************
 void ToyMakerCorrelatedSyst::CorrelateParametersSystematic(SystematicBase* syst1, UInt_t param1, SystematicBase* syst2, UInt_t param2){
-  //********************************************
+//********************************************
 
   UInt_t index1 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst1->GetIndex(),param1)];
   UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),param2)];
@@ -448,7 +458,7 @@ void ToyMakerCorrelatedSyst::CorrelateParametersSystematic(SystematicBase* syst1
 
 //********************************************
 void ToyMakerCorrelatedSyst::UnCorrelateParametersSystematic(SystematicBase* syst1, UInt_t param1, SystematicBase* syst2, UInt_t param2){
-  //********************************************
+//********************************************
 
   UInt_t index1 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst1->GetIndex(),param1)];
   UInt_t index2 = _map_systematic_param[SystematicParameter((SystId::SystEnum)syst2->GetIndex(),param2)];
