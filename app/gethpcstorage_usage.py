@@ -140,7 +140,7 @@ and last recorded usage')
                       default=60,  # in seconds
                       help='The time in seconds between checking usage')
     parser.add_option('-l', '--load', dest='load',
-                      default=1.0,  # in processes / cpus
+                      default=0.7,  # in processes / cpus
                       help='The normalized load (N procs/CPUs) to wait for')
     parser.add_option('-q', '--quit', dest='quit',
                       action='store_true', default=False,

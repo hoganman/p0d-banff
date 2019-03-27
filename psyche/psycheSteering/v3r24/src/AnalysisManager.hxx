@@ -113,6 +113,17 @@ public:
   /// Returns the number of entries in the input tree
   UInt_t GetEntries();
 
+  /// Set the main selection
+  void SetSelectedSelection(Int_t sel){
+    _main_sel = sel;
+  }
+
+  /// Get the main selection
+  SelectionBase* GetSelectedSelection(){
+    return _sel.GetSelection(_main_sel);
+  }
+
+
 
   /// Method to load a given single event, without pre-loading.
   /// Fill the raw AnaEventB structure.
@@ -157,6 +168,16 @@ public:
 
   /// Return the number of preloaded events
   UInt_t GetNPreloadedEvents() const {return _nEventsInArray;}
+
+
+  /// Dump the variation systematics
+  /// A parameter to check whether to do full dump with the bins as well
+  void DumpVariationSystematics(bool detailed = false);
+
+  /// Dump the weight systematics
+  /// A parameter to check whether to do full dump with the bins as well
+  void DumpWeightSystematics(bool detailed = false);
+
 
 protected:
 
@@ -247,6 +268,10 @@ protected:
 
   /// Wether you want to check at every event if all the selection are exclusive
   bool _StrictExclusiveness;
+
+  /// The "main" selection that was passed and hence will define the variables
+  /// filling
+  Int_t _main_sel;
 
 };
 

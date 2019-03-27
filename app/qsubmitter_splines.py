@@ -26,7 +26,7 @@ inOptions = {
 }
 
 
-SECONDS_BTN_QSUB = 16
+SECONDS_BTN_QSUB = 5
 csuhpc = -1
 isMC, isSand, isData = False, False, False
 queueTag = '$' 
@@ -34,6 +34,7 @@ T2KREWEIGHT = os.getenv('T2KREWEIGHT')
 BIN = '/physics/INSTALLATION/bin'
 BASE = os.getenv('P0DBANFFROOT')
 MACROS = '%s/macros' % (BASE)
+# GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2018_newIndex.exe' %(BASE)
 GENWEIGHTS = '%s/T2KReWeight/app/genWeightsFromNRooTracker_BANFF_2018.exe' %(BASE)
 ROOT = subprocess.Popen(['which','root'],stdout=subprocess.PIPE).communicate()[0].split('\n')[0]+' -l -q -b'
 CMTPATH = os.getenv('CMTPATH')
