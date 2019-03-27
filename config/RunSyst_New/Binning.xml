@@ -72,8 +72,8 @@
         </TN328CosTheta>
         <P0DFitMomentum>
             <comment> Testing P Fit binning </comment>
-            <binEdges attr="0, 500, 900, 1250, 1600, 2000, 3000, 8000, 30000" />
-            <nBinEdges attr="9" />
+            <binEdges attr="0, 300, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 4000, 5500, 30000" />
+            <nBinEdges attr="15" />
             <uniformWidth attr="0"/>
             <units attr="MeV/c"/>
         </P0DFitMomentum>
@@ -86,8 +86,8 @@
         </P0DCovMomentum>
         <P0DFitCosTheta>
             <comment> Testing Theta Fit binning </comment>
-            <binEdges attr="-1, 0.8, 0.89, 0.95, 0.97, 0.99, 1."/>
-            <nBinEdges attr="7" />
+            <binEdges attr="-1, 0.7, 0.8 , 0.88, 0.94, 0.96, 0.975, 0.99, 1."/>
+            <nBinEdges attr="9" />
             <uniformWidth attr="0"/>
             <units attr="cos(#theta)"/>
         </P0DFitCosTheta>

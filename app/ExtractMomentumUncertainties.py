@@ -10,13 +10,6 @@ import pandas as pd
 import sys
 
 
-def gauss(x, *p):
-    """Create a function which returns a Gaussian"""
-    norm, mean, sigma = p
-    y = norm * np.exp(-0.5 * (x - mean) * (x - mean) / (sigma * sigma))
-    return y
-
-
 def main(argv):
     parser = optparse.OptionParser()
     parser.add_option('-f', '--file', dest='file',
@@ -29,9 +22,9 @@ def main(argv):
         return 0
 
     maxBootstraps = int(1e4)
-    binSpacing = 0.4
-    minMomentum = 1.6
-    maxMomentum = 5.0
+    binSpacing = 0.05
+    minMomentum = 0.2
+    maxMomentum = 1.25
     recoMomBins = np.arange(minMomentum, maxMomentum, binSpacing)
     # recoMomBins = np.insert(recoMomBins, 0, 0., axis=0)
 
@@ -114,7 +107,7 @@ def main(argv):
     axes0.errorbar(recoMomBins, bootstrapped_std*recoMomBins*1000, xerr=0.5*binSpacing, yerr=bootstrapped_stdstd*recoMomBins*1000, ls='none', label='Resolution')
     # axes0.errorbar(recoMomBins, linear*recoMomBins*1000, xerr=0.5*binSpacing, yerr=np.sqrt(4.*bootstrapped_stdstd*bootstrapped_stdstd+bootstrapped_meanstd*bootstrapped_meanstd)*recoMomBins*1000, ls='none', label='|B| + 2R')
     axes0.set_xlabel('Reco Momentum [GeV/c]')
-    axes0.set_ylabel('Uncertainty [MeV/c]')
+    axes0.set_ylabel('Momentum Uncertainty [MeV/c]')
     axes0.legend()
     axes1.errorbar(recoMomBins, bootstrapped_mean, xerr=0.5*binSpacing, yerr=bootstrapped_meanstd, ls='none', label='Mean')
     axes1.errorbar(recoMomBins, bootstrapped_std, xerr=0.5*binSpacing, yerr=bootstrapped_stdstd, ls='none', label='stddev')

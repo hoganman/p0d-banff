@@ -22,10 +22,10 @@ def main(argv):
         return 0
 
     degtorad = math.pi/180
-    maxBootstraps = int(1e4)
-    binSpacing = 5  # degrees
+    maxBootstraps = int(2e4)
+    binSpacing = 2  # degrees
     minAngle = 0
-    maxAngle = 50
+    maxAngle = 66
     recoAngBins = np.arange(minAngle, maxAngle, binSpacing)
 
     dataset = pd.read_csv(options.file)
@@ -123,13 +123,13 @@ def main(argv):
     # axes1.errorbar(recoAngBins, bootstrapped_std+abs(bootstrapped_mean-recoAngBins), xerr=0.5*binSpacing, yerr=np.sqrt(bootstrapped_stdstd*bootstrapped_stdstd+bootstrapped_meanstd*bootstrapped_meanstd), ls='none', label='Total')
     axes1.set_title('Bootstrap')
     axes1.set_xlabel('Reco theta')
-    axes1.set_ylabel('Reco theta')
+    axes1.set_ylabel('Uncertainty [degrees]')
     axes1.legend()
     axes2.errorbar(recoAngBins, mean-recoAngBins, xerr=0.5*binSpacing, ls='none', label='Mean')
     axes2.errorbar(recoAngBins, std, xerr=0.5*binSpacing, ls='none', label='stddev')
     axes2.set_title('MC')
     axes2.set_xlabel('Reco theta')
-    axes2.set_ylabel('Uncertainty theta')
+    axes2.set_ylabel('Uncertainty [degrees]')
     axes2.legend()
 
     fig0.show()
