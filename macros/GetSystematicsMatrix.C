@@ -1,11 +1,13 @@
-#include "TH1F.h"
+#include "TH1D.h"
 #include "TH2F.h"
 #include "TVectorT.h"
 #include "TFile.h"
 #include "TMath.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TF1.h"
 #include "TLine.h"
+#include "TDirectoryFile.h"
 
 Int_t GetGlobalBin(TH2F* variance, Int_t startBin, Int_t binx, Int_t biny);
 Bool_t IsEqualAbs(Double_t v1, Double_t v2, Double_t delta=0.0001);
@@ -47,12 +49,15 @@ struct binning_t
 void GetSystematicsMatrix(std::string inputfilename)
 {
     const Int_t nUniverse = 2000;
+    const Int_t nMinBinsForVariations = 250;
+    const UInt_t nBinning = 6;
     TFile* inputfile = TFile::Open(inputfilename.c_str());
     TH2F* Total_Covariance_Matrix = static_cast<TH2F*>(inputfile->Get("Total_Covariance_Matrix"));
-    TH1F* Nominal = static_cast<TH1F*>(inputfile->Get("Nominal"));
+    TH1D* Nominal = static_cast<TH1D*>(inputfile->Get("Nominal"));
+    TH1D* Varied_Mean = static_cast<TH1D*>(inputfile->Get("Varied_Mean"));
     TVectorT<double>* Mean_Value = static_cast< TVectorT<double>* >(inputfile->Get("Mean_Value"));
+    TDirectoryFile* BinVariations = static_cast<TDirectoryFile*>(inputfile->Get("BinVariations"));
 
-    const UInt_t nBinning = 6;
     struct binning_t all_binning[nBinning];
 
     //P0D FHC numu CC 1-track
@@ -128,17 +133,16 @@ void GetSystematicsMatrix(std::string inputfilename)
     const struct binning_t P0DRHCNumuCC1Tr("P0DRHCNumuCC1Tr", "RHC #nu_{#mu} CC 1-Track", P0DRHCNumuCC1Tr_Mom_NBin, P0DRHCNumuCC1Tr_Mom_Bin, P0DRHCNumuCC1Tr_Det_Mom_NBin, P0DRHCNumuCC1Tr_Det_Mom_Bin, P0DRHCNumuCC1Tr_Cos_NBin, P0DRHCNumuCC1Tr_Cos_Bin, P0DRHCNumuCC1Tr_Det_Cos_NBin, P0DRHCNumuCC1Tr_Det_Cos_Bin);
     const struct binning_t P0DRHCNumuCCnTr("P0DRHCNumuCCnTr", "RHC #nu_{#mu} CC n-Tracks", P0DRHCNumuCCnTr_Mom_NBin, P0DRHCNumuCCnTr_Mom_Bin, P0DRHCNumuCCnTr_Det_Mom_NBin, P0DRHCNumuCCnTr_Det_Mom_Bin, P0DRHCNumuCCnTr_Cos_NBin, P0DRHCNumuCCnTr_Cos_Bin, P0DRHCNumuCCnTr_Det_Cos_NBin, P0DRHCNumuCCnTr_Det_Cos_Bin);
     UInt_t nSamples = 0;
-    all_binning[nSamples++] = P0DFHCNumuCC1Tr;
-    all_binning[nSamples++] = P0DFHCNumuCCnTr;
-    all_binning[nSamples++] = P0DRHCANumuCC1Tr;
-    all_binning[nSamples++] = P0DRHCANumuCCnTr;
-    all_binning[nSamples++] = P0DRHCNumuCC1Tr;
-    all_binning[nSamples++] = P0DRHCNumuCCnTr;
+    //all_binning[nSamples++] = P0DFHCNumuCC1Tr;
+    //all_binning[nSamples++] = P0DFHCNumuCCnTr;
+    //all_binning[nSamples++] = P0DRHCANumuCC1Tr;
+    //all_binning[nSamples++] = P0DRHCANumuCCnTr;
+    //all_binning[nSamples++] = P0DRHCNumuCC1Tr;
+    //all_binning[nSamples++] = P0DRHCNumuCCnTr;
 
 
     TLegend* legend = new TLegend(0.25, 0.91, 0.75, 0.975, "");
-    int startbin = 1;
-    //for(UInt_t binning_index = 0; binning_index < nBinning; ++binning_index)
+    int startbin = 1;//Total_Covariance_Matrix->GetXaxis()->GetNbins()/2;
     for(UInt_t binning_index = 0; binning_index < nSamples; ++binning_index)
     {
         canvas = new TCanvas("canvas", "", 1200, 500);
@@ -264,12 +268,62 @@ void GetSystematicsMatrix(std::string inputfilename)
         }
 
         startbin += nBinsX * nBinsY;
-        interface.SaveCanvasAs(canvas, binning.name);
+        //interface.SaveCanvasAs(canvas, binning.name);
         delete pth_mean;
         delete pth_fracerror;
         delete canvas;
 
     }
+
+    TFile* newfile = new TFile("spreads.root", "RECREATE");
+    newfile->cd();
+    for(Int_t bin = startbin;  bin <= Total_Covariance_Matrix->GetNbinsX(); ++bin)
+    {
+        canvas = new TCanvas(TString::Format("Bin_%d_NEvent_Spread", bin), "", 800, 600);
+        TCanvas* BinVariation = static_cast<TCanvas*>(BinVariations->Get(TString::Format("Bin_%d_NEvent_Spread", bin)));
+        TH1D* BinVariation_Hist = static_cast<TH1D*>(BinVariation->GetPrimitive(TString::Format("Bin_%d_NEvent_Spread_Hist", bin)));
+        TH1D* BinVariation_clone = new TH1D("BinVariation_Hist", "", BinVariation_Hist->GetNbinsX(), BinVariation_Hist->GetBinLowEdge(1), BinVariation_Hist->GetXaxis()->GetBinUpEdge(BinVariation_Hist->GetNbinsX()));
+        for(Int_t clonebin = 1; clonebin <= BinVariation_clone->GetNbinsX(); ++clonebin)
+        {
+            BinVariation_clone->SetBinContent(clonebin, BinVariation_Hist->GetBinContent(clonebin));
+        }
+
+        Int_t modulus = 2;
+        while(BinVariation_clone->GetNbinsX() > nMinBinsForVariations)
+        {
+            if(BinVariation_clone->GetNbinsX() % modulus == 0)
+            {
+                BinVariation_clone->Rebin(modulus);
+            }
+            else
+            {
+                ++modulus;
+            }
+        }
+        BinVariation_clone->SetMaximum(1.1*BinVariation_clone->GetMaximum());
+        BinVariation_clone->SetMinimum(0.9*BinVariation_clone->GetMinimum());
+        const Double_t nominalValue = Nominal->GetBinContent(bin);
+
+        TF1 *covariance_gauss = new TF1("covariance_gauss", "gaus", BinVariation_clone->GetBinLowEdge(1), BinVariation_clone->GetXaxis()->GetBinUpEdge(BinVariation_clone->GetNbinsX()));
+        TF1 *fit_gauss = new TF1("fit_gauss", "gaus", BinVariation_clone->GetBinLowEdge(1), BinVariation_clone->GetXaxis()->GetBinUpEdge(BinVariation_clone->GetNbinsX()));
+        //covariance_gauss->SetParameter(0, 10 * BinVariation_clone->Integral() / (sqrt(TMath::Pi()*2.)*sqrt(Total_Covariance_Matrix->GetBinContent(bin,bin))*Nominal->GetBinContent(bin)));
+        fit_gauss->SetParameters(10 * BinVariation_clone->Integral(), Varied_Mean->GetBinContent(bin), sqrt(Total_Covariance_Matrix->GetBinContent(bin,bin))*Nominal->GetBinContent(bin));
+        canvas->cd();
+        BinVariation_clone->Fit(fit_gauss, "", "");
+        covariance_gauss->SetParameter(0, fit_gauss->GetParameter(0));
+        covariance_gauss->FixParameter(1, Nominal->GetBinContent(bin));
+        covariance_gauss->FixParameter(2, sqrt(Total_Covariance_Matrix->GetBinContent(bin,bin))*Nominal->GetBinContent(bin));
+        BinVariation_clone->Draw("E0");
+        covariance_gauss->Draw("SAME");
+        fit_gauss->Draw("SAME");
+        canvas->Write();
+        delete fit_gauss;
+        delete covariance_gauss;
+        delete BinVariation_clone;
+        delete canvas;
+    }
+    newfile->Write();
+    newfile->Close();
 
 }
 
