@@ -61,88 +61,158 @@ void GetSystematicsMatrix(std::string inputfilename)
     struct binning_t all_binning[nBinning];
 
     //P0D FHC numu CC 1-track
-    int    P0DFHCNumuCC1Tr_Mom_NBin = 14;
-    double P0DFHCNumuCC1Tr_Mom_Bin[15] =     {0, 300, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 4000, 5500, 30000};
     int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 10;
     double P0DFHCNumuCC1Tr_Det_Mom_Bin[11] = {0, 300, 400, 600, 800, 1250, 2000, 3000, 4000, 5500, 30000};
+    int    P0DFHCNumuCC1Tr_Det_New_Mom_NBin = 9;
+    double P0DFHCNumuCC1Tr_Det_New_Mom_Bin[10] = {0, 400, 600, 800, 1250, 2000, 3000, 4000, 5500, 30000};
 
-    int    P0DFHCNumuCC1Tr_Cos_NBin = 8;
-    double P0DFHCNumuCC1Tr_Cos_Bin[9] =     {-1, 0.7, 0.8 , 0.88, 0.94, 0.96, 0.975, 0.99, 1.};
     int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 6;
-    double P0DFHCNumuCC1Tr_Det_Cos_Bin[7] = {-1, 0.7, 0.8 ,0.94, 0.975, 0.99, 1.};
+    double P0DFHCNumuCC1Tr_Det_Cos_Bin[7] =   {-1, 0.7, 0.8 ,0.94, 0.975, 0.99, 1.};
+    int    P0DFHCNumuCC1Tr_Det_New_Cos_NBin =6;
+    double P0DFHCNumuCC1Tr_Det_New_Cos_Bin[7] = {-1, 0.7, 0.8 ,0.94, 0.975, 0.99, 1.};
 
     //P0D FHC numu CC N-tracks
-    int    P0DFHCNumuCCnTr_Mom_NBin = 15;
-    double P0DFHCNumuCCnTr_Mom_Bin[16] =     {0, 400, 500, 600, 700, 800, 1000, 1200, 1500, 1800, 2200, 2700, 3500, 5000, 10000, 30000};
     int    P0DFHCNumuCCnTr_Det_Mom_NBin = 8;
     double P0DFHCNumuCCnTr_Det_Mom_Bin[9] = {0, 400, 600, 800, 1200, 2200, 3500, 10000, 30000};
+    int    P0DFHCNumuCCnTr_Det_New_Mom_NBin = 8;
+    double P0DFHCNumuCCnTr_Det_New_Mom_Bin[9] ={0, 400, 600, 800, 1200, 2200, 3500, 10000, 30000};
 
-    int    P0DFHCNumuCCnTr_Cos_NBin = 8;
-    double P0DFHCNumuCCnTr_Cos_Bin[9] =     {-1, 0.65, 0.77, 0.85, 0.9, 0.94, 0.97, 0.99, 1.};
     int    P0DFHCNumuCCnTr_Det_Cos_NBin = 6;
     double P0DFHCNumuCCnTr_Det_Cos_Bin[7] = {-1, 0.65, 0.77, 0.85, 0.9, 0.97, 1.};
+    int    P0DFHCNumuCCnTr_Det_New_Cos_NBin =5;
+    double P0DFHCNumuCCnTr_Det_New_Cos_Bin[6] ={-1, 0.77, 0.85, 0.9, 0.97, 1.};
 
     //P0D RHC numubar CC 1-track
-    int    P0DRHCANumuCC1Tr_Mom_NBin = 11;
-    double P0DRHCANumuCC1Tr_Mom_Bin[12] =     {0, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 30000};
     int    P0DRHCANumuCC1Tr_Det_Mom_NBin = 8;
     double P0DRHCANumuCC1Tr_Det_Mom_Bin[9] = {0, 400, 500, 600, 800, 1250, 2000, 3000, 30000};
+    int    P0DRHCANumuCC1Tr_Det_New_Mom_NBin = 7;
+    double P0DRHCANumuCC1Tr_Det_New_Mom_Bin[8] ={0, 500, 600, 800, 1250, 2000, 3000, 30000};
 
-    int    P0DRHCANumuCC1Tr_Cos_NBin = 8;
-    double P0DRHCANumuCC1Tr_Cos_Bin[9] =     {-1, 0.82, 0.87, 0.9, 0.93, 0.95, 0.97, 0.99, 1.};
     int    P0DRHCANumuCC1Tr_Det_Cos_NBin = 5;
     double P0DRHCANumuCC1Tr_Det_Cos_Bin[6] = {-1, 0.82, 0.9, 0.95, 0.99, 1.};
+    int    P0DRHCANumuCC1Tr_Det_New_Cos_NBin =5;
+    double P0DRHCANumuCC1Tr_Det_New_Cos_Bin[6] ={-1, 0.82, 0.9, 0.95, 0.99, 1.};
 
     //P0D RHC numubar CC N-tracks
-    int    P0DRHCANumuCCnTr_Mom_NBin = 8;
-    double P0DRHCANumuCCnTr_Mom_Bin[9] =     {0, 500, 900, 1250, 1600, 2000, 3000, 8000, 30000};
     int    P0DRHCANumuCCnTr_Det_Mom_NBin = 8;
     double P0DRHCANumuCCnTr_Det_Mom_Bin[9] = {0, 500, 900, 1250, 1600, 2000, 3000, 8000, 30000};
+    int    P0DRHCANumuCCnTr_Det_New_Mom_NBin = 6;
+    double P0DRHCANumuCCnTr_Det_New_Mom_Bin[7] ={0, 500, 900, 1250, 1600, 3000, 30000};
 
-    int    P0DRHCANumuCCnTr_Cos_NBin = 6;
-    double P0DRHCANumuCCnTr_Cos_Bin[7] =     {-1, 0.8, 0.89, 0.95, 0.97, 0.99, 1.};
     int    P0DRHCANumuCCnTr_Det_Cos_NBin = 6;
     double P0DRHCANumuCCnTr_Det_Cos_Bin[7] = {-1, 0.8, 0.89, 0.95, 0.97, 0.99, 1.};
+    int    P0DRHCANumuCCnTr_Det_New_Cos_NBin =5;
+    double P0DRHCANumuCCnTr_Det_New_Cos_Bin[6] ={-1, 0.89, 0.95, 0.97, 0.99, 1.};
 
     //P0D RHCNumuCC1Tr
-    int    P0DRHCNumuCC1Tr_Mom_NBin = 6;
-    double P0DRHCNumuCC1Tr_Mom_Bin[7] =     {0, 400, 600, 800, 1100, 2000, 10000};
     int    P0DRHCNumuCC1Tr_Det_Mom_NBin = 6;
     double P0DRHCNumuCC1Tr_Det_Mom_Bin[7] = {0, 400, 600, 800, 1100, 2000, 10000};
+    int    P0DRHCNumuCC1Tr_Det_New_Mom_NBin =6;
+    double P0DRHCNumuCC1Tr_Det_New_Mom_Bin[7] ={0, 400, 600, 800, 1100, 2000, 10000};
 
-    int    P0DRHCNumuCC1Tr_Cos_NBin = 9;
-    double P0DRHCNumuCC1Tr_Cos_Bin[10] =     {-1, 0.78, 0.84, 0.89, 0.92, 0.95, 0.97, 0.98, 0.99, 1.0};
     int    P0DRHCNumuCC1Tr_Det_Cos_NBin = 7;
     double P0DRHCNumuCC1Tr_Det_Cos_Bin[8] = {-1, 0.78, 0.84, 0.92, 0.95, 0.98, 0.99, 1.0};
+    int    P0DRHCNumuCC1Tr_Det_New_Cos_NBin =7;
+    double P0DRHCNumuCC1Tr_Det_New_Cos_Bin[8] ={-1, 0.78, 0.84, 0.92, 0.95, 0.98, 0.99, 1.0};
 
     //P0D RHCNumuCCnTr
-    int    P0DRHCNumuCCnTr_Mom_NBin = 8;
-    double P0DRHCNumuCCnTr_Mom_Bin[9] =     {0, 400, 600, 800, 1000, 1500, 2000, 3000, 10000};
     int    P0DRHCNumuCCnTr_Det_Mom_NBin = 7;
     double P0DRHCNumuCCnTr_Det_Mom_Bin[8] = {0, 400, 600, 1000, 1500, 2000, 3000, 10000};
+    int    P0DRHCNumuCCnTr_Det_New_Mom_NBin =5;
+    double P0DRHCNumuCCnTr_Det_New_Mom_Bin[6] ={0, 600, 1000, 1500, 2000, 10000};
 
-    int    P0DRHCNumuCCnTr_Cos_NBin = 9;
-    double P0DRHCNumuCCnTr_Cos_Bin[10] =     {-1, 0.7, 0.8, 0.85, 0.9, 0.94, 0.965, 0.98, 0.99, 1.0};
     int    P0DRHCNumuCCnTr_Det_Cos_NBin = 7;
     double P0DRHCNumuCCnTr_Det_Cos_Bin[8] = {-1, 0.7, 0.8, 0.85, 0.94, 0.98, 0.99, 1.0};
+    int    P0DRHCNumuCCnTr_Det_New_Cos_NBin =7;
+    double P0DRHCNumuCCnTr_Det_New_Cos_Bin[8] ={-1, 0.7, 0.8, 0.85, 0.94, 0.98, 0.99, 1.0};
 
-    const struct binning_t P0DFHCNumuCC1Tr ("P0DFHCNumuCC1Tr", "FHC #nu_{#mu} CC 1-Track", P0DFHCNumuCC1Tr_Mom_NBin, P0DFHCNumuCC1Tr_Mom_Bin, P0DFHCNumuCC1Tr_Det_Mom_NBin, P0DFHCNumuCC1Tr_Det_Mom_Bin, P0DFHCNumuCC1Tr_Cos_NBin, P0DFHCNumuCC1Tr_Cos_Bin, P0DFHCNumuCC1Tr_Det_Cos_NBin, P0DFHCNumuCC1Tr_Det_Cos_Bin);
-    const struct binning_t P0DFHCNumuCCnTr ("P0DFHCNumuCCnTr", "FHC #nu_{#mu} CC n-Tracks", P0DFHCNumuCCnTr_Mom_NBin, P0DFHCNumuCCnTr_Mom_Bin, P0DFHCNumuCCnTr_Det_Mom_NBin, P0DFHCNumuCCnTr_Det_Mom_Bin, P0DFHCNumuCCnTr_Cos_NBin, P0DFHCNumuCCnTr_Cos_Bin, P0DFHCNumuCCnTr_Det_Cos_NBin, P0DFHCNumuCCnTr_Det_Cos_Bin);
-    const struct binning_t P0DRHCANumuCC1Tr("P0DRHCANumuCC1Tr", "RHC #bar{#nu}_{#mu} CC 1-Track", P0DRHCANumuCC1Tr_Mom_NBin, P0DRHCANumuCC1Tr_Mom_Bin, P0DRHCANumuCC1Tr_Det_Mom_NBin, P0DRHCANumuCC1Tr_Det_Mom_Bin, P0DRHCANumuCC1Tr_Cos_NBin, P0DRHCANumuCC1Tr_Cos_Bin, P0DRHCANumuCC1Tr_Det_Cos_NBin, P0DRHCANumuCC1Tr_Det_Cos_Bin);
-    const struct binning_t P0DRHCANumuCCnTr("P0DRHCANumuCCnTr", "RHC #bar{#nu}_{#mu} CC n-Tracks", P0DRHCANumuCCnTr_Mom_NBin, P0DRHCANumuCCnTr_Mom_Bin, P0DRHCANumuCCnTr_Det_Mom_NBin, P0DRHCANumuCCnTr_Det_Mom_Bin, P0DRHCANumuCCnTr_Cos_NBin, P0DRHCANumuCCnTr_Cos_Bin, P0DRHCANumuCCnTr_Det_Cos_NBin, P0DRHCANumuCCnTr_Det_Cos_Bin);
-    const struct binning_t P0DRHCNumuCC1Tr("P0DRHCNumuCC1Tr", "RHC #nu_{#mu} CC 1-Track", P0DRHCNumuCC1Tr_Mom_NBin, P0DRHCNumuCC1Tr_Mom_Bin, P0DRHCNumuCC1Tr_Det_Mom_NBin, P0DRHCNumuCC1Tr_Det_Mom_Bin, P0DRHCNumuCC1Tr_Cos_NBin, P0DRHCNumuCC1Tr_Cos_Bin, P0DRHCNumuCC1Tr_Det_Cos_NBin, P0DRHCNumuCC1Tr_Det_Cos_Bin);
-    const struct binning_t P0DRHCNumuCCnTr("P0DRHCNumuCCnTr", "RHC #nu_{#mu} CC n-Tracks", P0DRHCNumuCCnTr_Mom_NBin, P0DRHCNumuCCnTr_Mom_Bin, P0DRHCNumuCCnTr_Det_Mom_NBin, P0DRHCNumuCCnTr_Det_Mom_Bin, P0DRHCNumuCCnTr_Cos_NBin, P0DRHCNumuCCnTr_Cos_Bin, P0DRHCNumuCCnTr_Det_Cos_NBin, P0DRHCNumuCCnTr_Det_Cos_Bin);
+    /*
+    //P0D FHC numu CC 1-track
+    int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 14;
+    double P0DFHCNumuCC1Tr_Det_Mom_Bin[15] =     {0, 300, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 4000, 5500, 30000};
+    int    P0DFHCNumuCC1Tr_Det_New_Mom_NBin = 10;
+    double P0DFHCNumuCC1Tr_Det_New_Mom_Bin[11] = {0, 300, 400, 600, 800, 1250, 2000, 3000, 4000, 5500, 30000};
+
+    int    P0DFHCNumuCC1Tr_Det_Cos_NBin = 8;
+    double P0DFHCNumuCC1Tr_Det_Cos_Bin[9] =     {-1, 0.7, 0.8 , 0.88, 0.94, 0.96, 0.975, 0.99, 1.};
+    int    P0DFHCNumuCC1Tr_Det_New_Cos_NBin = 6;
+    double P0DFHCNumuCC1Tr_Det_New_Cos_Bin[7] = {-1, 0.7, 0.8 ,0.94, 0.975, 0.99, 1.};
+
+    //P0D FHC numu CC N-tracks
+    int    P0DFHCNumuCCnTr_Det_Mom_NBin = 15;
+    double P0DFHCNumuCCnTr_Det_Mom_Bin[16] =     {0, 400, 500, 600, 700, 800, 1000, 1200, 1500, 1800, 2200, 2700, 3500, 5000, 10000, 30000};
+    int    P0DFHCNumuCCnTr_Det_New_Mom_NBin = 8;
+    double P0DFHCNumuCCnTr_Det_New_Mom_Bin[9] = {0, 400, 600, 800, 1200, 2200, 3500, 10000, 30000};
+
+    int    P0DFHCNumuCCnTr_Det_Cos_NBin = 8;
+    double P0DFHCNumuCCnTr_Det_Cos_Bin[9] =     {-1, 0.65, 0.77, 0.85, 0.9, 0.94, 0.97, 0.99, 1.};
+    int    P0DFHCNumuCCnTr_Det_New_Cos_NBin = 6;
+    double P0DFHCNumuCCnTr_Det_New_Cos_Bin[7] = {-1, 0.65, 0.77, 0.85, 0.9, 0.97, 1.};
+
+    //P0D RHC numubar CC 1-track
+    int    P0DRHCANumuCC1Tr_Det_Mom_NBin = 11;
+    double P0DRHCANumuCC1Tr_Det_Mom_Bin[12] =     {0, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 30000};
+    int    P0DRHCANumuCC1Tr_Det_New_Mom_NBin = 8;
+    double P0DRHCANumuCC1Tr_Det_New_Mom_Bin[9] = {0, 400, 500, 600, 800, 1250, 2000, 3000, 30000};
+
+    int    P0DRHCANumuCC1Tr_Det_Cos_NBin = 8;
+    double P0DRHCANumuCC1Tr_Det_Cos_Bin[9] =     {-1, 0.82, 0.87, 0.9, 0.93, 0.95, 0.97, 0.99, 1.};
+    int    P0DRHCANumuCC1Tr_Det_New_Cos_NBin = 5;
+    double P0DRHCANumuCC1Tr_Det_New_Cos_Bin[6] = {-1, 0.82, 0.9, 0.95, 0.99, 1.};
+
+    //P0D RHC numubar CC N-tracks
+    int    P0DRHCANumuCCnTr_Det_Mom_NBin = 8;
+    double P0DRHCANumuCCnTr_Det_Mom_Bin[9] =     {0, 500, 900, 1250, 1600, 2000, 3000, 8000, 30000};
+    int    P0DRHCANumuCCnTr_Det_New_Mom_NBin = 8;
+    double P0DRHCANumuCCnTr_Det_New_Mom_Bin[9] = {0, 500, 900, 1250, 1600, 2000, 3000, 8000, 30000};
+
+    int    P0DRHCANumuCCnTr_Det_Cos_NBin = 6;
+    double P0DRHCANumuCCnTr_Det_Cos_Bin[7] =     {-1, 0.8, 0.89, 0.95, 0.97, 0.99, 1.};
+    int    P0DRHCANumuCCnTr_Det_New_Cos_NBin = 6;
+    double P0DRHCANumuCCnTr_Det_New_Cos_Bin[7] = {-1, 0.8, 0.89, 0.95, 0.97, 0.99, 1.};
+
+    //P0D RHCNumuCC1Tr
+    int    P0DRHCNumuCC1Tr_Det_Mom_NBin = 6;
+    double P0DRHCNumuCC1Tr_Det_Mom_Bin[7] =     {0, 400, 600, 800, 1100, 2000, 10000};
+    int    P0DRHCNumuCC1Tr_Det_New_Mom_NBin = 6;
+    double P0DRHCNumuCC1Tr_Det_New_Mom_Bin[7] = {0, 400, 600, 800, 1100, 2000, 10000};
+
+    int    P0DRHCNumuCC1Tr_Det_Cos_NBin = 9;
+    double P0DRHCNumuCC1Tr_Det_Cos_Bin[10] =     {-1, 0.78, 0.84, 0.89, 0.92, 0.95, 0.97, 0.98, 0.99, 1.0};
+    int    P0DRHCNumuCC1Tr_Det_New_Cos_NBin = 7;
+    double P0DRHCNumuCC1Tr_Det_New_Cos_Bin[8] = {-1, 0.78, 0.84, 0.92, 0.95, 0.98, 0.99, 1.0};
+
+    //P0D RHCNumuCCnTr
+    int    P0DRHCNumuCCnTr_Det_Mom_NBin = 8;
+    double P0DRHCNumuCCnTr_Det_Mom_Bin[9] =     {0, 400, 600, 800, 1000, 1500, 2000, 3000, 10000};
+    int    P0DRHCNumuCCnTr_Det_New_Mom_NBin = 7;
+    double P0DRHCNumuCCnTr_Det_New_Mom_Bin[8] = {0, 400, 600, 1000, 1500, 2000, 3000, 10000};
+
+    int    P0DRHCNumuCCnTr_Det_Cos_NBin = 9;
+    double P0DRHCNumuCCnTr_Det_Cos_Bin[10] =     {-1, 0.7, 0.8, 0.85, 0.9, 0.94, 0.965, 0.98, 0.99, 1.0};
+    int    P0DRHCNumuCCnTr_Det_New_Cos_NBin = 7;
+    double P0DRHCNumuCCnTr_Det_New_Cos_Bin[8] = {-1, 0.7, 0.8, 0.85, 0.94, 0.98, 0.99, 1.0};
+    */
+
+    const struct binning_t P0DFHCNumuCC1Tr ("P0DFHCNumuCC1Tr", "FHC #nu_{#mu} CC 1-Track", P0DFHCNumuCC1Tr_Det_Mom_NBin, P0DFHCNumuCC1Tr_Det_Mom_Bin, P0DFHCNumuCC1Tr_Det_New_Mom_NBin, P0DFHCNumuCC1Tr_Det_New_Mom_Bin, P0DFHCNumuCC1Tr_Det_Cos_NBin, P0DFHCNumuCC1Tr_Det_Cos_Bin, P0DFHCNumuCC1Tr_Det_New_Cos_NBin, P0DFHCNumuCC1Tr_Det_New_Cos_Bin);
+    const struct binning_t P0DFHCNumuCCnTr ("P0DFHCNumuCCnTr", "FHC #nu_{#mu} CC n-Tracks", P0DFHCNumuCCnTr_Det_Mom_NBin, P0DFHCNumuCCnTr_Det_Mom_Bin, P0DFHCNumuCCnTr_Det_New_Mom_NBin, P0DFHCNumuCCnTr_Det_New_Mom_Bin, P0DFHCNumuCCnTr_Det_Cos_NBin, P0DFHCNumuCCnTr_Det_Cos_Bin, P0DFHCNumuCCnTr_Det_New_Cos_NBin, P0DFHCNumuCCnTr_Det_New_Cos_Bin);
+    const struct binning_t P0DRHCANumuCC1Tr("P0DRHCANumuCC1Tr", "RHC #bar{#nu}_{#mu} CC 1-Track", P0DRHCANumuCC1Tr_Det_Mom_NBin, P0DRHCANumuCC1Tr_Det_Mom_Bin, P0DRHCANumuCC1Tr_Det_New_Mom_NBin, P0DRHCANumuCC1Tr_Det_New_Mom_Bin, P0DRHCANumuCC1Tr_Det_Cos_NBin, P0DRHCANumuCC1Tr_Det_Cos_Bin, P0DRHCANumuCC1Tr_Det_New_Cos_NBin, P0DRHCANumuCC1Tr_Det_New_Cos_Bin);
+    const struct binning_t P0DRHCANumuCCnTr("P0DRHCANumuCCnTr", "RHC #bar{#nu}_{#mu} CC n-Tracks", P0DRHCANumuCCnTr_Det_Mom_NBin, P0DRHCANumuCCnTr_Det_Mom_Bin, P0DRHCANumuCCnTr_Det_New_Mom_NBin, P0DRHCANumuCCnTr_Det_New_Mom_Bin, P0DRHCANumuCCnTr_Det_Cos_NBin, P0DRHCANumuCCnTr_Det_Cos_Bin, P0DRHCANumuCCnTr_Det_New_Cos_NBin, P0DRHCANumuCCnTr_Det_New_Cos_Bin);
+    const struct binning_t P0DRHCNumuCC1Tr("P0DRHCNumuCC1Tr", "RHC #nu_{#mu} CC 1-Track", P0DRHCNumuCC1Tr_Det_Mom_NBin, P0DRHCNumuCC1Tr_Det_Mom_Bin, P0DRHCNumuCC1Tr_Det_New_Mom_NBin, P0DRHCNumuCC1Tr_Det_New_Mom_Bin, P0DRHCNumuCC1Tr_Det_Cos_NBin, P0DRHCNumuCC1Tr_Det_Cos_Bin, P0DRHCNumuCC1Tr_Det_New_Cos_NBin, P0DRHCNumuCC1Tr_Det_New_Cos_Bin);
+    const struct binning_t P0DRHCNumuCCnTr("P0DRHCNumuCCnTr", "RHC #nu_{#mu} CC n-Tracks", P0DRHCNumuCCnTr_Det_Mom_NBin, P0DRHCNumuCCnTr_Det_Mom_Bin, P0DRHCNumuCCnTr_Det_New_Mom_NBin, P0DRHCNumuCCnTr_Det_New_Mom_Bin, P0DRHCNumuCCnTr_Det_Cos_NBin, P0DRHCNumuCCnTr_Det_Cos_Bin, P0DRHCNumuCCnTr_Det_New_Cos_NBin, P0DRHCNumuCCnTr_Det_New_Cos_Bin);
     UInt_t nSamples = 0;
-    //all_binning[nSamples++] = P0DFHCNumuCC1Tr;
-    //all_binning[nSamples++] = P0DFHCNumuCCnTr;
-    //all_binning[nSamples++] = P0DRHCANumuCC1Tr;
-    //all_binning[nSamples++] = P0DRHCANumuCCnTr;
-    //all_binning[nSamples++] = P0DRHCNumuCC1Tr;
-    //all_binning[nSamples++] = P0DRHCNumuCCnTr;
+    all_binning[nSamples++] = P0DFHCNumuCC1Tr;
+    all_binning[nSamples++] = P0DFHCNumuCCnTr;
+    all_binning[nSamples++] = P0DRHCANumuCC1Tr;
+    all_binning[nSamples++] = P0DRHCANumuCCnTr;
+    all_binning[nSamples++] = P0DRHCNumuCC1Tr;
+    all_binning[nSamples++] = P0DRHCNumuCCnTr;
 
 
     TLegend* legend = new TLegend(0.25, 0.91, 0.75, 0.975, "");
-    int startbin = 1;//Total_Covariance_Matrix->GetXaxis()->GetNbins()/2;
+    //int startbin = 1;
+    int startbin = Total_Covariance_Matrix->GetXaxis()->GetNbins()/2 + 1;
+    printf("Start bin = %d\n", startbin);
     for(UInt_t binning_index = 0; binning_index < nSamples; ++binning_index)
     {
         canvas = new TCanvas("canvas", "", 1200, 500);
@@ -159,8 +229,8 @@ void GetSystematicsMatrix(std::string inputfilename)
         pth_mean->GetYaxis()->SetLabelSize(0.05);
         pth_mean->GetYaxis()->SetTitleOffset(2);
         pth_mean->GetYaxis()->CenterTitle();
-        pth_mean->SetMaximum(TMath::Max(pth_mean->GetMaximum(), 2.5));
-        pth_mean->SetMinimum(0.5);
+        pth_mean->SetMaximum(TMath::Max(1.1 * pth_mean->GetMaximum(), 2.5));
+        pth_mean->SetMinimum(0.1);
         pth_fracerror = new TH2F("pth_fracerror", "", nBinsX, 0, nBinsX, nBinsY, 0, nBinsY);
         pth_fracerror->GetXaxis()->SetLabelSize(0.04);
         pth_fracerror->GetYaxis()->SetLabelSize(0.05);
@@ -191,10 +261,11 @@ void GetSystematicsMatrix(std::string inputfilename)
         {
             for(int binX = 1; binX <= nBinsX; ++binX)
             {
-                int globalbin = (startbin-1) + nBinsX*(binY-1) + binX;
+                int globalbin = (startbin-1) + nBinsX * (binY-1) + binX;
+                //printf("%d %d %d\n", globalbin, binX, binY);
                 double nominal = Nominal->GetBinContent(globalbin);
                 double variance = Total_Covariance_Matrix->GetBinContent(globalbin, globalbin);
-                pth_mean->SetBinContent(binX, binY, (*Mean_Value)(globalbin));
+                pth_mean->SetBinContent(binX, binY, (*Mean_Value)(globalbin-1));
                 pth_fracerror->SetBinContent(binX, binY, TMath::Sqrt(variance/2000)/nominal);
 
             }
@@ -212,6 +283,10 @@ void GetSystematicsMatrix(std::string inputfilename)
             canvas->cd(canvas_index)->SetLeftMargin(0.19);
             hists[canvas_index-1]->GetZaxis()->SetTitleSize(1.25 * hists[canvas_index-1]->GetZaxis()->GetTitleSize());
             hists[canvas_index-1]->Draw("COLZ");
+            //if (canvas_index - 1 == 0)
+            //    hists[canvas_index-1]->Draw("COLZTEXT");
+            //else
+            //    hists[canvas_index-1]->Draw("COLZ");
             legend->Draw();
 
             if(nBinsY > nBinsY_det || nBinsX > nBinsX_det)
@@ -268,13 +343,14 @@ void GetSystematicsMatrix(std::string inputfilename)
         }
 
         startbin += nBinsX * nBinsY;
-        //interface.SaveCanvasAs(canvas, binning.name);
+        interface.SaveCanvasAs(canvas, binning.name);
         delete pth_mean;
         delete pth_fracerror;
         delete canvas;
 
     }
 
+    /*
     TFile* newfile = new TFile("spreads.root", "RECREATE");
     newfile->cd();
     for(Int_t bin = startbin;  bin <= Total_Covariance_Matrix->GetNbinsX(); ++bin)
@@ -324,6 +400,7 @@ void GetSystematicsMatrix(std::string inputfilename)
     }
     newfile->Write();
     newfile->Close();
+    */
 
 }
 

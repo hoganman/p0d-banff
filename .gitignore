@@ -14,6 +14,7 @@ MYSQL
 ROOT
 nd280Policy
 BANFF
+T2KReWeight
 rootlogon.C
 macros/rootlogon.C
 app/rootlogon.C
