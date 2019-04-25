@@ -11,15 +11,30 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "THStack.h"
-#include "RunName.hxx"
 #include "TROOT.h"
+#include "TGaxis.h"
+
+#include "RunName.hxx"
 
 ///The primary way that the user interacts within ROOT and pyROOT
 class P0DBANFFInterface : public TObject {
 
 public:
     P0DBANFFInterface();
+
     virtual ~P0DBANFFInterface();
+
+    ///Loads all the custom colors
+    void DefineColors();
+
+    ///Define my custom style
+    void DefineP0DBANFFStyle();
+
+    ///Define the T2K style
+    void DefineT2KStyle(Int_t WhichStyle=1);
+
+    ///Same as calling gROOT->SetTyle(style)
+    void SetStyle(const char* style) const {gROOT->SetStyle(style);}
 
     ///Sets a nice color scale
     void LoadColorBlindPalette(Int_t nColors=5) const;
@@ -93,7 +108,10 @@ public:
         TString yAxisTitle = "none", Double_t textSizeChange = 0.0);
 
     ///Get the TStyle pointer
-    TStyle* GetThisStyle() const {return P0DBANFFStyle;}
+    TStyle* GetThisStyle() const {TGaxis::SetMaxDigits(3); return P0DBANFFStyle;}
+
+    ///Get the TStyle pointer
+    TStyle* GetT2KStyle();
 
     ///Set Batch mode
     void SetBatch(Bool_t batch=kTRUE) const {gROOT->SetBatch(batch);}
@@ -241,7 +259,9 @@ protected:
     TColor* cbMutedGrey;   //!
 
     TStyle* P0DBANFFStyle;   //!
+    TStyle* T2KStyle;
     std::map<Int_t, Int_t> pdgColorCodes;
+
 public:
 
     ClassDef(P0DBANFFInterface,1)

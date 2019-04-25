@@ -13,7 +13,6 @@ ClassImp(P0DBANFFInterface)
 #include"TSystem.h"
 #include"TCanvas.h"
 #include"TImage.h"
-#include"TGaxis.h"
 #include"TROOT.h"
 #include"TKey.h"
 
@@ -21,6 +20,65 @@ ClassImp(P0DBANFFInterface)
 P0DBANFFInterface::P0DBANFFInterface()
 //**************************************************
 {
+
+    DefineColors();
+    DefineP0DBANFFStyle();
+    DefineT2KStyle();
+    gROOT->SetStyle("P0DBANFFStyle");
+
+    P0DBANFFInterface::Warning(this, "If you are going to use the XMLTools class");
+    P0DBANFFInterface::Warning(this, "        (or other classes relying on it)");
+    P0DBANFFInterface::Warning(this, "        make sure you load an external TXMLEngine instance");
+    P0DBANFFInterface::Warning(this, "        before the first XMLTools instance");
+}
+
+//**************************************************
+P0DBANFFInterface::~P0DBANFFInterface()
+//**************************************************
+{
+    if(cbBlack)  cbBlack->Delete();
+    if(cbOrange) cbOrange->Delete();
+    if(cbSky)    cbSky->Delete();
+    if(cbGreen)  cbGreen->Delete();
+    if(cbBlue)   cbBlue->Delete();
+    if(cbRed)    cbRed->Delete();
+    if(cbPurple) cbPurple->Delete();
+    if(cbYellow) cbYellow->Delete();
+
+    if(cbBrightBlue)   cbBrightBlue->Delete();
+    if(cbBrightCyan)   cbBrightCyan->Delete();
+    if(cbBrightGreen)  cbBrightGreen->Delete(); //! USE THIS
+    if(cbBrightYellow) cbBrightYellow->Delete();
+    if(cbBrightPink)   cbBrightPink->Delete(); //called red
+    if(cbBrightPurple) cbBrightPurple->Delete(); //! USE THIS
+    if(cbBrightGrey)   cbBrightGrey->Delete(); //! USE THIS
+
+    if(cbVibrantBlue)    cbVibrantBlue->Delete();
+    if(cbVibrantCyan)    cbVibrantCyan->Delete();
+    if(cbVibrantGreen)   cbVibrantGreen->Delete(); //called teal
+    if(cbVibrantOrange)  cbVibrantOrange->Delete();
+    if(cbVibrantRed)     cbVibrantRed->Delete();
+    if(cbVibrantMagenta) cbVibrantMagenta->Delete();
+
+    if(cbMutedBlue)   cbMutedBlue->Delete();
+    if(cbMutedCyan)   cbMutedCyan->Delete();
+    if(cbMutedTeal)   cbMutedTeal->Delete();
+    if(cbMutedGreen)  cbMutedGreen->Delete();
+    if(cbMutedOlive)  cbMutedOlive->Delete();
+    if(cbMutedYellow) cbMutedYellow->Delete(); //called sand
+    if(cbMutedPink)   cbMutedPink->Delete(); //called rose
+    if(cbMutedWine)   cbMutedWine->Delete();
+    if(cbMutedPurple) cbMutedPurple->Delete();
+
+    if(P0DBANFFStyle) P0DBANFFStyle->Delete();
+    if(T2KStyle) T2KStyle->Delete();
+}
+
+//**************************************************
+void P0DBANFFInterface::DefineColors()
+//**************************************************
+{
+
     // CB pallate taken from Brian Connelly
     // http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
     cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");  // 0
@@ -73,6 +131,14 @@ P0DBANFFInterface::P0DBANFFInterface()
     StackColors[9] = kcbBrightPurple;
     StackColors[10] = kcbBrightGrey;
 
+
+}
+
+//**************************************************
+void P0DBANFFInterface::DefineP0DBANFFStyle()
+//**************************************************
+{
+
     P0DBANFFStyle = new TStyle("P0DBANFFStyle","Color style + colorblind frendly palletes");
     TGaxis::SetMaxDigits(3);
     P0DBANFFStyle->SetOptStat("i");
@@ -90,54 +156,141 @@ P0DBANFFInterface::P0DBANFFInterface()
     P0DBANFFStyle->SetCanvasColor(0);
     //P0DBANFFStyle->SetTitleColor(0);
     P0DBANFFStyle->SetStatColor(0);
-    //</plain>
-    gROOT->SetStyle("P0DBANFFStyle");
-
-    P0DBANFFInterface::Warning(this, "If you are going to use the XMLTools class");
-    P0DBANFFInterface::Warning(this, "        (or other classes relying on it)");
-    P0DBANFFInterface::Warning(this, "        make sure you load an external TXMLEngine instance");
-    P0DBANFFInterface::Warning(this, "        before the first XMLTools instance");
 }
 
 //**************************************************
-P0DBANFFInterface::~P0DBANFFInterface()
+void P0DBANFFInterface::DefineT2KStyle(Int_t WhichStyle)
 //**************************************************
 {
-    if(cbBlack)  cbBlack->Delete();
-    if(cbOrange) cbOrange->Delete();
-    if(cbSky)    cbSky->Delete();
-    if(cbGreen)  cbGreen->Delete();
-    if(cbBlue)   cbBlue->Delete();
-    if(cbRed)    cbRed->Delete();
-    if(cbPurple) cbPurple->Delete();
-    if(cbYellow) cbYellow->Delete();
 
-    if(cbBrightBlue)   cbBrightBlue->Delete();
-    if(cbBrightCyan)   cbBrightCyan->Delete();
-    if(cbBrightGreen)  cbBrightGreen->Delete(); //! USE THIS
-    if(cbBrightYellow) cbBrightYellow->Delete();
-    if(cbBrightPink)   cbBrightPink->Delete(); //called red
-    if(cbBrightPurple) cbBrightPurple->Delete(); //! USE THIS
-    if(cbBrightGrey)   cbBrightGrey->Delete(); //! USE THIS
+    T2KStyle= new TStyle("T2KStyle", "T2K approved plots style");
 
-    if(cbVibrantBlue)    cbVibrantBlue->Delete();
-    if(cbVibrantCyan)    cbVibrantCyan->Delete();
-    if(cbVibrantGreen)   cbVibrantGreen->Delete(); //called teal
-    if(cbVibrantOrange)  cbVibrantOrange->Delete();
-    if(cbVibrantRed)     cbVibrantRed->Delete();
-    if(cbVibrantMagenta) cbVibrantMagenta->Delete();
+    // -- WhichStyle --
+    // 1 = presentation large fonts
+    // 2 = presentation small fonts
+    // 3 = publication/paper
 
-    if(cbMutedBlue)   cbMutedBlue->Delete();
-    if(cbMutedCyan)   cbMutedCyan->Delete();
-    if(cbMutedTeal)   cbMutedTeal->Delete();
-    if(cbMutedGreen)  cbMutedGreen->Delete();
-    if(cbMutedOlive)  cbMutedOlive->Delete();
-    if(cbMutedYellow) cbMutedYellow->Delete(); //called sand
-    if(cbMutedPink)   cbMutedPink->Delete(); //called rose
-    if(cbMutedWine)   cbMutedWine->Delete();
-    if(cbMutedPurple) cbMutedPurple->Delete();
+    Int_t FontStyle = 22;
+    Float_t FontSizeLabel = 0.035;
+    Float_t FontSizeTitle = 0.05;
+    Float_t YOffsetTitle = 1.3;
 
-    if(P0DBANFFStyle) P0DBANFFStyle->Delete();
+    switch(WhichStyle) {
+    case 1:
+      FontStyle = 42;
+      FontSizeLabel = 0.05;
+      FontSizeTitle = 0.06;
+      YOffsetTitle = 1.3;
+      break;
+    case 2:
+      FontStyle = 42;
+      FontSizeLabel = 0.035;
+      FontSizeTitle = 0.05;
+      YOffsetTitle = 1.6;
+      break;
+    case 3:
+      FontStyle = 132;
+      FontSizeLabel = 0.035;
+      FontSizeTitle = 0.05;
+      YOffsetTitle = 1.6;
+      break;
+    }
+
+    // use plain black on white colors
+    T2KStyle->SetFrameBorderMode(0);
+    T2KStyle->SetCanvasBorderMode(0);
+    T2KStyle->SetPadBorderMode(0);
+    T2KStyle->SetPadColor(0);
+    T2KStyle->SetCanvasColor(0);
+    T2KStyle->SetStatColor(0);
+    T2KStyle->SetFillColor(0);
+
+    T2KStyle->SetEndErrorSize(4);
+    T2KStyle->SetStripDecimals(kFALSE);
+
+    T2KStyle->SetLegendBorderSize(0);
+    T2KStyle->SetLegendFont(FontStyle);
+
+    // set the paper & margin sizes
+    T2KStyle->SetPaperSize(20, 26);
+    T2KStyle->SetPadTopMargin(0.1);
+    T2KStyle->SetPadBottomMargin(0.15);
+    T2KStyle->SetPadRightMargin(0.075);
+    T2KStyle->SetPadLeftMargin(0.16);//to include both large/small font options
+
+    // Fonts, sizes, offsets
+    T2KStyle->SetTextFont(FontStyle);
+    T2KStyle->SetTextSize(0.08);
+
+    T2KStyle->SetLabelFont(FontStyle, "x");
+    T2KStyle->SetLabelFont(FontStyle, "y");
+    T2KStyle->SetLabelFont(FontStyle, "z");
+    T2KStyle->SetLabelFont(FontStyle, "t");
+    T2KStyle->SetLabelSize(FontSizeLabel, "x");
+    T2KStyle->SetLabelSize(FontSizeLabel, "y");
+    T2KStyle->SetLabelSize(FontSizeLabel, "z");
+    T2KStyle->SetLabelOffset(0.015, "x");
+    T2KStyle->SetLabelOffset(0.015, "y");
+    T2KStyle->SetLabelOffset(0.015, "z");
+
+    T2KStyle->SetTitleFont(FontStyle, "x");
+    T2KStyle->SetTitleFont(FontStyle, "y");
+    T2KStyle->SetTitleFont(FontStyle, "z");
+    T2KStyle->SetTitleFont(FontStyle, "t");
+    T2KStyle->SetTitleSize(FontSizeTitle, "y");
+    T2KStyle->SetTitleSize(FontSizeTitle, "x");
+    T2KStyle->SetTitleSize(FontSizeTitle, "z");
+    T2KStyle->SetTitleOffset(1.2, "x");
+    T2KStyle->SetTitleOffset(YOffsetTitle, "y");
+    T2KStyle->SetTitleOffset(1.2, "z");
+
+    T2KStyle->SetTitleStyle(0);
+    T2KStyle->SetTitleFontSize(0.06);//0.08
+    T2KStyle->SetTitleFont(FontStyle, "pad");
+    T2KStyle->SetTitleBorderSize(0);
+    T2KStyle->SetTitleX(0.1f);
+    T2KStyle->SetTitleW(0.8f);
+
+    // use bold lines and markers
+    T2KStyle->SetMarkerStyle(20);
+    T2KStyle->SetHistLineWidth( Width_t(2.5) );
+    T2KStyle->SetLineStyleString(2, "[12 12]"); // postscript dashes
+
+    // get rid of X error bars and y error bar caps
+    T2KStyle->SetErrorX(0.001);
+
+    // do not display any of the standard histogram decorations
+    T2KStyle->SetOptTitle(0);
+    T2KStyle->SetOptStat(0);
+    T2KStyle->SetOptFit(0);
+
+    // put tick marks on top and RHS of plots
+    T2KStyle->SetPadTickX(1);
+    T2KStyle->SetPadTickY(1);
+
+    // color setup for 2D, ...
+    // - "warm" red-ish colors -
+    T2KStyle->SetFillColor(1); // make color fillings, if set to 1 will do B&W
+
+}
+
+//**************************************************
+TStyle* P0DBANFFInterface::GetT2KStyle()
+//**************************************************
+{
+    TGaxis::SetMaxDigits();
+    Double_t red[]   = { 0.75, 0.00, 0.00, 0.00 };
+    Double_t green[] = { 1.00, 0.25, 0.00, 0.00 };
+    Double_t blue[]  = { 1.00, 1.00, 1.00, 0.25 };
+
+    Double_t stops[] = { 0.00, 0.25, 0.75, 1.00 };
+    const Int_t NRGBs = 4;
+    const Int_t NCont = 500;
+
+    TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+    T2KStyle->SetNumberContours(NCont);
+    return T2KStyle;
+
 }
 
 //**************************************************

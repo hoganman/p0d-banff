@@ -18,6 +18,8 @@ T2KReWeight
 rootlogon.C
 macros/rootlogon.C
 app/rootlogon.C
+.idea
+venv
 ./*/*/v*/Linux-x86_64
 ./*/*/v*/cmt/*sh
 ./*/*/v*/cmt/Make*
