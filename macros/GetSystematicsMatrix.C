@@ -60,6 +60,7 @@ void GetSystematicsMatrix(std::string inputfilename)
 
     struct binning_t all_binning[nBinning];
 
+    /*
     //P0D FHC numu CC 1-track
     int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 9;
     double P0DFHCNumuCC1Tr_Det_Mom_Bin[10] = {0, 400, 600, 800, 1250, 2000, 3000, 4000, 5500, 30000};
@@ -125,8 +126,8 @@ void GetSystematicsMatrix(std::string inputfilename)
     double P0DRHCNumuCCnTr_Det_Cos_Bin[7] ={-1, 0.7, 0.8, 0.85, 0.98, 0.99, 1.0};
     int    P0DRHCNumuCCnTr_Det_New_Cos_NBin =6;
     double P0DRHCNumuCCnTr_Det_New_Cos_Bin[7] ={-1, 0.7, 0.8, 0.85, 0.98, 0.99, 1.0};
+    */
 
-    /*
     //P0D FHC numu CC 1-track
     int    P0DFHCNumuCC1Tr_Det_Mom_NBin = 14;
     double P0DFHCNumuCC1Tr_Det_Mom_Bin[15] =     {0, 300, 400, 500, 600, 700, 800, 1000, 1250, 1500, 2000, 3000, 4000, 5500, 30000};
@@ -192,7 +193,6 @@ void GetSystematicsMatrix(std::string inputfilename)
     double P0DRHCNumuCCnTr_Det_Cos_Bin[10] =     {-1, 0.7, 0.8, 0.85, 0.9, 0.94, 0.965, 0.98, 0.99, 1.0};
     int    P0DRHCNumuCCnTr_Det_New_Cos_NBin =6;
     double P0DRHCNumuCCnTr_Det_New_Cos_Bin[7] ={-1, 0.7, 0.8, 0.85, 0.98, 0.99, 1.0};
-    */
 
     const struct binning_t P0DFHCNumuCC1Tr ("P0DFHCNumuCC1Tr", "FHC #nu_{#mu} CC 1-Track", P0DFHCNumuCC1Tr_Det_Mom_NBin, P0DFHCNumuCC1Tr_Det_Mom_Bin, P0DFHCNumuCC1Tr_Det_New_Mom_NBin, P0DFHCNumuCC1Tr_Det_New_Mom_Bin, P0DFHCNumuCC1Tr_Det_Cos_NBin, P0DFHCNumuCC1Tr_Det_Cos_Bin, P0DFHCNumuCC1Tr_Det_New_Cos_NBin, P0DFHCNumuCC1Tr_Det_New_Cos_Bin);
     const struct binning_t P0DFHCNumuCCnTr ("P0DFHCNumuCCnTr", "FHC #nu_{#mu} CC n-Tracks", P0DFHCNumuCCnTr_Det_Mom_NBin, P0DFHCNumuCCnTr_Det_Mom_Bin, P0DFHCNumuCCnTr_Det_New_Mom_NBin, P0DFHCNumuCCnTr_Det_New_Mom_Bin, P0DFHCNumuCCnTr_Det_Cos_NBin, P0DFHCNumuCCnTr_Det_Cos_Bin, P0DFHCNumuCCnTr_Det_New_Cos_NBin, P0DFHCNumuCCnTr_Det_New_Cos_Bin);
@@ -210,8 +210,8 @@ void GetSystematicsMatrix(std::string inputfilename)
 
 
     TLegend* legend = new TLegend(0.25, 0.91, 0.75, 0.975, "");
-    int startbin = 1;
-    //int startbin = Total_Covariance_Matrix->GetXaxis()->GetNbins()/2 + 1;
+    //int startbin = 1;
+    int startbin = Total_Covariance_Matrix->GetXaxis()->GetNbins()/2 + 1;
     printf("Start bin = %d\n", startbin);
     for(UInt_t binning_index = 0; binning_index < nSamples; ++binning_index)
     {
@@ -230,7 +230,8 @@ void GetSystematicsMatrix(std::string inputfilename)
         pth_mean->GetYaxis()->SetTitleOffset(2);
         pth_mean->GetYaxis()->CenterTitle();
         pth_mean->SetMaximum(TMath::Max(1.1 * pth_mean->GetMaximum(), 2.5));
-        pth_mean->SetMinimum(0.1);
+        //pth_mean->SetMaximum(1.4);
+        pth_mean->SetMinimum(1.e-1);
         pth_fracerror = new TH2F("pth_fracerror", "", nBinsX, 0, nBinsX, nBinsY, 0, nBinsY);
         pth_fracerror->GetXaxis()->SetLabelSize(0.04);
         pth_fracerror->GetYaxis()->SetLabelSize(0.05);
@@ -283,10 +284,10 @@ void GetSystematicsMatrix(std::string inputfilename)
             canvas->cd(canvas_index)->SetLeftMargin(0.19);
             hists[canvas_index-1]->GetZaxis()->SetTitleSize(1.25 * hists[canvas_index-1]->GetZaxis()->GetTitleSize());
             hists[canvas_index-1]->Draw("COLZ");
-            if (canvas_index - 1 == 0)
-                hists[canvas_index-1]->Draw("COLZTEXT");
-            else
-                hists[canvas_index-1]->Draw("COLZ");
+            //if (canvas_index - 1 == 0)
+            //    hists[canvas_index-1]->Draw("COLZTEXT");
+            //else
+            //    hists[canvas_index-1]->Draw("COLZ");
             legend->Draw();
 
             if(nBinsY > nBinsY_det || nBinsX > nBinsX_det)
