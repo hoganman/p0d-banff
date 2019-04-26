@@ -1,4 +1,6 @@
 #include"TFile.h"
+#include"TString.h"
+#include"TSystem.h"
 #include"TChain.h"
 #include"TMath.h"
 #include"TCut.h"
@@ -16,7 +18,7 @@
 //#include "P0DBANFFInterface.hxx"
 #include "TLegend.h"
 
-void P0DAgingAna(std::string inputfilename);
+void P0DAgingAna(const char* fileDirectory);
 Int_t langaupro(Double_t *params, Double_t &maxx, Double_t &FWHM);
 TF1 *langaufit(TH1F *his, Double_t *fitrange, Double_t *startvalues, Double_t *parlimitslo, Double_t *parlimitshi, Double_t *fitparams, Double_t *fiterrors, Double_t *ChiSqr, Int_t *NDF);
 Double_t langaufun(Double_t *x, Double_t *par);
@@ -26,20 +28,34 @@ Double_t* MPV;
 Double_t* Time;
 TMultiGraph *mg;
 
-void P0DAgingAna(std::string inputfilename)
+void P0DAgingAna(const char* fileDirectory)
 {
-    TFile* inFile = TFile::Open(inputfilename.c_str(), "r");
-    TChain* P0DSandMuonHits = static_cast<TChain*>(inFile->Get("P0DSandMuonHits"));
+    TChain* P0DSandMuonHits = new TChain("P0DSandMuonHits", "");
 
-    const UInt_t Second = 1;
-    const UInt_t Minute = 60 * Second;
-    const UInt_t Hour = 60 * Minute;
-    const UInt_t Day = 24 * Hour;
-    const UInt_t Year = 365 * Day;
-    const UInt_t SecondDivisions = 7 * Day;
+    const Int_t Second = 1;
+    const Int_t Minute = 60 * Second;
+    const Int_t Hour = 60 * Minute;
+    const Int_t Day = 24 * Hour;
+    const Int_t Year = TMath::Nint(365.25 * Day);
+    const Int_t SecondDivisions = TMath::Nint(Year / 12.);
 
-    const UInt_t MaxSeconds = 3106759996;
-    Long64_t nEvents = P0DSandMuonHits->Draw("Time_Event>>htemp", "Time_Event > 0 && Alt$(Time_Event,-1)>0", "goff");
+    const Int_t firstRunNumber = 2555;
+    const Int_t lastRunNumber = 14420;
+    const Int_t firstSubRunNumber = 0;
+    const Int_t lastSubRunNumber = 296;
+    for(Int_t runNumber = firstRunNumber; runNumber < lastRunNumber; ++runNumber)
+    {
+        for(Int_t subrunNumber = firstSubRunNumber; subrunNumber < lastSubRunNumber; ++subrunNumber)
+        {
+            TString file = TString::Format("oa_nd_spl_000%05d-%04d_p0dmod_psmu_v11r31p15.root", runNumber, subrunNumber);
+            const char* findResult = gSystem->FindFile(fileDirectory, file);
+            if( !findResult )
+                continue;
+            printf("Adding %s\n", findResult);
+            P0DSandMuonHits->Add(findResult);
+        }
+    }
+    const Long64_t nEvents = P0DSandMuonHits->Draw("Time_Event>>htemp", "Time_Event > 0 && Alt$(Time_Event,-1)>0", "goff");
     TH1F* htemp = static_cast<TH1F*>(gDirectory->FindObject("htemp"));
     const Double_t T_0 = htemp->GetBinLowEdge(htemp->FindFirstBinAbove(0));
     const Double_t T_N = htemp->GetBinLowEdge(htemp->FindLastBinAbove(0)+1);
