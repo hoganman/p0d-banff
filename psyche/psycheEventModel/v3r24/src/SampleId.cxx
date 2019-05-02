@@ -81,35 +81,35 @@ std::string SampleId::ConvertSample(const SampleEnum& sample){
     else if (sample == kFGD2NuEBkgInAntiNuModeCC0Pi)      ssample = "FGD2 NuE Bkg In Anti NuMode CC0Pi";
     else if (sample == kFGD2NuEBkgInAntiNuModeCCOther)    ssample = "FGD2 NuE Bkg In Anti NuMode CCOther";
 
-    else if (sample == kP0DNuMuCC)                            ssample = "P0D NuMu CC Inclusive";
+    else if (sample == kP0DNuMuCC)                            ssample = "P0D NuMu CCInclusive";
 
-    else if (sample == kP0DWaterNuMuCC)                       ssample = "P0D Water NuMu CC Inclusive";
+    else if (sample == kP0DWaterNuMuCC)                       ssample = "P0D Water NuMu CCInclusive";
     else if (sample == kP0DWaterNuMuCC1Track)                 ssample = "P0D Water NuMu CC1Track";
     else if (sample == kP0DWaterNuMuCCNTracks)                ssample = "P0D Water NuMu CCNTracks";
 
-    else if (sample == kP0DWaterNuMuBarBkgCC)                 ssample = "P0D Water NuMubar Bkg CC Inclusive";
+    else if (sample == kP0DWaterNuMuBarBkgCC)                 ssample = "P0D Water NuMubar Bkg CCInclusive";
 
     else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC)        ssample = "P0D Water NuMu Bkg in Anti NuMode CC Inclusive";
     else if (sample == kP0DWaterNuMuBkgInAntiNuModeCC1Track)  ssample = "P0D Water NuMu Bkg in Anti NuMode CC1Track" ;
     else if (sample == kP0DWaterNuMuBkgInAntiNuModeCCNTracks) ssample = "P0D Water NuMu Bkg in Anti NuMode CCNTracks";
 
-    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)        ssample = "P0D Water NuMubar in Anti NuMode CC Inclusive";
+    else if (sample == kP0DWaterNuMuBarInAntiNuModeCC)        ssample = "P0D Water NuMubar in Anti NuMode CCInclusive";
     else if (sample == kP0DWaterNuMuBarInAntiNuModeCC1Track)  ssample = "P0D Water NuMubar in Anti NuMode CC1Track" ;
     else if (sample == kP0DWaterNuMuBarInAntiNuModeCCNTracks) ssample = "P0D Water NuMubar in Anti NuMode CCNTracks";
 
-    else if (sample == kP0DAirNuMuCC)                         ssample = "P0D Air NuMu CC Inclusive";
-    else if (sample == kP0DAirNuMuCC1Track)                   ssample = "P0D Air NuMu CC CC1Track" ;
-    else if (sample == kP0DAirNuMuCCNTracks)                  ssample = "P0D Air NuMu CC CCNTracks";
+    else if (sample == kP0DAirNuMuCC)                         ssample = "P0D Air NuMu CCInclusive";
+    else if (sample == kP0DAirNuMuCC1Track)                   ssample = "P0D Air NuMu CC1Track" ;
+    else if (sample == kP0DAirNuMuCCNTracks)                  ssample = "P0D Air NuMu CCNTracks";
 
-    else if (sample == kP0DAirNuMuBarBkgCC)                   ssample = "P0D Air NuMubar Bkg CC Inclusive";
+    else if (sample == kP0DAirNuMuBarBkgCC)                   ssample = "P0D Air NuMubar Bkg CCInclusive";
 
-    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)          ssample = "P0D Air NuMu Bkg in Anti NuMode CC Inclusive";
-    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC1Track)    ssample = "P0D Air NuMu Bkg in Anti NuMode CC CC1Track" ;
-    else if (sample == kP0DAirNuMuBkgInAntiNuModeCCNTracks)   ssample = "P0D Air NuMu Bkg in Anti NuMode CC CCNTracks";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC)          ssample = "P0D Air NuMu Bkg in Anti NuMode CCInclusive";
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCC1Track)    ssample = "P0D Air NuMu Bkg in Anti NuMode CC1Track" ;
+    else if (sample == kP0DAirNuMuBkgInAntiNuModeCCNTracks)   ssample = "P0D Air NuMu Bkg in Anti NuMode CCNTracks";
 
-    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)          ssample = "P0D Air NuMubar in Anti NuMode CC Inclusive";
-    else if (sample == kP0DAirNuMuBarInAntiNuModeCC1Track)    ssample = "P0D Air NuMubar in Anti NuMode CC CC1Track" ;
-    else if (sample == kP0DAirNuMuBarInAntiNuModeCCNTracks)   ssample = "P0D Air NuMubar in Anti NuMode CC CCNTracks";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC)          ssample = "P0D Air NuMubar in Anti NuMode CCInclusive";
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCC1Track)    ssample = "P0D Air NuMubar in Anti NuMode CC1Track" ;
+    else if (sample == kP0DAirNuMuBarInAntiNuModeCCNTracks)   ssample = "P0D Air NuMubar in Anti NuMode CCNTracks";
 
     else                                                      ssample = "Unassigned";
 
