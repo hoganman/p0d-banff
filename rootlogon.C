@@ -20,5 +20,6 @@
     gSystem->Load("libP0DBANFF");
     P0DBANFFInterface interface;
     interface.LoadColorBlindPalette();
+    //interface.LoadColorBlindPalette(P0DBANFFInterface::kInvertedDarkBodyRadiator);
     interface.Announce(&interface, "Loaded P0DBANFFInterface as \"interface\"\n");
 }

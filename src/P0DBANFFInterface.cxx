@@ -485,39 +485,51 @@ Bool_t P0DBANFFInterface::CheckFile(TString fileName)
 }
 
 //**************************************************
-void P0DBANFFInterface::LoadColorBlindPalette(Int_t nColors) const
+void P0DBANFFInterface::LoadColorBlindPalette(EColorPalette palette) const
 //**************************************************
 {
-    P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette with nColors = %d...",  nColors));
     const Int_t nColorBins = 999;
-    if(nColors==5)
+    if(palette == kP0DBANFF)
     {
-      const Double_t length5[]    = {0.00,0.25,0.50,0.75,1.00} ;
-      const Double_t fiveColorR[] = {0.00,0.35,0.80,0.80,0.95};
-      const Double_t fiveColorG[] = {0.45,0.70,0.60,0.40,0.90};
-      const Double_t fiveColorB[] = {0.70,0.90,0.70,0.00,0.25};
-      Int_t fiveColorPalette[nColorBins];
-      static Int_t FI2 = TColor::CreateGradientColorTable(nColors,const_cast<Double_t*>(length5),const_cast<Double_t*>(fiveColorR),const_cast<Double_t*>(fiveColorG),const_cast<Double_t*>(fiveColorB),nColorBins);
-      for (int i = 0; i < nColorBins; i++) fiveColorPalette[i]=FI2+i;
-      gStyle->SetPalette(nColorBins,fiveColorPalette);
-      gStyle->SetNumberContours(nColorBins);
+      P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette P0DBANFF"));
+      const Int_t nColors = 5;
+      const Double_t length[]    = {0.00,0.25,0.50,0.75,1.00};
+      const Double_t ColorR[] = {0.00,0.35,0.80,0.80,0.95};
+      const Double_t ColorG[] = {0.45,0.70,0.60,0.40,0.90};
+      const Double_t ColorB[] = {0.70,0.90,0.70,0.00,0.25};
+      Int_t ColorPalette[nColorBins];
+      static Int_t FI2 = TColor::CreateGradientColorTable(nColors,
+                                                          const_cast<Double_t*>(length),
+                                                          const_cast<Double_t*>(ColorR),
+                                                          const_cast<Double_t*>(ColorG),
+                                                          const_cast<Double_t*>(ColorB),
+                                                          nColorBins);
+      for (int i = 0; i < nColorBins; i++) ColorPalette[i]=FI2+i;
+      gStyle->SetPalette(nColorBins, ColorPalette);
     }
-    else if(nColors==4)
+    else if(palette == kInvertedDarkBodyRadiator)
     {
-      const Double_t length4[]    = {0.00,0.3333,0.6667,1.00} ;
-      const Double_t fourColorR[] = {0.00,0.80,0.80,0.95};
-      const Double_t fourColorG[] = {0.45,0.60,0.40,0.90};
-      const Double_t fourColorB[] = {0.70,0.70,0.00,0.25};
-      Int_t fourColorPalette[nColorBins];
-      static Int_t FI2 = TColor::CreateGradientColorTable(nColors,const_cast<Double_t*>(length4),const_cast<Double_t*>(fourColorR),const_cast<Double_t*>(fourColorG),const_cast<Double_t*>(fourColorB),nColorBins);
-      for (int i = 0; i < nColorBins; i++) fourColorPalette[i]=FI2+i;
-      gStyle->SetPalette(nColorBins,fourColorPalette);
-      gStyle->SetNumberContours(nColorBins);
+      P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette InvertedDarkBodyRadiator"));
+      const Int_t nColors = 4;
+      const Double_t length[]  ={0.00,     0.10,     0.60,     1.00};
+      const Double_t ColorR[] = {255./256, 240./256, 256./256, 0./256};
+      const Double_t ColorG[] = {255./256, 240./256,   0./256, 0./256};
+      const Double_t ColorB[] = {255./256,   0./256,   0./256, 0./256};
+      Int_t InvertedDarkBodyRadiatorColorPalette[nColorBins];
+      static Int_t FI2 = TColor::CreateGradientColorTable(nColors,
+                                                          const_cast<Double_t*>(length),
+                                                          const_cast<Double_t*>(ColorR),
+                                                          const_cast<Double_t*>(ColorG),
+                                                          const_cast<Double_t*>(ColorB),
+                                                          nColorBins);
+      for (int i = 0; i < nColorBins; i++) InvertedDarkBodyRadiatorColorPalette[i]=FI2+i;
+      gStyle->SetPalette(nColorBins, InvertedDarkBodyRadiatorColorPalette);
     }
     else {
-        std::cout << "...Cannot load nColors = " << nColors << "...FAILED!" << std::endl;
+        P0DBANFFInterface::Warning(this, TString::Format("Cannot load palette %d...FAILED!", static_cast<Int_t>(palette)));
         return;
     }
+    gStyle->SetNumberContours(nColorBins);
     P0DBANFFInterface::Announce(this, "DONE!");
 }
 

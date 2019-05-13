@@ -21,7 +21,6 @@ inOptions = {
         'P:':['priority=','job priority'],
         'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run_type=','is Data or MC (assumes MC)'],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
@@ -438,7 +437,6 @@ def main(argv):
         argDescriptionList.insert(0,sublist[1])
     shortArgs = ''.join(shortArgsList)
     inputDirectory = ''
-    run_type = 'MC'
     outputPath = ''
     outputName = ''
     numJobs = -1
@@ -482,8 +480,6 @@ def main(argv):
             sys.exit()
         elif opt in ('-L',GetLongOption('-L')):
             inputDirectory = arg
-        elif opt in ('-r',GetLongOption('-r')):
-            run_type = arg
         elif opt in ('-p',GetLongOption('-p')):
             outputPath = arg
         elif opt in ('-P',GetLongOption('-P')):
@@ -608,19 +604,6 @@ def main(argv):
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
     if numFilesPerJob > 0 and numJobs == -1:
         numJobs = int(math.ceil(float(nFiles) / numFilesPerJob))
-    global isMC
-    if run_type not in ('DATA','data','Data') and run_type not in ('MC', 'mc'):
-        print 'ERROR: Must specify if MC or data'
-        print helpstatement
-        sys.exit()
-    elif run_type in ('DATA','data','Data'):
-        isMC = False
-    elif run_type in ('MC', 'mc', 'Mc'):
-        isMC = True
-    else:
-        print 'ERROR: Must specify if MC or data'
-        print helpstatement
-        sys.exit()
 
     InitNodes()
     #make directory for new jobs
