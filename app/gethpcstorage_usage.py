@@ -3,9 +3,9 @@
 This program uses the GANGLIA website for the CSU ENS-HPC
 cluster to determine if the hpc-storage server (a proxy for
 the cluster disk usage) is being over-burdened. By default,
-if the normalized usage (n processes / n cpus) is over 1,
-then the program sleeps for one minute to check again. Once
-the load is down, the program returns
+if the normalized usage (n processes / n cpus) is over USAGE_MAX,
+then the program sleeps for a random time proporational to the usage
+and check again. Once the load is down, the program returns
 
 USAGE: ./gethpcstorage_usage.py --help
 """
@@ -16,6 +16,8 @@ import time
 import random
 import signal
 import sys
+
+USAGE_MAX = 1.0
 
 
 def signal_handler(signal, frame):
@@ -140,7 +142,7 @@ and last recorded usage')
                       default=60,  # in seconds
                       help='The time in seconds between checking usage')
     parser.add_option('-l', '--load', dest='load',
-                      default=0.7,  # in processes / cpus
+                      default=USAGE_MAX,  # in processes / cpus
                       help='The normalized load (N procs/CPUs) to wait for')
     parser.add_option('-q', '--quit', dest='quit',
                       action='store_true', default=False,

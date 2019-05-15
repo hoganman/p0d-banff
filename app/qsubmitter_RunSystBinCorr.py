@@ -25,7 +25,7 @@ inOptions = {
 
 
 SECONDS_BTN_RUN = 1
-SECONDS_BTN_SUBMIT = 16
+SECONDS_BTN_SUBMIT = 5
 csuhpc = -1
 queueTag = '$'
 BIN = '/physics/INSTALLATION/bin'

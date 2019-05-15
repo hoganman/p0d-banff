@@ -11,6 +11,7 @@ P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
 QUEUE = '\"physics.q|short.q\"'
 HOSTS = '\"node40|node41|node42|node43|node45|node44|node27|node28|node30|node29\"'
+HOSTS = '\"node45\"'
 # EXCLUDEHOSTS = [7, 11, 19, 29, 45]
 # HOSTS = '\"'
 # for x in range(20) + range(27, 31) + range(40, 46):
@@ -32,11 +33,6 @@ QSUBNIWGWEIGHTS = 'python qsubmitter_niwg_weights.py'
 
 def main(argv):
     """submits all the qsub python scripts"""
-    submit_niwg_weights_jobs()
-
-
-def submit_niwg_weights_jobs():
-    """submits the MC and data niwg_weights jobs"""
     submit_niwg_weights_mc()
 
 

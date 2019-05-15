@@ -288,7 +288,7 @@ def CreateHL2JobScript(application,jobNum,subFileList,outputPath,outputName):
     subFile.close()
     if(len(subFileList)) != 1:
         print 'ERROR: Wrong size of file list for job '+str(jobNum+1)
-    INPUT = subFileList[0]
+    INPUT = subFileListName
     runType = ''
     if isMC:
         runType = 'MC'
@@ -350,7 +350,7 @@ def MakeJobs(outputPath,outputName,application,numJobs,numFilesPerJob,priority,w
     global fileList
     flattreeFiles = fileList.keys()
     NaturalSorting.naturalsort(flattreeFiles)
-    for jobNum in range(0,numJobs):
+    for jobNum in range(0, numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
         fileCounter = 0
         while fileCounter < numFilesPerJob:
@@ -523,7 +523,8 @@ def main(argv):
     for aFile in localFileList:
         fileList[aFile] = 0
     otherRequirementsList = []
-    numJobs = len(localFileList)
+    if numFilesPerJob == -1:
+        numJobs = len(localFileList)
     print 'There are '+str(len(localFileList))+' files to process\n'
     #print localFileList
 
