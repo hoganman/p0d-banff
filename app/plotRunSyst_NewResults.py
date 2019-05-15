@@ -603,7 +603,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
 
     canvas.Clear()
     canvas.cd()
-    pad1, pad2, axis, line, ratio = None, None, None, None, None
+    pad1, pad2, line, ratio = None, None, None, None
     if CONFIGURATION.GetAttribBool('SHOW_RATIO_PLOT_BELOW'):
         pad1 = ROOT.TPad("pad1", "pad1", 0.0, 0.325, 1.0, 1.0)
         pad1.SetBottomMargin(0)
@@ -696,8 +696,6 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         ratio.Delete()
     if line:
         line.Delete()
-    if axis:
-        axis.Delete()
     if pad1:
         pad1.Close()
     if pad2:
@@ -720,7 +718,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     sand_sample = evt_sample['MC']['Sand']
 
     save_as = '%s_%s_MC_only_%s_%s' % (SELECTIONSAVENAME, save_title, true_selections[0].name, mc_sample.CPPClass.saveTitle)
-    canvas = ROOT.TCanvas("canvas", "", 800, 600)
+    canvas = ROOT.TCanvas("canvas", "", 800, 700)
     legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
                      coordinates.Legend_RHS_X2, coordinates.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
@@ -751,6 +749,8 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     mc_systematic_weights = mc_sample.getTChain().GetV2()
     mc_flux_weights = mc_sample.getTChain().GetV3()
     for entry in range(mc_nEntries):
+        if(mc_flux_weights[entry] > cuts.kMAXFLUXWEIGHT or mc_systematic_weights[entry] > cuts.kMAXEVENTWEIGHT):
+            continue
         MCAnaBins['NOM'].Fill(mc_var[entry])
         MCAnaBins['FLUX'].Fill(mc_var[entry], mc_flux_weights[entry])
         MCAnaBins['SYST'].Fill(mc_var[entry], mc_systematic_weights[entry])
@@ -766,6 +766,11 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     MCAnaBins['SYSTFLUX'].Scale(mc_sample.CPPClass.scale)
     histMax = max([MCAnaBins['NOM'].GetMaximum(), MCAnaBins['FLUX'].GetMaximum(), MCAnaBins['SYST'].GetMaximum(), MCAnaBins['SYSTFLUX'].GetMaximum()])
     histMax = 1.05 * (histMax + math.sqrt(histMax))
+    nominal = MCAnaBins['NOM'].GetTH1DClone("nominal")
+    del MCAnaBins['NOM']
+    del MCAnaBins['FLUX']
+    del MCAnaBins['SYST']
+    del MCAnaBins['SYSTFLUX']
     del MCAnaBins
 
     # MC loop over true_selections to create stack,
@@ -875,12 +880,80 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         h_stack.SetMaximum(histMax)
         h_total.SetMaximum(histMax)
 
+    canvas.Clear()
     canvas.cd()
+    pad1, pad2, line, ratio = None, None, None, None
+    if CONFIGURATION.GetAttribBool('SHOW_RATIO_PLOT_BELOW'):
+        pad1 = ROOT.TPad("pad1", "pad1", 0.0, 0.325, 1.0, 1.0)
+        pad1.SetBottomMargin(0)
+        pad1.Draw()
+        pad1.cd()
     h_stack.Draw('HIST')
     h_total.Draw('HIST SAME')
-    legend.Draw()
     mc_stats.Draw()
     mc_stats.SetTextAlign(22)  # centered
+    ROOT.gPad.Update()
+    if CONFIGURATION.GetAttribBool('SHOW_RATIO_PLOT_BELOW'):
+        INTERFACE.PrettyUpTH1(nominal, h_total.GetXaxis().GetName(), h_total.GetYaxis().GetName(), INTERFACE.kcbBrightYellow)
+        nominal.SetLineStyle(INTERFACE.kDashedLineStyle)
+        nominal.Draw("SAME")
+        legend.AddEntry(nominal, 'Nominal MC', 'l')
+        legend.Draw()
+        canvas.cd()  # Go back to the main canvas before defining pad2
+        pad2 = ROOT.TPad("pad2", "pad2", 0, 0.0, 1., 0.225)
+        pad2.SetTopMargin(0)
+        pad2.SetBottomMargin(0.2)
+        pad2.SetGridx()  # vertical grid
+        pad2.SetGridy()  # horizontal grid
+        pad2.Draw()
+        pad2.cd()       # pad2 becomes the current pad
+
+        # Define the ratio plot
+        ratio = h_total.Clone('ratio')
+        ratio.Sumw2()
+        ratio.SetLineColor(ROOT.kBlack)
+        ratio.Divide(nominal)
+        ratio.SetMinimum(0.)
+        ratio.SetMaximum(3.)
+        # ratio.SetMaximum(1.1*(ratio.GetBinContent(1)+ratio.GetBinError(1)))
+        # ratio.SetMinimum(0.9*(ratio.GetBinContent(1)-ratio.GetBinError(1)))
+        # for iBin in range(2, ratio.GetNbinsX()+1):
+        #     ratio.SetMaximum(max(ratio.GetMaximum(), 1.1*(ratio.GetBinContent(iBin)+ratio.GetBinError(iBin))))
+        #     ratio.SetMinimum(min(ratio.GetMinimum(), 0.9*(ratio.GetBinContent(iBin)-ratio.GetBinError(iBin))))
+        # if ratio.GetMinimum() < 0:
+        #     ratio.SetMinimum(0.)
+        ratio.SetStats(0)       # No statistics on lower plot
+        ratio.SetMarkerStyle(ROOT.TAttMarker.kDot)
+
+        xaxis = ratio.GetXaxis()
+        line = ROOT.TLine(xaxis.GetBinLowEdge(1), 1,
+                          xaxis.GetBinUpEdge(xaxis.GetNbins()), 1)
+        line.SetLineWidth(3)
+        line.SetLineStyle(9)
+        line.SetLineColor(INTERFACE.kcbBlue)
+
+        ratio.Draw("EP ")        # Draw the ratio plot
+        line.Draw()
+        ratio.Draw("EP SAME")   # Draw the ratio plot
+
+        # Ratio plot (ratio) settings
+        ratio.SetTitle("")  # Remove the ratio title
+
+        # Y axis ratio plot settings
+        ratio.GetYaxis().SetTitle('Ratio to Nominal')
+        ratio.GetYaxis().SetNdivisions(505)
+        ratio.GetYaxis().SetLabelSize(3*h_stack.GetYaxis().GetLabelSize())
+        ratio.GetYaxis().SetTitleOffset(0.2)
+        ratio.GetYaxis().SetTitleSize(0.11)
+
+        # X axis ratio plot settings
+        ratio.GetXaxis().SetTitle('')
+        ratio.GetXaxis().SetTitleOffset(h_stack.GetXaxis().GetTitleOffset())
+        ratio.GetXaxis().SetLabelSize(3*h_stack.GetXaxis().GetLabelSize())
+        # ratio.GetXaxis().SetLabelSize(15)
+    else:
+        legend.Draw()
+
     ROOT.gPad.Update()
     canvas.SetFillColor(0)
     if(ROOT.gPad.GetPrimitive('TFrame')):
@@ -890,6 +963,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
         save_as += '_systematicweighted'
 
+    canvas.cd()
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
     if hstack.log_y:
