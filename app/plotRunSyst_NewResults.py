@@ -492,9 +492,11 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         a_selection = true_selections[index]
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
         mc_hist = None
+        selection_cuts = a_selection.cuts.GetTitle() + " && (WeightNom >= 0 && FluxWeightNom >= 0.)"
+        selection_cuts = selection_cuts + "&& (WeightNom < %f && FluxWeightNom < %f)" % (cuts.kMAXEVENTWEIGHT, cuts.kMAXFLUXWEIGHT)
 
         if not TString(a_selection.cuts.GetName()).Contains('Sand'):
-            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom:FluxWeightNom' % plot_var, a_selection.cuts, 'goff')
+            mc_nEntries = mc_sample.getTChain().Draw('%s:WeightNom:FluxWeightNom' % plot_var, selection_cuts, 'goff')
             mc_var = mc_sample.getTChain().GetV1()
             mc_systematic_weights = mc_sample.getTChain().GetV2()
             mc_flux_weights = mc_sample.getTChain().GetV3()
@@ -524,7 +526,7 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         else:  # Sand MC
             sandTChain = sand_sample.getTChain()
             sand_nEntries = sandTChain.Draw('%s:WeightNom:FluxWeightNom' % plot_var,
-                                            a_selection.cuts,
+                                            selection_cuts,
                                             'goff')
             sand_var = sand_sample.getTChain().GetV1()
             sand_flux_weights = sand_sample.getTChain().GetV3()
@@ -731,9 +733,11 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     draw_cmd = '%s:WeightNom:FluxWeightNom' % plot_var
     stack_colors = INTERFACE.GetStackColors()
 
+    selection_cuts = true_selections[0].cuts.GetTitle() + " && (WeightNom >= 0 && FluxWeightNom >= 0.)"
+    selection_cuts = selection_cuts + "&& (WeightNom < %f && FluxWeightNom < %f)" % (cuts.kMAXEVENTWEIGHT, cuts.kMAXFLUXWEIGHT)
     mc_hists = list()
     mcEventListName = "mcEventList"
-    mc_sample.getTChain().Draw(">>%s" % mcEventListName, true_selections[0].cuts)
+    mc_sample.getTChain().Draw(">>%s" % mcEventListName, selection_cuts)
     mcEventList = ROOT.gDirectory.Get(mcEventListName)
     mc_sample.getTChain().SetEventList(mcEventList)
 
@@ -742,7 +746,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     MCAnaBins['FLUX'] = ROOT.AnalysisBins(MCAnaBins['NOM'])
     MCAnaBins['SYST'] = ROOT.AnalysisBins(MCAnaBins['FLUX'])
     MCAnaBins['SYSTFLUX'] = ROOT.AnalysisBins(MCAnaBins['SYST'])
-    mc_nEntries = mc_sample.getTChain().Draw(draw_cmd, true_selections[0].cuts, 'goff')
+    mc_nEntries = mc_sample.getTChain().Draw(draw_cmd, selection_cuts, 'goff')
     mc_var = mc_sample.getTChain().GetV1()
     mc_systematic_weights = mc_sample.getTChain().GetV2()
     mc_flux_weights = mc_sample.getTChain().GetV3()
@@ -771,8 +775,9 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         tmp_save_name = '%s_%s' % (save_title, a_selection.name)
 
         mc_hist = None
-        sel_cuts = a_selection.cuts
-        sel_cuts_name = sel_cuts.GetName()
+        sel_cuts = a_selection.cuts.GetTitle() + " && (WeightNom >= 0 && FluxWeightNom >= 0.)"
+        sel_cuts = sel_cuts + " && (WeightNom < %f && FluxWeightNom < %f)" % (cuts.kMAXEVENTWEIGHT, cuts.kMAXFLUXWEIGHT)
+        sel_cuts_name = a_selection.cuts.GetName()
         if not (TString(sel_cuts_name).Contains('Sand') or
                 TString(sel_cuts_name).Contains('sand')):
             mc_nEntries = mc_sample.getTChain().Draw(draw_cmd, sel_cuts, 'goff')
