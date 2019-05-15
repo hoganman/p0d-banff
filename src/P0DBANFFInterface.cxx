@@ -94,7 +94,8 @@ void P0DBANFFInterface::DefineColors()
     cbBrightBlue = new TColor(kcbBrightBlue, 0.27, 0.47, 0.67);
     cbBrightCyan = new TColor(kcbBrightCyan, 0.40, 0.80, 0.93);
     cbBrightGreen = new TColor(kcbBrightGreen, 0.13, 0.53, 0.20); // 8 :USE THIS with above B Connelly set
-    cbBrightYellow = new TColor(kcbBrightYellow, 0.80, 0.73, 0.27);
+    cbBrightYellow = new TColor(kcbBrightYellow, 221./256, 170./256, 51./256);
+    //cbBrightYellow = new TColor(kcbBrightYellow, 0.80, 0.73, 0.27);
     cbBrightPink = new TColor(kcbBrightPink, 0.93, 0.40, 0.47); //called red
     cbBrightPurple = new TColor(kcbBrightPurple, 0.67, 0.20, 0.47); // 9 :USE THIS with above B Connelly set
     cbBrightGrey = new TColor(kcbBrightGrey, 0.73, 0.73, 0.73); // 10 :USE THIS with above B Connelly set
