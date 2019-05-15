@@ -91,12 +91,12 @@
         <comment attr="#***************************************#"/>
         <RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION>
             <value attr="1"/>
+       </RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION>
 
         <SHOW_RATIO_PLOT_BELOW>
             <value attr="1"/>
         </SHOW_RATIO_PLOT_BELOW>
 
-       </RUNP0DAIRNUMUBARINANTINUMODECCNTRACKSSELECTION>
     </RunSyst_New_Options>
 </main>
 

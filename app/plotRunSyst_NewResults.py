@@ -716,7 +716,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     sand_sample = evt_sample['MC']['Sand']
 
     save_as = '%s_%s_MC_only_%s_%s' % (SELECTIONSAVENAME, save_title, true_selections[0].name, mc_sample.CPPClass.saveTitle)
-    canvas = ROOT.TCanvas("canvas", "", 800, 600)
+    canvas = ROOT.TCanvas("canvas", "", 800, 700)
     legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
                      coordinates.Legend_RHS_X2, coordinates.Legend_RHS_Y2,
                      mc_sample.CPPClass.plotTitle)
