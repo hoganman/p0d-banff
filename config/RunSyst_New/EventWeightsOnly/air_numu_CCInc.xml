@@ -74,7 +74,7 @@
             <value attr="1"/>
         </PLOTTOPOLOGY>
         <PLOTLEPTONCANDIDATETRUEPDG>
-            <value attr="0"/>
+            <value attr="1"/>
         </PLOTLEPTONCANDIDATETRUEPDG>
         <PLOTNEUTNUREACTIONCODES>
             <value attr="1"/>
@@ -97,5 +97,7 @@
 
     </RunSyst_New_Options>
 </main>
+
+
 
 

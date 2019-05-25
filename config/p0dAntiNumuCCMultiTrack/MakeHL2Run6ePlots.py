@@ -54,7 +54,7 @@ options = {
         }
 
 # open the config file
-configFile = open('run7b-water.cfg')
+configFile = open('run6e-air.cfg')
 contents = configFile.readlines()[0].strip().split(' ')
 configFile.close()
 runName = contents[0]
@@ -71,7 +71,7 @@ dataFile = ROOT.TFile(fileDict['Data'])
 drawingTools = ROOT.DrawingTools(mcFile.GetName())
 mcSample = ROOT.DataSample(mcFile.GetName())
 dataSample = ROOT.DataSample(dataFile.GetName())
-dataMCPOTRatio = 2.85E20/mcSample.GetPOTGoodBeamGoodND280()  # drawingTools.GetPOTRatio(dataSample, mcSample)
+dataMCPOTRatio = 3.38E20/mcSample.GetPOTGoodBeamGoodND280()
 
 canvas = ROOT.TCanvas("canvas", "", 800, 600)
 canvas.cd()
@@ -100,9 +100,9 @@ for cutName, cutStr in cuts.iteritems():
                 hist.GetYaxis().SetTitleOffset(1.25*hist.GetYaxis().GetTitleOffset())
                 hist.GetYaxis().SetTitleSize(1.25*hist.GetYaxis().GetTitleSize())
                 hist.GetXaxis().SetTitleSize(1.35*hist.GetXaxis().GetTitleSize())
-                hist.GetYaxis().SetTitle('Events / bin / (2.85 x 10^{20} PoT)')
+                hist.GetYaxis().SetTitle('Events / bin / (3.38 x 10^{20} PoT)')
                 canvas.Update()
-                SaveCanvasAs(canvas, 'plots/Run7b_Water/' + outputName)
+                SaveCanvasAs(canvas, 'plots/Run6e_Air/' + outputName)
 
 # drawingTools.DrawRelativeErrors(mcFile.Get('all_syst'), 'selmu_mom*1e-3', 50., 0., 5., CC1TrackCut, '', 'SYS')
 

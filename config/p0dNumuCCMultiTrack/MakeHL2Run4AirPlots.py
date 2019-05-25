@@ -14,17 +14,18 @@ momentumCut = 'selmu_mom < 30000'
 
 ROOT.gROOT.SetBatch()
 
-CCInclusiveCut = 'accum_level > 5'
-CC1TrackCut = 'accum_level[][0] > 5'
-CCNTracksCut = 'accum_level[][1] > 5'
+MAX_ACCUM_LEVEL = '4'
+CCInclusiveCut = 'accum_level > {}'.format(MAX_ACCUM_LEVEL)
+CC1TrackCut = 'accum_level[][0] > {}'.format(MAX_ACCUM_LEVEL)
+CCNTracksCut = 'accum_level[][1] > {}'.format(MAX_ACCUM_LEVEL)
 
 cuts = {
-        'NumubarinRHCCCInc': CCInclusiveCut,
-        'NumubarInRHCCC1Track': CC1TrackCut,
-        'NumubarInRHCCCNTracks': CCNTracksCut
+        'NumuFHCCCInc': CCInclusiveCut,
+        'NumuFHCCC1Track': CC1TrackCut,
+        'NumuFHCCCNTracks': CCNTracksCut
         }
-# categories = ["particle", "reaction", "topology", "nutype", "target"]
-categories = ["particle", "nutype", "target"]
+categories = ["particle", "reaction", "topology", "nutype", "target"]
+# categories = ["particle", "nutype", "target"]
 
 kinematicVariables = {
         'momentum': 'selmu_mom*1e-3',
@@ -54,7 +55,7 @@ options = {
         }
 
 # open the config file
-configFile = open('run7b-water.cfg')
+configFile = open('run4_water_out.cfg')
 contents = configFile.readlines()[0].strip().split(' ')
 configFile.close()
 runName = contents[0]
@@ -71,7 +72,7 @@ dataFile = ROOT.TFile(fileDict['Data'])
 drawingTools = ROOT.DrawingTools(mcFile.GetName())
 mcSample = ROOT.DataSample(mcFile.GetName())
 dataSample = ROOT.DataSample(dataFile.GetName())
-dataMCPOTRatio = 2.85E20/mcSample.GetPOTGoodBeamGoodND280()  # drawingTools.GetPOTRatio(dataSample, mcSample)
+dataMCPOTRatio = 7.87E20/mcSample.GetPOTGoodBeamGoodND280()
 
 canvas = ROOT.TCanvas("canvas", "", 800, 600)
 canvas.cd()
@@ -100,9 +101,9 @@ for cutName, cutStr in cuts.iteritems():
                 hist.GetYaxis().SetTitleOffset(1.25*hist.GetYaxis().GetTitleOffset())
                 hist.GetYaxis().SetTitleSize(1.25*hist.GetYaxis().GetTitleSize())
                 hist.GetXaxis().SetTitleSize(1.35*hist.GetXaxis().GetTitleSize())
-                hist.GetYaxis().SetTitle('Events / bin / (2.85 x 10^{20} PoT)')
+                hist.GetYaxis().SetTitle('Events / bin / (7.87 x 10^{20} PoT)')
                 canvas.Update()
-                SaveCanvasAs(canvas, 'plots/Run7b_Water/' + outputName)
+                SaveCanvasAs(canvas, 'plots/Run4_Air/' + outputName)
 
 # drawingTools.DrawRelativeErrors(mcFile.Get('all_syst'), 'selmu_mom*1e-3', 50., 0., 5., CC1TrackCut, '', 'SYS')
 

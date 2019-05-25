@@ -82,6 +82,9 @@
         <PLOTNEUTCCQELIKEREACTIONCODES>
             <value attr="1"/>
         </PLOTNEUTCCQELIKEREACTIONCODES>
+        <PLOTLEPTONCANDIDATETRUEPDG>
+            <value attr="1"/>
+        </PLOTLEPTONCANDIDATETRUEPDG>
 
         <comment attr="#***************************************#"/>
         <comment attr="Air numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
@@ -96,6 +99,8 @@
 
     </RunSyst_New_Options>
 </main>
+
+
 
 
 

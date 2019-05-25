@@ -10,7 +10,8 @@ import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 QUEUE = '\"physics.q|short.q\"'
-HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node29|node30\"'
+# HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node29|node30\"'
+HOSTS = '\"node45\"'
 # EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
 # for x in range(1, 20) + range(27, 31) + range(40, 46):

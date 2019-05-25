@@ -85,6 +85,9 @@
         <PLOTNEUTCCQELIKEREACTIONCODES>
             <value attr="1"/>
         </PLOTNEUTCCQELIKEREACTIONCODES>
+        <PLOTLEPTONCANDIDATETRUEPDG>
+            <value attr="1"/>
+        </PLOTLEPTONCANDIDATETRUEPDG>
 
         <comment attr="#***************************************#"/>
         <comment attr="Water numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
@@ -97,8 +100,11 @@
             <value attr="1"/>
         </SHOW_RATIO_PLOT_BELOW>
 
+
     </RunSyst_New_Options>
 </main>
+
+
 
 
 

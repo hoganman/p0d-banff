@@ -3,6 +3,8 @@
 #include "p0dNumuCCSelection.hxx"
 #include "CutUtils.hxx"
 #include "EventBoxUtils.hxx"
+#include "antiNumuCCSelection.hxx"
+#include "numuBkgInAntiNuModeCCSelection.hxx"
 
 //********************************************************************
 p0dNumuCCQESelection::p0dNumuCCQESelection(bool forceBreak): SelectionBase(forceBreak, EventBoxId::kEventBoxTracker) {
@@ -13,8 +15,42 @@ p0dNumuCCQESelection::p0dNumuCCQESelection(bool forceBreak): SelectionBase(force
 //********************************************************************
 void p0dNumuCCQESelection::DefineSteps(){
 //********************************************************************
+
+  // numu CC in FHC
   p0dNumuCCSelection p0dnumucc;
   CopySteps(p0dnumucc);
+
+  /*
+  // numubar CC in RHC
+  // Cuts must be added in the right order
+  // last "true" means the step sequence is broken if cut is not passed (default is "false")
+  AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),         true);
+  AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
+  AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction_antinu());
+  AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
+  //AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dWaterNumubarInAntiNuModeCCMultiTrack());
+  AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
+  AddStep(StepBase::kCut,    "pos_mult",            new PositiveMultiplicityCut());
+  AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
+  AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
+  */
+
+  /*
+  // numu bkg CC in RHC
+  // Cuts must be added in the right order
+  // last "true" means the step sequence is broken if cut is not passed (default is "false")
+  AddStep(StepBase::kCut,    "event quality",       new EventQualityCut(),         true);
+  AddStep(StepBase::kCut,    "> 0 tracks ",         new TotalMultiplicityCut(),    true);
+  AddStep(StepBase::kAction, "find leading tracks", new FindLeadingTracksAction_antinu());
+  AddStep(StepBase::kAction, "find vertex",         new FindVertexAction());
+  //AddStep(StepBase::kAction, "fill_summary",        new FillSummaryAction_p0dWaterNumubarInAntiNuModeCCMultiTrack());
+  AddStep(StepBase::kCut,    "quality+fiducial",    new TrackQualityFiducialCut(), true);
+  AddStep(StepBase::kCut,    "neg_mult",            new NegativeMultiplicityCut());
+  AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
+  AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
+  */
+
+  SetPreSelectionAccumLevel(4);
 
   //Add a split to the trunk with 2 branches. One for single p0d
   //selection and the other for multiple. This is necessary to get the

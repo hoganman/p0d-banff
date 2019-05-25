@@ -81,14 +81,14 @@ void P0DBANFFInterface::DefineColors()
 
     // CB pallate taken from Brian Connelly
     // http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
-    cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");  // 0
-    cbOrange = new TColor(kcbOrange, 0.90, 0.60, 0.00, "cbOrange"); // 1
-    cbSky    = new TColor(kcbSky   , 0.35, 0.70, 0.90, "cbSky");    // 2
-    cbGreen  = new TColor(kcbGreen , 0.00, 0.60, 0.50, "cbGreen");  // 3
-    cbBlue   = new TColor(kcbBlue  , 0.00, 0.45, 0.70, "cbBlue");   // 4
-    cbRed    = new TColor(kcbRed   , 0.80, 0.40, 0.00, "cbRed");    // 5
-    cbPurple = new TColor(kcbPurple, 0.80, 0.60, 0.70, "cbPurple"); // 6
-    cbYellow = new TColor(kcbYellow, 0.95, 0.90, 0.25, "cbYellow"); // 7
+    cbBlack  = new TColor(kcbBlack , 0.00, 0.00, 0.00, "cbBlack");
+    cbOrange = new TColor(kcbOrange, 0.90, 0.60, 0.00, "cbOrange");
+    cbSky    = new TColor(kcbSky   , 0.35, 0.70, 0.90, "cbSky");
+    cbGreen  = new TColor(kcbGreen , 0.00, 0.60, 0.50, "cbGreen");
+    cbYellow = new TColor(kcbYellow, 0.95, 0.90, 0.25, "cbYellow");
+    cbBlue   = new TColor(kcbBlue  , 0.00, 0.45, 0.70, "cbBlue");
+    cbRed    = new TColor(kcbRed   , 0.80, 0.40, 0.00, "cbRed");
+    cbPurple = new TColor(kcbPurple, 0.80, 0.60, 0.70, "cbPurple");
 
     //taken from https://personal.sron.nl/~pault/
     cbBrightBlue = new TColor(kcbBrightBlue, 0.27, 0.47, 0.67);
@@ -494,7 +494,7 @@ void P0DBANFFInterface::LoadColorBlindPalette(EColorPalette palette) const
     {
       P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette P0DBANFF"));
       const Int_t nColors = 5;
-      const Double_t length[]    = {0.00,0.25,0.50,0.75,1.00};
+      const Double_t length[] = {0.00,0.25,0.50,0.75,1.00};
       const Double_t ColorR[] = {0.00,0.35,0.80,0.80,0.95};
       const Double_t ColorG[] = {0.45,0.70,0.60,0.40,0.90};
       const Double_t ColorB[] = {0.70,0.90,0.70,0.00,0.25};

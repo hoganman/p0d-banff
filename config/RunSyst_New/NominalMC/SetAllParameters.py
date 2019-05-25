@@ -22,7 +22,7 @@ parameterChanges = {
         'DRAW_P0DCOVFHC_PMU_COSTHETAMU': '\"0\"',
         'SHOW_LOGZ': '\"0\"',
         'APPLY_FLUX_WEIGHTS': '\"0\"',
-        'APPLY_EVENT_WEIGHTS': '\"1\"',
+        'APPLY_EVENT_WEIGHTS': '\"0\"',
         'PLOTTOPOLOGY': '\"1\"',
         'PLOTNEUTNUREACTIONCODES': '\"1\"',
         'PLOTNEUTANTINUREACTIONCODES': '\"1\"',
