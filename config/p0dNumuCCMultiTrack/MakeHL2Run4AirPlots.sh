@@ -1,4 +1,4 @@
-APPLICATION=MakeHL2Run4WaterPlots.py
+APPLICATION=MakeHL2Run4AirPlots.py
 # Options:
 #   -r, --ratio      Run make a ratio plot only
 #   -i, --inclusive  Run CCInc only
@@ -10,20 +10,19 @@ APPLICATION=MakeHL2Run4WaterPlots.py
 #   -n, --nominal    Turn off all weights
 #   -w, --weighted   Use all weights
 
-# python $APPLICATION --ratio --inclusive --momentum --nominal
 # python $APPLICATION --ratio --inclusive --costheta --nominal
-# python $APPLICATION --ratio --inclusive --momentum --weighted
 # python $APPLICATION --ratio --inclusive --costheta --weighted
+# python $APPLICATION --ratio --oneTrack  --costheta --nominal
+# python $APPLICATION --ratio --oneTrack  --costheta --weighted
+# python $APPLICATION --ratio --NTracks   --costheta --nominal
+# python $APPLICATION --ratio --NTracks   --costheta --weighted
 
-# python $APPLICATION --ratio --oneTrack --momentum --nominal
-# python $APPLICATION --ratio --oneTrack --costheta --nominal
-# python $APPLICATION --ratio --oneTrack --momentum --weighted
-# python $APPLICATION --ratio --oneTrack --costheta --weighted
-
-# python $APPLICATION --ratio --NTracks --momentum --nominal
-# python $APPLICATION --ratio --NTracks --costheta --nominal
-# python $APPLICATION --ratio --NTracks --momentum --weighted
-# python $APPLICATION --ratio --NTracks --costheta --weighted
+# python $APPLICATION --ratio --inclusive --momentum --nominal
+python $APPLICATION --ratio --inclusive --momentum --weighted
+# python $APPLICATION --ratio --oneTrack  --momentum --nominal
+# python $APPLICATION --ratio --oneTrack  --momentum --weighted
+# python $APPLICATION --ratio --NTracks   --momentum --nominal
+# python $APPLICATION --ratio --NTracks   --momentum --weighted
 
 # python $APPLICATION -i -p -q -E -n
 # python $APPLICATION -o -p -q -E -n

@@ -6,6 +6,10 @@ import sys
 import numpy as np
 import optparse
 
+configFile = open('run4-water_MC_As_Data.cfg')
+dataPOT = 3.66E20
+destDir = 'plots/Run4_Water'
+
 
 def SaveCanvasAs(canvas, saveName):
     for saveFmt in ['root', 'png']:
@@ -110,7 +114,6 @@ def main(argv):
         return
 
     # open the config file
-    configFile = open('run4-water_MC_As_Data.cfg')
     contents = configFile.readlines()[0].strip().split(' ')
     configFile.close()
     del contents[0]
@@ -124,7 +127,7 @@ def main(argv):
 
     drawingTools = ROOT.DrawingTools(mcFile.GetName())
     mcSample = ROOT.DataSample(mcFile.GetName())
-    dataMCPOTRatio = 3.66E20/mcSample.GetPOTGoodBeamGoodND280()
+    dataMCPOTRatio = dataPOT/mcSample.GetPOTGoodBeamGoodND280()
 
     canvas = None
     # void Draw(DataSample& data, const string& name, int nbins, double* xbins, const string& categ = "all", const string& cut = "", const string& root_opt = "", const string& opt = "", double norm = -1, bool scale_errors = true)
@@ -250,7 +253,7 @@ def main(argv):
                     canvas.cd()
                     canvas.Update()
                     # canvas.Draw()
-                    SaveCanvasAs(canvas, 'plots/Run4_Water/{}/{}'.format(cutName, outputName))
+                    SaveCanvasAs(canvas, '{}/{}/{}'.format(destDir, cutName, outputName))
     print('DONE!')
     sys.exit(0)
 
