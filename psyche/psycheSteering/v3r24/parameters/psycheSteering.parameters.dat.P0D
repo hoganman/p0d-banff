@@ -192,7 +192,7 @@ Parameters to control Detector Weight Systematics
 P0D
  < psycheSteering.Weights.EnableTpcP0dMatchEff     = 1 >
  < psycheSteering.Weights.EnableP0DELossScale      = 1 >
- < psycheSteering.Weights.EnableP0DELossResol      = 1 >
+ < psycheSteering.Weights.EnableP0DELossResol      = 0 >
  < psycheSteering.Weights.EnableP0DOOFV            = 1 >
  < psycheSteering.Weights.EnableP0DVeto            = 1 >
 -------------------------------------------------------------
@@ -210,3 +210,5 @@ Parameter to control the app
  < psycheSteering.RunSyst.RunAllSyst = 1 >
  < psycheSteering.RunSyst.ThrowToys = 1 >
  < psycheSteering.RunSyst.CorrelationXMLFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheSteering/v3r24/macros/correlations.xml >
+
+ < psycheSteering.RunSyst.NWeights = 23 >

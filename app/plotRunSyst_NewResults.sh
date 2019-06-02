@@ -1,73 +1,73 @@
 #!/usr/bin/bash
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numuBkgInAntiNuMode_CCNTracks.xml
 ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/air_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numuBkgInAntiNuMode_CCNTracks.xml
 ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/EventWeightsOnly/water_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/air_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxAndEventWeights/water_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numuBkgInAntiNuMode_CCNTracks.xml
 ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/air_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numuBkgInAntiNuMode_CCNTracks.xml
 ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CCNTracks.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CC1Track.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CCInc.xml
-./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/FluxWeightsOnly/water_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/air_numu_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numubarInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numuBkgInAntiNuMode_CCNTracks.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CC1Track.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CCInc.xml
+# ./plotRunSyst_NewResults.py ../config/RunSyst_New/NominalMC/water_numu_CCNTracks.xml

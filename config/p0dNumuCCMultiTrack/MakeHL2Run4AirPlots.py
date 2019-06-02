@@ -7,7 +7,7 @@ import numpy as np
 import optparse
 
 configFile = open('run4-air_MC_As_Data.cfg')
-dataPOT = 7.87E20
+dataPOT = 7.872E20
 destDir = 'plots/Run4_Air'
 
 
@@ -84,7 +84,7 @@ def main(argv):
         kinematicVariables['costheta'] = 'selmu_dir[2]'
         kinematicTitles['costheta'] = 'Lepton Candidate Track Angle [cos(#theta)]'
         legendPositions['costheta'] = 'tl'
-        binning['costheta'] = np.array([0.0, 0.5, 0.52, 0.54, 0.56, 0.58, 0.6, 0.62, 0.64, 0.66, 0.68, 0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9, 0.92, 0.94, 0.9615, 0.98, 0.9925, 1.0])
+        binning['costheta'] = np.array([0.0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.4, 0.42, 0.44, 0.46, 0.48, 0.5, 0.52, 0.54, 0.56, 0.58, 0.6, 0.62, 0.64, 0.66, 0.68, 0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9, 0.92, 0.94, 0.96, 0.98, 1.0])
     if options.Enu:
         kinematicVariables['Enu'] = 'nu_trueE*1e-3'
         kinematicTitles['Enu'] = 'True Neutrino Energy [GeV]'
@@ -147,13 +147,25 @@ def main(argv):
                     canvas.cd()
                     outputName = '{}_{}_{}_{}'.format(cutName, key, category, optionName)
                     print('output name =', outputName)
-                    canvas_1, pad1, pad2, hist = None, None, None, None
+                    pad1, pad2, hist = None, None, None
+                    nominal = None
                     if options.ratio and 'particle' in category:
                         canvas.cd()
                         pad1 = ROOT.TPad("pad1", "pad1", 0, 0.3, 1, 1.0)
                         pad1.SetBottomMargin(0)
                         pad1.Draw()
                         pad1.cd()
+                        optionStr_1 = "NOVARBIN NOW"
+                        drawingTools.Draw(mcSample, kinematicVar, nBins, bins, category, allCuts, "", optionStr_1, dataMCPOTRatio)
+                        for objindex in range(pad1.GetListOfPrimitives().GetSize()):
+                            print(pad1.GetListOfPrimitives().At(objindex))
+                            if '_all' in pad1.GetListOfPrimitives().At(objindex).GetName():
+                                nominal = ROOT.TH1D(pad1.GetListOfPrimitives().At(objindex))
+                                nominal.SetLineColor(ROOT.kYellow)
+                                nominal.SetLineWidth(3)
+                                nominal.SetLineStyle(9)
+                                print('nominal set')
+                                break
                     drawingTools.SetLegendPos(legendPositions[key])
                     drawingTools.SetTitleX(kinematicTitles[key])
                     drawingTools.SetTitleY('Events / bin')
@@ -163,12 +175,10 @@ def main(argv):
                     else:
                         hist = canvas.GetPrimitive(canvas.GetListOfPrimitives().At(2).GetName())
                         canvas.GetListOfPrimitives().At(1).GetYaxis().SetTitle('Events / bin')
-                    # hist.GetYaxis().SetTitle('Events / bin')
-                    # hist.GetYaxis().Draw()
-                    # ROOT.gPad.Update()
                     if options.ratio and 'particle' in category:
                         hist.GetYaxis().SetLabelSize(0.)
                         hist.GetYaxis().SetTitle('Events / bin')
+                        hist.SetStats(1)
                         pad1.GetListOfPrimitives().At(1).GetYaxis().SetTitle('Events / bin')
                         axis = ROOT.TGaxis(-5, 20, -5, 220, 20, 220, 510, "")
                         axis.SetLabelFont(43)
@@ -197,26 +207,6 @@ def main(argv):
                         ratio.Sumw2()
                         ratio.SetStats(0)
 
-                        drawingTools_1 = ROOT.DrawingTools(mcFile.GetName())
-                        mcSample_1 = ROOT.DataSample(mcFile.GetName())
-                        canvas_1 = ROOT.TCanvas("canvas_1", "", 800, 600)
-                        canvas_1.cd()
-                        pad1_1 = ROOT.TPad("pad1_1", "pad1_1", 0, 0.3, 1, 1.0)
-                        pad1_1.SetBottomMargin(0)
-                        pad1_1.Draw()
-                        pad1_1.cd()
-                        optionStr_1 = "NOVARBIN NOW"
-                        drawingTools_1.Draw(mcSample_1, kinematicVar, nBins, bins, category, allCuts, "", optionStr_1, dataMCPOTRatio)
-                        nominal = None
-                        for objindex in range(pad1_1.GetListOfPrimitives().GetSize()):
-                            print(pad1_1.GetListOfPrimitives().At(objindex))
-                            if '_all' in pad1_1.GetListOfPrimitives().At(objindex).GetName():
-                                nominal = pad1_1.GetListOfPrimitives().At(objindex)
-                        canvas.cd()
-                        pad2.cd()
-                        nominal.SetLineColor(ROOT.kYellow)
-                        nominal.SetLineWidth(3)
-                        nominal.SetLineStyle(9)
                         ratio.Divide(nominal)
                         ratio.SetMarkerStyle(21)
                         ratio.Draw("ep")
@@ -245,14 +235,14 @@ def main(argv):
                         pad2.Update()
                         canvas.cd()
                         pad1.cd()
-                        nominal.Draw("SAME")
                         pad1_Legend = pad1.GetPrimitive('TPave')
-                        pad1_Legend.AddEntry(nominal, 'Nominal MC', 'L')
+                        if nominal:
+                            nominal.Draw("SAME")
+                            pad1_Legend.AddEntry(nominal, 'Nominal MC', 'L')
                         pad1_Legend.Draw()
                         pad1.Update()
                     canvas.cd()
                     canvas.Update()
-                    # canvas.Draw()
                     SaveCanvasAs(canvas, '{}/{}/{}'.format(destDir, cutName, outputName))
     print('DONE!')
     sys.exit(0)

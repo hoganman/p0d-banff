@@ -18,9 +18,9 @@ APPLICATION=MakeHL2Run4AirPlots.py
 # python $APPLICATION --ratio --NTracks   --costheta --weighted
 
 # python $APPLICATION --ratio --inclusive --momentum --nominal
-python $APPLICATION --ratio --inclusive --momentum --weighted
-# python $APPLICATION --ratio --oneTrack  --momentum --nominal
-# python $APPLICATION --ratio --oneTrack  --momentum --weighted
+# python $APPLICATION --ratio --inclusive --momentum --weighted
+python $APPLICATION --ratio --oneTrack  --momentum --nominal
+python $APPLICATION --ratio --oneTrack  --momentum --weighted
 # python $APPLICATION --ratio --NTracks   --momentum --nominal
 # python $APPLICATION --ratio --NTracks   --momentum --weighted
 

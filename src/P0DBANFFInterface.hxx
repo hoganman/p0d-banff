@@ -263,6 +263,9 @@ public:
 
     //Copied from ROOT6, all but kP0DBANFF and kInvertedDarkBodyRadiator are supported
     enum EColorPalette {kP0DBANFF=1, kInvertedDarkBodyRadiator=56};
+
+    EColorPalette GetP0DBANFFColorPalette() const {return kP0DBANFF;}
+    EColorPalette GetInvertedDarkBodyRadiatorColorPalette() const {return kInvertedDarkBodyRadiator;}
     ///Sets a nice color scale
     void LoadColorBlindPalette(EColorPalette palette = kP0DBANFF) const;
 

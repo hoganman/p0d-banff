@@ -785,6 +785,7 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
         sel_cuts_name = a_selection.cuts.GetName()
         if not (TString(sel_cuts_name).Contains('Sand') or
                 TString(sel_cuts_name).Contains('sand')):
+            # print 'cuts =', sel_cuts
             mc_nEntries = mc_sample.getTChain().Draw(draw_cmd, sel_cuts, 'goff')
             mc_var = mc_sample.getTChain().GetV1()
             mc_systematic_weights = mc_sample.getTChain().GetV2()
@@ -1017,6 +1018,7 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
         # the entire selection include all but sand
         if index == 0:
             mcTChain = mc_sample.getTChain()
+            print 'cuts =', a_selection.cuts.GetTitle()
             mc_nEntries = mcTChain.Draw(draw_cmd, a_selection.cuts, 'goff')
             mc_varX = mcTChain.GetV1()
             mc_varY = mcTChain.GetV2()

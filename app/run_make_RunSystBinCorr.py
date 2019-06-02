@@ -9,9 +9,9 @@ from ShellCommand import ShellCommand
 import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
-QUEUE = '\"physics.q|short.q\"'
-# HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node29|node30\"'
-HOSTS = '\"node45\"'
+QUEUE = '\"physics.q\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
+# HOSTS = '\"node45\"'
 # EXCLUDEHOSTS = [6, 7, 10, 19]
 # HOSTS = '\"'
 # for x in range(1, 20) + range(27, 31) + range(40, 46):
@@ -23,7 +23,7 @@ HOSTS = '\"node45\"'
 
 MEM = '1024'
 NEUT = 'NEUT'
-MCMIN = str(int(60*8))
+MCHOUR = str(int(9999))
 SAND = 'mcp6_Spin_B/sand'
 FLATTREEBASE = os.getenv('FLATTREEROOT')
 RUNSYSTBINCORRBASE = os.getenv('BINCORRROOT')
@@ -87,7 +87,7 @@ def make_qsub(run_name, production):
     flattree_dir_list = '-L %s' % (flattree_dir.get())
     queue = '-q %s' % (QUEUE)
     hosts = '-N %s' % (HOSTS)
-    minutes = '-M %s' % (MCMIN)
+    hours = '-H %s' % (MCHOUR)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (RUNSYSTBINCORRBASE,
                                                production, run_name.low()))
@@ -104,7 +104,7 @@ def make_qsub(run_name, production):
     this_run.add(memory)
     this_run.add(queue)
     this_run.add(hosts)
-    this_run.add(minutes)
+    this_run.add(hours)
     this_run.add(output_path)
     this_run.add(output_name)
     return this_run

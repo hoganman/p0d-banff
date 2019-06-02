@@ -28,7 +28,7 @@ def printusage(programname='SubmitJobsWithSleep.py'):
     print "input 1: submission directory (manadatory)"
     print "input 2: sleep time in seconds (assumes 20)"
     print "input 3: first job number (assumes 1)"
-    print "input 4: last job number (assumes 1000)"
+    print "input 4: last job number (assumes 100)"
     print "input 5: submission script name with %d in it \
 (assumes 'submit_ajob_%d.sh')"
     exit(1)
@@ -76,7 +76,7 @@ def main(argv):
             print "ERROR: please input an integer for last job number"
             printusage()
     else:
-        lastjob = 1000
+        lastjob = 100
 
     if nuserargs > 4:
         try:

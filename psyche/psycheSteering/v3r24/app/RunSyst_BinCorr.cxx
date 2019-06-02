@@ -12,10 +12,10 @@
 #include "TRandom3.h"
 #include "MultiThread.hxx"
 
-const int nWeights = 23;
 
 int main(int argc, char *argv[]){
 
+  int nWeights = 23;
   std::string programName = argv[0];
   std::string paramFile = "";
   int nmax = 100000000;
@@ -184,10 +184,13 @@ int main(int argc, char *argv[]){
   Double_t LeptonCosToy   [nToys];
   Double_t WeightToy      [nToys];
   Int_t    nWeightSyst = _man.eweight().GetNEnabledEventWeights();
+  if(ND::params().HasParameter("psycheSteering.RunSyst.NWeights"))
+      nWeights = ND::params().GetParameterI("psycheSteering.RunSyst.NWeights");
 
   if(nWeights != nWeightSyst){
     std::cerr << "nWeights != nWeightSyst (" << nWeights << " != " << nWeightSyst << ")" << std::endl;
     std::cerr << "Change the hard coded value at the beginning of RunSyst_New.cxx" << std::endl;
+    std::cerr << "or the parameter psycheSteering.RunSyst.NWeights " << std::endl;
     throw;
   }
   for (std::vector<EventWeightBase*>::iterator it = _man.eweight().GetEventWeights().begin(); it != _man.eweight().GetEventWeights().end(); ++it) {
