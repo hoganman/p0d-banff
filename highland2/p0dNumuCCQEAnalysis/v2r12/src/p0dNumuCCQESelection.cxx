@@ -17,10 +17,8 @@ void p0dNumuCCQESelection::DefineSteps(){
 //********************************************************************
 
   // numu CC in FHC
-  /*
   p0dNumuCCSelection p0dnumucc;
   CopySteps(p0dnumucc);
-  */
 
   /*
   // numubar CC in RHC
@@ -37,6 +35,7 @@ void p0dNumuCCQESelection::DefineSteps(){
   AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
   */
 
+  /*
   // numu bkg CC in RHC
   // Cuts must be added in the right order
   // last "true" means the step sequence is broken if cut is not passed (default is "false")
@@ -49,6 +48,7 @@ void p0dNumuCCQESelection::DefineSteps(){
   AddStep(StepBase::kCut,    "neg_mult",            new NegativeMultiplicityCut());
   AddStep(StepBase::kAction, "find veto track",     new FindP0DVetoAction());
   AddStep(StepBase::kCut,    "veto",                new P0DSelectionVetoCut(),     true);
+  */
 
   SetPreSelectionAccumLevel(4);
 

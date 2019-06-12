@@ -15,7 +15,7 @@
 
 int main(int argc, char *argv[]){
 
-  int nWeights = 23;
+  int nWeights = 0;
   std::string programName = argv[0];
   std::string paramFile = "";
   int nmax = 100000000;
@@ -186,6 +186,12 @@ int main(int argc, char *argv[]){
   Int_t    nWeightSyst = _man.eweight().GetNEnabledEventWeights();
   if(ND::params().HasParameter("psycheSteering.RunSyst.NWeights"))
       nWeights = ND::params().GetParameterI("psycheSteering.RunSyst.NWeights");
+  else
+  {
+    std::cerr << "nWeights not set!" << std::endl;
+    std::cerr << "Please set < psycheSteering.RunSyst.NWeights = N >" << std::endl;
+    throw;
+  }
 
   if(nWeights != nWeightSyst){
     std::cerr << "nWeights != nWeightSyst (" << nWeights << " != " << nWeightSyst << ")" << std::endl;

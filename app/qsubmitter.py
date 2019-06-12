@@ -2,6 +2,7 @@
 
 import sys, getopt,os,datetime,math,glob,time,subprocess
 import random
+import NaturalSorting
 
 #######################
 inOptions = {
@@ -19,7 +20,7 @@ inOptions = {
         'O:':['opportunistic-nodes=','Use opportunistic nodes (default=0)'],
         'p:':['output-path=','path for output files'],
         'P:':['priority=','job priority'],
-        'q:':['qname=','sets which queue (default=\"physics.q|short.q\")'],
+        'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
         'r:':['run=','run number'],
         's:':['soft=','soft resource requirments for each job'],
@@ -280,7 +281,7 @@ def CreateFlatTreeSubmissionScript(jobNum,numJobs,priority,walltimeHours,walltim
     # ROOTrandomSeed = int(math.ceil((datetime.datetime.now() -
     #                                 datetime.datetime(1970, random.randint(1, 12), random.randint(1, 28))
     #                                ).total_seconds()))
-    submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs))
+    # submission.write('%s \'${P0DBANFFROOT}/macros/ROOTRandomSleep.C(%d)\'\n' % (ROOT, SECONDS_BTN_RUN*numJobs))
     submission.write('$P0DBANFFROOT/app/gethpcstorage_usage.py\n')
     submission.write('\n')
     submission.write('sh %s/ajob_%d.sh\n'%(CWD,jobNum))
@@ -351,6 +352,7 @@ def MakeJobs(runNumber,outputPath,outputName,numJobs,numFilesPerJob,priority,wal
     globalFileListIndex = 0
     global fileList
     oaAnalysisFiles = fileList.keys()
+    NaturalSorting.naturalsort(oaAnalysisFiles)
     for jobNum in range(0,numJobs):
         outputFile = '%s/%s_%d.root'%(outputPath,outputName,jobNum+1)
         fileCounter = 0
@@ -583,8 +585,8 @@ def main(argv):
         print helpstatement
         sys.exit()
     if len(useQueueName) == 0 and len(useHostName) == 0:
-	print 'Assuming the parameter qname=\"physics.q|short.q\"'
-	useQueueName = 'physics.q|short.q'
+	print 'Assuming the parameter qname=\"physics.q\"'
+	useQueueName = 'physics.q'
     if len(useHostName) > 1:
         if len(useQueueName) > 1:
             print 'WARNING: Be careful about specifying the hostname and qname together'

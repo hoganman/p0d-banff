@@ -8,7 +8,7 @@ std::string weightTools::ApplyWeightsOld(TTree* tree, const std::string& uopt){
 
   /*
     This method applies deals with flux and pileup weights for old micro-trees
-   */ 
+   */
 
 
   std::string w="";
@@ -36,38 +36,38 @@ std::string weightTools::ApplyWeightsOld(TTree* tree, const std::string& uopt){
 std::string weightTools::ApplyWeights(TTree* tree, const std::string& cut,const std::string& opt){
 //*********************************************************
 
-  /* 
+  /*
      This method computes the total weight. This is done modifiying the user cut in the following way:
 
-     cut_w = (cut)*weight_syst[][0]*weight_syst[][1]*....*weight_syst[][10]*...  
+     cut_w = (cut)*weight_syst[][0]*weight_syst[][1]*....*weight_syst[][10]*...
 
-     The user can select the weights to be applied via the user option uopt. For example if uopt contains "WS2 WS4" the output cut would be 
+     The user can select the weights to be applied via the user option uopt. For example if uopt contains "WS2 WS4" the output cut would be
      of the form
 
      cut_w = (cut)*weight_syst[][2]*weight_syst[][4]
 
-     The user can also combine weight systematics and corrections. For example if uopt contains "WS2 WC4" the output cut would be 
+     The user can also combine weight systematics and corrections. For example if uopt contains "WS2 WC4" the output cut would be
      of the form
 
      cut_w = (cut)*weight_syst[][2]*weight_corr[][4]
 
 */
-  
+
   // For the consistency and safety check so not to apply same weights several
   // times,  add a protection: i.e. if any weight is already present then do not
   // do anything,  it is crude but we assume it means the function was already
   // called
-  
+
   if (cut.find("*weight") != std::string::npos){
    /*
-    std::cout << " Requested a call to weightTools::ApplyWeights() that was already called (weights present)\n" 
-      << "the action will have no effect" << std::endl; 
+    std::cout << " Requested a call to weightTools::ApplyWeights() that was already called (weights present)\n"
+      << "the action will have no effect" << std::endl;
    */
     return cut;
   }
 
   std::string uopt = drawUtils::ToUpper(opt);
-  
+
   std::string w0="";
 
   // Apply toy weights
@@ -84,10 +84,10 @@ std::string weightTools::ApplyWeights(TTree* tree, const std::string& cut,const 
     cutp = "("+cut+")"+w0;
   else
     cutp = "(1==1)"+w0;
-  
-  // Nothing to do when NOW (noweights) option is present  
+
+  // Nothing to do when NOW (noweights) option is present
   if (drawUtils::CheckOption(uopt,"NOW")) return cutp;
-  
+
   // For backwards compatibility
   cutp += ApplyWeightsOld(tree,uopt);
 
@@ -119,7 +119,7 @@ std::string weightTools::ApplyWeights(TTree* tree, const std::string& cut,const 
     for (int iw=NWEIGHTSYST-1;iw>=0;iw--){
       std::stringstream siw;
       siw << iw;
-      std::string ssiw = siw.str(); 
+      std::string ssiw = siw.str();
       bool found=false;
       // WS options are ignored for WCORR option
       if (uopt2.find("WCORR")==std::string::npos && uopt2.find("WS"+ssiw+" ")!=std::string::npos){
@@ -133,17 +133,17 @@ std::string weightTools::ApplyWeights(TTree* tree, const std::string& cut,const 
       }
     }
     if (w==""){
-      if (uopt2.find("WCORR")==std::string::npos) 
+      if (uopt2.find("WCORR")==std::string::npos)
         w = w+"*weight_syst_total";
       else if (has_corr)
         w = w+"*weight_corr_total";
-    }    
+    }
   }
-  else{    
+  else{
     for (int iw=0;iw<NWEIGHTSYST;iw++){
       std::stringstream siw;
       siw << iw;
-      std::string ssiw = siw.str(); 
+      std::string ssiw = siw.str();
       // If NWSi is not found weight_syst[][i] is added
       // NWS options are ignored for WCORR option
       if (uopt2.find("WCORR")==std::string::npos && uopt2.find("NWS"+ssiw+" ")==std::string::npos){
@@ -162,8 +162,8 @@ std::string weightTools::ApplyWeights(TTree* tree, const std::string& cut,const 
   // update the cut
   cutp = cutp + w;
 
-  
-  
+
+
   return ApplyExternalWeights(tree,cutp,uopt2);
 }
 
@@ -174,15 +174,15 @@ std::string weightTools::ApplyExternalWeights(TTree* tree, const std::string& cu
 
   if (cut.find("ext_weight") != std::string::npos){
    /*
-    std::cout << " Requested a call to weightTools::ApplyWeights() that was already called (weights present)\n" 
-      << "the action will have no effect" << std::endl; 
+    std::cout << " Requested a call to weightTools::ApplyWeights() that was already called (weights present)\n"
+      << "the action will have no effect" << std::endl;
    */
     return cut;
   }
 
   std::string uopt = drawUtils::ToUpper(opt);
-  
-  // Nothing to do when NOW (noweights) option is present  
+
+  // Nothing to do when NOW (noweights) option is present
   if (drawUtils::CheckOption(uopt,"NOEXTW")) return cut;
 
   std::string w0="";
@@ -195,7 +195,7 @@ std::string weightTools::ApplyExternalWeights(TTree* tree, const std::string& cu
   else
     cutp = "(1==1)"+w0;
 
-  
+
   // The tree should contain weight_syst (not present in old default trees)
   if (!drawUtils::TreeHasVar(tree,"ext_weight")) return cutp;
 
@@ -210,7 +210,7 @@ std::string weightTools::ApplyExternalWeights(TTree* tree, const std::string& cu
     for (int iw=NEXTWEIGHTS-1;iw>=0;iw--){
       std::stringstream siw;
       siw << iw;
-      std::string ssiw = siw.str(); 
+      std::string ssiw = siw.str();
       bool found=false;
       if (uopt2.find("WE"+ssiw+" ")!=std::string::npos){
         w = w+"*ext_weight["+ssiw+"]";
@@ -218,11 +218,11 @@ std::string weightTools::ApplyExternalWeights(TTree* tree, const std::string& cu
       }
     }
   }
-  else{    
+  else{
     for (int iw=0;iw<NEXTWEIGHTS;iw++){
       std::stringstream siw;
       siw << iw;
-      std::string ssiw = siw.str(); 
+      std::string ssiw = siw.str();
       if (uopt2.find("NWE"+ssiw+" ")==std::string::npos){
         w = w+"*ext_weight["+ssiw+"]";
       }
@@ -233,11 +233,11 @@ std::string weightTools::ApplyExternalWeights(TTree* tree, const std::string& cu
     for (int iw=0;iw<NEXTWEIGHTS;iw++){
       std::stringstream siw;
       siw << iw;
-      std::string ssiw = siw.str(); 
+      std::string ssiw = siw.str();
       w = w+"*ext_weight["+ssiw+"]";
     }
   }
-  
+
   // update the cut
   cutp = cutp + w;
 

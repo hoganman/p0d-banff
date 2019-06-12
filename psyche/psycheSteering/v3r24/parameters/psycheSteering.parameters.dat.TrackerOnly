@@ -178,7 +178,7 @@ Parameters to control Detector Weight Systematics
  < psycheSteering.Weights.EnableNuEECalPileUp      = 1 >
  < psycheSteering.Weights.EnableNuEOOFV      	   = 1 >
 P0D
- < psycheSteering.Weights.EnableTpcP0dMatchEff     = 1 >
+ < psycheSteering.Weights.EnableTpcP0dMatchEff     = 0 >
  < psycheSteering.Weights.EnableP0DELossScale      = 1 >
  < psycheSteering.Weights.EnableP0DELossResol      = 1 >
  < psycheSteering.Weights.EnableP0DOOFV            = 1 >

@@ -646,9 +646,7 @@ void AnalysisManager::DefineSystematics(){
   if(ND::params().GetParameterI("psycheSteering.Variations.EnableECalMomScale"))      evar().EnableEventVariation(SystId::kECalEMScale);
   if(ND::params().GetParameterI("psycheSteering.Variations.EnableECalMomResol"))      evar().EnableEventVariation(SystId::kECalEMResol);
 
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableChargeConf"))        eweight().EnableEventWeight(SystId::kChargeIDEff);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcClusterEff"))     eweight().EnableEventWeight(SystId::kTpcClusterEff);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcTrackEff"))       eweight().EnableEventWeight(SystId::kTpcTrackEff);
+
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcFgdMatchEff"))    eweight().EnableEventWeight(SystId::kTpcFgdMatchEff);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableFgdTrackEff"))       eweight().EnableEventWeight(SystId::kFgdTrackEff);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableFgdHybridTrackEff")) eweight().EnableEventWeight(SystId::kFgdHybridTrackEff);
@@ -658,25 +656,28 @@ void AnalysisManager::DefineSystematics(){
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableOOFV"))              eweight().EnableEventWeight(SystId::kOOFV);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableSIPion"))            eweight().EnableEventWeight(SystId::kSIPion);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableSIProton"))          eweight().EnableEventWeight(SystId::kSIProton);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableSandMuons"))         eweight().EnableEventWeight(SystId::kSandMu);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableECalPID"))           eweight().EnableEventWeight(SystId::kECalPID);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcECalMatchEff"))   eweight().EnableEventWeight(SystId::kTpcECalMatchEff);
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableECalEmHipPID"))      eweight().EnableEventWeight(SystId::kECalEmHipPID);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableFGD2Shower"))        eweight().EnableEventWeight(SystId::kFGD2Shower);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"))      eweight().EnableEventWeight(SystId::kNuETPCPileUp);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"))      eweight().EnableEventWeight(SystId::kNuEP0DPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEECalPileUp"))     eweight().EnableEventWeight(SystId::kNuEECalPileUp);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEOOFV"))           eweight().EnableEventWeight(SystId::kNuEOOFV);
 
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcP0dMatchEff"))    eweight().EnableEventWeight(SystId::kTpcP0dMatchEff);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DELossScale"))     evar().EnableEventVariation(SystId::kP0DELossScale);
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DELossResol"))     evar().EnableEventVariation(SystId::kP0DELossResol);
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DOOFV"      ))     eweight().EnableEventWeight(SystId::kP0DOOFV       );
-  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DVeto"      ))     eweight().EnableEventWeight(SystId::kP0DVeto       );
 
   if(ND::params().GetParameterI("psycheSteering.Weights.EnableFlux"))              syst().EnableSystematic(SystId::kFluxWeight);
 
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableChargeConf"))        eweight().EnableEventWeight(SystId::kChargeIDEff);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcClusterEff"))     eweight().EnableEventWeight(SystId::kTpcClusterEff);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcTrackEff"))       eweight().EnableEventWeight(SystId::kTpcTrackEff);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuETPCPileUp"))      eweight().EnableEventWeight(SystId::kNuETPCPileUp);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableTpcP0dMatchEff"))    eweight().EnableEventWeight(SystId::kTpcP0dMatchEff);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DVeto"      ))     eweight().EnableEventWeight(SystId::kP0DVeto       );
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableSandMuons"))         eweight().EnableEventWeight(SystId::kSandMu);
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableP0DOOFV"      ))     eweight().EnableEventWeight(SystId::kP0DOOFV       );
+  if(ND::params().GetParameterI("psycheSteering.Weights.EnableNuEP0DPileUp"))      eweight().EnableEventWeight(SystId::kNuEP0DPileUp);
 
   // Temporary: We need to add weights and variations to the systematic manager. TODO
   for (UInt_t i=0;i<eweight().GetNEventWeights();i++){
