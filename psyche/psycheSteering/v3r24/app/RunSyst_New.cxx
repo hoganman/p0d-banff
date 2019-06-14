@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 
     const std::string programName = argv[0];
 
-    const Int_t nWeights = 23;
+    int nWeights = 0;
     const Int_t debug = 0;
 
     Char_t usage[1024];
@@ -352,11 +352,19 @@ if (debug) std::cout << "is Data: " << isData << std::endl;
     Double_t LeptonCosToy   [nToys];
     Double_t WeightToy      [nToys];
     Int_t    nWeightSyst = _man.eweight().GetNEnabledEventWeights();
-
-    if(nWeights != nWeightSyst)
+    if(ND::params().HasParameter("psycheSteering.RunSyst.NWeights"))
+        nWeights = ND::params().GetParameterI("psycheSteering.RunSyst.NWeights");
+    else
     {
+        std::cerr << "nWeights not set!" << std::endl;
+        std::cerr << "Please set < psycheSteering.RunSyst.NWeights = N >" << std::endl;
+        throw;
+    }
+
+    if(nWeights != nWeightSyst){
         std::cerr << "nWeights != nWeightSyst (" << nWeights << " != " << nWeightSyst << ")" << std::endl;
         std::cerr << "Change the hard coded value at the beginning of RunSyst_New.cxx" << std::endl;
+        std::cerr << "or the parameter psycheSteering.RunSyst.NWeights " << std::endl;
         throw;
     }
 

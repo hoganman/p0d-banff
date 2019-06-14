@@ -84,14 +84,20 @@ FGD2
  < psycheSteering.Selections.EnableTrackerGammaFGD2                        = 0 >
 
  [MH] P0D+TPC1
- < psycheSteering.Selections.EnableNuMuCCP0DWater                          = 1 >
+ < psycheSteering.Selections.EnableNuMuCCP0DWater                          = 0 >
+ < psycheSteering.Selections.EnableNuMuCCMultiTrackP0DWater                = 1 >
  < psycheSteering.Selections.EnableNuMubarBkgCCP0DWater                    = 0 >
- < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 1 >
- < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 1 >
- < psycheSteering.Selections.EnableNuMuCCP0DAir                            = 1 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DWater           = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DWater = 1 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DWater           = 0 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DWater = 1 >
+ < psycheSteering.Selections.EnableNuMuCCP0DAir                            = 0 >
+ < psycheSteering.Selections.EnableNuMuCCMultiTrackP0DAir                  = 1 >
  < psycheSteering.Selections.EnableNuMubarBkgCCP0DAir                      = 0 >
- < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 1 >
- < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 1 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCP0DAir             = 0 >
+ < psycheSteering.Selections.EnableNuMuBkgInAntiNuModeCCMultiTrackP0DAir   = 1 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCP0DAir             = 0 >
+ < psycheSteering.Selections.EnableNuMubarInAntiNuModeCCMultiTrackP0DAir   = 1 >
 
 Parameter to control which run periods selectionsare valid for.
 Look at AnalysisUtils.cxx to find run period numbering - Run period 8 = run 5 anti-neutrino data/MC
@@ -115,21 +121,27 @@ List valid runs using a comma separated string
  < psycheSteering.Selections.TrackerAntiNuECC.ValidRunPeriods = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
  < psycheSteering.Selections.TrackerGamma.ValidRunPeriods     = 0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18 >
 
- [MH] P0D Numu mode, Water
- < psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods = 0,1,5,7,16,17 >
- < psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods = 0,1,5,7,16,17 >
+ [MH] Numu mode, P0D Water
+ < psycheSteering.Selections.NuMuCCP0DWater.ValidRunPeriods           = 0,1,4,5,7,16,17 >
+ < psycheSteering.Selections.NuMuCCMultiTrackP0DWater.ValidRunPeriods = 0,1,4,5,7,16,17 >
+ < psycheSteering.Selections.NuMubarBkgCCP0DWater.ValidRunPeriods     = 0,1,4,5,7,16,17 >
 
- [MH] P0D Numu mode, Air
- < psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods = 2,3,4,6,13,14,18 >
- < psycheSteering.Selections.NuMubarBkgCCP0DAir.ValidRunPeriods  = 2,3,4,6,13,14,18 >
+ [MH] Numu mode, P0D Air
+ < psycheSteering.Selections.NuMuCCP0DAir.ValidRunPeriods           = 2,3,4,6,13,14,18 >
+ < psycheSteering.Selections.NuMuCCMultiTrackP0DAir.ValidRunPeriods = 2,3,4,6,13,14,18 >
+ < psycheSteering.Selections.NuMubarBkgCCP0DAir.ValidRunPeriods     = 2,3,4,6,13,14,18 >
 
- [MH] P0D Anti-Numu mode, Water
- < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DWater.ValidRunPeriods = 8,15 >
- < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DWater.ValidRunPeriods = 8,15 >
+ [MH] Anti-Numu mode, P0D Water
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DWater.ValidRunPeriods           = 8,15 >
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DWater.ValidRunPeriods = 8,15 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DWater.ValidRunPeriods           = 8,15 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DWater.ValidRunPeriods = 8,15 >
 
- [MH] P0D Anti-Numu mode, Air
- < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods = 9,10,11,12 >
- < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods = 9,10,11,12 >
+ [MH] Anti-Numu mode, P0D Air
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCP0DAir.ValidRunPeriods           = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMubarInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCP0DAir.ValidRunPeriods           = 8,9,10,11,12 >
+ < psycheSteering.Selections.NuMuBkgInAntiNuModeCCMultiTrackP0DAir.ValidRunPeriods = 8,9,10,11,12 >
 
 
 By default EventSummary class is created and filled when the selection is passed. But this might be necessary also for events not passing the selection
@@ -150,6 +162,9 @@ Parameters to control Detector Variation Systematics
  < psycheSteering.Variations.EnableToFResol       = 1 >
  < psycheSteering.Variations.EnableECalMomScale   = 1 >
  < psycheSteering.Variations.EnableECalMomResol   = 1 >
+P0D-only
+ < psycheSteering.Weights.EnableP0DELossScale     = 1 >
+ < psycheSteering.Weights.EnableP0DELossResol     = 1 >
 
 -------------------------------------------------------------
 Parameters to control Detector Weight Systematics
@@ -177,10 +192,9 @@ Parameters to control Detector Weight Systematics
  < psycheSteering.Weights.EnableNuEP0DPileUp       = 1 >
  < psycheSteering.Weights.EnableNuEECalPileUp      = 1 >
  < psycheSteering.Weights.EnableNuEOOFV      	   = 1 >
-P0D
  < psycheSteering.Weights.EnableTpcP0dMatchEff     = 0 >
- < psycheSteering.Weights.EnableP0DELossScale      = 1 >
- < psycheSteering.Weights.EnableP0DELossResol      = 1 >
+
+P0D-only
  < psycheSteering.Weights.EnableP0DOOFV            = 1 >
  < psycheSteering.Weights.EnableP0DVeto            = 1 >
 -------------------------------------------------------------
@@ -198,3 +212,5 @@ Parameter to control the app
  < psycheSteering.RunSyst.RunAllSyst = 1 >
  < psycheSteering.RunSyst.ThrowToys = 1 >
  < psycheSteering.RunSyst.CorrelationXMLFile = /physics/home/mhogan/software/p0d-banff/p0d-banff/psyche/psycheSteering/v3r24/macros/correlations.xml >
+
+ < psycheSteering.RunSyst.NWeights = 22 >

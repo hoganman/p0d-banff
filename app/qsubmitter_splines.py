@@ -20,7 +20,7 @@ inOptions = {
         'P:':['priority=','job priority'],
         'q:':['qname=','sets which queue (default=\"physics.q\")'],
         'Q:':['num-files-per-job=','sets the maximum number of input files per job'],
-        'r:':['run_type=','run number'],
+        'r:':['run_type=',"run type can be 'MC', 'sand' or 'data'"],
         's:':['soft=','soft resource requirments for each job'],
         'S:':['hard=','hard resource requirments for each job']
 }
@@ -620,8 +620,8 @@ def main(argv):
         isData = False
     elif run_type in ('SAND', 'Sand', 'sand'):
         isMC = False
-        isSand = False
-        isData = True
+        isSand = True
+        isData = False
     else:
         print 'ERROR: Must specify if MC, data, or sand'
         print helpstatement
