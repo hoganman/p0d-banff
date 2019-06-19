@@ -434,10 +434,14 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     save_as = '%s_%s_%s_%s' % (SELECTIONSAVENAME, save_title,
                                mc_sample.CPPClass.saveTitle,
                                true_selections[0].name)
-    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-        save_as += '_fluxtuned'
-    if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-        save_as += '_systematicweighted'
+    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS') and CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_FluxAndEventWeights'
+    elif CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
+        save_as += '_FluxWeightsOnly'
+    elif CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_EventWeightsOnly'
+    else:
+        save_as += '_NominalMC'
     coordinates = ROOT.CanvasCoordinates()
     canvas = ROOT.TCanvas("canvas", "", 800, 600)
     legend = TLegend(coordinates.Legend_RHS_X1, coordinates.Legend_RHS_Y1,
@@ -618,11 +622,14 @@ def make_data_mc_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     data_stats.SetTextAlign(22)  # centered
     mc_stats.SetTextAlign(22)  # centered
     ROOT.gPad.Update()
-    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-        save_as += '_fluxtuned'
-    if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-        save_as += '_systematicweighted'
-
+    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS') and CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_FluxAndEventWeights'
+    elif CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
+        save_as += '_FluxWeightsOnly'
+    elif CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_EventWeightsOnly'
+    else:
+        save_as += '_NominalMC'
     if hstack.log_y:
         canvas.SetLogy(1)
         h_stack.SetMinimum(1)
@@ -959,11 +966,14 @@ def make_mc_only_stack(evt_sample, true_selections, anaBins, hstack, save_title)
     canvas.SetFillColor(0)
     if(ROOT.gPad.GetPrimitive('TFrame')):
         ROOT.gPad.GetPrimitive('TFrame').SetFillColor(0)
-    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-        save_as += '_fluxtuned'
-    if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-        save_as += '_systematicweighted'
-
+    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS') and CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_FluxAndEventWeights'
+    elif CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
+        save_as += '_FluxWeightsOnly'
+    elif CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_EventWeightsOnly'
+    else:
+        save_as += '_NominalMC'
     canvas.cd()
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
@@ -1114,10 +1124,14 @@ def make_mc_only_H2D(evt_sample, true_selections, anaBins2D, hist2D, save_title)
     ROOT.gPad.Update()
     if CONFIGURATION.GetAttribBool('SHOW_LOGZ'):
         canvas.SetLogz(1)
-    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
-        save_as += '_fluxtuned'
-    if CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
-        save_as += '_systematicweighted'
+    if CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS') and CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_FluxAndEventWeights'
+    elif CONFIGURATION.GetAttribBool('APPLY_FLUX_WEIGHTS'):
+        save_as += '_FluxWeightsOnly'
+    elif CONFIGURATION.GetAttribBool('APPLY_EVENT_WEIGHTS'):
+        save_as += '_EventWeightsOnly'
+    else:
+        save_as += '_NominalMC'
     INTERFACE.SaveCanvasAs(canvas, join('plots', save_as))
 
     h_total.Delete()
