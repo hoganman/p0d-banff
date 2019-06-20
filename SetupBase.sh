@@ -30,7 +30,8 @@ if [ $HOSTNAME == $TA50D ]; then
     export CMTROOT=${ND280}/CMT/$CMTVERSION
     export ND280VERSION=v11r31
     export ROOTVERSION=v5r34p34n00
-    export SYSTEMATICSROOT=/Hitachi/systematics
+    # export SYSTEMATICSROOT=/Hitachi/systematics
+    export SYSTEMATICSROOT=$HOME/systematics
     source venv/bin/activate
 fi
 
