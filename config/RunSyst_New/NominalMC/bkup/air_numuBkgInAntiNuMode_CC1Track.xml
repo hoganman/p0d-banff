@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<main>
+    <RunSyst_New_Options>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="            Show data points"             />
+        <comment attr="#***************************************#"/>
+        <PLOTDATA>
+            <value attr="0"/>
+        </PLOTDATA>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="1D histograms" />
+        <comment attr="#***************************************#"/>
+
+        <DRAW_ENU>
+            <value attr="1"/>
+        </DRAW_ENU>
+        <DRAW_PMU>
+            <value attr="1"/>
+        </DRAW_PMU>
+        <DRAW_COSTHETAMU>
+            <value attr="1"/>
+        </DRAW_COSTHETAMU>
+        <DRAW_THETAMU>
+            <value attr="0"/>
+        </DRAW_THETAMU>
+        <DRAW_Q2>
+            <value attr="0"/>
+        </DRAW_Q2>
+        <DRAW_W2>
+            <value attr="0"/>
+        </DRAW_W2>
+        <DRAW_BJORKEN_X>
+            <value attr="0"/>
+        </DRAW_BJORKEN_X>
+        <DRAW_BJORKEN_Y>
+            <value attr="0"/>
+        </DRAW_BJORKEN_Y>
+        <DRAW_ENERGY_TRANSFER_NU>
+            <value attr="0"/>
+        </DRAW_ENERGY_TRANSFER_NU>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Toggle these to draw particular variables"/>
+        <comment attr="2D histograms"/>
+        <comment attr="#***************************************#"/>
+        <DRAW_P0DFIT_PMU_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_P0DFIT_PMU_COSTHETAMU>
+        <DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+            <value attr="0"/>
+        </DRAW_P0DCOVFHC_PMU_COSTHETAMU>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="          Option only for 2D"             />
+        <comment attr="#***************************************#"/>
+        <SHOW_LOGZ>
+            <value attr="0"/>
+        </SHOW_LOGZ>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Apply event + flux weight"         />
+        <comment attr="#***************************************#"/>
+        <APPLY_FLUX_WEIGHTS>
+            <value attr="0"/>
+        </APPLY_FLUX_WEIGHTS>
+        <APPLY_EVENT_WEIGHTS>
+            <value attr="1"/>
+        </APPLY_EVENT_WEIGHTS>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="       Draw by category"                  />
+        <comment attr="#***************************************#"/>
+        <PLOTTOPOLOGY>
+            <value attr="1"/>
+        </PLOTTOPOLOGY>
+        <PLOTNEUTNUREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTNUREACTIONCODES>
+        <PLOTNEUTCCQELIKEREACTIONCODES>
+            <value attr="1"/>
+        </PLOTNEUTCCQELIKEREACTIONCODES>
+
+        <comment attr="#***************************************#"/>
+        <comment attr="Water numubar in RHC  CCInc or CC-1Track or CC-NTracks"/>
+        <comment attr="#***************************************#"/>
+        <RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION>
+            <value attr="1"/>
+        </RUNP0DAIRNUMUBKGINANTINUMODECC1TRACKSELECTION>
+
+        <SHOW_RATIO_PLOT_BELOW>
+            <value attr="1"/>
+        </SHOW_RATIO_PLOT_BELOW>
+
+
+
+    </RunSyst_New_Options>
+</main>
+
+

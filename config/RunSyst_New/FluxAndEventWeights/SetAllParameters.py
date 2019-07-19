@@ -1,9 +1,12 @@
+<<<<<<< Updated upstream
 """This small script acts like sed -i for all input files
 input 1 through N are all the xml files you wish to alter
 The parameterChanges dictionary defines what you want to have
 ie if you do NOT want to plot data, have 'PLOTDATA': '\"0\"'
 """
 
+=======
+>>>>>>> Stashed changes
 import sys
 import os
 
@@ -26,8 +29,12 @@ parameterChanges = {
         'PLOTTOPOLOGY': '\"1\"',
         'PLOTNEUTNUREACTIONCODES': '\"1\"',
         'PLOTNEUTANTINUREACTIONCODES': '\"1\"',
+<<<<<<< Updated upstream
         'PLOTNEUTCCQELIKEREACTIONCODES': '\"1\"',
         'PLOTLEPTONCANDIDATETRUEPDG': '\"1\"'
+=======
+        'PLOTNEUTCCQELIKEREACTIONCODES': '\"1\"'
+>>>>>>> Stashed changes
         }
 
 

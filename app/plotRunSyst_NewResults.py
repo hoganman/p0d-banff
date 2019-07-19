@@ -1513,24 +1513,24 @@ def LoadSampleIDs():
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuCCNTracks()] = 'numuCCNTracksWaterIn'
 
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterIn'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterIn'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCCC1TrackWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCCNTracksWaterIn'
 
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterIn'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterIn'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCCC1TrackWaterIn'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCCNTracksWaterIn'
 
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCC()] = 'numuCCIncWaterOut'
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCC1Track()] = 'numuCC1TrackWaterOut'
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuCCNTracks()] = 'numuCCNTracksWaterOut'
 
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC()] = 'numubarRHCCCIncWaterOut'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCC1TrackCWaterOut'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCNTracksCWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCC1Track()] = 'numubarRHCCC1TrackWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBarInAntiNuModeCCNTracks()] = 'numubarRHCCCNTracksWaterOut'
 
     SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC()] = 'numubkgRHCCCIncWaterOut'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCC1TrackCWaterOut'
-    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCNTracksCWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCC1Track()] = 'numubkgRHCCC1TrackWaterOut'
+    SELECTIONSAVENAMEDICT[sampleIds.GetP0DAirNuMuBkgInAntiNuModeCCNTracks()] = 'numubkgRHCCCNTracksWaterOut'
 
 
 def RunWithCurrentSample(sampleId):
