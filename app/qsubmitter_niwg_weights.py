@@ -27,7 +27,7 @@ inOptions = {
 
 
 SECONDS_BTN_RUN = 1
-SECONDS_BTN_SUBMIT = 1
+SECONDS_BTN_SUBMIT = 5
 csuhpc = -1
 isSand = 0
 queueTag = '$'

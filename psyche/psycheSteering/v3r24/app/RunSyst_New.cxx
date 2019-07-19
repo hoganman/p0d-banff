@@ -1172,6 +1172,9 @@ AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex)
 {
     if(!trueVertex)
         return NULL;
+    //NC events have no true observable lepton
+    if(abs(trueVertex->ReacCode) >= 31)
+        return NULL;
     AnaTrueParticleB** particles = trueVertex->TrueParticles;
     if(!particles)
         return NULL;
@@ -1181,16 +1184,14 @@ AnaTrueParticleB* GetTrueOutgoingLepton(AnaTrueVertexB* trueVertex)
         AnaTrueParticleB* trueParticle = particles[particleIndex];
         if(!trueParticle)
             continue;
+        const Int_t absParentPDG = abs(trueParticle->ParentPDG);
         const Int_t absPDG = abs(trueParticle->PDG);
         const Int_t absNuPDG = abs(trueVertex->NuPDG);
         //first try to get muon for CC
-        if(absPDG == ParticleId::kMuonPDG && absNuPDG == 14)
+        if(absPDG == ParticleId::kMuonPDG && absNuPDG == 14 && absParentPDG == 0)
             return trueParticle;
         //try to get electron for CC
-        if(absPDG == ParticleId::kElectronPDG && absNuPDG == 12)
-            return trueParticle;
-        //lastely try numu or nue for NC
-        if(absPDG == 14 || absPDG == 12)
+        if(absPDG == ParticleId::kElectronPDG && absNuPDG == 12 && absParentPDG == 0)
             return trueParticle;
     }
     return NULL;

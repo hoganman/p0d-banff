@@ -9,18 +9,6 @@ import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
-# QUEUE = '\"physics.q|short.q\"'
-# HOSTS = '\"node40|node41|node42|node43|node44|node45|node27|node28|node30|node29\"'
-# MCMIN = str(int(60*8))
-# DATAMIN = str(int(60*8))
-# EXCLUDEHOSTS = [7, 11, 19, 29, 45]
-# HOSTS = '\"'
-# for x in range(20) + range(27, 31) + range(40, 46):
-#     if x in EXCLUDEHOSTS:
-#         continue
-#     HOSTS += 'node{}|'.format(x)
-# HOSTS = HOSTS.rstrip("|")
-# HOSTS += '\"'
 QUEUE = '\"physics.q\"'
 HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
 MCMIN = '9999'

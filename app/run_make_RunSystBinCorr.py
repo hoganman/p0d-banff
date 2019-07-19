@@ -11,16 +11,6 @@ import RunName as RN
 P0DBANFF = os.getenv('P0DBANFFROOT')
 QUEUE = '\"physics.q\"'
 HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
-# HOSTS = '\"node45\"'
-# EXCLUDEHOSTS = [6, 7, 10, 19]
-# HOSTS = '\"'
-# for x in range(1, 20) + range(27, 31) + range(40, 46):
-#     if x in EXCLUDEHOSTS:
-#         continue
-#     HOSTS += 'node{}|'.format(x)
-# HOSTS = HOSTS.rstrip("|")
-# HOSTS += '\"'
-
 MEM = '1024'
 NEUT = 'NEUT'
 MCHOUR = str(int(9999))
@@ -49,25 +39,21 @@ def submit_runsyst_new_mc():
     run7b_mc = make_qsub(RN.RUN7B, NEUT_6L)
     run8w_mc = make_qsub(RN.RUN8W, NEUT_6L)
     run8a_mc = make_qsub(RN.RUN8A, NEUT_6L)
-    sand_fhc_mc = make_qsub(RN.SANDFHC, SAND)
-    sand_rhc_mc = make_qsub(RN.SANDRHC, SAND)
 
-    run2w_mc.run(ShellCommand.IN_BKG)
-    run2a_mc.run(ShellCommand.IN_BKG)
-    run3b_mc.run(ShellCommand.IN_BKG)
-    run3c_mc.run(ShellCommand.IN_BKG)
-    run4w_mc.run(ShellCommand.IN_BKG)
-    run4a_mc.run(ShellCommand.IN_BKG)
-    run5c_mc.run(ShellCommand.IN_BKG)
-    run6b_mc.run(ShellCommand.IN_BKG)
-    run6c_mc.run(ShellCommand.IN_BKG)
-    run6d_mc.run(ShellCommand.IN_BKG)
-    run6e_mc.run(ShellCommand.IN_BKG)
-    run7b_mc.run(ShellCommand.IN_BKG)
     run8w_mc.run(ShellCommand.IN_BKG)
     run8a_mc.run(ShellCommand.IN_BKG)
-    sand_fhc_mc.run(ShellCommand.IN_BKG)
-    sand_rhc_mc.run(ShellCommand.IN_BKG)
+    run7b_mc.run(ShellCommand.IN_BKG)
+    run6e_mc.run(ShellCommand.IN_BKG)
+    run6d_mc.run(ShellCommand.IN_BKG)
+    run6c_mc.run(ShellCommand.IN_BKG)
+    run6b_mc.run(ShellCommand.IN_BKG)
+    run5c_mc.run(ShellCommand.IN_BKG)
+    run4w_mc.run(ShellCommand.IN_BKG)
+    run4a_mc.run(ShellCommand.IN_BKG)
+    run3c_mc.run(ShellCommand.IN_BKG)
+    run3b_mc.run(ShellCommand.IN_BKG)
+    run2w_mc.run(ShellCommand.IN_BKG)
+    run2a_mc.run(ShellCommand.IN_BKG)
 
 
 def main(argv):

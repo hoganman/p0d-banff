@@ -32,22 +32,7 @@
   </OOFV>
   <PileUp>
     <WithItself Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuETPCPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuEP0DPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuEECalPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
   </PileUp>
-  <NuETPCPileUp>
-    <WithItself Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuEP0DPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuEECalPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-  </NuETPCPileUp>
-  <NuEP0DPileUp>
-    <WithItself Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-    <NuEECalPileUp Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-  </NuEP0DPileUp>
-  <NuEECalPileUp>
-    <WithItself Block="10,0,0" Block="7,10,10" Block="10,17,17" Block="7,27,27" Block="10,0,17" Block="7,10,27" Block="10,17,0" Block="7,27,10"/>
-  </NuEECalPileUp>
   <SandMu>
     <WithItself Param="1,2"/>
   </SandMu>
@@ -61,3 +46,4 @@
     <WithItself AllParams=""/>
   </P0DVeto>
 </main>
+

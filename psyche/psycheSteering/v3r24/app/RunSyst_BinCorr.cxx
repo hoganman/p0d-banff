@@ -501,6 +501,4 @@ int main(int argc, char *argv[]){
     std::cout << "# events passing selection, Selection "<< SampleId::ConvertSample((SampleId::SampleEnum)i) << ": " << npassed[i] << std::endl;
   }
 
-
-
 }

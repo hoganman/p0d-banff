@@ -17,7 +17,7 @@ import random
 import signal
 import sys
 
-USAGE_MAX = 1.00
+USAGE_MAX = 2.00
 
 
 def signal_handler(signal, frame):

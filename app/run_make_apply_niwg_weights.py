@@ -9,19 +9,10 @@ import RunName as RN
 
 P0DBANFF = os.getenv('P0DBANFFROOT')
 RUNLISTS = P0DBANFF+'/run_lists'
-QUEUE = '\"physics.q|short.q\"'
-HOSTS = '\"node40|node41|node42|node43|node45|node44|node27|node28|node30|node29\"'
-HOSTS = '\"node45\"'
-# EXCLUDEHOSTS = [7, 11, 19, 29, 45]
-# HOSTS = '\"'
-# for x in range(20) + range(27, 31) + range(40, 46):
-#     if x in EXCLUDEHOSTS:
-#         continue
-#     HOSTS += 'node{}|'.format(x)
-# HOSTS = HOSTS.rstrip("|")
-# HOSTS += '\"'
+QUEUE = '\"physics.q\"'
+HOSTS = '\"node40|node41|node42|node43|node44|node45\"'
 MEM = '1024'
-MCMIN = str(int(8*60))
+MCHOUR = str(int(9999))
 BINCORRBASE = os.getenv('BINCORRROOT')
 NIWGWEIGHTSBASE = os.getenv('NIWGWEIGHTSROOT')
 NEUT_6B = 'mcp6_Spin_B/neut'
@@ -48,7 +39,7 @@ def make_qsub_niwg_weights_mc(run_name, production, data_type):
     bincorr_dir_list = '-L %s' % (bincorr_dir.get())
     queue = '-q %s' % (QUEUE)
     hosts = '-N %s' % (HOSTS)
-    minutes = '-M %s' % (MCMIN)
+    hours = '-H %s' % (MCHOUR)
     memory = '-m %s' % (MEM)
     output_path_name = Directory('%s/%s/%s' % (NIWGWEIGHTSBASE,
                                                production, run_name.low()))
@@ -66,7 +57,7 @@ def make_qsub_niwg_weights_mc(run_name, production, data_type):
     this_run.add(queue)
     this_run.add(hosts)
     this_run.add(memory)
-    this_run.add(minutes)
+    this_run.add(hours)
     this_run.add(run_type)
     this_run.add(output_path)
     this_run.add(output_name)

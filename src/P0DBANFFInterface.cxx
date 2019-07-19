@@ -525,6 +525,23 @@ void P0DBANFFInterface::LoadColorBlindPalette(EColorPalette palette) const
         for (int i = 0; i < nColorBins; i++) InvertedDarkBodyRadiatorColorPalette[i]=FI2+i;
         gStyle->SetPalette(nColorBins, InvertedDarkBodyRadiatorColorPalette);
     }
+    else if(palette == kRedWhiteBlue)
+    {
+        P0DBANFFInterface::Announce(this, TString::Format("...Loading color palette RedWhiteBlue"));
+        const Int_t nColors = 3;
+        Double_t length[3] = {0., 0.5, 1.0};
+        Double_t red[3]   = {0.80, 1., 0.00};
+        Double_t green[3] = {0.40, 1., 0.45};
+        Double_t blue[3]  = {0.00, 1., 0.70};
+        Int_t RedWhiteBlueColorPalette[nColorBins];
+        static Int_t FI2 = TColor::CreateGradientColorTable(nColors, length,
+                                                            red,
+                                                            green,
+                                                            blue,
+                                                            nColorBins);
+        for (int i = 0; i < nColorBins; i++) RedWhiteBlueColorPalette[i]=FI2+i;
+        gStyle->SetPalette(nColorBins, RedWhiteBlueColorPalette);
+    }
     else {
         P0DBANFFInterface::Warning(this, TString::Format("Cannot load palette %d...FAILED!", static_cast<Int_t>(palette)));
         return;

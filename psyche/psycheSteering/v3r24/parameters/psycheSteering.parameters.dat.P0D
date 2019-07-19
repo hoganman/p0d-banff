@@ -164,7 +164,7 @@ Parameters to control Detector Variation Systematics
  < psycheSteering.Variations.EnableECalMomResol   = 1 >
 P0D-only
  < psycheSteering.Weights.EnableP0DELossScale     = 1 >
- < psycheSteering.Weights.EnableP0DELossResol     = 1 >
+ < psycheSteering.Weights.EnableP0DELossResol     = 0 >
 
 -------------------------------------------------------------
 Parameters to control Detector Weight Systematics
