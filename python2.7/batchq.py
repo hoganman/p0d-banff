@@ -135,9 +135,9 @@ class univa(batchq):
         # set hostname
         # self.add_qoption('hostname', '-l hostname=')
 
-        # export environment variables
-        self.add_qoption('export', '-v ',
-                         usr_input='PATH,LD_LIBRARY_PATH,PYTHONPATH,P0DBANFFROOT')
+        # # export environment variables
+        # self.add_qoption('export', '-v ',
+        #                  usr_input='PATH,LD_LIBRARY_PATH,PYTHONPATH,P0DBANFFROOT')
 
     def check_univa_batchq_qoptions(self):
         """runs all checks on batchq options, including inherited ones"""
