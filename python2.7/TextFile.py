@@ -18,7 +18,7 @@ class TextFile(File.File):
         self.open()
 
     def __str__(self):
-        return 'Text file %r' % (self.file_name)
+        return 'Text file %r' % self.file_name
 
     def __del__(self):
         if self.open_status == self.IS_OPEN:
@@ -35,10 +35,10 @@ class TextFile(File.File):
                 self.file = open(self.get_file_name(), self.open_option)
                 self.open_status = self.IS_OPEN
             except IOError:
-                print 'The file could not be openned'
+                print 'The file could not be opened'
                 self.open_status = self.IS_NOT_OPEN
         else:
-            print 'The file could not be openned'
+            print 'The file could not be opened'
         return self.open_status
 
     def close(self):
@@ -71,14 +71,14 @@ class WriteTextFile(TextFile):
     def write(self, input_text):
         """writes text to file"""
         if self.file is None:
-            print "ERROR: The file not openned yet. Please open it first"
+            print "ERROR: The file not opened yet. Please open it first"
         else:
             if type(input_text) is list:
                 input_text = '\n'.join(input_text)
             try:
                 self.file.write(input_text)
             except IOError:
-                print 'IOError: The file is not writtable'
+                print 'IOError: The file is not writable'
 
 
 class ReadTextFile(TextFile):
@@ -89,7 +89,7 @@ class ReadTextFile(TextFile):
         self.file_name = input_file_name
 
     def __str__(self):
-        return 'Readable text file %r' % (self.file_name)
+        return 'Readable text file %r' % self.file_name
 
     def get_file_as_list(self):
         """returns the file contents as a list"""

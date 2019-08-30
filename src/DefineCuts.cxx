@@ -161,7 +161,7 @@ void DefineCuts::SetCuts()
     tNEUTNuCC2p2h = TCut(TString::Format("tReactionCode==%d", pdg.kNEUTNu_2p2h));
     tNEUTNuCC2p2h.SetName("True NEUT Nu CC-2p2h");
 
-    tNEUTNuCC1pi = TCut(TString::Format("(%d<=tReactionCode&&tReactionCode<=%d)||tReactionCode==3",
+    tNEUTNuCC1pi = TCut(TString::Format("(%d<=tReactionCode&&tReactionCode<=%d)||tReactionCode==-3",
                         pdg.kNEUTNuP_CC1PiPlusP, pdg.kNEUTNuO_CC1PiPlusO));
     tNEUTNuCC1pi.SetName("True NEUT Nu CC-1pi");
 

@@ -149,3 +149,54 @@ Double_t TotalPOT::GetPOT(const TString& runName) const {
     return 0;
 
 }
+
+//**************************************************
+void TotalPOT::DumpPOT()
+//**************************************************
+{
+    printf("%s = %e\n", "GetPOTRun2AirMC", GetPOTRun2AirMC());
+    printf("%s = %e\n", "GetPOTRun2WaterMC", GetPOTRun2WaterMC());
+    printf("%s = %e\n", "GetPOTRun3bAirMC", GetPOTRun3bAirMC());
+    printf("%s = %e\n", "GetPOTRun3cAirMC", GetPOTRun3cAirMC());
+    printf("%s = %e\n", "GetPOTRun4AirMC", GetPOTRun4AirMC());
+    printf("%s = %e\n", "GetPOTRun4WaterMC", GetPOTRun4WaterMC());
+    printf("%s = %e\n", "GetPOTRun5cWaterMC", GetPOTRun5cWaterMC());
+    printf("%s = %e\n", "GetPOTRun6bAirMC", GetPOTRun6bAirMC());
+    printf("%s = %e\n", "GetPOTRun6cAirMC", GetPOTRun6cAirMC());
+    printf("%s = %e\n", "GetPOTRun6dAirMC", GetPOTRun6dAirMC());
+    printf("%s = %e\n", "GetPOTRun6eAirMC", GetPOTRun6eAirMC());
+    printf("%s = %e\n", "GetPOTRun7bWaterMC", GetPOTRun7bWaterMC());
+    printf("%s = %e\n", "GetPOTRun8WaterMC", GetPOTRun8WaterMC());
+    printf("%s = %e\n", "GetPOTRun8AirMC", GetPOTRun8AirMC());
+
+    printf("%s = %e\n", "GetPOTFHCWaterMC", GetPOTFHCWaterMC());
+    printf("%s = %e\n", "GetPOTFHCAirMC", GetPOTFHCAirMC());
+    printf("%s = %e\n", "GetPOTRHCWaterMC", GetPOTRHCWaterMC());
+    printf("%s = %e\n", "GetPOTRHCAirMC", GetPOTRHCAirMC());
+
+    printf("%s = %e\n", "GetPOTFHCAirSandMC", GetPOTFHCAirSandMC());
+    printf("%s = %e\n", "GetPOTRHCAirSandMC", GetPOTRHCAirSandMC());
+
+    printf("%s = %e\n", "GetPOTRun1WaterData", GetPOTRun1WaterData());
+    printf("%s = %e\n", "GetPOTRun2AirData", GetPOTRun2AirData());
+    printf("%s = %e\n", "GetPOTRun2WaterData", GetPOTRun2WaterData());
+    printf("%s = %e\n", "GetPOTRun3bAirData", GetPOTRun3bAirData());
+    printf("%s = %e\n", "GetPOTRun3cAirData", GetPOTRun3cAirData());
+    printf("%s = %e\n", "GetPOTRun4AirData", GetPOTRun4AirData());
+    printf("%s = %e\n", "GetPOTRun4WaterData", GetPOTRun4WaterData());
+    printf("%s = %e\n", "GetPOTRun5cWaterData", GetPOTRun5cWaterData());
+    printf("%s = %e\n", "GetPOTRun6bAirData", GetPOTRun6bAirData());
+    printf("%s = %e\n", "GetPOTRun6cAirData", GetPOTRun6cAirData());
+    printf("%s = %e\n", "GetPOTRun6dAirData", GetPOTRun6dAirData());
+    printf("%s = %e\n", "GetPOTRun6eAirData", GetPOTRun6eAirData());
+    printf("%s = %e\n", "GetPOTRun7bWaterData", GetPOTRun7bWaterData());
+    printf("%s = %e\n", "GetPOTRun8WaterData", GetPOTRun8WaterData());
+    printf("%s = %e\n", "GetPOTRun8AirData", GetPOTRun8AirData());
+
+    printf("%s = %e\n", "GetPOTFHCWaterData", GetPOTFHCWaterData());
+    printf("%s = %e\n", "GetPOTFHCAirData", GetPOTFHCAirData());
+    printf("%s = %e\n", "GetPOTRHCWaterData", GetPOTRHCWaterData());
+    printf("%s = %e\n", "GetPOTRHCAirData", GetPOTRHCAirData());
+
+
+}

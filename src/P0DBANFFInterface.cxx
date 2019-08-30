@@ -36,42 +36,42 @@ P0DBANFFInterface::P0DBANFFInterface()
 P0DBANFFInterface::~P0DBANFFInterface()
 //**************************************************
 {
-    if(cbBlack)  cbBlack->Delete();
-    if(cbOrange) cbOrange->Delete();
-    if(cbSky)    cbSky->Delete();
-    if(cbGreen)  cbGreen->Delete();
-    if(cbBlue)   cbBlue->Delete();
-    if(cbRed)    cbRed->Delete();
-    if(cbPurple) cbPurple->Delete();
-    if(cbYellow) cbYellow->Delete();
+    //if(cbBlack)  cbBlack->Delete();
+    //if(cbOrange) cbOrange->Delete();
+    //if(cbSky)    cbSky->Delete();
+    //if(cbGreen)  cbGreen->Delete();
+    //if(cbBlue)   cbBlue->Delete();
+    //if(cbRed)    cbRed->Delete();
+    //if(cbPurple) cbPurple->Delete();
+    //if(cbYellow) cbYellow->Delete();
 
-    if(cbBrightBlue)   cbBrightBlue->Delete();
-    if(cbBrightCyan)   cbBrightCyan->Delete();
-    if(cbBrightGreen)  cbBrightGreen->Delete(); //! USE THIS
-    if(cbBrightYellow) cbBrightYellow->Delete();
-    if(cbBrightPink)   cbBrightPink->Delete(); //called red
-    if(cbBrightPurple) cbBrightPurple->Delete(); //! USE THIS
-    if(cbBrightGrey)   cbBrightGrey->Delete(); //! USE THIS
+    //if(cbBrightBlue)   cbBrightBlue->Delete();
+    //if(cbBrightCyan)   cbBrightCyan->Delete();
+    //if(cbBrightGreen)  cbBrightGreen->Delete(); //! USE THIS
+    //if(cbBrightYellow) cbBrightYellow->Delete();
+    //if(cbBrightPink)   cbBrightPink->Delete(); //called red
+    //if(cbBrightPurple) cbBrightPurple->Delete(); //! USE THIS
+    //if(cbBrightGrey)   cbBrightGrey->Delete(); //! USE THIS
 
-    if(cbVibrantBlue)    cbVibrantBlue->Delete();
-    if(cbVibrantCyan)    cbVibrantCyan->Delete();
-    if(cbVibrantGreen)   cbVibrantGreen->Delete(); //called teal
-    if(cbVibrantOrange)  cbVibrantOrange->Delete();
-    if(cbVibrantRed)     cbVibrantRed->Delete();
-    if(cbVibrantMagenta) cbVibrantMagenta->Delete();
+    //if(cbVibrantBlue)    cbVibrantBlue->Delete();
+    //if(cbVibrantCyan)    cbVibrantCyan->Delete();
+    //if(cbVibrantGreen)   cbVibrantGreen->Delete(); //called teal
+    //if(cbVibrantOrange)  cbVibrantOrange->Delete();
+    //if(cbVibrantRed)     cbVibrantRed->Delete();
+    //if(cbVibrantMagenta) cbVibrantMagenta->Delete();
 
-    if(cbMutedBlue)   cbMutedBlue->Delete();
-    if(cbMutedCyan)   cbMutedCyan->Delete();
-    if(cbMutedTeal)   cbMutedTeal->Delete();
-    if(cbMutedGreen)  cbMutedGreen->Delete();
-    if(cbMutedOlive)  cbMutedOlive->Delete();
-    if(cbMutedYellow) cbMutedYellow->Delete(); //called sand
-    if(cbMutedPink)   cbMutedPink->Delete(); //called rose
-    if(cbMutedWine)   cbMutedWine->Delete();
-    if(cbMutedPurple) cbMutedPurple->Delete();
+    //if(cbMutedBlue)   cbMutedBlue->Delete();
+    //if(cbMutedCyan)   cbMutedCyan->Delete();
+    //if(cbMutedTeal)   cbMutedTeal->Delete();
+    //if(cbMutedGreen)  cbMutedGreen->Delete();
+    //if(cbMutedOlive)  cbMutedOlive->Delete();
+    //if(cbMutedYellow) cbMutedYellow->Delete(); //called sand
+    //if(cbMutedPink)   cbMutedPink->Delete(); //called rose
+    //if(cbMutedWine)   cbMutedWine->Delete();
+    //if(cbMutedPurple) cbMutedPurple->Delete();
 
-    if(P0DBANFFStyle) P0DBANFFStyle->Delete();
-    if(T2KStyle) T2KStyle->Delete();
+    //if(P0DBANFFStyle) P0DBANFFStyle->Delete();
+    //if(T2KStyle) T2KStyle->Delete();
 }
 
 //**************************************************

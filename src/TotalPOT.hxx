@@ -131,7 +131,10 @@ private:
 
 public:
 
+    void DumpPOT();
+
     ClassDef(TotalPOT,2)
+
 };
 
 #endif

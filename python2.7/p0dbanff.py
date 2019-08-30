@@ -7,7 +7,10 @@ class p0dbanff(object):
 
     def __init__(self):
         self.root = getenv('P0DBANFFROOT')
+        self.podbanffroot = self.root
         self.path = getenv('PATH')
         self.ldpath = getenv('LD_LIBRARY_PATH')
         self.pythonpath = getenv('PYTHONPATH')
-        self.source_script = join(self.root, 'Setup-P0DBANFF.sh')
+        self.banffroot = getenv('BANFFROOT')
+        self.source_script = join(self.root,
+                                  'Setup-P0DBANFF.sh')

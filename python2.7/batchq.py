@@ -5,7 +5,7 @@ import os
 class qoption(p0dbanff.p0dbanff):
     """a batch queue set of command options like walltime"""
 
-    def __init__(self, search_tag, cmd_option, cmd_descript='',
+    def __init__(self, search_tag, cmd_option, cmd_description='',
                  usr_input='', cmd_arg=''):
         super(qoption, self).__init__()
         # how the class searches for the qoption
@@ -14,7 +14,7 @@ class qoption(p0dbanff.p0dbanff):
         # what format batchq option is preceded by cmd_arg
         self.cmd_option = cmd_option
         # description of qoption for user
-        self.cmd_descript = cmd_descript
+        self.cmd_description = cmd_description
         # what the user gave as input
         self.usr_input = usr_input
         self.cmd_arg = cmd_arg
@@ -52,6 +52,7 @@ class batchq(p0dbanff.p0dbanff):
         self.queues = dict()  # a dict of nodes with associated names
         self.qoptions = list()  # a list of qoption objects
         self.cmd_arg = cmd_arg
+        self.help = False
         # self.users = {}  # a dict of users
         # self.n_nodes = 0
         # self.n_users = 0
@@ -61,15 +62,18 @@ class batchq(p0dbanff.p0dbanff):
         for qopt in self.qoptions:
             if '#' not in qopt.cmd_arg:
                 error_msg = 'ERROR: %s does NOT ' % (qopt.search_tag)
-                error_msg += 'have a proper cmd_arg'
+                error_msg += 'have a proper cmd_arg \"%s\"' % qopt.cmd_arg
                 print error_msg
                 self.set_help_opt(True)
                 return
 
-    def add_qoption(self, opt_search, batchq_cmdopt):
+    def add_qoption(self, opt_search, batchq_cmdopt, usr_input=''):
         """append the list of qoptions"""
-        qopt = qoption(opt_search, batchq_cmdopt, self.cmd_arg)
+        qopt = qoption(opt_search, batchq_cmdopt, cmd_arg=self.cmd_arg)
+        qopt.usr_input = usr_input
         self.qoptions.append(qopt)
+        # self.qoptions[len(self.qoptions)-1].cmd_arg = self.cmd_arg
+        return qopt
 
     def get_qoption(self, search_param):
         """search for all available options using str opt"""
@@ -81,6 +85,10 @@ class batchq(p0dbanff.p0dbanff):
             if search_param is qopt.search_tag:
                 return qopt
         return None
+
+    def set_help_opt(self, state=True):
+        """tell the user the help message"""
+        self.help = state
 
     # def addnodes(self, assigned_name, node_numbers=[]):
     #     """adds node names (numbers) with assigned group name"""
@@ -110,33 +118,31 @@ class univa(batchq):
         super(univa, self).__init__(prog_name, cmd_arg)
 
         # merge .o and .e, yes or no, default yes, on
-        self.add_qoption('merge', '-j ')
-        self.get_qoption('merge').usr_input = 'yes'
+        self.add_qoption('merge', '-j ', usr_input='yes')
 
         # set walltime
-        self.add_qoption('walltime', '-l h_cpu=')
+        self.add_qoption('walltime', '-hard -l h_cpu=',
+                         usr_input='9999::')
 
         # set memory
-        self.add_qoption('memory', '-l h_data=')
-
-        # set hostname
-        self.add_qoption('hostname', '-l hostname=')
+        self.add_qoption('memory', '-hard -l h_data=',
+                         usr_input='60g')
 
         # set qname
-        self.add_qoption('qname', '-l qname=')
-        self.get_qoption('qname').usr_input = '\"physics.q\"'
+        self.add_qoption('qname', '-hard -l qname=',
+                         usr_input='\"physics.q\"')
 
-        # set job priority
-        self.add_qoption('priority', '-p ')
+        # set hostname
+        # self.add_qoption('hostname', '-l hostname=')
 
         # export environment variables
-        self.add_qoption('export', '-v ')
-        self.get_qoption('export').usr_input = 'PATH,LD_LIBRARY_PATH,PYTHONPATH,P0DBANFFROOT'
+        self.add_qoption('export', '-v ',
+                         usr_input='PATH,LD_LIBRARY_PATH,PYTHONPATH,P0DBANFFROOT')
 
     def check_univa_batchq_qoptions(self):
         """runs all checks on batchq options, including inherited ones"""
-        if self.show_usage:
-            return
+        # if self.show_usage:
+        #     return
         if len(self.get_qoption('walltime').usr_input.split(':')) != 3:
             error_msg = 'ERROR: walltime must be the format HH:MM:DD'
             print error_msg
