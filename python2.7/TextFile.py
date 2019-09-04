@@ -81,15 +81,37 @@ class WriteTextFile(TextFile):
                 print 'IOError: The file is not writable'
 
 
+class AppendTextFile(TextFile):
+    """The object that append a text file"""
+
+    def __init__(self, input_file_name):
+        super(AppendTextFile, self).__init__(input_file_name, 'a+')
+
+    def __str__(self):
+        return 'Writable text file %r with format %r' % (
+            self.file_name, self.open_option)
+
+    def write(self, input_text):
+        """writes text to file"""
+        if self.file is None:
+            print "ERROR: The file not opened yet. Please open it first"
+        else:
+            if type(input_text) is list:
+                input_text = '\n'.join(input_text)
+            try:
+                self.file.write(input_text)
+            except IOError:
+                print 'IOError: The file is not writable'
+
+
 class ReadTextFile(TextFile):
     """The object that reads text file"""
 
     def __init__(self, input_file_name):
         super(ReadTextFile, self).__init__(input_file_name)
-        self.file_name = input_file_name
 
     def __str__(self):
-        return 'Readable text file %r' % self.file_name
+        return 'Readable text file \"%s\", open status = %d\n' % (self.file_name, self.open_status)
 
     def get_file_as_list(self):
         """returns the file contents as a list"""
