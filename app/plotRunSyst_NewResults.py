@@ -1493,7 +1493,7 @@ def LoadSampleIDs():
     SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBarInAntiNuModeCCNTracks()] = '#bar{#nu}_{#mu} CCNTracks in RHC'
 
     SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC()] = '#nu_{#mu} Bkg CCInc in RHC'
-    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} Bkg CC1Tracks in RHC'
+    SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCC1Track()] = '#nu_{#mu} Bkg CC1Track in RHC'
     SELECTIONLABELSDICT[sampleIds.GetP0DWaterNuMuBkgInAntiNuModeCCNTracks()] = '#nu_{#mu} Bkg CCNTracks in RHC'
 
     SELECTIONLABELSDICT[sampleIds.GetP0DAirNuMuCC()] = '#nu_{#mu} CCInc in FHC'
